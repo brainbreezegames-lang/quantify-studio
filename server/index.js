@@ -27,12 +27,7 @@ app.post('/api/generate', async (req, res) => {
     }
 
     if (!process.env.OPENROUTER_API_KEY) {
-      const repaired = repairComponentTree(generateMockTree(prompt || 'default'))
-      validateTreeStrict(repaired.tree)
-      return res.json({
-        tree: repaired.tree,
-        webDesign: generateMockWebDesign(prompt || 'New screen', designBrief),
-      })
+      return res.status(503).json({ error: 'AI generation is not available — no API key configured. Please add your OpenRouter API key in settings.' })
     }
 
     const [tree, webDesign] = await Promise.all([

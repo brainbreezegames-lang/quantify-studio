@@ -21,7 +21,6 @@ export const config = {
 // ─── Security ────────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
   'https://quantify-studio.vercel.app',
-  'https://quantify-studio.vercel.app',
   'http://localhost:5173',
   'http://localhost:3001',
 ]
@@ -113,7 +112,7 @@ function generateMockTree(prompt) {
                         { id: 'res-1-date', type: 'TextBlock', properties: { Text: 'March 15, 2025', Style: 'BodySmall', Foreground: '#49454F' } },
                         { id: 'res-1-company', type: 'TextBlock', properties: { Text: 'Johnson Construction', Style: 'BodyMedium' } },
                         { id: 'res-1-location', type: 'TextBlock', properties: { Text: 'Midtown Tower Site', Style: 'BodyMedium' } },
-                        { id: 'res-1-address', type: 'TextBlock', properties: { Text: '350 5th Avenue, New York, NY', Style: 'BodySmall', Foreground: '#0A3EFF' } },
+                        { id: 'res-1-address', type: 'TextBlock', properties: { Text: '350 5th Avenue, New York, NY', Style: 'BodySmall', Foreground: '#0005EE' } },
                         { id: 'res-1-summary', type: 'TextBlock', properties: { Text: '24 pieces \u00b7 1,240 kg', Style: 'BodySmall', Foreground: '#49454F' } },
                       ]
                     },
@@ -123,7 +122,7 @@ function generateMockTree(prompt) {
                         { id: 'res-2-date', type: 'TextBlock', properties: { Text: 'March 18, 2025', Style: 'BodySmall', Foreground: '#49454F' } },
                         { id: 'res-2-company', type: 'TextBlock', properties: { Text: 'Apex Building Group', Style: 'BodyMedium' } },
                         { id: 'res-2-location', type: 'TextBlock', properties: { Text: 'Downtown Office Complex', Style: 'BodyMedium' } },
-                        { id: 'res-2-address', type: 'TextBlock', properties: { Text: '88 Greenwich St, New York, NY', Style: 'BodySmall', Foreground: '#0A3EFF' } },
+                        { id: 'res-2-address', type: 'TextBlock', properties: { Text: '88 Greenwich St, New York, NY', Style: 'BodySmall', Foreground: '#0005EE' } },
                         { id: 'res-2-summary', type: 'TextBlock', properties: { Text: '18 pieces \u00b7 890 kg', Style: 'BodySmall', Foreground: '#49454F' } },
                       ]
                     },
@@ -349,7 +348,7 @@ SCREEN STRUCTURE (use this skeleton for every screen):
   </div>
 
 BUTTONS — ⛔ NEVER override button CSS (height, padding, border-radius, font-size, background, color are ALL pre-loaded):
-  <button class="btn-filled">Label</button>       ← primary: pill shape, #0A3EFF bg, white text, 40px tall
+  <button class="btn-filled">Label</button>       ← primary: pill shape, #0005EE bg, white text, 40px tall
   <button class="btn-outlined">Label</button>     ← secondary: pill shape, 1px border, blue text, 40px tall
   <button class="btn-text">Label</button>         ← tertiary: no bg/border, blue text, 40px tall
   <button class="btn-tonal">Label</button>        ← alternative: light blue bg, blue text, 40px tall
@@ -641,12 +640,12 @@ COMPLETE SCREEN EXAMPLE — COPY THIS STRUCTURE
 AVONTUS DESIGN SYSTEM
 ═══════════════════════════════════════════
 Brand palette:
-  Primary Blue: #0A3EFF | On Primary: #FFFFFF
+  Primary Blue: #0005EE | On Primary: #FFFFFF
   Navy: #062175 | Teal: #009B86 | Light Blue: #40ABFF
   Error: #D32F2F | Warning: #F9A825 | Info: #1976D2 | Success: #009B86
   Surfaces: #FFFFFF (bg), #F0F3FF (surface2), #FAFBFF (page bg)
   Text Primary: #1C1B1F | Text Secondary: #49454F
-  Border: #CAC4D0 | Font: Switzer
+  Border: #CAC4D0 | Font: DM Sans
 
 Content: Use realistic Avontus Quantify data:
   - Branches: Houston Branch, Chicago Branch, New York Branch
@@ -925,7 +924,7 @@ async function generateWebDesign(model, prompt, designTokens, designBrief, curre
     const textPart = assembleWebLayers({
       ...layerOpts,
       currentTree: null,
-      taskPrefix: 'You are looking at a wireframe or low-fidelity sketch. Use it ONLY to understand the screen structure and content — do NOT copy its visual style. Translate it into a production-quality Avontus design using the design system rules above. Apply the full brand: frosted glass app bar, Switzer font, Avontus blue (#0A3EFF), elevated cards, proper spacing.',
+      taskPrefix: 'You are looking at a wireframe or low-fidelity sketch. Use it ONLY to understand the screen structure and content — do NOT copy its visual style. Translate it into a production-quality Avontus design using the design system rules above. Apply the full brand: frosted glass app bar, DM Sans font, Avontus blue (#0005EE), elevated cards, proper spacing.',
     })
     userContent = [
       { type: 'text', text: textPart },
@@ -1110,7 +1109,7 @@ function generateMockWebDesign(prompt, designBrief) {
   background:linear-gradient(180deg,#f2f6ff 0%,#eef2fb 100%);
   color:#14171f;
   padding:20px 16px 24px;
-  font-family:"Switzer","Segoe UI",Roboto,system-ui,sans-serif;
+  font-family:"DM Sans","Segoe UI",Roboto,system-ui,sans-serif;
 }
 .topbar{
   height:64px;
@@ -1124,7 +1123,7 @@ function generateMockWebDesign(prompt, designBrief) {
   box-shadow:0 6px 20px rgba(6,33,117,.08);
 }
 .topbar h1{margin:0;flex:1;font-size:24px;line-height:1.1;font-weight:700;}
-.icon-btn,.text-btn{border:0;background:transparent;color:#0A3EFF;font-weight:700}
+.icon-btn,.text-btn{border:0;background:transparent;color:#0005EE;font-weight:700}
 .hero,.card,.field{
   background:#fff;
   border:1px solid #d8dfef;
@@ -1165,7 +1164,7 @@ function buildQualityChecklist(toggles, designTokens) {
 
   // Foundation
   if (toggles.avontusBrand) {
-    items.push('• Avontus Brand: Use Probe Blue #0A3EFF for primary actions. Switzer typography. 107° motif on hero screens. Navy #062175 for deep contrast. Teal #009B86 for success. Yellow #FFD91A NEVER as background/text. Brand-blue-tinted shadows. Confident, forward-looking copy voice.')
+    items.push('• Avontus Brand: Use Avontus Blue #0005EE for primary actions. DM Sans typography. 107° motif on hero screens. Navy #062175 for deep contrast. Teal #009B86 for success. Yellow #FFD91A NEVER as background/text. Brand-blue-tinted shadows. Confident, forward-looking copy voice.')
   }
   if (toggles.tokenMap || toggles.noGenericFallback) {
     items.push(`• Token Enforcement: action=${t.primaryColor || '#6750A4'}, heading=${t.colors?.onSurface || '#1C1B1F'}, caption=${t.colors?.onSurfaceVariant || '#49454F'}, page bg=${t.backgroundColor || '#FFFFFF'}. Use role assignments, never raw hex guesses. No blue/Material defaults. If tokens missing → neutral white/gray.`)
@@ -1239,16 +1238,16 @@ Apply the official Avontus brand identity to every generated screen.
 - **Terminology**: "Scaffold" = entire structure. "Scaffolding" = individual pieces/components.
 - **Label case**: First character capitalized only ("Remote server" not "Remote Server")
 
-### Primary Color — Probe Blue
+### Primary Color — Avontus Blue
 | Token | Hex | Usage |
 |-------|-----|-------|
-| Primary | #0A3EFF | Primary CTA, key actions, selected states, active nav, links |
+| Primary | #0005EE | Primary CTA, key actions, selected states, active nav, links |
 | Primary tint | #678DF4 | Hover states, light accents, info badges |
 | Primary shade | #0004B3 | Pressed states, active elements |
 | Primary dark | #000377 | High-contrast text on light surfaces |
 
 ### Blue Scale (50–900)
-#E8E9FD (50) → #C5C7FA (100) → #9EA1F7 (200) → #678DF4 (300) → #3344F1 (400) → #0A3EFF (500) → #0004D6 (600) → #0004B3 (700) → #000390 (800) → #000377 (900)
+#E8E9FD (50) → #C5C7FA (100) → #9EA1F7 (200) → #678DF4 (300) → #3344F1 (400) → #0005EE (500) → #0004D6 (600) → #0004B3 (700) → #000390 (800) → #000377 (900)
 
 ### Secondary Palette
 | Name | Hex | Usage |
@@ -1260,10 +1259,10 @@ Apply the official Avontus brand identity to every generated screen.
 | Yellow | #FFD91A | UTILITARIAN ONLY — NEVER as background, body text, or buttons |
 
 ### Surface & Text Colors
-Background=#FFFFFF, Surface=#FAFBFF, Surface2=#F0F3FF, Surface3=#E3E8F9, Text primary=#1C1B1F, Text secondary=#49454F, Outline=#79747E, Border=#E0E0E0, Link=#0A3EFF (underlined)
+Background=#FFFFFF, Surface=#FAFBFF, Surface2=#F0F3FF, Surface3=#E3E8F9, Text primary=#1C1B1F, Text secondary=#49454F, Outline=#79747E, Border=#E0E0E0, Link=#0005EE (underlined)
 
-### Typography — Switzer
-Fallback: "Switzer", "Helvetica Neue", Helvetica, Arial, sans-serif.
+### Typography — DM Sans
+Fallback: "DM Sans", "Helvetica Neue", Helvetica, Arial, sans-serif.
 - Light (300): Display text. Regular (400): Body. Medium (500): Subtitles. Bold (700): Headlines, CTAs.
 
 ### The 107° Graphic Motif
@@ -1275,13 +1274,13 @@ Level 2: 0 4px 12px rgba(0,5,238,0.08), 0 2px 4px rgba(0,0,0,0.04)
 Level 3: 0 8px 24px rgba(0,5,238,0.10), 0 4px 8px rgba(0,0,0,0.05)
 
 ### Button Hierarchy
-Filled: bg=#0A3EFF, text=#FFF (PRIMARY). Outlined: border=#0A3EFF (SECONDARY). Tonal: bg=#0A3EFF@12% (ALT). Text: transparent (TERTIARY).
+Filled: bg=#0005EE, text=#FFF (PRIMARY). Outlined: border=#0005EE (SECONDARY). Tonal: bg=#0005EE@12% (ALT). Text: transparent (TERTIARY).
 
 ### Shape & Spacing
 Shapes: None=0, XS=2px, S=4px, M=8px, L=12px, XL=16px, Full=9999px
 Spacing: 4→8→12→16→20→24→32→40→48→64→80px
 
-CRITICAL: Every screen must feel unmistakably Avontus — branded with Blue #0A3EFF, professional, and polished.`)
+CRITICAL: Every screen must feel unmistakably Avontus — branded with Blue #0005EE, professional, and polished.`)
   }
 
   if ((toggles.tokenMap || toggles.noGenericFallback) && designTokens) {
@@ -1451,7 +1450,7 @@ Use this analysis to form an internal "design DNA" model. Use that DNA to choose
 
 ### Variant-Driven API (never style-driven):
 - Use: variant="filled/outlined/ghost", size="sm/md/lg", intent="primary/secondary/destructive"
-- Never: color="blue", fontSize="14px", backgroundColor="#0A3EFF"
+- Never: color="blue", fontSize="14px", backgroundColor="#0005EE"
 
 ### Strict HTML Pattern Enforcement:
 - Every input MUST be wrapped in a .field container with label
@@ -1794,7 +1793,6 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Prompt is required for enhancement' })
       }
       if (!rk && !process.env.OPENROUTER_API_KEY) {
-        // No API key — skip enhancement, just return original prompt
         return res.json({ enhancedPrompt: prompt })
       }
       try {
@@ -1852,7 +1850,7 @@ export default async function handler(req, res) {
       const improveModel = (rm && ALLOWED_MODELS.has(rm) ? rm : MODEL)
       // Build active quality lenses
       const activeToggleNames = {
-        avontusBrand: 'Avontus Brand — Blue #0A3EFF, Switzer, 107° motif, navy/teal secondary palette, brand voice, blue-tinted shadows',
+        avontusBrand: 'Avontus Brand — Blue #0005EE, DM Sans, 107° motif, navy/teal secondary palette, brand voice, blue-tinted shadows',
         tokenMap: 'Token Enforcement — map colors to semantic roles, no generic blue/Material defaults, missing tokens → neutral gray not invented colors',
         noGenericFallback: 'Token Enforcement — no generic blue/Material defaults, missing tokens → neutral gray not invented colors',
         componentRegistry: 'Component Registry — correct Uno/XAML component for every UI need, required props on every component, never raw unstyled primitives',
@@ -1948,8 +1946,13 @@ ${cssSnippet}`
       return res.status(400).json({ error: 'Prompt too long (max 20000 chars)' })
     }
 
-    if (!process.env.OPENROUTER_API_KEY && !rk) {
-      return res.status(503).json({ error: 'AI generation is not available — no API key configured. Please add your OpenRouter API key in settings.' })
+    if (!process.env.OPENROUTER_API_KEY) {
+      const repairedMock = repairComponentTree(generateMockTree(prompt || 'default'))
+      validateTreeStrict(repairedMock.tree)
+      return res.json({
+        tree: repairedMock.tree,
+        webDesign: generateMockWebDesign(prompt || 'New screen', designBrief),
+      })
     }
 
     const model = (requestModel && ALLOWED_MODELS.has(requestModel) ? requestModel : MODEL)

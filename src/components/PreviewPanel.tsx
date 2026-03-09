@@ -141,11 +141,11 @@ img:not([src]),img[src=""],img[src^="http"]{min-height:80px;background:linear-gr
 .app-bar{position:sticky;top:0;z-index:10;height:56px;display:flex;align-items:center;padding:0 4px;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(202,196,208,0.4);gap:4px;flex-shrink:0}
 .app-bar-title{flex:1;font-size:20px;font-weight:600;letter-spacing:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 8px}
 .content{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
-.card{background:#fff;border-radius:12px;border:1px solid #CAC4D0;padding:16px;display:flex;flex-direction:column;gap:8px}
-.card-elevated{background:#FAFBFF;border-radius:12px;box-shadow:0 4px 12px rgba(0,5,238,0.08),0 1px 3px rgba(0,0,0,0.04);border:1px solid rgba(202,196,208,0.3);padding:16px;display:flex;flex-direction:column;gap:8px}
-.card-filled{background:#F0F3FF;border-radius:12px;border:none;padding:16px;display:flex;flex-direction:column;gap:8px}
+.card{background:#fff;border-radius:0;border:1px solid #D4D4D4;padding:16px;display:flex;flex-direction:column;gap:8px}
+.card-elevated{background:#F8F8F8;border-radius:0;box-shadow:0 4px 12px rgba(10,62,255,0.08),0 1px 3px rgba(0,0,0,0.04);border:1px solid rgba(212,212,212,0.3);padding:16px;display:flex;flex-direction:column;gap:8px}
+.card-filled{background:#EEEEEE;border-radius:0;border:none;padding:16px;display:flex;flex-direction:column;gap:8px}
 .stat-group{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.stat-card{background:#fff;border-radius:12px;border:1px solid #CAC4D0;padding:16px;display:flex;flex-direction:column;gap:4px}
+.stat-card{background:#fff;border-radius:0;border:1px solid #D4D4D4;padding:16px;display:flex;flex-direction:column;gap:4px}
 .stat-value{font-size:32px;font-weight:700;letter-spacing:-0.5px;line-height:1.1;color:#0A3EFF}
 .stat-value.teal{color:#009B86}.stat-value.navy{color:#062175}.stat-value.error{color:#D32F2F}
 .stat-label{font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:#49454F}
