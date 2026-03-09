@@ -233,7 +233,7 @@ export default function DataTableSection() {
       {/* ── Interactive Demo ── */}
       <SubSection
         title="Interactive Data Table"
-        description="Click column headers to sort. Click rows to select. Use the toolbar buttons to interact — Delete removes the selected row (with Avontus selection-after-delete behavior), Refresh resets the data."
+        description="Click column headers to sort. Click rows to select. Use the toolbar buttons to interact — Delete removes the selected row (with Quantify selection-after-delete behavior), Refresh resets the data."
       >
         <ComponentShowcase
           fullWidth
@@ -248,7 +248,7 @@ export default function DataTableSection() {
       {/* ── CRUD Toolbar Strip ── */}
       <SubSection
         title="CRUD Toolbar Strip"
-        description="Every data table in Quantify includes a toolbar strip with Add, Edit, Delete, and Refresh. Per Avontus convention, all four buttons are always enabled regardless of selection state."
+        description="Every data table in Quantify includes a toolbar strip with Add, Edit, Delete, and Refresh. Per Quantify convention, all four buttons are always enabled regardless of selection state."
       >
         <ComponentShowcase
           fullWidth
@@ -332,7 +332,7 @@ export default function DataTableSection() {
                 ))}
               </div>
             ),
-            caption: 'Never gray out Edit/Delete based on selection. This is a core Avontus convention.',
+            caption: 'Never gray out Edit/Delete based on selection. This is a core Quantify convention.',
           },
           {
             type: 'do',

@@ -464,12 +464,12 @@ RULES — ZERO EXCEPTIONS:
 AVONTUS DESIGN SYSTEM
 ═══════════════════════════════════════════
 Brand palette:
-  Primary Blue: #0005EE | On Primary: #FFFFFF
+  Primary Blue: #0A3EFF | On Primary: #FFFFFF
   Navy: #062175 | Teal: #009B86 | Light Blue: #40ABFF
   Error: #D32F2F | Warning: #F9A825 | Info: #1976D2 | Success: #009B86
   Surfaces: #FFFFFF (bg), #F0F3FF (surface2), #FAFBFF (page bg)
   Text Primary: #1C1B1F | Text Secondary: #49454F
-  Border: #CAC4D0 | Font: DM Sans
+  Border: #CAC4D0 | Font: Switzer
 
 Content: Use realistic Avontus Quantify data:
   - Branches: Houston Branch, Chicago Branch, New York Branch
@@ -539,7 +539,7 @@ COLOR & CONTRAST RULES (MANDATORY — VIOLATION = UNREADABLE TEXT):
 C1. DARK TEXT (#1C1B1F, #333, #49454F, black) ON DARK/BLUE BACKGROUNDS IS FORBIDDEN. ALWAYS set color:#FFFFFF on ANY element inside a dark, blue, navy, teal, or gradient container. This means EVERY <p>, <span>, <h1>-<h6>, <a>, <label>, <li> inside a dark section must explicitly have color:#fff or color:#E8E9FD in its style attribute or CSS class. Do NOT rely on inherited text color — always set it explicitly on dark backgrounds.
 C2. Body text minimum contrast ratio: 4.5:1 against its background. Large text (18px+): 3:1 minimum.
 C3. FORBIDDEN combinations that WILL produce unreadable text:
-    - #1C1B1F text on #0005EE background (black on blue)
+    - #1C1B1F text on #0A3EFF background (black on blue)
     - #1C1B1F text on #062175 background (black on navy)
     - #49454F text on any blue/navy/teal gradient
     - Any dark text on any background darker than #808080
@@ -635,16 +635,16 @@ Apply the official Avontus brand identity to every generated screen. This is der
 - **Terminology**: "Scaffold" = entire structure. "Scaffolding" = individual pieces/components.
 - **Label case**: First character capitalized only ("Remote server" not "Remote Server")
 
-### Primary Color — Avontus Blue
+### Primary Color — Probe Blue
 | Token | Hex | Usage |
 |-------|-----|-------|
-| Primary | #0005EE | Primary CTA, key actions, selected states, active nav, links |
+| Primary | #0A3EFF | Primary CTA, key actions, selected states, active nav, links |
 | Primary tint | #678DF4 | Hover states, light accents, info badges |
 | Primary shade | #0004B3 | Pressed states, active elements |
 | Primary dark | #000377 | High-contrast text on light surfaces |
 
 ### Blue Scale (50–900)
-#E8E9FD (50) → #C5C7FA (100) → #9EA1F7 (200) → #678DF4 (300) → #3344F1 (400) → #0005EE (500) → #0004D6 (600) → #0004B3 (700) → #000390 (800) → #000377 (900)
+#E8E9FD (50) → #C5C7FA (100) → #9EA1F7 (200) → #678DF4 (300) → #3344F1 (400) → #0A3EFF (500) → #0004D6 (600) → #0004B3 (700) → #000390 (800) → #000377 (900)
 
 ### Secondary Palette
 | Name | Hex | Usage |
@@ -673,7 +673,7 @@ Apply the official Avontus brand identity to every generated screen. This is der
 | Outline | #79747E |
 | Outline variant | #CAC4D0 |
 | Border/Divider | #E0E0E0 |
-| Link text | #0005EE (underlined) |
+| Link text | #0A3EFF (underlined) |
 
 ### Semantic Colors
 | Role | Hex | Icon |
@@ -683,8 +683,8 @@ Apply the official Avontus brand identity to every generated screen. This is der
 | Info | #1976D2 | Info |
 | Success | #009B86 | Check |
 
-### Typography — DM Sans
-Primary typeface: DM Sans. Fallback: "DM Sans", "Helvetica Neue", Helvetica, Arial, sans-serif.
+### Typography — Switzer
+Primary typeface: Switzer. Fallback: "Switzer", "Helvetica Neue", Helvetica, Arial, sans-serif.
 Monospace: JetBrains Mono for code.
 - Light (300): Large display text, hero statements
 - Regular (400): Body text, descriptions, form labels
@@ -732,18 +732,18 @@ None=0px, Extra Small=2px, Small=4px, Medium=8px, Large=12px, Extra Large=16px, 
 - Slow: 500ms (page animations, onboarding)
 
 ### Button Style Hierarchy (MANDATORY)
-- Filled: bg=#0005EE, text=#FFFFFF — PRIMARY action only. ONE per action group.
-- Outlined: border=#0005EE, text=#0005EE — SECONDARY action (cancel, back, reject).
-- Tonal: bg=#0005EE at 12%, text=#0005EE — ALTERNATIVE primary (bulk ops).
-- Text: transparent, text=#0005EE — TERTIARY (minor links, dismiss).
+- Filled: bg=#0A3EFF, text=#FFFFFF — PRIMARY action only. ONE per action group.
+- Outlined: border=#0A3EFF, text=#0A3EFF — SECONDARY action (cancel, back, reject).
+- Tonal: bg=#0A3EFF at 12%, text=#0A3EFF — ALTERNATIVE primary (bulk ops).
+- Text: transparent, text=#0A3EFF — TERTIARY (minor links, dismiss).
 
 ### State Layers
 Hover=8%, Focus=12%, Pressed=12%, Dragged=16%, Disabled=38%
 
 ### Dark Mode
-Background: #121212 or #1C1B1F. Surface: #1E1E1E. Primary stays #0005EE. Text primary: #EEEEF0. Text secondary: #8888A0.
+Background: #121212 or #1C1B1F. Surface: #1E1E1E. Primary stays #0A3EFF. Text primary: #EEEEF0. Text secondary: #8888A0.
 
-CRITICAL: Every generated screen must feel unmistakably Avontus — branded with Blue #0005EE, professional, confident, and polished.`)
+CRITICAL: Every generated screen must feel unmistakably Avontus — branded with Blue #0A3EFF, professional, confident, and polished.`)
   }
 
   if (toggles.tokenEnforcement && designTokens) {
@@ -915,7 +915,7 @@ Use this analysis to form an internal "design DNA" model. Use that DNA to choose
 
 ### Variant-Driven API (never style-driven):
 - Use: variant="filled/outlined/ghost", size="sm/md/lg", intent="primary/secondary/destructive"
-- Never: color="blue", fontSize="14px", backgroundColor="#0005EE"
+- Never: color="blue", fontSize="14px", backgroundColor="#0A3EFF"
 
 ### Strict HTML Pattern Enforcement:
 - Every input MUST be wrapped in a .field container with label
@@ -1236,7 +1236,7 @@ This is the most common problem in AI-generated designs. Fix it every time.
 
 **CRITICAL — Dark backgrounds DEMAND light text:**
 - ANY background darker than mid-gray in luminance (roughly #808080 or darker) MUST use white or very light text
-- Avontus Blue #0005EE background → white text (#FFFFFF) ✓ (8.6:1 ratio)
+- Probe Blue #0A3EFF background → white text (#FFFFFF) ✓ (8.6:1 ratio)
 - Navy #062175 background → white text (#FFFFFF) ✓
 - Teal #009B86 background → white text ✓
 - Dark card/surface (#1C1B1F, #1a2340, etc.) → white or very light text ✓
@@ -1391,7 +1391,7 @@ export async function generateWebDesign(prompt, designTokens, currentTree, desig
       designBrief,
       currentTree: null,
       qualityChecklist,
-      taskPrefix: 'You are looking at a wireframe or low-fidelity sketch. Use it ONLY to understand the screen structure and content — do NOT copy its visual style. Translate it into a production-quality Avontus design using the design system rules above. Apply the full brand: frosted glass app bar, DM Sans font, Avontus blue (#0005EE), elevated cards, proper spacing.',
+      taskPrefix: 'You are looking at a wireframe or low-fidelity sketch. Use it ONLY to understand the screen structure and content — do NOT copy its visual style. Translate it into a production-quality Avontus design using the design system rules above. Apply the full brand: frosted glass app bar, Switzer font, Avontus blue (#0A3EFF), elevated cards, proper spacing.',
       screenArchetypes: SCREEN_ARCHETYPES,
       goldExamples: GOLD_EXAMPLES,
     })
@@ -1595,7 +1595,7 @@ function buildQualityChecklist(toggles, designTokens) {
 
   // Foundation
   if (toggles.avontusBrand) {
-    items.push('• Avontus Brand: Use Avontus Blue #0005EE for primary actions. DM Sans typography. 107° motif on hero screens. Navy #062175 for deep contrast. Teal #009B86 for success. Yellow #FFD91A NEVER as background/text. Brand-blue-tinted shadows. Confident, forward-looking copy voice.')
+    items.push('• Avontus Brand: Use Probe Blue #0A3EFF for primary actions. Switzer typography. 107° motif on hero screens. Navy #062175 for deep contrast. Teal #009B86 for success. Yellow #FFD91A NEVER as background/text. Brand-blue-tinted shadows. Confident, forward-looking copy voice.')
   }
   if (toggles.tokenEnforcement) {
     items.push(`• Token Enforcement: action=${t.primaryColor || '#6750A4'}, heading=${t.colors?.onSurface || '#1C1B1F'}, caption=${t.colors?.onSurfaceVariant || '#49454F'}, page bg=${t.backgroundColor || '#FFFFFF'}. Use role assignments, never raw hex guesses. No blue/Material defaults. If tokens missing → neutral white/gray.`)
@@ -1638,7 +1638,7 @@ function buildQualityChecklist(toggles, designTokens) {
     items.push('• Microcopy: Every button starts with a specific verb ("Save Order" not "Submit", "Create Shipment" not "Process"). Empty states explain why + what to do next. Error messages describe the fix without blaming. Placeholders show format examples, never act as labels. Status labels use human language (not "PENDING", "STATUS: 1").')
   }
   if (toggles.accessibility) {
-    items.push('• Accessibility: CRITICAL — dark backgrounds MUST use white/light text. Avontus Blue / Navy / Teal backgrounds → white text only. Dark text on dark colors is FORBIDDEN. 4.5:1 minimum contrast for all text. 44px touch targets. Color never the only error/status signal — always pair with text or icon.')
+    items.push('• Accessibility: CRITICAL — dark backgrounds MUST use white/light text. Probe Blue / Navy / Teal backgrounds → white text only. Dark text on dark colors is FORBIDDEN. 4.5:1 minimum contrast for all text. 44px touch targets. Color never the only error/status signal — always pair with text or icon.')
   }
   if (toggles.dataHeavyDesign) {
     items.push('• Data-Heavy Design: 5-metric rule for dashboards. KPI cards with delta+sparkline+context. Tables: right-align numbers, sticky headers, 3 density tiers. Real-time count animations. Progressive disclosure.')

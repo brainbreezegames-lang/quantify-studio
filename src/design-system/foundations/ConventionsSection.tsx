@@ -34,7 +34,7 @@ function InlineLabel({ correct, text }: { correct?: boolean; text: string }) {
       alignItems: 'center',
       gap: 6,
       padding: '4px 12px',
-      borderRadius: 6,
+      borderRadius: 0,
       fontSize: 14,
       fontWeight: 500,
       fontFamily: 'var(--av-font-primary, Inter, sans-serif)',
@@ -85,7 +85,7 @@ function ToolbarMode({
         height: 56,
         padding: '0 4px',
         background: bg || 'var(--av-surface, #FAFBFF)',
-        borderRadius: 10,
+        borderRadius: 0,
         border: '1px solid var(--av-outline-variant, #CAC4D0)',
       }}>
         <button style={btnStyle}>{leading}</button>
@@ -109,7 +109,7 @@ function CrudButton({ icon, label }: { icon: React.ReactNode; label: string }) {
       alignItems: 'center',
       gap: 6,
       padding: '6px 14px',
-      borderRadius: 6,
+      borderRadius: 0,
       fontSize: 13,
       fontWeight: 500,
       fontFamily: 'var(--av-font-primary, Inter, sans-serif)',
@@ -144,7 +144,7 @@ export default function ConventionsSection() {
       <SectionHeader
         label="Foundation"
         title="Conventions"
-        description="Avontus-specific UX rules and patterns that ensure consistency across every Quantify screen."
+        description="Quantify-specific UX rules and patterns that ensure consistency across every Quantify screen."
       />
 
       {/* ── 1. Label Capitalization ── */}
@@ -187,7 +187,7 @@ export default function ConventionsSection() {
                 <span>Project Name</span>
               </div>
             ),
-            caption: 'Title Case looks formal but conflicts with MD3 conventions. Never capitalize every word.',
+            caption: 'Title Case looks formal but conflicts with design system conventions. Never capitalize every word.',
           },
         ]} />
       </SubSection>
@@ -330,7 +330,7 @@ export default function ConventionsSection() {
           }]}
         />
         <CodeSnippet
-          code={`<!-- Avontus Delete Confirmation Dialog -->
+          code={`<!-- Quantify Delete Confirmation Dialog -->
 <ContentDialog
     Title="Delete item"
     PrimaryButtonText="Yes, delete"
@@ -393,7 +393,7 @@ export default function ConventionsSection() {
       {/* ── 6. Grid CRUD Behavior ── */}
       <SubSection
         title="Grid CRUD Behavior"
-        description="Data grids in Quantify always show Add, Edit, Delete, and Refresh buttons. Critically, all four buttons are always enabled — never grayed out based on selection state. This is a core Avontus convention that differs from many other apps."
+        description="Data grids in Quantify always show Add, Edit, Delete, and Refresh buttons. Critically, all four buttons are always enabled — never grayed out based on selection state. This is a core Quantify convention that differs from many other apps."
       >
         <ComponentShowcase
           fullWidth
@@ -408,7 +408,7 @@ export default function ConventionsSection() {
                   gap: 8,
                   padding: '10px 16px',
                   background: 'var(--av-surface, #FAFBFF)',
-                  borderRadius: '10px 10px 0 0',
+                  borderRadius: 0,
                   border: '1px solid var(--av-outline-variant, #CAC4D0)',
                   borderBottom: 'none',
                 }}>
@@ -420,7 +420,7 @@ export default function ConventionsSection() {
                 {/* Grid rows */}
                 <div style={{
                   border: '1px solid var(--av-outline-variant, #CAC4D0)',
-                  borderRadius: '0 0 10px 10px',
+                  borderRadius: 0,
                   overflow: 'hidden',
                 }}>
                   {/* Header */}
@@ -474,7 +474,7 @@ export default function ConventionsSection() {
                         fontSize: 11,
                         fontWeight: 600,
                         padding: '2px 8px',
-                        borderRadius: 4,
+                        borderRadius: 0,
                         background: row.status === 'Available'
                           ? 'rgba(0,155,134,0.1)'
                           : 'rgba(41,98,255,0.1)',
@@ -520,7 +520,7 @@ export default function ConventionsSection() {
                   <CrudButton icon={<Refresh size={14} />} label="Refresh" />
                 </div>
               ),
-              caption: 'Never disable Edit or Delete based on selection. This is a core Avontus convention.',
+              caption: 'Never disable Edit or Delete based on selection. This is a core Quantify convention.',
             },
           ]} />
         </div>
@@ -539,7 +539,7 @@ export default function ConventionsSection() {
       >
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16, marginBottom: 20 }}>
           <RuleCard title='Empty state: " (select)"'>
-            When no value is chosen, the combobox displays <strong>" (select)"</strong> — with a leading space. This is the canonical Avontus empty-state placeholder, not "Choose..." or "Select...".
+            When no value is chosen, the combobox displays <strong>" (select)"</strong> — with a leading space. This is the canonical Quantify empty-state placeholder, not "Choose..." or "Select...".
           </RuleCard>
           <RuleCard title="Inactive items">
             Items marked as inactive are <strong>hidden</strong> from the dropdown list — unless the field currently holds that value. If the user navigates to a record with an inactive item, the combobox still shows it, but no other user can select it.
@@ -624,12 +624,12 @@ export default function ConventionsSection() {
             color: 'var(--av-on-surface-variant)',
             letterSpacing: '0.2px',
           }}>
-            © Avontus 2008–2025. All rights reserved.
+            © Quantify 2008–2025. All rights reserved.
           </span>
         </div>
         <CodeSnippet
           code={`<!-- Canonical Copyright -->
-<TextBlock Text="© Avontus 2008–2025. All rights reserved."
+<TextBlock Text="© Quantify 2008–2025. All rights reserved."
            Style="{StaticResource CaptionMedium}"
            Foreground="{ThemeResource OnSurfaceVariantBrush}"
            HorizontalAlignment="Center" />`}
@@ -694,7 +694,7 @@ export default function ConventionsSection() {
           </div>
         </div>
         <CodeSnippet
-          code={`<!-- Spacing tokens used by Avontus -->
+          code={`<!-- Spacing tokens used by Quantify -->
 <!-- Page border padding -->
 <Page Padding="32">
   <!-- Button spacing in dialog footers -->

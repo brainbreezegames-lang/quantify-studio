@@ -201,7 +201,7 @@ function generateMockTree(prompt) {
                         { id: 'res-1-date', type: 'TextBlock', properties: { Text: 'March 15, 2025', Style: 'BodySmall', Foreground: '#49454F' } },
                         { id: 'res-1-company', type: 'TextBlock', properties: { Text: 'Johnson Construction', Style: 'BodyMedium' } },
                         { id: 'res-1-location', type: 'TextBlock', properties: { Text: 'Midtown Tower Site', Style: 'BodyMedium' } },
-                        { id: 'res-1-address', type: 'TextBlock', properties: { Text: '350 5th Avenue, New York, NY', Style: 'BodySmall', Foreground: '#0005EE' } },
+                        { id: 'res-1-address', type: 'TextBlock', properties: { Text: '350 5th Avenue, New York, NY', Style: 'BodySmall', Foreground: '#0A3EFF' } },
                         { id: 'res-1-summary', type: 'TextBlock', properties: { Text: '24 pieces \u00b7 1,240 kg', Style: 'BodySmall', Foreground: '#49454F' } },
                         {
                           id: 'res-1-actions', type: 'StackPanel', properties: { Orientation: 'Horizontal', Spacing: '8', HorizontalAlignment: 'Right' }, children: [
@@ -217,7 +217,7 @@ function generateMockTree(prompt) {
                         { id: 'res-2-date', type: 'TextBlock', properties: { Text: 'March 18, 2025', Style: 'BodySmall', Foreground: '#49454F' } },
                         { id: 'res-2-company', type: 'TextBlock', properties: { Text: 'Apex Building Group', Style: 'BodyMedium' } },
                         { id: 'res-2-location', type: 'TextBlock', properties: { Text: 'Downtown Office Complex', Style: 'BodyMedium' } },
-                        { id: 'res-2-address', type: 'TextBlock', properties: { Text: '88 Greenwich St, New York, NY', Style: 'BodySmall', Foreground: '#0005EE' } },
+                        { id: 'res-2-address', type: 'TextBlock', properties: { Text: '88 Greenwich St, New York, NY', Style: 'BodySmall', Foreground: '#0A3EFF' } },
                         { id: 'res-2-summary', type: 'TextBlock', properties: { Text: '18 pieces \u00b7 890 kg', Style: 'BodySmall', Foreground: '#49454F' } },
                         {
                           id: 'res-2-actions', type: 'StackPanel', properties: { Orientation: 'Horizontal', Spacing: '8', HorizontalAlignment: 'Right' }, children: [

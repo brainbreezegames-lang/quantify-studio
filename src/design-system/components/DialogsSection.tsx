@@ -461,9 +461,9 @@ export default function DialogsSection() {
         />
       </SubSection>
 
-      {/* ── Avontus Dialog Conventions ── */}
+      {/* ── Quantify Dialog Conventions ── */}
       <SubSection
-        title="Avontus Dialog Conventions"
+        title="Quantify Dialog Conventions"
         description="Strict rules that apply to every dialog in Quantify. These conventions ensure dialogs feel predictable and prevent accidental data loss."
       >
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16, marginBottom: 20 }}>
@@ -509,7 +509,7 @@ export default function DialogsSection() {
                 </div>
               </div>
             ),
-            caption: 'Use the canonical Avontus delete confirmation with "Yes, delete" and "No" buttons.',
+            caption: 'Use the canonical Quantify delete confirmation with "Yes, delete" and "No" buttons.',
           },
           {
             type: 'dont',
@@ -543,7 +543,7 @@ export default function DialogsSection() {
                 </div>
               </div>
             ),
-            caption: 'Use the canonical Avontus delete wording with "Yes, delete" and "No" buttons.',
+            caption: 'Use the canonical Quantify delete wording with "Yes, delete" and "No" buttons.',
           },
           {
             type: 'dont',

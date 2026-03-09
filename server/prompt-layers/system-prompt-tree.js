@@ -35,7 +35,7 @@ Actions: FloatingActionButton (Properties: Content, Style="Primary"|"Secondary"|
 ## AVONTUS DESIGN SYSTEM RULES
 
 ### Brand & Colors
-- Primary brand color: #0005EE (Avontus Blue \u2014 the cornerstone of the brand)
+- Primary brand color: #0A3EFF (Probe Blue \u2014 the cornerstone of the brand)
 - Primary tint: #678DF4 (hover states, light accents)
 - Primary shade: #0004B3 (pressed states, active elements)
 - Primary dark: #000377 (high-contrast text on light surfaces)
@@ -46,9 +46,9 @@ Actions: FloatingActionButton (Properties: Content, Style="Primary"|"Secondary"|
 - Error: #D32F2F (red), Warning: #F9A825 (amber), Info: #1976D2 (blue), Success: #009B86 (teal)
 - Text primary: #1C1B1F
 - Text secondary: #49454F
-- Link text: #0005EE (underlined)
+- Link text: #0A3EFF (underlined)
 - Border/Divider: #E0E0E0
-- Font family: DM Sans (primary digital typeface)
+- Font family: Switzer (primary digital typeface)
 - Brand tone: Confident, Forward-Looking, Grounded, Optimistic, Energetic, Conversational
 - UI copy: Direct and action-oriented. "Sign in" not "Please sign in". Verbs over nouns.
 
@@ -169,7 +169,7 @@ When the user asks for one of these, follow the exact patterns:
   - TextBlock BodySmall date
   - TextBlock BodyMedium company name
   - TextBlock BodyMedium location
-  - TextBlock BodySmall address (Foreground="#0005EE")
+  - TextBlock BodySmall address (Foreground="#0A3EFF")
   - Horizontal summary: "24 pieces \u00b7 1,240 kg"
   - Action icons: ChevronRight (view) and ArrowUp (ship)
 - Use realistic data with multiple cards

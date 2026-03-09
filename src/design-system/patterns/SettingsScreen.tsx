@@ -86,7 +86,7 @@ export default function SettingsScreen() {
 
           <div style={{ padding: '0 16px 12px' }}>
             <div className="ds-textfield" style={{ maxWidth: '100%', marginBottom: 12 }}>
-              <input type="url" defaultValue="https://api.quantify.avontus.com" style={{ height: 48, fontSize: 12, padding: '20px 12px 6px' }} readOnly />
+              <input type="url" defaultValue="https://api.quantify.app" style={{ height: 48, fontSize: 12, padding: '20px 12px 6px' }} readOnly />
               <label style={{ left: 12, top: 6, fontSize: 11 }}>Server URL</label>
             </div>
             <button className="ds-btn ds-btn-outlined" style={{ fontSize: 13, height: 36, width: '100%' }}>

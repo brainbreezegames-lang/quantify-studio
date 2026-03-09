@@ -8,21 +8,21 @@ export default function BrandSection() {
       <SectionHeader
         label="Foundation"
         title="Brand Identity"
-        description="Logo, colors, and voice guidelines for consistent Avontus branding."
+        description="Logo, colors, and voice guidelines for consistent Quantify branding."
       />
 
-      <SubSection title="Brand Overview" description="Avontus is the world leader in scaffold and access solutions, providing software that helps scaffold companies plan, manage, and optimize their operations.">
+      <SubSection title="Brand Overview" description="Quantify is the leading scaffold and access management platform by Avontus, helping scaffold companies plan, manage, and optimize their operations.">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
           <div className="ds-card ds-card-outlined" style={{ padding: 24 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase' as const, color: 'var(--av-blue)', marginBottom: 8 }}>Mission</div>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase' as const, color: 'var(--av-blue)', marginBottom: 8 }}>Design Language</div>
             <p style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--av-on-surface-variant)', margin: 0 }}>
-              Empowering scaffold companies worldwide with intelligent software solutions that streamline operations and drive growth.
+              <strong>Probe</strong> — Sharp geometric aesthetic with monochromatic blue palette, 0px border radius default, and Switzer typeface.
             </p>
           </div>
           <div className="ds-card ds-card-outlined" style={{ padding: 24 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase' as const, color: 'var(--av-blue)', marginBottom: 8 }}>Tagline</div>
-            <p style={{ fontSize: 24, fontWeight: 700, color: 'var(--av-navy)', margin: 0, letterSpacing: '-0.5px' }}>
-              "Reach New Heights"
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase' as const, color: 'var(--av-blue)', marginBottom: 8 }}>Aesthetic</div>
+            <p style={{ fontSize: 24, fontWeight: 500, color: 'var(--av-navy)', margin: 0, letterSpacing: '-0.5px', fontFamily: 'var(--av-font-primary)' }}>
+              Sharp · Clean · Precise
             </p>
           </div>
           <div className="ds-card ds-card-outlined" style={{ padding: 24 }}>
@@ -34,7 +34,7 @@ export default function BrandSection() {
         </div>
       </SubSection>
 
-      <SubSection title="Brand Voice" description="Avontus communicates with clarity, confidence, and approachability. These three pillars guide all written and visual communication.">
+      <SubSection title="Brand Voice" description="Quantify communicates with clarity, confidence, and precision. These three pillars guide all written and visual communication.">
         <div className="ds-voice-grid">
           <div className="ds-voice-card">
             <h4>Professional</h4>
@@ -51,22 +51,21 @@ export default function BrandSection() {
         </div>
       </SubSection>
 
-      <SubSection title="Logo Usage" description="The Avontus logo uses the brand's primary blue. Always maintain clear space around the logo equal to the height of the 'A' character.">
+      <SubSection title="Logo Usage" description="The Quantify wordmark uses the brand's primary Blue Main. Always maintain clear space around the logo.">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
           <div className="ds-card ds-card-filled" style={{ padding: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ fontSize: 32, fontWeight: 800, color: 'var(--av-blue)', letterSpacing: '-1px' }}>AVONTUS</span>
+            <span style={{ fontSize: 32, fontWeight: 500, color: 'var(--av-blue)', letterSpacing: '-1px', fontFamily: 'var(--av-font-primary)' }}>QUANTIFY</span>
           </div>
           <div style={{ padding: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--av-navy)', borderRadius: 'var(--av-radius-lg)' }}>
-            <span style={{ fontSize: 32, fontWeight: 800, color: '#fff', letterSpacing: '-1px' }}>AVONTUS</span>
+            <span style={{ fontSize: 32, fontWeight: 500, color: '#fff', letterSpacing: '-1px', fontFamily: 'var(--av-font-primary)' }}>QUANTIFY</span>
           </div>
         </div>
       </SubSection>
 
-      <SubSection title="The 107° Motif" description="A signature diagonal element used at 107° throughout the brand. It appears in backgrounds, dividers, and graphic treatments to create dynamic visual energy.">
+      <SubSection title="Design Principles" description="The Probe design language is built on sharp geometry, generous whitespace, and a monochromatic blue palette that creates a confident, modern interface.">
         <div style={{
           height: 160,
           background: 'var(--av-blue)',
-          borderRadius: 'var(--av-radius-lg)',
           position: 'relative',
           overflow: 'hidden',
           display: 'flex',
@@ -75,21 +74,18 @@ export default function BrandSection() {
         }}>
           <div style={{
             position: 'absolute',
-            top: '-30%',
-            right: '-10%',
-            width: '70%',
-            height: '180%',
-            background: 'linear-gradient(107deg, transparent 0%, transparent 40%, rgba(255,255,255,0.06) 40%, rgba(255,255,255,0.06) 100%)',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: 'linear-gradient(135deg, transparent 0%, transparent 50%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.04) 100%)',
           }} />
-          <div style={{
-            position: 'absolute',
-            bottom: '-20%',
-            left: '30%',
-            width: '60%',
-            height: '160%',
-            background: 'linear-gradient(107deg, transparent 0%, transparent 45%, rgba(255,255,255,0.03) 45%, rgba(255,255,255,0.03) 100%)',
-          }} />
-          <span style={{ position: 'relative', zIndex: 1, color: '#fff', fontSize: 48, fontWeight: 300, opacity: 0.4, fontFamily: 'var(--av-font-mono)' }}>107°</span>
+          <div style={{ position: 'relative', zIndex: 1, display: 'flex', gap: 48, color: '#fff', fontFamily: 'var(--av-font-primary)', fontSize: 14, fontWeight: 500, letterSpacing: '-0.02em' }}>
+            <span style={{ opacity: 0.7 }}>0px radius</span>
+            <span style={{ opacity: 0.7 }}>Switzer 500</span>
+            <span style={{ opacity: 0.7 }}>Monochromatic Blue</span>
+            <span style={{ opacity: 0.7 }}>Sharp Geometry</span>
+          </div>
         </div>
       </SubSection>
     </section>

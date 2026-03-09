@@ -244,7 +244,7 @@ export const GOLD_EXAMPLES = {
   'login': `<div class="screen">
   <div class="content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;padding:32px 24px">
     <div style="text-align:center;margin-bottom:40px">
-      <p class="headline" style="margin:0 0 4px;font-weight:700;color:#0005EE">Avontus</p>
+      <p class="headline" style="margin:0 0 4px;font-weight:700;color:#0A3EFF">Avontus</p>
       <p class="body-sm" style="margin:0;opacity:0.5;letter-spacing:0.1em;text-transform:uppercase">Quantify</p>
     </div>
     <div style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:16px">

@@ -36,7 +36,7 @@ export default function AboutScreen() {
             Quantify
           </div>
           <div style={{ fontSize: 13, color: 'var(--av-on-surface-variant)', marginTop: 4, letterSpacing: '0.2px' }}>
-            by Avontus Software
+            by Quantify Software
           </div>
 
           {/* Version */}
@@ -59,7 +59,7 @@ export default function AboutScreen() {
             color: 'var(--av-on-surface-variant)',
             textAlign: 'center',
           }}>
-            © Avontus 2008–2025. All rights reserved.
+            © Quantify 2008–2025. All rights reserved.
           </div>
 
           {/* Divider */}

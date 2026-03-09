@@ -3,7 +3,7 @@ import PhoneFrame from '../shared/PhoneFrame'
 
 const summaryCards = [
   { label: 'Active Reservations', value: '12', color: 'var(--av-blue)' },
-  { label: 'Items Out', value: '1,450', color: 'var(--av-teal)' },
+  { label: 'Items Out', value: '1,450', color: 'var(--av-success)' },
   { label: 'Due This Week', value: '3', color: 'var(--av-warning)' },
 ]
 
@@ -71,13 +71,13 @@ export default function DashboardScreen() {
                 let iconColor = 'var(--av-blue)'
                 if (item.icon === 'ship') {
                   iconBg = 'var(--av-success-container)'
-                  iconColor = 'var(--av-teal)'
+                  iconColor = 'var(--av-success)'
                   iconSvg = <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="2"><path d="M5 17H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-1"/><path d="M12 15l5 6H7l5-6z"/></svg>
                 } else if (item.icon === 'add') {
                   iconSvg = <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="2"><path d="M12 5v14M5 12h14"/></svg>
                 } else if (item.icon === 'check') {
                   iconBg = 'var(--av-success-container)'
-                  iconColor = 'var(--av-teal)'
+                  iconColor = 'var(--av-success)'
                   iconSvg = <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="2"><path d="M20 6L9 17l-5-5"/></svg>
                 } else {
                   iconBg = 'var(--av-warning-container)'

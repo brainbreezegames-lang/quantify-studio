@@ -3,13 +3,13 @@ import SectionHeader from '../shared/SectionHeader'
 import SubSection from '../shared/SubSection'
 
 const SHAPES = [
-  { name: 'None', value: '0px', variable: '--av-radius-none', desc: 'Sharp corners for dividers and flat elements' },
-  { name: 'Extra Small', value: '2px', variable: '--av-radius-xs', desc: 'Subtle rounding for small elements' },
-  { name: 'Small', value: '4px', variable: '--av-radius-sm', desc: 'Text fields, chips, outlined elements' },
-  { name: 'Medium', value: '8px', variable: '--av-radius-md', desc: 'Cards, dialogs, menus' },
-  { name: 'Large', value: '12px', variable: '--av-radius-lg', desc: 'Sheets, large cards, containers' },
-  { name: 'Extra Large', value: '16px', variable: '--av-radius-xl', desc: 'Modals, bottom sheets' },
-  { name: 'Full', value: '9999px', variable: '--av-radius-full', desc: 'Buttons, pills, avatars, FABs' },
+  { name: 'Default', value: '0px', variable: '--av-radius-none', desc: 'Sharp corners — the Probe default. Used for cards, buttons, inputs, containers, and all standard elements.' },
+  { name: 'Extra Small', value: '0px', variable: '--av-radius-xs', desc: 'Same as default. Sharp corners for small elements.' },
+  { name: 'Small', value: '0px', variable: '--av-radius-sm', desc: 'Same as default. Sharp corners for text fields, chips, outlined elements.' },
+  { name: 'Medium', value: '0px', variable: '--av-radius-md', desc: 'Same as default. Sharp corners for cards, dialogs, menus.' },
+  { name: 'Large', value: '0px', variable: '--av-radius-lg', desc: 'Same as default. Sharp corners for sheets, large cards, containers.' },
+  { name: 'Extra Large', value: '0px', variable: '--av-radius-xl', desc: 'Same as default. Sharp corners for modals, bottom sheets.' },
+  { name: 'Full', value: '9999px', variable: '--av-radius-full', desc: 'Fully rounded pills — only for badges, dot indicators, and avatar circles.' },
 ]
 
 export default function ShapeSection() {
@@ -18,10 +18,10 @@ export default function ShapeSection() {
       <SectionHeader
         label="Foundation"
         title="Shape & Radius"
-        description="Border radius tokens from sharp corners to fully rounded pills."
+        description="Sharp geometric corners define the Probe aesthetic. 0px border-radius is the default for all elements."
       />
 
-      <SubSection title="Radius Scale" description="Seven radius values from sharp corners to fully circular. Match the radius to the component size — larger elements use larger radii.">
+      <SubSection title="Radius Scale" description="The Probe design language uses 0px border-radius as its universal default. Sharp corners create a precise, confident, modern feel. Only badges and dot indicators use full rounding.">
         <div className="ds-shape-grid">
           {SHAPES.map(s => (
             <div key={s.name} style={{ textAlign: 'center' }}>
@@ -35,10 +35,31 @@ export default function ShapeSection() {
         </div>
       </SubSection>
 
+      <SubSection title="Design Philosophy" description="Unlike rounded-corner design systems, Probe deliberately uses sharp geometry to convey precision and authority — reflecting the industrial nature of scaffold management software.">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div className="ds-card ds-card-outlined" style={{ padding: 24 }}>
+            <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: '1.5px', textTransform: 'uppercase' as const, color: 'var(--av-blue)', marginBottom: 12 }}>Probe — Sharp</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <div style={{ width: 80, height: 48, background: 'var(--av-blue)', borderRadius: 0 }} />
+              <div style={{ width: 80, height: 48, border: '1px solid var(--av-outline)', borderRadius: 0 }} />
+              <div style={{ width: 80, height: 48, background: 'var(--av-surface-2)', borderRadius: 0 }} />
+            </div>
+          </div>
+          <div className="ds-card ds-card-outlined" style={{ padding: 24, opacity: 0.5 }}>
+            <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: '1.5px', textTransform: 'uppercase' as const, color: 'var(--av-on-surface-variant)', marginBottom: 12 }}>Rounded (Not Used)</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <div style={{ width: 80, height: 48, background: 'var(--av-on-surface-variant)', borderRadius: 12 }} />
+              <div style={{ width: 80, height: 48, border: '1px solid var(--av-outline)', borderRadius: 12 }} />
+              <div style={{ width: 80, height: 48, background: 'var(--av-surface-3)', borderRadius: 12 }} />
+            </div>
+          </div>
+        </div>
+      </SubSection>
+
       <SubSection title="Shape Usage">
         <table className="ds-token-table">
           <thead>
-            <tr><th>Token</th><th>Value</th><th>Components</th></tr>
+            <tr><th>Token</th><th>Value</th><th>Usage</th></tr>
           </thead>
           <tbody>
             {SHAPES.map(s => (

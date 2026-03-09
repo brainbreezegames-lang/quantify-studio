@@ -559,7 +559,7 @@ export default function SegmentedButtonSection() {
               name: 'CornerRadius',
               type: 'CornerRadius',
               default: '20',
-              description: 'The border radius of the outer container. Uses fully rounded (pill) shape by default.',
+              description: 'The border radius of the outer container. Uses fully rounded shape by default per Probe design language.',
             },
             {
               name: 'Height',

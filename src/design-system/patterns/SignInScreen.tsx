@@ -11,11 +11,11 @@ export default function SignInScreen() {
         {/* Logo */}
         <div style={{ marginBottom: 8 }}>
           <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-            <rect width="48" height="48" rx="12" fill="var(--av-blue)" />
-            <text x="24" y="28" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="800" fontFamily="var(--av-font-primary)">AV</text>
+            <rect width="48" height="48" rx="0" fill="var(--av-blue)" />
+            <text x="24" y="28" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="500" fontFamily="var(--av-font-primary)">Q</text>
           </svg>
         </div>
-        <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--av-blue)', letterSpacing: 3, marginBottom: 4 }}>AVONTUS</div>
+        <div style={{ fontSize: 18, fontWeight: 500, color: 'var(--av-blue)', letterSpacing: 3, marginBottom: 4 }}>QUANTIFY</div>
         <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--av-on-surface)', marginBottom: 32 }}>Sign in to Quantify</div>
 
         {/* Email Field */}
@@ -108,7 +108,7 @@ export default function SignInScreen() {
 
         {/* Footer */}
         <div style={{ marginTop: 'auto', paddingTop: 48, fontSize: 11, color: 'var(--av-outline)', textAlign: 'center' }}>
-          &copy; 2026 Avontus Software
+          &copy; 2026 Quantify Software
         </div>
       </div>
     </PhoneFrame>

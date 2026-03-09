@@ -434,7 +434,7 @@ export default function ProgressSection() {
                Style="{StaticResource BodySmall}" />
     <TextBlock Text="60%"
                HorizontalAlignment="Right"
-               Foreground="{StaticResource AvontusBlueBrush}"
+               Foreground="{StaticResource QuantifyBlueBrush}"
                Style="{StaticResource LabelMedium}" />
   </Grid>
   <ProgressBar Value="60" Maximum="100" />
@@ -455,10 +455,10 @@ export default function ProgressSection() {
 
 <!-- Color Variants -->
 <ProgressBar Value="60"
-             Foreground="{StaticResource AvontusTealBrush}" />
+             Foreground="{StaticResource QuantifyTealBrush}" />
 
 <ProgressBar Value="80"
-             Foreground="{StaticResource AvontusNavyBrush}" />
+             Foreground="{StaticResource QuantifyNavyBrush}" />
 
 <!-- Progress with Error State -->
 <ProgressBar Value="45"

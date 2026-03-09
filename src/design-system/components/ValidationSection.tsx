@@ -426,9 +426,9 @@ export default function ValidationSection() {
         />
       </SubSection>
 
-      {/* ── Avontus Toolbar Validation Flow ── */}
+      {/* ── Quantify Toolbar Validation Flow ── */}
       <SubSection
-        title="Avontus Toolbar Validation Flow"
+        title="Quantify Toolbar Validation Flow"
         description="In Quantify, save-time validation follows a strict 3-step pattern: toolbar icon appears, popup shows the error summary, and the first invalid field is focused and scrolled into view."
       >
         <ComponentShowcase

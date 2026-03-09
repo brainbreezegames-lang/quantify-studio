@@ -20,8 +20,8 @@ export default function Header({ themeMode, onToggleTheme, onOpenSettings, onNew
         <div className="w-6 h-6 rounded-md bg-studio-accent/90 flex items-center justify-center" aria-hidden="true">
           <Sparkles size={13} className="text-white" />
         </div>
-        <span className="text-studio-text font-medium text-[13px] tracking-tight">Uno Studio</span>
-        <span className="text-[9px] text-studio-text-dim bg-studio-surface-3 px-1.5 py-px rounded font-mono uppercase tracking-wide">Avontus</span>
+        <span className="text-studio-text font-medium text-[13px] tracking-tight">Quantify Studio</span>
+        <span className="text-[9px] text-studio-text-dim bg-studio-surface-3 px-1.5 py-px rounded font-mono uppercase tracking-wide">Probe</span>
       </div>
       <nav className="flex items-center gap-1" aria-label="App actions">
         <button

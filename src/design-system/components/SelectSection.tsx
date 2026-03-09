@@ -478,16 +478,16 @@ export default function SelectSection() {
         />
       </SubSection>
 
-      {/* ── Avontus Combobox Conventions ── */}
+      {/* ── Quantify Combobox Conventions ── */}
       <SubSection
-        title="Avontus Combobox Conventions"
+        title="Quantify Combobox Conventions"
         description='Quantify uses strict conventions for combobox empty states and inactive items that differ from standard Material Design.'
       >
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16, marginBottom: 20 }}>
           <div className="ds-card ds-card-outlined" style={{ padding: 20 }}>
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase' as const, color: 'var(--av-blue)', marginBottom: 8 }}>Empty State</div>
             <div style={{ fontSize: 14, lineHeight: 1.7, color: 'var(--av-on-surface-variant)' }}>
-              When no value is chosen, display <strong>" (select)"</strong> — with a leading space. This is the canonical Avontus placeholder, not "Choose..." or "Select...".
+              When no value is chosen, display <strong>" (select)"</strong> — with a leading space. This is the canonical Quantify placeholder, not "Choose..." or "Select...".
             </div>
           </div>
           <div className="ds-card ds-card-outlined" style={{ padding: 20 }}>
@@ -502,7 +502,7 @@ export default function SelectSection() {
           items={[
             {
               label: 'Empty state convention',
-              tag: 'Avontus',
+              tag: 'Quantify',
               content: (
                 <FilledSelect
                   label="Scaffold type"
@@ -513,7 +513,7 @@ export default function SelectSection() {
             },
             {
               label: 'With inactive item',
-              tag: 'Avontus',
+              tag: 'Quantify',
               content: (
                 <FilledSelect
                   label="Scaffold type"

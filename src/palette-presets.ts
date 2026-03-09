@@ -306,11 +306,11 @@ export const PATTERN_PRESETS: PalettePreset[] = [
                 ]),
                 n('StackPanel', { Orientation: 'Vertical', Spacing: '2' }, [
                   n('TextBlock', { Text: 'Available', Style: 'LabelMedium', Foreground: '#49454F' }),
-                  n('TextBlock', { Text: '120', Style: 'TitleLarge', Foreground: '#009B86' }),
+                  n('TextBlock', { Text: '120', Style: 'TitleLarge', Foreground: '#22C55E' }),
                 ]),
                 n('StackPanel', { Orientation: 'Vertical', Spacing: '2' }, [
                   n('TextBlock', { Text: 'Reserved', Style: 'LabelMedium', Foreground: '#49454F' }),
-                  n('TextBlock', { Text: '96', Style: 'TitleLarge', Foreground: '#0005EE' }),
+                  n('TextBlock', { Text: '96', Style: 'TitleLarge', Foreground: '#0A3EFF' }),
                 ]),
               ]),
             ]),
@@ -336,14 +336,14 @@ export const PATTERN_PRESETS: PalettePreset[] = [
             ]),
             n('Card', { Style: 'Filled', Padding: '24' }, [
               n('StackPanel', { Orientation: 'Vertical', Spacing: '12' }, [
-                n('Icon', { Glyph: 'Search', FontSize: '48', Foreground: '#0005EE' }),
+                n('Icon', { Glyph: 'Search', FontSize: '48', Foreground: '#0A3EFF' }),
                 n('TextBlock', { Text: 'Point camera at barcode', Style: 'BodyLarge', Foreground: '#49454F' }),
               ]),
             ]),
             n('TextBlock', { Text: 'Recently Scanned', Style: 'TitleMedium', Foreground: '#1C1B1F' }),
             n('ListView', {}, [
               n('StackPanel', { Orientation: 'Horizontal', Spacing: '12', Padding: '12' }, [
-                n('Icon', { Glyph: 'Check', FontSize: '18', Foreground: '#009B86' }),
+                n('Icon', { Glyph: 'Check', FontSize: '18', Foreground: '#22C55E' }),
                 n('StackPanel', { Orientation: 'Vertical', Spacing: '2' }, [
                   n('TextBlock', { Text: 'Frame scaffolding #SF-001', Style: 'BodyMedium', Foreground: '#1C1B1F' }),
                   n('TextBlock', { Text: 'Checked out — 2 min ago', Style: 'BodySmall', Foreground: '#49454F' }),
@@ -366,31 +366,31 @@ export const PATTERN_PRESETS: PalettePreset[] = [
           n('StackPanel', { Orientation: 'Vertical', Spacing: '16', Padding: '16' }, [
             n('Card', { Style: 'Outlined', Padding: '16' }, [
               n('StackPanel', { Orientation: 'Horizontal', Spacing: '8' }, [
-                n('Icon', { Glyph: 'LocalShipping', FontSize: '20', Foreground: '#0005EE' }),
-                n('TextBlock', { Text: 'In Transit', Style: 'TitleMedium', Foreground: '#0005EE' }),
+                n('Icon', { Glyph: 'LocalShipping', FontSize: '20', Foreground: '#0A3EFF' }),
+                n('TextBlock', { Text: 'In Transit', Style: 'TitleMedium', Foreground: '#0A3EFF' }),
               ]),
               n('TextBlock', { Text: 'Estimated arrival: 2:30 PM', Style: 'BodyMedium', Foreground: '#49454F' }),
             ]),
             n('TextBlock', { Text: 'Timeline', Style: 'TitleMedium', Foreground: '#1C1B1F' }),
             n('ListView', {}, [
               n('StackPanel', { Orientation: 'Horizontal', Spacing: '12', Padding: '8' }, [
-                n('Icon', { Glyph: 'Check', FontSize: '16', Foreground: '#009B86' }),
+                n('Icon', { Glyph: 'Check', FontSize: '16', Foreground: '#22C55E' }),
                 n('StackPanel', { Orientation: 'Vertical', Spacing: '2' }, [
                   n('TextBlock', { Text: 'Order confirmed', Style: 'BodyMedium', Foreground: '#1C1B1F' }),
                   n('TextBlock', { Text: '9:00 AM', Style: 'BodySmall', Foreground: '#49454F' }),
                 ]),
               ]),
               n('StackPanel', { Orientation: 'Horizontal', Spacing: '12', Padding: '8' }, [
-                n('Icon', { Glyph: 'Check', FontSize: '16', Foreground: '#009B86' }),
+                n('Icon', { Glyph: 'Check', FontSize: '16', Foreground: '#22C55E' }),
                 n('StackPanel', { Orientation: 'Vertical', Spacing: '2' }, [
                   n('TextBlock', { Text: 'Loaded at warehouse', Style: 'BodyMedium', Foreground: '#1C1B1F' }),
                   n('TextBlock', { Text: '10:15 AM', Style: 'BodySmall', Foreground: '#49454F' }),
                 ]),
               ]),
               n('StackPanel', { Orientation: 'Horizontal', Spacing: '12', Padding: '8' }, [
-                n('Icon', { Glyph: 'LocalShipping', FontSize: '16', Foreground: '#0005EE' }),
+                n('Icon', { Glyph: 'LocalShipping', FontSize: '16', Foreground: '#0A3EFF' }),
                 n('StackPanel', { Orientation: 'Vertical', Spacing: '2' }, [
-                  n('TextBlock', { Text: 'In transit', Style: 'BodyMedium', Foreground: '#0005EE' }),
+                  n('TextBlock', { Text: 'In transit', Style: 'BodyMedium', Foreground: '#0A3EFF' }),
                   n('TextBlock', { Text: 'Now', Style: 'BodySmall', Foreground: '#49454F' }),
                 ]),
               ]),
@@ -466,7 +466,7 @@ export const PATTERN_PRESETS: PalettePreset[] = [
             n('Card', { Style: 'Filled', Padding: '16' }, [
               n('StackPanel', { Orientation: 'Horizontal', Spacing: '8' }, [
                 n('TextBlock', { Text: 'Total', Style: 'TitleMedium', Foreground: '#1C1B1F' }),
-                n('TextBlock', { Text: '$4,200.00', Style: 'HeadlineSmall', Foreground: '#0005EE' }),
+                n('TextBlock', { Text: '$4,200.00', Style: 'HeadlineSmall', Foreground: '#0A3EFF' }),
               ]),
             ]),
             n('Button', { Content: 'Send Quote', Style: 'Filled' }),
@@ -538,7 +538,7 @@ export const PATTERN_PRESETS: PalettePreset[] = [
             ]),
             n('ListView', {}, [
               n('StackPanel', { Orientation: 'Horizontal', Spacing: '12', Padding: '16' }, [
-                n('Icon', { Glyph: 'LocalShipping', FontSize: '20', Foreground: '#0005EE' }),
+                n('Icon', { Glyph: 'LocalShipping', FontSize: '20', Foreground: '#0A3EFF' }),
                 n('StackPanel', { Orientation: 'Vertical', Spacing: '2' }, [
                   n('TextBlock', { Text: 'Delivery completed', Style: 'TitleSmall', Foreground: '#1C1B1F' }),
                   n('TextBlock', { Text: 'RES-2024-001 delivered to Metro Construction', Style: 'BodySmall', Foreground: '#49454F' }),
@@ -574,7 +574,7 @@ export const PATTERN_PRESETS: PalettePreset[] = [
               n('Card', { Style: 'Outlined', Padding: '12' }, [
                 n('TextBlock', { Text: 'Revenue', Style: 'LabelMedium', Foreground: '#49454F' }),
                 n('TextBlock', { Text: '$148,200', Style: 'HeadlineSmall', Foreground: '#1C1B1F' }),
-                n('TextBlock', { Text: '+12%', Style: 'BodySmall', Foreground: '#009B86' }),
+                n('TextBlock', { Text: '+12%', Style: 'BodySmall', Foreground: '#22C55E' }),
               ]),
               n('Card', { Style: 'Outlined', Padding: '12' }, [
                 n('TextBlock', { Text: 'Orders', Style: 'LabelMedium', Foreground: '#49454F' }),
@@ -650,7 +650,7 @@ export const PATTERN_PRESETS: PalettePreset[] = [
             n('Divider', {}),
             n('ListView', {}, [
               n('StackPanel', { Orientation: 'Horizontal', Spacing: '12', Padding: '12' }, [
-                n('Icon', { Glyph: 'Inventory', FontSize: '20', Foreground: '#0005EE' }),
+                n('Icon', { Glyph: 'Inventory', FontSize: '20', Foreground: '#0A3EFF' }),
                 n('StackPanel', { Orientation: 'Vertical', Spacing: '2' }, [
                   n('TextBlock', { Text: 'Frame scaffolding 1.5m', Style: 'BodyMedium', Foreground: '#1C1B1F' }),
                   n('TextBlock', { Text: 'Equipment — 120 available', Style: 'BodySmall', Foreground: '#49454F' }),
@@ -702,7 +702,7 @@ export const PATTERN_PRESETS: PalettePreset[] = [
             n('Grid', { ColumnSpacing: '12', RowSpacing: '12', Padding: '0' }, [
               n('Card', { Style: 'Outlined', Padding: '12' }, [
                 n('TextBlock', { Text: 'Active', Style: 'LabelMedium', Foreground: '#49454F' }),
-                n('TextBlock', { Text: '23', Style: 'HeadlineMedium', Foreground: '#0005EE' }),
+                n('TextBlock', { Text: '23', Style: 'HeadlineMedium', Foreground: '#0A3EFF' }),
               ]),
               n('Card', { Style: 'Outlined', Padding: '12' }, [
                 n('TextBlock', { Text: 'Pending', Style: 'LabelMedium', Foreground: '#49454F' }),
@@ -710,7 +710,7 @@ export const PATTERN_PRESETS: PalettePreset[] = [
               ]),
               n('Card', { Style: 'Outlined', Padding: '12' }, [
                 n('TextBlock', { Text: 'Done', Style: 'LabelMedium', Foreground: '#49454F' }),
-                n('TextBlock', { Text: '156', Style: 'HeadlineMedium', Foreground: '#009B86' }),
+                n('TextBlock', { Text: '156', Style: 'HeadlineMedium', Foreground: '#22C55E' }),
               ]),
             ]),
             n('TextBlock', { Text: 'Recent Activity', Style: 'TitleMedium', Foreground: '#1C1B1F' }),
@@ -765,7 +765,7 @@ export const PATTERN_PRESETS: PalettePreset[] = [
         n('NavigationBar', { Content: 'About', MainCommand: 'Back' }),
         n('ScrollViewer', {}, [
           n('StackPanel', { Orientation: 'Vertical', Spacing: '16', Padding: '24' }, [
-            n('Icon', { Glyph: 'Build', FontSize: '48', Foreground: '#0005EE' }),
+            n('Icon', { Glyph: 'Build', FontSize: '48', Foreground: '#0A3EFF' }),
             n('TextBlock', { Text: 'Quantify', Style: 'HeadlineMedium', Foreground: '#1C1B1F' }),
             n('Badge', { Content: 'v2.4.1', Style: 'Info' }),
             n('TextBlock', { Text: 'Scaffold & equipment management for modern teams.', Style: 'BodyMedium', Foreground: '#49454F' }),

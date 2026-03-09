@@ -84,7 +84,7 @@ export default function OnboardingModal({ initialTokens, onClose }: OnboardingMo
                 <label className="text-[11px] text-studio-text-dim font-medium uppercase tracking-wider mb-2 block">Presets</label>
                 <div className="flex gap-2">
                   {[
-                    { primary: '#0005EE', secondary: '#062175', label: 'Avontus' },
+                    { primary: '#0A3EFF', secondary: '#10296E', label: 'Probe' },
                     { primary: '#6750A4', secondary: '#625B71', label: 'Material' },
                     { primary: '#0066FF', secondary: '#5856D6', label: 'Blue' },
                     { primary: '#FF6B35', secondary: '#F7C59F', label: 'Warm' },

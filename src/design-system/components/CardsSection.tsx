@@ -406,8 +406,8 @@ export default function CardsSection() {
             {
               name: 'CornerRadius',
               type: 'CornerRadius',
-              default: '12',
-              description: 'Border radius of the card container. Defaults to the MD3 large radius token.',
+              default: '0',
+              description: 'Border radius of the card container. Defaults to sharp corners per Probe design language.',
             },
             {
               name: 'Padding',

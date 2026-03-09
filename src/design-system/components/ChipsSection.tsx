@@ -351,7 +351,7 @@ export default function ChipsSection() {
 <!-- Assist Chip (custom) -->
 <Border BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}"
         BorderThickness="1"
-        CornerRadius="4"
+        CornerRadius="0"
         Padding="0,0,16,0"
         Height="32">
   <StackPanel Orientation="Horizontal"
@@ -369,7 +369,7 @@ export default function ChipsSection() {
 <Border Background="{ThemeResource SystemAccentColorLight3}"
         BorderBrush="{ThemeResource SystemAccentColor}"
         BorderThickness="1"
-        CornerRadius="4"
+        CornerRadius="0"
         Padding="12,0"
         Height="32">
   <StackPanel Orientation="Horizontal"
@@ -385,7 +385,7 @@ export default function ChipsSection() {
 <Border Background="{ThemeResource SystemAccentColorLight3}"
         BorderBrush="{ThemeResource SystemAccentColor}"
         BorderThickness="1"
-        CornerRadius="4"
+        CornerRadius="0"
         Padding="12,0,4,0"
         Height="32">
   <StackPanel Orientation="Horizontal"
@@ -404,7 +404,7 @@ export default function ChipsSection() {
 <!-- Suggestion Chip (custom) -->
 <Border BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}"
         BorderThickness="1"
-        CornerRadius="4"
+        CornerRadius="0"
         Padding="12,0"
         Height="32">
   <TextBlock Text="Recent orders"

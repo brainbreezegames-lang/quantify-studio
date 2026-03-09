@@ -77,13 +77,13 @@ export default function DesignSystem() {
       {/* Hero — concise, scannable, one clear focal point */}
       <header className="ds-hero" role="banner">
         <div className="ds-hero-content">
-          <div className="ds-hero-badge">v1.0</div>
+          <div className="ds-hero-badge">Probe</div>
           <h1>
-            <span>Avontus</span>
+            <span>Quantify</span>
             Design System
           </h1>
           <p className="ds-hero-subtitle">
-            The complete component library for Quantify. Material Design 3, built for Uno Platform.
+            The complete component library for Quantify. Probe design language, built for Uno Platform.
           </p>
           <div className="ds-hero-meta">
             <div className="ds-hero-meta-item">
@@ -165,9 +165,9 @@ export default function DesignSystem() {
 
           {/* Footer */}
           <footer className="ds-footer">
-            <div className="ds-footer-logo">AVONTUS</div>
+            <div className="ds-footer-logo">QUANTIFY</div>
             <p className="ds-footer-text">
-              Design System for Quantify · Material Design 3 · Uno Platform
+              Design System for Quantify · Probe Design Language · Uno Platform
             </p>
             <p className="ds-footer-copyright">
               © Avontus 2008–2025. All rights reserved.

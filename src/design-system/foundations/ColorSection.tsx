@@ -3,78 +3,52 @@ import SectionHeader from '../shared/SectionHeader'
 import SubSection from '../shared/SubSection'
 
 const BRAND_COLORS = [
-  { name: 'Avontus Blue', value: '#0005EE', variable: '--av-blue', textColor: '#fff', desc: 'Primary brand color. Used for CTAs, links, active states, and primary actions.' },
-  { name: 'Navy', value: '#062175', variable: '--av-navy', textColor: '#fff', desc: 'Deep accent for headers, backgrounds, and high-contrast surfaces.' },
-  { name: 'Light Blue', value: '#40ABFF', variable: '--av-light-blue', textColor: '#fff', desc: 'Secondary accent for illustrations, highlights, and secondary actions.' },
-  { name: 'Teal', value: '#009B86', variable: '--av-teal', textColor: '#fff', desc: 'Success states, positive indicators, and environmental themes.' },
-  { name: 'Green', value: '#6BE09E', variable: '--av-green', textColor: '#000', desc: 'Light positive accent for badges, tags, and completion states.' },
-  { name: 'Yellow', value: '#FFD91A', variable: '--av-yellow', textColor: '#000', desc: 'Warning states, attention markers, and highlight accents.' },
+  { name: 'Blue Main', value: '#0A3EFF', variable: '--av-blue', textColor: '#fff', desc: 'Primary brand color. Used for CTAs, links, active states, and primary actions.' },
+  { name: 'Blue Medium', value: '#6F9DFF', variable: '--av-light-blue', textColor: '#10296E', desc: 'Secondary accent for illustrations, highlights, tinted surfaces, and hover states.' },
+  { name: 'Blue Dark', value: '#10296E', variable: '--av-navy', textColor: '#fff', desc: 'Deep accent for headers, high-contrast surfaces, and authoritative elements.' },
 ]
 
 const BLUE_SCALE = [
-  { label: '50', value: '#E8E9FD', textColor: '#000' },
-  { label: '100', value: '#C5C7FA', textColor: '#000' },
-  { label: '200', value: '#9EA1F7', textColor: '#000' },
-  { label: '300', value: '#678DF4', textColor: '#fff' },
-  { label: '400', value: '#3344F1', textColor: '#fff' },
-  { label: '500', value: '#0005EE', textColor: '#fff' },
-  { label: '600', value: '#0004D6', textColor: '#fff' },
-  { label: '700', value: '#0004B3', textColor: '#fff' },
-  { label: '800', value: '#000390', textColor: '#fff' },
-  { label: '900', value: '#000377', textColor: '#fff' },
+  { label: 'Lightest', value: '#E8EEFF', textColor: '#10296E' },
+  { label: '100', value: '#C5D4FF', textColor: '#10296E' },
+  { label: '200', value: '#9DB5FF', textColor: '#10296E' },
+  { label: 'Medium', value: '#6F9DFF', textColor: '#10296E' },
+  { label: '400', value: '#3A6BFF', textColor: '#fff' },
+  { label: 'Main', value: '#0A3EFF', textColor: '#fff' },
+  { label: '600', value: '#0835D6', textColor: '#fff' },
+  { label: '700', value: '#062BB3', textColor: '#fff' },
+  { label: 'Dark', value: '#10296E', textColor: '#fff' },
+  { label: 'Darkest', value: '#0A1A4A', textColor: '#fff' },
 ]
 
-const EXTENDED_PALETTES = [
-  {
-    name: 'Navy',
-    steps: [
-      { label: 'Light', value: '#384D91', textColor: '#fff' },
-      { label: 'Default', value: '#062175', textColor: '#fff' },
-      { label: 'Dark', value: '#03113B', textColor: '#fff' },
-    ]
-  },
-  {
-    name: 'Light Blue',
-    steps: [
-      { label: 'Light', value: '#8CCDFF', textColor: '#000' },
-      { label: 'Default', value: '#40ABFF', textColor: '#fff' },
-      { label: 'Dark', value: '#205680', textColor: '#fff' },
-    ]
-  },
-  {
-    name: 'Teal',
-    steps: [
-      { label: 'Light', value: '#66C3B6', textColor: '#000' },
-      { label: 'Default', value: '#009B86', textColor: '#fff' },
-      { label: 'Dark', value: '#004E43', textColor: '#fff' },
-    ]
-  },
-  {
-    name: 'Green',
-    steps: [
-      { label: 'Light', value: '#A6ECC5', textColor: '#000' },
-      { label: 'Default', value: '#6BE09E', textColor: '#000' },
-      { label: 'Dark', value: '#36704F', textColor: '#fff' },
-    ]
-  },
+const GRAY_SCALE = [
+  { label: 'White', value: '#FFFFFF', textColor: '#202020' },
+  { label: '50', value: '#F8F8F8', textColor: '#202020' },
+  { label: '100', value: '#EEEEEE', textColor: '#202020' },
+  { label: '200', value: '#D4D4D4', textColor: '#202020' },
+  { label: '300', value: '#ABABAB', textColor: '#202020' },
+  { label: '400', value: '#787878', textColor: '#fff' },
+  { label: '500', value: '#545454', textColor: '#fff' },
+  { label: '600', value: '#363636', textColor: '#fff' },
+  { label: 'Black', value: '#202020', textColor: '#fff' },
 ]
 
 const SEMANTIC_COLORS = [
-  { name: 'Error', value: '#D32F2F', container: '#FFDAD6', onContainer: '#5F1412', icon: '!' },
+  { name: 'Error', value: '#E64059', container: '#FFE5E9', onContainer: '#5F1422', icon: '!' },
   { name: 'Warning', value: '#F9A825', container: '#FFF3CD', onContainer: '#5D4300', icon: '⚠' },
-  { name: 'Info', value: '#0005EE', container: '#E8E9FD', onContainer: '#000377', icon: 'i' },
-  { name: 'Success', value: '#009B86', container: '#C8F5ED', onContainer: '#004E43', icon: '✓' },
+  { name: 'Info', value: '#0A3EFF', container: '#E8EEFF', onContainer: '#10296E', icon: 'i' },
+  { name: 'Success', value: '#22C55E', container: '#DCFCE7', onContainer: '#14532D', icon: '✓' },
 ]
 
 const SURFACE_COLORS = [
   { name: 'Background', value: '#FFFFFF', variable: '--av-bg' },
-  { name: 'Surface', value: '#FAFBFF', variable: '--av-surface' },
-  { name: 'Surface 2', value: '#F0F3FF', variable: '--av-surface-2' },
-  { name: 'Surface 3', value: '#E3E8F9', variable: '--av-surface-3' },
-  { name: 'On Surface', value: '#1C1B1F', variable: '--av-on-surface' },
-  { name: 'On Surface Variant', value: '#49454F', variable: '--av-on-surface-variant' },
-  { name: 'Outline', value: '#79747E', variable: '--av-outline' },
-  { name: 'Outline Variant', value: '#CAC4D0', variable: '--av-outline-variant' },
+  { name: 'Surface', value: '#F8F8F8', variable: '--av-surface' },
+  { name: 'Surface 2', value: '#EEEEEE', variable: '--av-surface-2' },
+  { name: 'Surface 3', value: '#D4D4D4', variable: '--av-surface-3' },
+  { name: 'On Surface', value: '#202020', variable: '--av-on-surface' },
+  { name: 'On Surface Variant', value: '#545454', variable: '--av-on-surface-variant' },
+  { name: 'Outline', value: '#ABABAB', variable: '--av-outline' },
+  { name: 'Outline Variant', value: '#D4D4D4', variable: '--av-outline-variant' },
 ]
 
 function CopyableValue({ value }: { value: string }) {
@@ -84,8 +58,8 @@ function CopyableValue({ value }: { value: string }) {
       onClick={() => { navigator.clipboard.writeText(value); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
       style={{
         background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--av-font-mono)',
-        fontSize: 12, color: copied ? 'var(--av-teal)' : 'var(--av-on-surface-variant)',
-        padding: '2px 4px', borderRadius: 4, transition: 'color 150ms',
+        fontSize: 12, color: copied ? 'var(--av-success)' : 'var(--av-on-surface-variant)',
+        padding: '2px 4px', transition: 'color 150ms',
       }}
       title="Click to copy"
     >
@@ -100,10 +74,10 @@ export default function ColorSection() {
       <SectionHeader
         label="Foundation"
         title="Color System"
-        description="Brand, semantic, and surface palettes organized for systematic use."
+        description="Monochromatic blue palette with neutral gray surfaces. Clean, focused, precise."
       />
 
-      <SubSection title="Brand Colors" description="The six core brand colors form the foundation of the visual identity. Avontus Blue is the primary color used for all key interactive elements.">
+      <SubSection title="Brand Colors" description="Three core brand colors form the Probe visual identity. Blue Main is the primary color for all interactive elements. The palette is intentionally monochromatic.">
         <div className="ds-color-grid">
           {BRAND_COLORS.map(c => (
             <div key={c.name} className="ds-color-card">
@@ -122,7 +96,7 @@ export default function ColorSection() {
         </div>
       </SubSection>
 
-      <SubSection title="Blue Scale" description="The primary blue expanded into a 10-step tonal scale. Use lighter values for backgrounds and containers, darker values for emphasis and active states.">
+      <SubSection title="Blue Scale" description="The primary blue expanded into a 10-step tonal scale. Lighter values for backgrounds and containers, darker values for emphasis and depth.">
         <div className="ds-color-scale">
           {BLUE_SCALE.map(s => (
             <div key={s.label} className="ds-color-scale-step" style={{ background: s.value, color: s.textColor }}>
@@ -132,24 +106,17 @@ export default function ColorSection() {
         </div>
       </SubSection>
 
-      <SubSection title="Extended Palettes" description="Light and dark variants for secondary brand colors, used for tinted surfaces, badges, and visual hierarchy.">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
-          {EXTENDED_PALETTES.map(palette => (
-            <div key={palette.name}>
-              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8, color: 'var(--av-on-surface)' }}>{palette.name}</div>
-              <div className="ds-color-scale" style={{ flexDirection: 'column' }}>
-                {palette.steps.map(s => (
-                  <div key={s.label} className="ds-color-scale-step" style={{ background: s.value, color: s.textColor, height: 48, flex: 'none' }}>
-                    <span className="step-label">{s.label} · {s.value}</span>
-                  </div>
-                ))}
-              </div>
+      <SubSection title="Gray Scale" description="Nine-step neutral gray scale from pure white to light black. Used for surfaces, text, borders, and visual hierarchy. No blue tint — pure neutral.">
+        <div className="ds-color-scale">
+          {GRAY_SCALE.map(s => (
+            <div key={s.label} className="ds-color-scale-step" style={{ background: s.value, color: s.textColor }}>
+              <span className="step-label">{s.label}<br />{s.value}</span>
             </div>
           ))}
         </div>
       </SubSection>
 
-      <SubSection title="Semantic Colors" description="Purpose-driven colors for communicating status, validation, and feedback. Each semantic color includes a container variant for backgrounds.">
+      <SubSection title="Semantic Colors" description="Purpose-driven colors for communicating status, validation, and feedback. Each includes a container variant for backgrounds.">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 16 }}>
           {SEMANTIC_COLORS.map(c => (
             <div key={c.name} className="ds-card ds-card-outlined" style={{ overflow: 'hidden' }}>
@@ -169,10 +136,10 @@ export default function ColorSection() {
         </div>
       </SubSection>
 
-      <SubSection title="Surface & Neutral Colors" description="Background, surface, and text colors that create visual depth and hierarchy. These remain consistent across the application.">
+      <SubSection title="Surface & Neutral Colors" description="Background, surface, and text colors that create visual depth. Pure neutral grays with no color tint.">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
           {SURFACE_COLORS.map(c => {
-            const isDark = c.value === '#1C1B1F' || c.value === '#49454F' || c.value === '#79747E'
+            const isDark = c.value === '#202020' || c.value === '#545454' || c.value === '#ABABAB'
             return (
               <div key={c.name} className="ds-card ds-card-outlined" style={{ padding: 0, overflow: 'hidden' }}>
                 <div style={{ height: 56, background: c.value, border: c.value === '#FFFFFF' ? '1px solid var(--av-outline-variant)' : 'none', borderBottom: 'none' }} />

@@ -1,81 +1,82 @@
 /* ═══════════════════════════════════════════════════════
-   AVONTUS DESIGN SYSTEM — Style Guide Page
-   Brand: Avontus Software · "Reach New Heights"
+   QUANTIFY DESIGN SYSTEM — Style Guide Page
+   Brand: Quantify · Probe Design Language
    ═══════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=switzer@400,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 
 /* ── CSS Custom Properties ── */
 :root {
-  /* Brand Colors — from official Avontus Brand Identity Guidelines */
-  --av-blue: #0005EE;
-  --av-blue-50: #E8E9FD;
-  --av-blue-100: #C5C7FA;
-  --av-blue-200: #9EA1F7;
-  --av-blue-300: #678DF4;
-  --av-blue-400: #3344F1;
-  --av-blue-500: #0005EE;
-  --av-blue-600: #0004D6;
-  --av-blue-700: #0004B3;
-  --av-blue-800: #000390;
-  --av-blue-900: #000377;
+  /* Brand Colors — Quantify / Probe Design Language */
+  --av-blue: #0A3EFF;
+  --av-blue-50: #E8EEFF;
+  --av-blue-100: #C5D4FF;
+  --av-blue-200: #9DB5FF;
+  --av-blue-300: #6F9DFF;
+  --av-blue-400: #3A6BFF;
+  --av-blue-500: #0A3EFF;
+  --av-blue-600: #0835D6;
+  --av-blue-700: #062BB3;
+  --av-blue-800: #10296E;
+  --av-blue-900: #0A1A4A;
 
-  --av-navy: #062175;
-  --av-navy-light: #384D91;
-  --av-navy-dark: #03113B;
+  --av-navy: #10296E;
+  --av-navy-light: #3A5099;
+  --av-navy-dark: #0A1A4A;
 
-  --av-light-blue: #40ABFF;
-  --av-light-blue-light: #8CCDFF;
-  --av-light-blue-dark: #205680;
+  --av-light-blue: #6F9DFF;
+  --av-light-blue-light: #9DB5FF;
+  --av-light-blue-dark: #3A6BFF;
 
-  --av-teal: #009B86;
-  --av-teal-light: #66C3B6;
-  --av-teal-dark: #004E43;
+  --av-teal: #22C55E;
+  --av-teal-light: #86EFAC;
+  --av-teal-dark: #14532D;
 
-  --av-green: #6BE09E;
-  --av-green-light: #A6ECC5;
-  --av-green-dark: #36704F;
+  --av-green: #22C55E;
+  --av-green-light: #86EFAC;
+  --av-green-dark: #14532D;
 
-  --av-yellow: #FFD91A;
+  --av-yellow: #F9A825;
 
   /* Semantic Colors */
-  --av-error: #D32F2F;
-  --av-error-container: #FFDAD6;
+  --av-error: #E64059;
+  --av-error-container: #FFE5E9;
   --av-warning: #F9A825;
   --av-warning-container: #FFF3CD;
-  --av-info: #0005EE;
-  --av-info-container: #E8E9FD;
-  --av-success: #009B86;
-  --av-success-container: #C8F5ED;
+  --av-info: #0A3EFF;
+  --av-info-container: #E8EEFF;
+  --av-success: #22C55E;
+  --av-success-container: #DCFCE7;
 
   /* Surface & Background */
   --av-bg: #FFFFFF;
-  --av-surface: #FAFBFF;
-  --av-surface-2: #F0F3FF;
-  --av-surface-3: #E3E8F9;
-  --av-on-surface: #1C1B1F;
-  --av-on-surface-variant: #49454F;
-  --av-outline: #79747E;
-  --av-outline-variant: #CAC4D0;
+  --av-surface: #F8F8F8;
+  --av-surface-2: #EEEEEE;
+  --av-surface-3: #D4D4D4;
+  --av-on-surface: #202020;
+  --av-on-surface-variant: #545454;
+  --av-outline: #ABABAB;
+  --av-outline-variant: #D4D4D4;
 
   /* Typography */
-  --av-font-primary: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --av-font-primary: 'Switzer', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --av-font-mono: 'JetBrains Mono', monospace;
 
-  /* Elevation */
-  --av-shadow-1: 0 1px 3px rgba(0,5,238,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --av-shadow-2: 0 4px 12px rgba(0,5,238,0.08), 0 2px 4px rgba(0,0,0,0.04);
-  --av-shadow-3: 0 8px 24px rgba(0,5,238,0.10), 0 4px 8px rgba(0,0,0,0.05);
-  --av-shadow-4: 0 16px 40px rgba(0,5,238,0.12), 0 8px 16px rgba(0,0,0,0.06);
-  --av-shadow-5: 0 24px 56px rgba(0,5,238,0.14), 0 12px 24px rgba(0,0,0,0.08);
+  /* Elevation — Blue Main tinted shadows */
+  --av-shadow-1: 0 1px 3px rgba(10,62,255,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --av-shadow-2: 0 4px 12px rgba(10,62,255,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --av-shadow-3: 0 8px 24px rgba(10,62,255,0.10), 0 4px 8px rgba(0,0,0,0.05);
+  --av-shadow-4: 0 16px 40px rgba(10,62,255,0.12), 0 8px 16px rgba(0,0,0,0.06);
+  --av-shadow-5: 0 24px 56px rgba(10,62,255,0.14), 0 12px 24px rgba(0,0,0,0.08);
 
-  /* Shape */
+  /* Shape — 0px default for Probe sharp geometric aesthetic */
   --av-radius-none: 0px;
-  --av-radius-xs: 2px;
-  --av-radius-sm: 4px;
-  --av-radius-md: 8px;
-  --av-radius-lg: 12px;
-  --av-radius-xl: 16px;
+  --av-radius-xs: 0px;
+  --av-radius-sm: 0px;
+  --av-radius-md: 0px;
+  --av-radius-lg: 0px;
+  --av-radius-xl: 0px;
   --av-radius-full: 9999px;
 
   /* Spacing */
@@ -215,23 +216,16 @@
 .ds-hero::before {
   content: '';
   position: absolute;
-  top: -30%;
-  right: -10%;
-  width: 70%;
-  height: 180%;
-  background: linear-gradient(107deg, transparent 0%, transparent 40%, rgba(255,255,255,0.06) 40%, rgba(255,255,255,0.06) 100%);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, transparent 0%, transparent 60%, rgba(255,255,255,0.03) 60%, rgba(255,255,255,0.03) 100%);
   pointer-events: none;
 }
 
 .ds-hero::after {
-  content: '';
-  position: absolute;
-  bottom: -20%;
-  left: 30%;
-  width: 60%;
-  height: 160%;
-  background: linear-gradient(107deg, transparent 0%, transparent 45%, rgba(255,255,255,0.03) 45%, rgba(255,255,255,0.03) 100%);
-  pointer-events: none;
+  display: none;
 }
 
 .ds-hero-content {
@@ -263,24 +257,24 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--av-green);
+  background: var(--av-light-blue);
   animation: pulse 2s infinite;
 }
 
 .ds-hero h1 {
   font-size: clamp(40px, 6vw, 72px);
-  font-weight: 800;
+  font-weight: 500;
   line-height: 1.05;
-  letter-spacing: -2px;
+  letter-spacing: -0.04em;
   margin: 0 0 20px;
   animation: fadeInUp 0.6s var(--av-ease) 0.1s both;
 }
 
 .ds-hero h1 span {
   display: block;
-  font-weight: 300;
+  font-weight: 400;
   font-size: 0.55em;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.02em;
   opacity: 0.7;
   margin-bottom: 4px;
 }
@@ -744,7 +738,7 @@
   letter-spacing: 0.1px;
   padding: 0 24px;
   height: 40px;
-  border-radius: var(--av-radius-full);
+  border-radius: 0;
   border: none;
   cursor: pointer;
   transition: all var(--av-duration-fast) var(--av-ease);
@@ -793,8 +787,7 @@
   color: var(--av-navy);
 }
 
-.ds-btn-filled.navy { background: var(--av-navy); }
-.ds-btn-filled.teal { background: var(--av-teal); color: #fff; }
+.ds-btn-filled.dark { background: var(--av-navy); }
 .ds-btn-filled.error { background: var(--av-error); color: #fff; }
 
 .ds-btn:disabled {
@@ -1260,7 +1253,7 @@
   border-radius: 50%;
   background: var(--av-blue);
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,5,238,0.3);
+  box-shadow: 0 2px 6px rgba(10,62,255,0.3);
 }
 
 /* ── FAB ── */
@@ -1768,7 +1761,7 @@
 .ds-segmented {
   display: inline-flex;
   border: 1px solid var(--av-outline);
-  border-radius: var(--av-radius-full);
+  border-radius: 0;
   overflow: hidden;
 }
 
@@ -2052,8 +2045,8 @@
 /* ── Data Table ── */
 .ds-data-table {
   width: 100%;
-  border-radius: 10px;
-  border: 1px solid var(--av-outline-variant, #CAC4D0);
+  border-radius: 0;
+  border: 1px solid var(--av-outline-variant, #D4D4D4);
   overflow: hidden;
   background: var(--av-bg, #fff);
 }
@@ -2235,7 +2228,7 @@
 .ds-fab-large {
   width: 96px;
   height: 96px;
-  border-radius: 28px;
+  border-radius: 0;
 }
 
 .ds-fab-large svg {

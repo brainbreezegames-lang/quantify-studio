@@ -262,9 +262,9 @@ export default function ToolbarsSection() {
         />
       </SubSection>
 
-      {/* ── Avontus Toolbar Conventions ── */}
+      {/* ── Quantify Toolbar Conventions ── */}
       <SubSection
-        title="Avontus Toolbar Conventions"
+        title="Quantify Toolbar Conventions"
         description="Quantify uses exactly three toolbar configurations. Every screen maps to one of these modes. Using the wrong leading icon or trailing actions causes confusion."
       >
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }}>

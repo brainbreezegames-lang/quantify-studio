@@ -296,7 +296,7 @@ export default function BadgesSection() {
     <SymbolIcon Symbol="Mail" />
   </Button>
   <InfoBadge Value="12"
-             Background="{StaticResource AvontusBlueBrush}"
+             Background="{StaticResource QuantifyBlueBrush}"
              HorizontalAlignment="Right"
              VerticalAlignment="Top" />
 </Grid>

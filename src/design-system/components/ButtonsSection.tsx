@@ -13,13 +13,13 @@ export default function ButtonsSection() {
       <SectionHeader
         label="Component"
         title="Buttons"
-        description="Five button variants — filled, outlined, text, elevated, and tonal — for clear action hierarchy."
+        description="Five button variants — filled, outlined, text, elevated, and tonal — with sharp corners for clear action hierarchy."
       />
 
       {/* ── Variants ── */}
       <SubSection
         title="Variants"
-        description="Material Design 3 defines five button types. Use filled for the most important action, tonal or elevated for medium emphasis, outlined for secondary actions, and text for the lowest-emphasis actions."
+        description="Five button types with distinct visual weight. Use filled for the most important action, tonal or elevated for medium emphasis, outlined for secondary actions, and text for the lowest emphasis. All buttons use 0px border-radius."
       >
         <ComponentShowcase items={[
           {
@@ -141,23 +141,18 @@ export default function ButtonsSection() {
       {/* ── Color Variations ── */}
       <SubSection
         title="Color Variations"
-        description="Filled buttons support brand color overrides for specific contexts. Use the default blue for most actions, navy for authoritative actions, teal for success/confirmation, and error red for destructive actions."
+        description="Filled buttons support color overrides for specific contexts. Use the default Blue Main for most actions, Blue Dark for authoritative actions, and error red for destructive actions."
       >
         <ComponentShowcase items={[
           {
-            label: 'Blue (Default)',
+            label: 'Blue Main (Default)',
             tag: 'Primary',
             content: <button className="ds-btn ds-btn-filled">Save Reservation</button>,
           },
           {
-            label: 'Navy',
+            label: 'Blue Dark',
             tag: 'Brand',
-            content: <button className="ds-btn ds-btn-filled navy">Approve Request</button>,
-          },
-          {
-            label: 'Teal',
-            tag: 'Success',
-            content: <button className="ds-btn ds-btn-filled teal">Confirm Shipment</button>,
+            content: <button className="ds-btn ds-btn-filled dark">Approve Request</button>,
           },
           {
             label: 'Error',
@@ -264,8 +259,8 @@ export default function ButtonsSection() {
             content: (
               <div style={{ display: 'flex', gap: 12 }}>
                 <button className="ds-btn ds-btn-filled">Save</button>
-                <button className="ds-btn ds-btn-filled teal">Approve</button>
-                <button className="ds-btn ds-btn-filled navy">Submit</button>
+                <button className="ds-btn ds-btn-filled">Approve</button>
+                <button className="ds-btn ds-btn-filled dark">Submit</button>
               </div>
             ),
             caption: "Don't use multiple filled buttons in the same area. It creates visual competition and unclear hierarchy.",
@@ -296,9 +291,9 @@ export default function ButtonsSection() {
           {
             type: 'dont',
             content: (
-              <button className="ds-btn ds-btn-filled teal">Delete Equipment</button>
+              <button className="ds-btn ds-btn-tonal">Delete Equipment</button>
             ),
-            caption: "Don't use success or positive colors for destructive actions. The color should match the intent.",
+            caption: "Don't use neutral or positive color variants for destructive actions. The color should match the intent.",
           },
         ]} />
       </SubSection>
@@ -353,8 +348,8 @@ export default function ButtonsSection() {
             {
               name: 'CornerRadius',
               type: 'CornerRadius',
-              default: '20',
-              description: 'The border radius of the button. MD3 buttons use fully rounded corners (pill shape).',
+              default: '0',
+              description: 'The border radius of the button. Probe buttons use sharp corners (0px) by default.',
             },
             {
               name: 'Padding',
@@ -405,16 +400,7 @@ export default function ButtonsSection() {
 <Button Content="Confirm Shipment"
         Style="{StaticResource FilledButtonStyle}"
         Command="{Binding ConfirmShipmentCommand}"
-        CommandParameter="{Binding SelectedOrder}" />
-
-<!-- Button Pair (Dialog Actions) -->
-<StackPanel Orientation="Horizontal" Spacing="8"
-            HorizontalAlignment="Right">
-  <Button Content="Cancel"
-          Style="{StaticResource TextButtonStyle}" />
-  <Button Content="Save Reservation"
-          Style="{StaticResource FilledButtonStyle}" />
-</StackPanel>`}
+        CommandParameter="{Binding SelectedOrder}" />`}
         />
       </SubSection>
     </section>

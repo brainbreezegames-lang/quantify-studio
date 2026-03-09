@@ -1664,15 +1664,15 @@ function createPricingCard(plan, highlighted = false, index = 0) {
       Padding: basePadding,
       Height: baseHeight,
       Background: highlighted ? '#EEF1FF' : '#FFFFFF',
-      BorderBrush: highlighted ? '#0005EE' : '#CAC4D0',
+      BorderBrush: highlighted ? '#0A3EFF' : '#CAC4D0',
       Highlighted: highlighted ? 'True' : 'False',
-      Accent: highlighted ? '#0005EE' : '#49454F',
+      Accent: highlighted ? '#0A3EFF' : '#49454F',
       Order: String(index),
     },
     children: [
-      ...(highlighted ? [{ id: `paywall-${plan.id}-badge`, type: 'TextBlock', properties: { Text: 'Most popular', Style: 'LabelLarge', Foreground: '#0005EE' } }] : []),
+      ...(highlighted ? [{ id: `paywall-${plan.id}-badge`, type: 'TextBlock', properties: { Text: 'Most popular', Style: 'LabelLarge', Foreground: '#0A3EFF' } }] : []),
       { id: `paywall-${plan.id}-title`, type: 'TextBlock', properties: { Text: plan.name, Style: titleStyle } },
-      { id: `paywall-${plan.id}-price`, type: 'TextBlock', properties: { Text: plan.price, Style: priceStyle, Foreground: highlighted ? '#0005EE' : '#1C1B1F' } },
+      { id: `paywall-${plan.id}-price`, type: 'TextBlock', properties: { Text: plan.price, Style: priceStyle, Foreground: highlighted ? '#0A3EFF' : '#1C1B1F' } },
       { id: `paywall-${plan.id}-copy`, type: 'TextBlock', properties: { Text: plan.copy, Style: 'BodyMedium', Foreground: '#49454F' } },
       createFeatureChecklist(`paywall-${plan.id}-features`, plan.features),
     ],
@@ -1727,7 +1727,7 @@ function createPaywallStatCard(id, label, value, copy, prominent = false) {
       Padding: prominent ? '18' : '14',
       Height: prominent ? '150' : '118',
       Background: prominent ? '#F7F8FF' : '#FFFFFF',
-      BorderBrush: prominent ? '#0005EE' : '#CAC4D0',
+      BorderBrush: prominent ? '#0A3EFF' : '#CAC4D0',
     },
     children: [
       { id: `${id}-label`, type: 'TextBlock', properties: { Text: label, Style: 'LabelLarge', Foreground: '#49454F' } },
@@ -2110,15 +2110,15 @@ function emphasizeProPackage(tree) {
     Padding: '20',
     Height: '260',
     Background: '#EEF1FF',
-    BorderBrush: '#0005EE',
+    BorderBrush: '#0A3EFF',
     Highlighted: 'True',
   }
   const title = findFirst(pro, (node) => node.id === 'paywall-pro-title')
   const price = findFirst(pro, (node) => node.id === 'paywall-pro-price')
   if (title) title.properties = { ...title.properties, Style: 'HeadlineSmall' }
-  if (price) price.properties = { ...price.properties, Style: 'HeadlineMedium', Foreground: '#0005EE' }
+  if (price) price.properties = { ...price.properties, Style: 'HeadlineMedium', Foreground: '#0A3EFF' }
   if (!findFirst(pro, (node) => node.id === 'paywall-pro-badge')) {
-    pro.children = [{ id: 'paywall-pro-badge', type: 'TextBlock', properties: { Text: 'Most popular', Style: 'LabelLarge', Foreground: '#0005EE' } }, ...(pro.children || [])]
+    pro.children = [{ id: 'paywall-pro-badge', type: 'TextBlock', properties: { Text: 'Most popular', Style: 'LabelLarge', Foreground: '#0A3EFF' } }, ...(pro.children || [])]
   }
   return true
 }

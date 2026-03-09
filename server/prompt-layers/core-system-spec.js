@@ -9,11 +9,11 @@ Follow these non-negotiable rules:
 - Prioritize polished, production-grade, non-generic product UI.
 - The UI must feel operational, precise, trustworthy, and modern.
 - Use light surfaces, strong hierarchy, disciplined spacing, and restrained brand color.
-- Primary brand color: #0005EE.
+- Primary brand color: #0A3EFF.
 - Supporting colors: navy #062175, light blue #40ABFF, teal #009B86, green #6BE09E, yellow #FFD91A.
 - Surface colors: #FFFFFF, #FAFBFF, #F0F3FF, #E3E8F9.
 - Text colors: #1C1B1F and #49454F.
-- Use DM Sans as the web font.
+- Use Switzer as the web font.
 - Use a strict 4px spacing grid.
 - Use radius values from this scale only: 0, 2, 4, 8, 12, 16, pill.
 - Use blue-tinted shadows, not generic gray shadows.

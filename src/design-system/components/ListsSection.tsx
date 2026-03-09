@@ -578,7 +578,7 @@ export default function ListsSection() {
     <DataTemplate>
       <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,12">
         <Border CornerRadius="20" Width="40" Height="40"
-                Background="{StaticResource AvontusBlueBrush}">
+                Background="{StaticResource QuantifyBlueBrush}">
           <SymbolIcon Symbol="Package"
                       Foreground="White" />
         </Border>

@@ -60,8 +60,8 @@ const WIREFRAME_LOADER_MESSAGES = [
 // Improve loader: context-aware messages based on active quality lenses
 const IMPROVE_LENS_MESSAGES: Record<string, string[]> = {
   avontusBrand: [
-    'Checking Avontus Blue #0005EE usage…',
-    'Verifying DM Sans typography hierarchy…',
+    'Checking Probe Blue #0A3EFF usage…',
+    'Verifying Switzer typography hierarchy…',
     'Applying brand-tinted elevation system…',
   ],
   tokenEnforcement: [

@@ -31,7 +31,7 @@ export default function ConnectionSettingsScreen() {
           <div className="ds-textfield" style={{ maxWidth: '100%', marginBottom: 20 }}>
             <input
               type="text"
-              defaultValue="https://quantify.avontus.com"
+              defaultValue="https://quantify.app"
               style={{ height: 48, fontSize: 13, padding: '20px 12px 6px' }}
               readOnly
             />
