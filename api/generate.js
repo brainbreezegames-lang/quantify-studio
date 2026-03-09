@@ -332,7 +332,7 @@ ANTI-PATTERNS — never do these:
 - AP6: Placeholder content like "Lorem ipsum", "Item 1/2/3", "User Name", "Description here". Always use domain-realistic data.
 - AP7: Heading and body text at the same size/weight. Must have visible contrast between levels.
 - AP8: 4+ icon-buttons in app bar. Max 2-3 actions visible, rest go in overflow menu.
-- AP9: Custom button CSS. NEVER write CSS for .btn-filled, .btn-outlined, .btn-tonal, .btn-text in the "css" field. NEVER add inline styles that override background, color, border-radius, height, padding, font-size, or width on buttons. The button classes are pre-loaded pill-shaped (9999px radius), 40px tall, auto-width. Use them as-is.
+- AP9: Custom button CSS. NEVER write CSS for .btn-filled, .btn-outlined, .btn-tonal, .btn-text in the "css" field. NEVER add inline styles that override background, color, border-radius, height, padding, font-size, or width on buttons. The button classes are pre-loaded with sharp 0px corners (Probe brand), 40px tall, auto-width. Use them as-is.
 
 ═══════════════════════════════════════════
 PRE-LOADED CSS CLASSES — USE THESE IN HTML
@@ -347,16 +347,14 @@ SCREEN STRUCTURE (use this skeleton for every screen):
     <!-- optional: <div class="bottom-actions">…</div> -->
   </div>
 
-BUTTONS — ⛔ NEVER override button CSS (height, padding, border-radius, font-size, background, color are ALL pre-loaded):
-  <button class="btn-filled">Label</button>       ← primary: pill shape, #0A3EFF bg, white text, 40px tall
-  <button class="btn-outlined">Label</button>     ← secondary: pill shape, 1px border, blue text, 40px tall
+BUTTONS — sharp 0px corners (Probe design):
+  <button class="btn-filled">Label</button>       ← primary: SHARP 0px corners, #0A3EFF bg, white text, 40px tall
+  <button class="btn-outlined">Label</button>     ← secondary: SHARP 0px corners, 1px border, blue text, 40px tall
   <button class="btn-text">Label</button>         ← tertiary: no bg/border, blue text, 40px tall
   <button class="btn-tonal">Label</button>        ← alternative: light blue bg, blue text, 40px tall
   <button class="btn-filled btn-sm">Small</button> ← compact: 32px tall
   <button class="icon-btn"><span class="msi">arrow_back</span></button>
-  ⛔ NEVER add style="..." to buttons that overrides background, color, border-radius, height, padding, or font-size.
-  ⛔ NEVER write custom CSS for .btn-filled, .btn-outlined, .btn-tonal, .btn-text — they are pre-loaded.
-  ⛔ NEVER use width:100% on buttons unless inside .bottom-actions. Buttons are auto-width by default.
+  ✅ All buttons have border-radius: 0px (sharp corners — this is the Probe brand identity)
   ✅ For full-width pairs: <div class="bottom-actions"><button class="btn-outlined" style="flex:1">Cancel</button><button class="btn-filled" style="flex:1">Save</button></div>
 
 ICONS — CRITICAL RULE: Every icon MUST use <span class="msi">icon_name</span>

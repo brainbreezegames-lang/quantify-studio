@@ -1,200 +1,156 @@
 // Probe Design Language — Quantify Brand Guide
 // Sharp geometry, monochromatic blue, Switzer typeface
-// Combined with Material Design 3 principles for Uno Platform output
 
 export const AVONTUS_BRAND_GUIDE = `
 
-## QUANTIFY — PROBE DESIGN LANGUAGE STYLE GUIDE
+## QUANTIFY — PROBE DESIGN LANGUAGE
 
-This style guide governs ALL generated UI. Every screen must reflect the Probe design language
-layered on top of Material Design 3 components and patterns.
+This style guide governs ALL generated UI. Every screen MUST reflect the Probe design language.
+The Probe aesthetic is defined by: SHARP 0px corners, monochromatic blue, Switzer font, pure neutral grays, no decorative elements.
 
 ---
 
 ### 1. COLOR SYSTEM
 
-#### Primary Brand Color — Probe Blue
-- **Blue Main**: #0A3EFF (Primary brand color — CTAs, links, active states, primary actions)
-- **Blue Medium**: #6F9DFF (Secondary accent — hover states, tinted surfaces, illustrations)
-- **Blue Dark**: #10296E (Deep accent — headers, high-contrast surfaces, authoritative elements)
+#### Primary Blues
+| Token | Value | Usage |
+|-------|-------|-------|
+| Blue Main | #0A3EFF | Primary buttons, CTAs, accent elements, links, active states |
+| Blue Medium | #6F9DFF | Secondary accents, hover states, softer highlights |
+| Blue Dark | #10296E | Dark sections, dark button fills, feature card backgrounds |
 
-#### Blue Scale
-| Step     | Hex       | Usage                                          |
-|----------|-----------|-------------------------------------------------|
-| Lightest | #E8EEFF   | Containers, tinted backgrounds                  |
-| 100      | #C5D4FF   | Light accents, hover backgrounds                |
-| 200      | #9DB5FF   | Secondary fills, highlights                     |
-| Medium   | #6F9DFF   | Secondary accent, illustrations                 |
-| 400      | #3A6BFF   | Interactive mid-tones                           |
-| Main     | #0A3EFF   | Primary actions, CTAs, links                    |
-| 600      | #0835D6   | Pressed states                                  |
-| 700      | #062BB3   | Active elements                                 |
-| Dark     | #10296E   | Deep headers, dark surfaces                     |
-| Darkest  | #0A1A4A   | Maximum contrast                                |
+#### Grays (Pure Neutral — NO blue tint)
+| Token | Value | Usage |
+|-------|-------|-------|
+| White | #FFFFFF | Page background, hero background, text on dark |
+| Tinted White | #F8F8F8 | Alternating section backgrounds, subtle surface |
+| Gray Extra Light | #F4F4F4 | Card backgrounds, containers |
+| Gray Light | #E2E2E2 | Dividers, subtle borders |
+| Gray Medium | #B5B5B5 | Placeholder text, disabled states |
+| Gray Dark | #878787 | Secondary body text, metadata |
+| Gray Extra Dark | #5F5F5F | Tertiary text |
+| Light Black | #202020 | Primary text color, headings |
 
-#### Gray Scale (Pure Neutral — No Blue Tint)
-| Step   | Hex       | Usage                                            |
-|--------|-----------|--------------------------------------------------|
-| White  | #FFFFFF   | Default background                               |
-| 50     | #F8F8F8   | Surface, subtle backgrounds                      |
-| 100    | #EEEEEE   | Surface 2, card backgrounds                      |
-| 200    | #D4D4D4   | Outline variant, subtle borders                  |
-| 300    | #ABABAB   | Outline, dividers                                |
-| 400    | #787878   | Secondary text, muted icons                      |
-| 500    | #545454   | On Surface Variant, body text secondary           |
-| 600    | #363636   | Strong secondary text                            |
-| Black  | #202020   | On Surface, primary text, headings               |
+#### Semantic
+| Role | Value |
+|------|-------|
+| Error | #E64059 |
+| Success | #22C55E |
+| Warning | #F9A825 |
 
-#### Semantic Colors
-| Role          | Hex       | Container   | On Container |
-|---------------|-----------|-------------|--------------|
-| Error         | #E64059   | #FFE5E9     | #5F1422      |
-| Warning       | #F9A825   | #FFF3CD     | #5D4300      |
-| Info          | #0A3EFF   | #E8EEFF     | #10296E      |
-| Success       | #22C55E   | #DCFCE7     | #14532D      |
-
-#### Surface & Text
-| Role              | Hex       |
-|-------------------|-----------|
-| Background        | #FFFFFF   |
-| Surface           | #F8F8F8   |
-| Surface 2         | #EEEEEE   |
-| Surface 3         | #D4D4D4   |
-| On Surface        | #202020   |
-| On Surface Variant| #545454   |
-| Outline           | #ABABAB   |
-| Outline Variant   | #D4D4D4   |
-| Text primary      | #202020   |
-| Text secondary    | #545454   |
-| Link text         | #0A3EFF   |
+#### Color Philosophy
+- **No true black (#000)** — darkest color is #202020
+- **Blue is the ONLY hue** — entire palette is monochromatic blue + neutrals + one red for errors
+- **No gradients** — flat solid colors only
+- **No CSS box-shadows** in the traditional sense — the design relies on flat color and borders for depth
 
 ---
 
 ### 2. TYPOGRAPHY
 
-#### Primary Typeface: Switzer
-Quantify uses Switzer as the primary typeface — a clean geometric sans-serif.
-Fallback chain: "Switzer", "Helvetica Neue", Helvetica, Arial, sans-serif.
+#### Font: Switzer (from Fontshare)
+Two weights ONLY: Regular (400) and Medium (500). NEVER use bold (700), semibold (600), or light (300).
 
-#### Weights Used
-| Weight          | Use Case                                           |
-|-----------------|-----------------------------------------------------|
-| Regular (400)   | Body text, descriptions, form labels                |
-| Medium (500)    | Headings, emphasized labels, buttons, navigation    |
+| Style | Size | Weight | Line Height | Letter Spacing | Usage |
+|-------|------|--------|-------------|----------------|-------|
+| H1 | 76px | 500 | 1em | -0.04em | Hero text only |
+| H2 | 49px | 500 | 1.1em | -0.04em | Page titles |
+| H3 | 39px | 500 | 1.1em | -0.02em | Section headers, dialog titles |
+| H4 | 31px | 500 | 1.1em | -0.02em | Card titles, subsection headers |
+| H5 | 25px | 500 | 1.1em | -0.02em | Toolbar text, list headers |
+| H6 | 20px | 400 | 1.2em | -0.02em | Labels, navigation items |
+| Body | 16px | 400 | 1.4em | -0.02em | Paragraph text |
+| Small | 13px | 400 | 1.3em | -0.01em | Captions, helper text |
 
-**Important**: Only use weights 400 and 500. No light (300), semibold (600), or bold (700).
-
-#### Typography Scale
-| Style     | Size | Weight | Line Height | Letter Spacing | Use                                |
-|-----------|------|--------|-------------|----------------|-------------------------------------|
-| H1        | 76px | 500    | 1.05        | -0.04em        | Hero text, splash screens           |
-| H2        | 49px | 500    | 1.1         | -0.04em        | Page titles, major sections         |
-| H3        | 39px | 500    | 1.15        | -0.02em        | Section headers, dialog titles      |
-| H4        | 31px | 500    | 1.2         | -0.02em        | Card titles, subsection headers     |
-| H5        | 25px | 500    | 1.25        | -0.02em        | Toolbar text, list headers          |
-| H6        | 20px | 500    | 1.3         | -0.02em        | Labels, tags, navigation items      |
-| Body      | 16px | 400    | 1.5         | -0.02em        | Paragraph text, descriptions        |
-| Small     | 13px | 400    | 1.45        | -0.01em        | Captions, timestamps, helper text   |
-
-**Key**: All text uses tight negative letter-spacing for a modern, precise feel.
+KEY RULES:
+- All text uses TIGHT NEGATIVE letter-spacing
+- All text left-aligned by default
+- No uppercase transforms — all sentence case
+- H1–H5 use weight 500, H6–Small use weight 400
 
 ---
 
-### 3. SHAPE & CORNERS
+### 3. SHAPE & CORNERS — THE DEFINING TRAIT
 
-**0px border-radius is the universal default.** Sharp corners define the Probe aesthetic.
+**border-radius: 0px is MANDATORY on ALL elements.**
 
-| Token         | Value   | Use                                      |
-|---------------|---------|------------------------------------------|
-| Default       | 0px     | ALL elements — cards, buttons, inputs, containers |
-| Extra Small   | 0px     | Same as default                          |
-| Small         | 0px     | Text fields, chips, small cards          |
-| Medium        | 0px     | Cards, menus, dialogs                    |
-| Large         | 0px     | Large cards, sheets, containers          |
-| Extra Large   | 0px     | Modals, bottom sheets                    |
-| Full          | 9999px  | ONLY for badges, dot indicators, avatars |
+This is the single most important visual rule. Sharp corners define the Probe aesthetic.
+- Buttons: 0px border-radius
+- Cards: 0px border-radius
+- Inputs: 0px border-radius
+- Containers: 0px border-radius
+- Modals/dialogs: 0px border-radius
+- ONLY exception: CTA components may use 2px radius
 
-**Never use rounded corners** on buttons, cards, inputs, or containers. Only badges, dot indicators, and avatar circles use full rounding.
+NEVER use rounded corners (4px, 8px, 12px, 9999px) on ANY element.
 
 ---
 
-### 4. SPACING & LAYOUT
+### 4. COMPONENT SPECS
 
-#### Spacing Scale
-| Token    | Value | Use                                                    |
-|----------|-------|--------------------------------------------------------|
-| space-1  | 4px   | Micro gap — icon-text pairs, badge margins             |
-| space-2  | 8px   | Compact padding — metadata rows, icon groups           |
-| space-3  | 12px  | Tight element gap — between related items              |
-| space-4  | 16px  | Standard element gap — form fields, buttons            |
-| space-6  | 24px  | Section gap — between major content sections           |
-| space-8  | 32px  | Page margin — outer padding of all page content        |
-| space-10 | 40px  | Generous section spacing                               |
-| space-12 | 48px  | Major section dividers                                 |
+#### Buttons
+| Variant | Background | Text | Border |
+|---------|-----------|------|--------|
+| Primary | #0A3EFF | #FFFFFF | none |
+| Light | #F8F8F8 | #202020 | none |
+| Dark | #202020 | #FFFFFF | none |
+| Outlined | transparent | #0A3EFF | 1px solid #0A3EFF |
 
----
+Specs: padding 8px 16px, border-radius 0px, Switzer Regular (400) 16px, gap 12px for icon+label.
 
-### 5. COMPONENT STYLING
+#### Cards
+- Background: #F4F4F4 or #FFFFFF
+- Border-radius: 0px
+- No box-shadow (use subtle border instead: 1px solid #E2E2E2)
+- Padding: 24px
 
-#### Buttons (All 0px border-radius)
-| Style     | Use                                                | Background    | Text Color |
-|-----------|----------------------------------------------------|---------------|------------|
-| Filled    | Primary actions: "Save", "Ship", "Confirm"         | #0A3EFF       | #FFFFFF    |
-| Outlined  | Secondary actions: "Cancel", "Test", "Edit"         | transparent   | #0A3EFF    |
-| Text      | Tertiary: "Learn more", links                       | transparent   | #0A3EFF    |
-| Tonal     | Moderate emphasis: "Select all"                     | #0A3EFF at 12%| #0A3EFF    |
-| Elevated  | Floating secondary actions                          | #FFFFFF       | #0A3EFF    |
-
-#### Cards (All 0px border-radius)
-| Style     | Use                                                |
-|-----------|----------------------------------------------------|
-| Outlined  | List items, data cards, form sections (default)    |
-| Elevated  | Featured content, key metrics, dashboard widgets   |
-| Filled    | Grouped information, status summaries              |
-
-#### Text Fields
-- Outlined style, 0px border-radius
+#### Text Fields (Outlined style)
+- Border: 1px solid #E2E2E2
+- Border-radius: 0px
 - Focus border: #0A3EFF
-- Error border: #E64059
+- Label: floating label above field, Small style (13px), #0A3EFF when focused
+- Background: #FFFFFF
+
+#### App Bar / Top Bar
+- Height: 56px
+- Background: #FFFFFF
+- Border-bottom: 1px solid #E2E2E2
+- Title: H5 style (Switzer Medium 25px)
+- Actions: icon buttons on right
 
 ---
 
-### 6. ELEVATION & DEPTH
+### 5. SPACING & LAYOUT
 
-Brand-blue-tinted shadows:
+| Gap | Usage |
+|-----|-------|
+| 4px | Between FAQ items, micro spacing |
+| 8px | Benefits card internal, step items |
+| 12px | Text group (heading + body) |
+| 16px | Grid gutters, button row gaps, form field gaps |
+| 24px | Section header to content |
+| 32px | Feature card internal padding |
+| 40px | Section outer padding |
+| 48px | Between major sections |
 
-| Level   | Shadow                                                                    | Use                               |
-|---------|--------------------------------------------------------------------------|------------------------------------|
-| Level 0 | none                                                                     | Flat surfaces, backgrounds         |
-| Level 1 | 0 1px 3px rgba(10,62,255,0.06), 0 1px 2px rgba(0,0,0,0.04)           | Cards at rest, subtle lift         |
-| Level 2 | 0 4px 12px rgba(10,62,255,0.08), 0 2px 4px rgba(0,0,0,0.04)          | Hovered cards, dropdowns           |
-| Level 3 | 0 8px 24px rgba(10,62,255,0.10), 0 4px 8px rgba(0,0,0,0.05)          | FABs, navigation drawers           |
-| Level 4 | 0 16px 40px rgba(10,62,255,0.12), 0 8px 16px rgba(0,0,0,0.06)        | Modals, elevated menus              |
-| Level 5 | 0 24px 56px rgba(10,62,255,0.14), 0 12px 24px rgba(0,0,0,0.08)       | Dialogs, full-screen overlays       |
-
----
-
-### 7. BRAND VOICE & CONTENT
-
-#### Tone
-Confident, Forward-Looking, Grounded, Optimistic, Energetic, Conversational.
-
-#### UI Copy Guidelines
-- **Confident**: Direct language. "Sign in" not "Please sign in"
-- **Grounded**: Specific, concrete. Real numbers, names, data
-- **Forward-looking**: Frame actions as progress
-- **Conversational**: Avoid stiff corporate speak
+Container max-width: 1200px, centered.
+Content padding: 16px on mobile, 40px on desktop.
 
 ---
 
-### 8. SCREEN COMPOSITION RULES
+### 6. SCREEN COMPOSITION RULES
 
-#### Every Screen Must Have:
-1. **Clear information hierarchy**: One primary heading, supporting content, actions
-2. **0px border-radius everywhere**: Sharp corners on all elements except badges/avatars
-3. **Realistic content**: Real names, addresses, numbers — never placeholder text
-4. **Branded feel**: Probe Blue #0A3EFF in primary actions and interactive elements
-5. **Switzer typeface**: Weight 400 for body, 500 for headings
+Every screen MUST:
+1. Use 0px border-radius on ALL elements (sharp corners)
+2. Use Switzer font (400 for body, 500 for headings)
+3. Use #0A3EFF for primary actions only (max 2-3 blue elements per screen)
+4. Use pure neutral grays for surfaces (#FFFFFF, #F8F8F8, #F4F4F4)
+5. Use #202020 for primary text, #878787 for secondary text
+6. Have clear 3-level visual hierarchy
+7. Use realistic Quantify domain data (scaffolding, reservations, jobsites, equipment)
+8. Have generous whitespace — the design should breathe
+9. Use flat colors only — no gradients, no decorative shadows
+10. Border dividers (1px solid #E2E2E2) instead of shadows for separation
 
 `
 
@@ -223,13 +179,13 @@ export const AVONTUS_COLORS = {
   // Surfaces (pure neutral gray)
   background: '#FFFFFF',
   surface: '#F8F8F8',
-  surface2: '#EEEEEE',
-  surface3: '#D4D4D4',
-  outline: '#ABABAB',
-  outlineVariant: '#D4D4D4',
-  border: '#ABABAB',
+  surface2: '#F4F4F4',
+  surface3: '#E2E2E2',
+  outline: '#B5B5B5',
+  outlineVariant: '#E2E2E2',
+  border: '#E2E2E2',
 
   // Text
   textPrimary: '#202020',
-  textSecondary: '#545454',
+  textSecondary: '#878787',
 }
