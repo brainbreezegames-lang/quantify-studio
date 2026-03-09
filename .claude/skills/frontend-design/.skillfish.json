@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "frontend-design",
+  "owner": "johnlindquist",
+  "repo": "claude-workshop-skills",
+  "path": "skills/frontend-design",
+  "branch": "main",
+  "sha": "ba833d17814b01b1bbe4204feadeca4adc300c85",
+  "source": "manual"
+}

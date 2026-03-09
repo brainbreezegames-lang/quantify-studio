@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "bencium-controlled-ux-designer",
+  "owner": "bencium",
+  "repo": "bencium-claude-code-design-skill",
+  "path": "bencium-controlled-ux-designer/skills/bencium-controlled-ux-designer",
+  "branch": "main",
+  "sha": "453278fcdebfb23c9bc6b94d6c2eeb1a6fc5b40b",
+  "source": "manual"
+}

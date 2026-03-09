@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "skills",
+  "owner": "muheun",
+  "repo": "claude-code-marketplace",
+  "path": "plugins/android-ui-design-guide/skills",
+  "branch": "main",
+  "sha": "6b2a0f076287f054f366da8f1c6c848a6b7078c4",
+  "source": "manual"
+}

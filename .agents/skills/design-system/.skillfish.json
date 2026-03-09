@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "design-system",
+  "owner": "jpoutrin",
+  "repo": "product-forge",
+  "path": "plugins/product-design/skills/design-system",
+  "branch": "main",
+  "sha": "00c4a59afc60745e4a484f72efa34c6a3d1772b2",
+  "source": "manual"
+}

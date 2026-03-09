@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "ui-design-system",
+  "owner": "davila7",
+  "repo": "claude-code-templates",
+  "path": "cli-tool/components/skills/creative-design/ui-design-system",
+  "branch": "main",
+  "sha": "ebd92dd5eb700408b0039aa097d6fae214da634c",
+  "source": "manual"
+}

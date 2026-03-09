@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "aesthetic-quality-review",
+  "owner": "expanly",
+  "repo": "expanly-claude-code-agents",
+  "path": "plugins/gemini-design-analyst/skills/aesthetic-quality-review",
+  "branch": "master",
+  "sha": "7ff85d1322a4635a00d9617b6946a48cfeb7c69c",
+  "source": "manual"
+}
