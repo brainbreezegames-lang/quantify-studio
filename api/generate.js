@@ -463,7 +463,7 @@ LAYOUT UTILITIES:
 
 BADGES:
   <span class="badge badge-blue">Info</span>
-  <span class="badge badge-teal">Success</span>
+  <span class="badge badge-success">Success</span>
   <span class="badge badge-error">Error</span>
   <span class="badge badge-warning">Warning</span>
   <span class="badge badge-gray">Neutral</span>
@@ -487,7 +487,7 @@ TOGGLE SWITCH (ALWAYS wrap in row-between — never use bare switch alone):
   <div class="row-between">
     <div class="col" style="gap:2px">
       <span class="title-md">Setting Name</span>
-      <span class="body-sm" style="color:#49454F">Short description of what this does</span>
+      <span class="body-sm">Short description of what this does</span>
     </div>
     <label class="switch"><input type="checkbox"><span class="sw-track"><span class="sw-thumb"></span></span></label>
   </div>
@@ -581,7 +581,7 @@ STEPPER (quantity input):
     <span class="label-sm">Quantity</span>
     <div class="row" style="gap:8px">
       <button class="icon-btn"><span class="msi">remove</span></button>
-      <input type="number" value="5" style="width:56px;border:1.5px solid #CAC4D0;border-radius:8px;padding:6px 4px;text-align:center;font-size:16px;font-family:inherit;background:#fff">
+      <input type="number" value="5" style="width:56px;border:1px solid #E2E2E2;border-radius:0;padding:6px 4px;text-align:center;font-size:16px;font-family:inherit;background:#fff">
       <button class="icon-btn"><span class="msi">add</span></button>
     </div>
   </div>
@@ -593,69 +593,138 @@ BOTTOM ACTIONS (for non-modal screens only — NOT for edit/create modals):
   </div>
 
 ═══════════════════════════════════════════
-COMPLETE SCREEN EXAMPLE — COPY THIS STRUCTURE
+GOLD EXAMPLE 1 — LIST SCREEN (COPY THIS STRUCTURE)
 ═══════════════════════════════════════════
 <div class="screen">
   <div class="app-bar">
     <button class="icon-btn"><span class="msi">arrow_back</span></button>
-    <span class="app-bar-title">Houston Inventory</span>
-    <button class="icon-btn"><span class="msi">sync</span></button>
-    <button class="icon-btn"><span class="msi">more_vert</span></button>
+    <span class="app-bar-title">Houston inventory</span>
+    <button class="icon-btn"><span class="msi">search</span></button>
   </div>
   <div class="content">
     <div class="stat-group">
-      <div class="stat-card"><span class="stat-label">Total Stock</span><span class="stat-value">4,200</span></div>
-      <div class="stat-card"><span class="stat-label">Available</span><span class="stat-value teal">2,840</span></div>
-    </div>
-    <div class="search-bar">
-      <span class="msi sm">search</span>
-      <input class="field-input" type="text" placeholder="Search products…">
-    </div>
-    <div class="filter-bar">
-      <button class="chip active">All</button>
-      <button class="chip">Low Stock</button>
-      <button class="chip">Out of Stock</button>
+      <div class="stat-card"><span class="stat-label">Total stock</span><span class="stat-value">4,200</span></div>
+      <div class="stat-card"><span class="stat-label">Available</span><span class="stat-value" style="color:#22C55E">2,840</span></div>
     </div>
     <p class="section-header">Products</p>
-    <div class="card">
-      <div class="list-item">
-        <div class="list-icon"><span class="msi">inventory_2</span></div>
-        <div class="col" style="flex:1">
-          <div class="row-between">
-            <span class="code">151150</span>
-            <span class="badge badge-error">Low Stock</span>
-          </div>
-          <p class="body-md" style="margin:2px 0">4'11" Vertical Post</p>
-          <p class="body-sm" style="margin:0">Stock: 1,420 · Available: −45</p>
-        </div>
-        <button class="icon-btn"><span class="msi">chevron_right</span></button>
+    <div class="list-item">
+      <div class="list-icon"><span class="msi">inventory_2</span></div>
+      <div class="col" style="flex:1">
+        <span class="title-sm">Standard frame 5x5</span>
+        <span class="body-sm">SCF-4824 · 420 in stock</span>
       </div>
+      <button class="icon-btn"><span class="msi">chevron_right</span></button>
+    </div>
+    <div class="list-item">
+      <div class="list-icon"><span class="msi">inventory_2</span></div>
+      <div class="col" style="flex:1">
+        <div class="row-between">
+          <span class="title-sm">Cross brace 10'</span>
+          <span class="badge badge-error">Low</span>
+        </div>
+        <span class="body-sm">BRC-3618 · 12 in stock</span>
+      </div>
+      <button class="icon-btn"><span class="msi">chevron_right</span></button>
     </div>
   </div>
 </div>
 
 ═══════════════════════════════════════════
-AVONTUS DESIGN SYSTEM
+GOLD EXAMPLE 2 — FORM/EDIT SCREEN (COPY THIS STRUCTURE)
 ═══════════════════════════════════════════
+<div class="screen">
+  <div class="app-bar">
+    <button class="icon-btn"><span class="msi">close</span></button>
+    <span class="app-bar-title">New shipment</span>
+    <button class="icon-btn"><span class="msi">check</span></button>
+  </div>
+  <div class="content">
+    <div class="field">
+      <label class="field-label">From location</label>
+      <select class="field-input"><option>Main yard (HQ)</option></select>
+    </div>
+    <div class="field">
+      <label class="field-label">To location</label>
+      <input class="field-input" type="text" placeholder="Search job sites...">
+    </div>
+    <div class="row" style="gap:12px">
+      <div class="field" style="flex:1">
+        <label class="field-label">Delivery date</label>
+        <input class="field-input" type="text" value="Mar 15, 2025">
+      </div>
+      <div class="field" style="flex:1">
+        <label class="field-label">Reference</label>
+        <input class="field-input" type="text" value="PO-44821">
+      </div>
+    </div>
+    <p class="section-header">Products to ship</p>
+    <div class="list-item">
+      <div class="col" style="flex:1">
+        <span class="title-sm">Standard frame 5x5</span>
+        <span class="body-sm">SCF-4824 · 420 in stock</span>
+      </div>
+      <div class="row" style="gap:4px">
+        <button class="icon-btn"><span class="msi sm">remove</span></button>
+        <input type="number" value="50" style="width:48px;border:1px solid #E2E2E2;border-radius:0;padding:6px;text-align:center;font-size:16px;font-family:inherit">
+        <button class="icon-btn"><span class="msi sm">add</span></button>
+      </div>
+    </div>
+    <div class="list-item">
+      <div class="col" style="flex:1">
+        <span class="title-sm">Cross brace 10'</span>
+        <span class="body-sm">BRC-3618 · 850 in stock</span>
+      </div>
+      <div class="row" style="gap:4px">
+        <button class="icon-btn"><span class="msi sm">remove</span></button>
+        <input type="number" value="80" style="width:48px;border:1px solid #E2E2E2;border-radius:0;padding:6px;text-align:center;font-size:16px;font-family:inherit">
+        <button class="icon-btn"><span class="msi sm">add</span></button>
+      </div>
+    </div>
+    <button class="btn-outlined" style="width:100%">Add products</button>
+    <div class="card-filled" style="margin-top:8px">
+      <div class="row-between"><span class="body-sm">Total items</span><span class="title-sm">130 pcs</span></div>
+      <div class="row-between"><span class="body-sm">Est. weight</span><span class="title-sm">1,240 kg</span></div>
+    </div>
+  </div>
+</div>
+
+═══════════════════════════════════════════
+PROBE DESIGN SYSTEM — MANDATORY RULES
+═══════════════════════════════════════════
+CRITICAL: border-radius is 0px on EVERYTHING. Sharp corners are the brand identity. NEVER use rounded corners.
+
 Brand palette:
   Primary Blue: #0A3EFF | On Primary: #FFFFFF
-  Navy: #062175 | Teal: #009B86 | Light Blue: #40ABFF
-  Error: #D32F2F | Warning: #F9A825 | Info: #1976D2 | Success: #009B86
-  Surfaces: #FFFFFF (bg), #F0F3FF (surface2), #FAFBFF (page bg)
-  Text Primary: #1C1B1F | Text Secondary: #49454F
-  Border: #CAC4D0 | Font: Switzer
+  Blue Dark: #10296E | Blue Medium: #6F9DFF
+  Error: #E64059 | Warning: #F9A825 | Success: #22C55E
+  Surfaces: #FFFFFF (bg), #F8F8F8 (surface), #F4F4F4 (card bg)
+  Text: #202020 (primary), #878787 (secondary), #5F5F5F (tertiary)
+  Border: #E2E2E2 | Font: Switzer (400 regular, 500 medium — NO bold 700)
+
+Typography: Switzer font. Weight 500 for headings, 400 for body. Tight letter-spacing (-0.02em). No uppercase transforms.
+
+Spacing: Keep it tight inside groups (4-8px), generous between sections (16-24px). Card padding: 16px. No nested cards.
+
+ANTI-PATTERNS TO AVOID:
+- NO nested containers (card inside card, or container inside container)
+- NO excessive padding (max 16px on cards)
+- NO bold (700) or semibold (600) weights — only 400 and 500
+- NO rounded corners anywhere (border-radius must be 0)
+- NO uppercase section headers — use sentence case
+- NO blue-tinted surfaces — use pure neutral grays only
+- Form fields go FLAT in content, never wrapped in extra cards/containers
 
 Content: Use realistic Quantify data:
-  - Branches: Houston Branch, Chicago Branch, New York Branch
-  - Product codes: SCF-4824, BRC-3618, AF-1002-B, 151150, 156850
-  - Reservation IDs: DEL-00756, RES-00892, DEL-00761
+  - Branches: Houston, Chicago, New York
+  - Product codes: SCF-4824, BRC-3618, AF-1002-B
+  - Reservation IDs: DEL-00756, RES-00892
   - Companies: Johnson Construction, Apex Building Group, Skyline Scaffolding
 
 ═══════════════════════════════════════════
 DESIGN EXCELLENCE REQUIREMENTS
 ═══════════════════════════════════════════
 1. ALWAYS start with <div class="screen"><div class="app-bar">…</div><div class="content">…</div></div>
-2. App bar: ALWAYS frosted glass. Navigation icon on left (arrow_back or close). Title (.app-bar-title). Action icons on right as .icon-btn buttons.
+2. App bar: clean white background with bottom border. Navigation icon on left (arrow_back or close). Title (.app-bar-title). Action icons on right as .icon-btn buttons.
 3. EVERY icon MUST be <span class="msi">icon_name</span>. NEVER write icon names as bare text. No exceptions.
 4. Use REALISTIC data: real company names, product codes, dollar amounts, dates. Never "Lorem ipsum".
 5. Numbers: commas for thousands (1,240). Currency: $248,400. Percentages: 78%.
