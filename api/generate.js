@@ -21,7 +21,6 @@ export const config = {
 // ─── Security ────────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
   'https://quantify-studio.vercel.app',
-  'https://quantify-studio.vercel.app',
   'http://localhost:5173',
   'http://localhost:3001',
 ]
