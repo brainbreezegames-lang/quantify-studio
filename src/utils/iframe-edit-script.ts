@@ -10,7 +10,7 @@ export function getIframeEditScript(): string {
 (function() {
   // Add edit-mode CSS
   var style = document.createElement('style');
-  style.textContent = '* { cursor: default !important; } a, button, input, select, textarea { pointer-events: auto !important; } [contenteditable="true"] { cursor: text !important; outline: 2px solid #0005EE !important; outline-offset: 1px; min-width: 20px; min-height: 1em; }';
+  style.textContent = '* { cursor: default !important; } a, button, input, select, textarea { pointer-events: auto !important; } [contenteditable="true"] { cursor: text !important; outline: 2px solid #0A3EFF !important; outline-offset: 1px; min-width: 20px; min-height: 1em; }';
   document.head.appendChild(style);
 
   var selected = null;
@@ -29,7 +29,7 @@ export function getIframeEditScript(): string {
     return el;
   }
 
-  overlay = createOverlay('__edit-sel', '#0005EE', 2);
+  overlay = createOverlay('__edit-sel', '#0A3EFF', 2);
   hoverOverlay = createOverlay('__edit-hov', 'rgba(0,5,238,0.35)', 1);
 
   // ─── Type label ──────────────────────────────────────────────

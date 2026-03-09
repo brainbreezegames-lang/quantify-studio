@@ -1607,7 +1607,7 @@ function emitDiagnosticsComments(diagnostics: XamlDiagnostic[]): string[] {
   if (diagnostics.length === 0) return []
 
   return [
-    '<!-- Uno Studio XAML diagnostics -->',
+    '<!-- Quantify Studio XAML diagnostics -->',
     ...diagnostics.map((diagnostic) => `<!-- ${xmlCommentEscape(`${diagnostic.severity.toUpperCase()} ${diagnostic.code}${diagnostic.nodeId ? ` [${diagnostic.nodeId}]` : ''}: ${diagnostic.message}`)} -->`),
   ]
 }

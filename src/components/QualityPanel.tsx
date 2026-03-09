@@ -21,8 +21,8 @@ const TOGGLE_GROUPS: ToggleGroup[] = [
         key: 'avontusBrand',
         label: 'Avontus Brand',
         outcomes: [
-          'Avontus Blue #0005EE on all primary actions',
-          'DM Sans typography with brand weights',
+          'Avontus Blue #0A3EFF on all primary actions',
+          'Switzer typography with brand weights',
           '107° motif on hero screens, brand-blue shadows',
         ],
       },

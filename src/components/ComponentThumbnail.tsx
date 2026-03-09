@@ -2,8 +2,8 @@ import type { ComponentType } from '../types'
 
 // Avontus Design System colors
 const C = {
-  brand: '#0005EE',
-  brandDim: '#678DF4',
+  brand: '#0A3EFF',
+  brandDim: '#6F9DFF',
   navy: '#062175',
   teal: '#009B86',
   lightBlue: '#40ABFF',

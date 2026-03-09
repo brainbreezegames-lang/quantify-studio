@@ -74,7 +74,7 @@ const reservationsListScreen: ComponentNode = {
             ]},
             { id: 'res-1-company', type: 'TextBlock', properties: { Text: 'Titan Apex Industrial Services', Style: 'BodyMedium' } },
             { id: 'res-1-location', type: 'TextBlock', properties: { Text: 'Eastgate Distribution Hub', Style: 'BodyMedium' } },
-            { id: 'res-1-address', type: 'TextBlock', properties: { Text: '741 Stuart Way, Nordison, OH', Style: 'BodySmall', Foreground: '#0005EE' } },
+            { id: 'res-1-address', type: 'TextBlock', properties: { Text: '741 Stuart Way, Nordison, OH', Style: 'BodySmall', Foreground: '#0A3EFF' } },
             { id: 'res-1-summary', type: 'TextBlock', properties: { Text: 'Pieces: 274  Weight: 5,723.4', Style: 'BodySmall', Foreground: '#49454F' } },
           ]},
           { id: 'res-card-2', type: 'Card', properties: { Style: 'Outlined', Padding: '12' }, children: [
@@ -84,7 +84,7 @@ const reservationsListScreen: ComponentNode = {
             ]},
             { id: 'res-2-company', type: 'TextBlock', properties: { Text: 'BlueRidge Fabrication & Erection', Style: 'BodyMedium' } },
             { id: 'res-2-location', type: 'TextBlock', properties: { Text: 'Northwind Logistics Terminal', Style: 'BodyMedium' } },
-            { id: 'res-2-address', type: 'TextBlock', properties: { Text: '8907 Maple Ridge Court, Akron, OH 44312', Style: 'BodySmall', Foreground: '#0005EE' } },
+            { id: 'res-2-address', type: 'TextBlock', properties: { Text: '8907 Maple Ridge Court, Akron, OH 44312', Style: 'BodySmall', Foreground: '#0A3EFF' } },
             { id: 'res-2-summary', type: 'TextBlock', properties: { Text: 'Pieces: 616  Weight: 3,824.6', Style: 'BodySmall', Foreground: '#49454F' } },
           ]},
           { id: 'res-card-3', type: 'Card', properties: { Style: 'Outlined', Padding: '12' }, children: [
@@ -94,7 +94,7 @@ const reservationsListScreen: ComponentNode = {
             ]},
             { id: 'res-3-company', type: 'TextBlock', properties: { Text: 'Titan Apex Industrial Services', Style: 'BodyMedium' } },
             { id: 'res-3-location', type: 'TextBlock', properties: { Text: 'Eastgate Distribution Hub', Style: 'BodyMedium' } },
-            { id: 'res-3-address', type: 'TextBlock', properties: { Text: '741 Stuart Way, Nordison, OH', Style: 'BodySmall', Foreground: '#0005EE' } },
+            { id: 'res-3-address', type: 'TextBlock', properties: { Text: '741 Stuart Way, Nordison, OH', Style: 'BodySmall', Foreground: '#0A3EFF' } },
             { id: 'res-3-summary', type: 'TextBlock', properties: { Text: 'Pieces: 591  Weight: 3,218.5', Style: 'BodySmall', Foreground: '#49454F' } },
           ]},
           { id: 'res-card-4', type: 'Card', properties: { Style: 'Outlined', Padding: '12' }, children: [
@@ -104,7 +104,7 @@ const reservationsListScreen: ComponentNode = {
             ]},
             { id: 'res-4-company', type: 'TextBlock', properties: { Text: 'Ironcrest Solutions Group', Style: 'BodyMedium' } },
             { id: 'res-4-location', type: 'TextBlock', properties: { Text: 'Falcon Ridge Wind Farm', Style: 'BodyMedium' } },
-            { id: 'res-4-address', type: 'TextBlock', properties: { Text: '152 Westbrook Avenue, Cincinnati, OH 45231', Style: 'BodySmall', Foreground: '#0005EE' } },
+            { id: 'res-4-address', type: 'TextBlock', properties: { Text: '152 Westbrook Avenue, Cincinnati, OH 45231', Style: 'BodySmall', Foreground: '#0A3EFF' } },
             { id: 'res-4-summary', type: 'TextBlock', properties: { Text: 'Pieces: 418  Weight: 3,415.7', Style: 'BodySmall', Foreground: '#49454F' } },
           ]},
           { id: 'res-card-5', type: 'Card', properties: { Style: 'Outlined', Padding: '12' }, children: [
@@ -114,7 +114,7 @@ const reservationsListScreen: ComponentNode = {
             ]},
             { id: 'res-5-company', type: 'TextBlock', properties: { Text: 'Vanguard Plant Systems', Style: 'BodyMedium' } },
             { id: 'res-5-location', type: 'TextBlock', properties: { Text: 'Harborview Tank Farm', Style: 'BodyMedium' } },
-            { id: 'res-5-address', type: 'TextBlock', properties: { Text: '371 Willow Creek Lane, Toledo, OH 43615', Style: 'BodySmall', Foreground: '#0005EE' } },
+            { id: 'res-5-address', type: 'TextBlock', properties: { Text: '371 Willow Creek Lane, Toledo, OH 43615', Style: 'BodySmall', Foreground: '#0A3EFF' } },
             { id: 'res-5-summary', type: 'TextBlock', properties: { Text: 'Pieces: 583  Weight: 3,028.6', Style: 'BodySmall', Foreground: '#49454F' } },
           ]},
         ]},
@@ -134,7 +134,7 @@ const viewReservationScreen: ComponentNode = {
           { id: 'view-total-weight', type: 'TextBlock', properties: { Text: 'Total weight: 5,723.4', Style: 'BodyMedium', Foreground: '#49454F' } },
           { id: 'view-company', type: 'TextBlock', properties: { Text: 'Titan Apex Industrial Services', Style: 'BodyMedium' } },
           { id: 'view-location', type: 'TextBlock', properties: { Text: 'Eastgate Distribution Hub', Style: 'BodyMedium' } },
-          { id: 'view-address', type: 'TextBlock', properties: { Text: '741 Stuart Way, Nordison, OH', Style: 'BodySmall', Foreground: '#0005EE' } },
+          { id: 'view-address', type: 'TextBlock', properties: { Text: '741 Stuart Way, Nordison, OH', Style: 'BodySmall', Foreground: '#0A3EFF' } },
           { id: 'view-pieces', type: 'TextBlock', properties: { Text: 'Pieces: 482  Weight: 3,157.8', Style: 'BodySmall', Foreground: '#49454F' } },
         ]},
         { id: 'view-send-btn', type: 'Button', properties: { Content: 'Send Reservation', Style: 'Filled', HorizontalAlignment: 'Center' } },
@@ -211,7 +211,7 @@ const shipReservationScreen: ComponentNode = {
           ]},
           { id: 'ship-company', type: 'TextBlock', properties: { Text: 'Titan Apex Industrial Services', Style: 'BodyMedium' } },
           { id: 'ship-location', type: 'TextBlock', properties: { Text: 'Eastgate Distribution Hub', Style: 'BodyMedium' } },
-          { id: 'ship-address', type: 'TextBlock', properties: { Text: '741 Stuart Way, Nordison, OH', Style: 'BodySmall', Foreground: '#0005EE' } },
+          { id: 'ship-address', type: 'TextBlock', properties: { Text: '741 Stuart Way, Nordison, OH', Style: 'BodySmall', Foreground: '#0A3EFF' } },
           { id: 'ship-pieces', type: 'TextBlock', properties: { Text: 'Pieces: 482  Weight: 3,157.8', Style: 'BodySmall', Foreground: '#49454F' } },
         ]},
         { id: 'ship-shortage-toggle', type: 'ToggleSwitch', properties: { Header: 'Create new reservation with shortages', IsOn: 'False' } },
@@ -427,7 +427,7 @@ const inspectionsListScreen: ComponentNode = {
         { id: 'insp-row-1', type: 'Card', properties: { Style: 'Filled', Padding: '12' }, children: [
           { id: 'insp-1-header', type: 'StackPanel', properties: { Orientation: 'Horizontal', Spacing: '16' }, children: [
             { id: 'insp-1-name', type: 'TextBlock', properties: { Text: '6 month wood plank inspection', Style: 'BodyMedium' } },
-            { id: 'insp-1-type', type: 'TextBlock', properties: { Text: 'Frequency', Style: 'BodySmall', Foreground: '#0005EE' } },
+            { id: 'insp-1-type', type: 'TextBlock', properties: { Text: 'Frequency', Style: 'BodySmall', Foreground: '#0A3EFF' } },
           ]},
         ]},
         { id: 'insp-row-2', type: 'Card', properties: { Style: 'Outlined', Padding: '12' }, children: [

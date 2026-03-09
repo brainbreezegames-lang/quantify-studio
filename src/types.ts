@@ -491,14 +491,14 @@ export function normalizeDesignTokens(raw: unknown, fallback: DesignTokens = AVO
 export const DEFAULT_TOKENS: DesignTokens = createDesignTokens(DEFAULT_SEED)
 
 export const AVONTUS_TOKENS: DesignTokens = createDesignTokens({
-  primaryColor: '#0005EE',
-  secondaryColor: '#062175',
-  tertiaryColor: '#40ABFF',
+  primaryColor: '#0A3EFF',
+  secondaryColor: '#10296E',
+  tertiaryColor: '#6F9DFF',
   backgroundColor: '#FFFFFF',
   surfaceColor: '#FFFFFF',
-  errorColor: '#D32F2F',
-  fontFamily: 'DM Sans',
-  borderRadius: 'rounded',
+  errorColor: '#E64059',
+  fontFamily: 'Switzer',
+  borderRadius: 'sharp',
 })
 
 export const DEFAULT_DESIGN_BRIEF: DesignBrief = {
@@ -508,7 +508,7 @@ export const DEFAULT_DESIGN_BRIEF: DesignBrief = {
   targetUsers: 'Branch office coordinators, dispatchers, field supervisors, scaffolding company managers',
   keyWorkflows: 'Reservation creation, shipping, check-in/check-out, branch coordination, inventory management',
   businessGoals: 'Reduce shipment errors, speed up fulfillment, improve operational visibility — Reach New Heights',
-  brandPersonality: 'Confident, Forward-Looking, Grounded, Optimistic, Energetic, Conversational — premium enterprise feel with Avontus Blue (#0005EE) as the brand cornerstone',
+  brandPersonality: 'Confident, Forward-Looking, Grounded, Optimistic, Energetic, Conversational — premium enterprise feel with Probe Blue (#0A3EFF) as the brand cornerstone, sharp 0px corners, Switzer typeface',
   qualityBar: 'World-class enterprise tool: clear rhythm, intentional whitespace, branded color hierarchy, production-ready MD3 polish',
 }
 
@@ -985,7 +985,7 @@ const CONTAINER_TYPES: ComponentType[] = [
 ]
 
 // Avontus Design System defaults — matches latest design system tokens
-// Colors: primary #0005EE, surface #FAFBFF, outline-variant #CAC4D0
+// Colors: primary #0A3EFF, surface #FAFBFF, outline-variant #CAC4D0
 // on-surface #1C1B1F, on-surface-variant #49454F, outline #79747E
 const DEFAULT_PROPS: Partial<Record<ComponentType, Record<string, string>>> = {
   TextBlock: { Text: 'Text label', Style: 'BodyMedium', Foreground: '#1C1B1F' },
@@ -998,7 +998,7 @@ const DEFAULT_PROPS: Partial<Record<ComponentType, Record<string, string>>> = {
   ToggleSwitch: { Header: 'Toggle setting' },
   Slider: { Minimum: '0', Maximum: '100', Value: '50' },
   Card: { Style: 'Outlined', Padding: '16' },
-  Icon: { Glyph: 'Star', FontSize: '24', Foreground: '#0005EE' },
+  Icon: { Glyph: 'Star', FontSize: '24', Foreground: '#0A3EFF' },
   Chip: { Content: 'Chip label', Style: 'Suggestion' },
   FloatingActionButton: { Content: 'Plus', Style: 'Primary' },
   ProgressBar: { Value: '50' },

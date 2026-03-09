@@ -216,7 +216,7 @@ const has = (v: string | undefined, q: RegExp) => q.test(String(v || '').toLower
 
 /* ── Avontus brand constants for inline styles ── */
 const AV = {
-  blue: '#0005EE',
+  blue: '#0A3EFF',
   navy: '#062175',
   teal: '#009B86',
   lightBlue: '#40ABFF',
@@ -355,7 +355,7 @@ function Sel({ ctx, children, sx }: { ctx: RenderContext; children: React.ReactN
           color: '#fff',
           fontSize: '9px',
           fontWeight: 600,
-          fontFamily: '"Inter","DM Sans",system-ui,sans-serif',
+          fontFamily: '"Inter","Switzer",system-ui,sans-serif',
           letterSpacing: '0.2px',
           px: '5px',
           py: '1.5px',
@@ -397,7 +397,7 @@ function Sel({ ctx, children, sx }: { ctx: RenderContext; children: React.ReactN
           color: '#fff',
           fontSize: '9px',
           fontWeight: 600,
-          fontFamily: '"Inter","DM Sans",monospace',
+          fontFamily: '"Inter","Switzer",monospace',
           letterSpacing: '0.3px',
           px: '6px',
           py: '2px',
@@ -423,7 +423,7 @@ function Sel({ ctx, children, sx }: { ctx: RenderContext; children: React.ReactN
           color: '#fff',
           fontSize: '9px',
           fontWeight: 600,
-          fontFamily: '"Inter","DM Sans",system-ui,sans-serif',
+          fontFamily: '"Inter","Switzer",system-ui,sans-serif',
           letterSpacing: '0.2px',
           px: '5px',
           py: '1.5px',
@@ -743,7 +743,7 @@ const renderTextBlock: CR = ctx => {
     <Sel ctx={ctx}>
       <Typography
         sx={{
-          fontFamily: `"${t.fontFamily}", "DM Sans", "Segoe UI", Roboto, system-ui, sans-serif`,
+          fontFamily: `"${t.fontFamily}", "Switzer", "Segoe UI", Roboto, system-ui, sans-serif`,
           fontSize: typo.fontSize,
           fontWeight: reservationCode ? 700 : (emphasis ? Math.max(typo.fontWeight, 600) : typo.fontWeight),
           lineHeight: typo.lineHeight + 'px',
@@ -2317,7 +2317,7 @@ export default function MD3Renderer({ node, tokens, selectedId, onSelect, onMove
       divider: tokens.colors.outlineVariant,
     },
     typography: {
-      fontFamily: `"${tokens.fontFamily}", "DM Sans", "Segoe UI", Roboto, system-ui, sans-serif`,
+      fontFamily: `"${tokens.fontFamily}", "Switzer", "Segoe UI", Roboto, system-ui, sans-serif`,
     },
     shape: { borderRadius: tokens.shape.medium },
     components: {
@@ -2354,7 +2354,7 @@ export default function MD3Renderer({ node, tokens, selectedId, onSelect, onMove
             borderRadius: 9999,
             textTransform: 'none',
             fontWeight: 600,
-            fontFamily: `"${tokens.fontFamily}", "DM Sans", sans-serif`,
+            fontFamily: `"${tokens.fontFamily}", "Switzer", sans-serif`,
           },
         },
       },
@@ -2374,7 +2374,7 @@ export default function MD3Renderer({ node, tokens, selectedId, onSelect, onMove
         height: '100%',
         overflow: 'auto',
         background: '#FAFBFF',
-        fontFamily: `"${tokens.fontFamily}", "DM Sans", "Segoe UI", Roboto, system-ui, sans-serif`,
+        fontFamily: `"${tokens.fontFamily}", "Switzer", "Segoe UI", Roboto, system-ui, sans-serif`,
         WebkitFontSmoothing: 'antialiased',
         MozOsxFontSmoothing: 'grayscale',
       }}>
