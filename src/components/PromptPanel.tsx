@@ -155,8 +155,8 @@ const CATEGORY_META: Record<WireframeScreen['category'], { label: string; icon: 
 const CATEGORIES: WireframeScreen['category'][] = ['core', 'jobsite', 'settings', 'patterns']
 
 const MODELS = [
-  { id: 'google/gemini-3.1-pro-preview', label: 'Gemini 3.1 Pro', short: 'Gemini Pro' },
-  { id: 'google/gemini-3.1-flash-lite-preview', label: 'Gemini 3.1 Flash Lite (faster)', short: 'Gemini Flash' },
+  { id: 'google/gemini-3.1-flash-lite-preview', label: 'Gemini 3.1 Flash Lite (fast)', short: 'Gemini Flash' },
+  { id: 'google/gemini-3.1-pro-preview', label: 'Gemini 3.1 Pro (slower, higher quality)', short: 'Gemini Pro' },
   { id: 'anthropic/claude-opus-4.6', label: 'Claude Opus 4.6', short: 'Opus 4.6' },
   { id: 'openai/gpt-5.4', label: 'GPT-5.4', short: 'GPT-5.4' },
 ] as const

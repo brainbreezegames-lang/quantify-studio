@@ -19,11 +19,11 @@ const TOGGLE_GROUPS: ToggleGroup[] = [
     toggles: [
       {
         key: 'avontusBrand',
-        label: 'Avontus Brand',
+        label: 'Probe Brand',
         outcomes: [
-          'Avontus Blue #0A3EFF on all primary actions',
+          'Probe Blue #0A3EFF on all primary actions',
           'Switzer typography with brand weights',
-          '107° motif on hero screens, brand-blue shadows',
+          '0px border-radius, pure neutral grays, blue-tinted shadows',
         ],
       },
       {

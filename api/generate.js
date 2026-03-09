@@ -66,7 +66,7 @@ function generateMockTree(prompt) {
               ]
             },
             { id: 'login-version', type: 'TextBlock', properties: { Text: 'Quantify v3.2.1', Style: 'BodySmall', HorizontalAlignment: 'Center', Foreground: '#49454F' } },
-            { id: 'login-copyright', type: 'TextBlock', properties: { Text: '\u00a9 Avontus 2008-2025. All rights reserved.', Style: 'BodySmall', HorizontalAlignment: 'Center', Foreground: '#49454F' } },
+            { id: 'login-copyright', type: 'TextBlock', properties: { Text: '\u00a9 Probe 2008-2025. All rights reserved.', Style: 'BodySmall', HorizontalAlignment: 'Center', Foreground: '#49454F' } },
             { id: 'login-about-btn', type: 'Button', properties: { Content: 'About Quantify...', Style: 'Text', HorizontalAlignment: 'Center' } },
           ]
         }
@@ -229,9 +229,9 @@ const ENHANCE_SYSTEM_PROMPT = `You are an expert UI/UX design prompt refiner. Yo
 
 ## CRITICAL RULE: Never change what the user asked for
 - If they say "Airbnb listing page" → keep it as an Airbnb listing page. Do NOT turn it into a scaffolding reservation screen.
-- If they say "food delivery app" → keep it as food delivery. Do NOT inject Avontus domain language.
-- If they say "reservation dashboard" → THEN use Avontus domain language (reservations, scaffolding, branches, equipment, jobsites).
-- Match the user's domain. Only use Avontus language when the prompt is clearly about Avontus/scaffolding/equipment.
+- If they say "food delivery app" → keep it as food delivery. Do NOT inject Quantify domain language.
+- If they say "reservation dashboard" → THEN use Quantify domain language (reservations, scaffolding, branches, equipment, jobsites).
+- Match the user's domain. Only use Probe language when the prompt is clearly about Probe/scaffolding/equipment.
 
 ## What you improve
 1. Structure: turn rambling or voice-transcribed text into clear, ordered requirements
@@ -260,11 +260,11 @@ const ENHANCE_SYSTEM_PROMPT = `You are an expert UI/UX design prompt refiner. Yo
 5. If modifying an existing screen, frame as improvements — "Enhance the current screen by adding..."
 6. Output ONLY the enhanced prompt text. No explanation, no prefix, no quotes, no markdown.`
 
-const WEB_SYSTEM_PROMPT = `You are a world-class product designer and front-end engineer. Your job is to create STUNNING, production-quality mobile UI screens for Avontus Quantify — a scaffolding and equipment reservation management platform.
+const WEB_SYSTEM_PROMPT = `You are a world-class product designer and front-end engineer. Your job is to create STUNNING, production-quality mobile UI screens for Quantify — a scaffolding and equipment reservation management platform.
 
-DESIGN PHILOSOPHY: Create the most beautiful, polished design possible. You have complete creative freedom within the Avontus brand and Material Design 3. Do NOT think about XAML, component types, or cross-platform constraints. Think purely in terms of visual excellence, UX clarity, and brand fidelity. Use any HTML/CSS techniques — gradients, shadows, blur, custom CSS — whatever makes the screen look amazing.
+DESIGN PHILOSOPHY: Create the most beautiful, polished design possible. You have complete creative freedom within the Probe brand and Material Design 3. Do NOT think about XAML, component types, or cross-platform constraints. Think purely in terms of visual excellence, UX clarity, and brand fidelity. Use any HTML/CSS techniques — gradients, shadows, blur, custom CSS — whatever makes the screen look amazing.
 
-CRITICAL — USER PROMPT IS LAW: Always build EXACTLY the screen the user describes. The user's prompt defines the content, screen type, features, and data. NEVER substitute the user's request with a different screen. If the user asks for "a food delivery app", build a food delivery app. If they ask for "a reservation list", build a reservation list. Apply Avontus branding (colors, fonts, styling) to whatever the user asks for, but never change WHAT they asked for.
+CRITICAL — USER PROMPT IS LAW: Always build EXACTLY the screen the user describes. The user's prompt defines the content, screen type, features, and data. NEVER substitute the user's request with a different screen. If the user asks for "a food delivery app", build a food delivery app. If they ask for "a reservation list", build a reservation list. Apply Probe branding (colors, fonts, styling) to whatever the user asks for, but never change WHAT they asked for.
 
 ╔══════════════════════════════════════════════════════════════╗
 ║  ⛔ TWO CRITICAL RULES — VIOLATING THESE = BROKEN OUTPUT  ║
@@ -647,7 +647,7 @@ Brand palette:
   Text Primary: #1C1B1F | Text Secondary: #49454F
   Border: #CAC4D0 | Font: Switzer
 
-Content: Use realistic Avontus Quantify data:
+Content: Use realistic Quantify data:
   - Branches: Houston Branch, Chicago Branch, New York Branch
   - Product codes: SCF-4824, BRC-3618, AF-1002-B, 151150, 156850
   - Reservation IDs: DEL-00756, RES-00892, DEL-00761
@@ -736,7 +736,7 @@ B5. Two buttons side-by-side (outside bottom-actions): wrap in .row with gap, bo
 BUTTON STYLING — DO NOT OVERRIDE (pre-loaded CSS handles all button styling):
 B6. NEVER add custom CSS for button width, height, padding, border-radius, font-size, or background on .btn-filled / .btn-outlined / .btn-tonal / .btn-text. The pre-loaded classes already define: height:40px, padding:0 24px, border-radius:9999px (pill), font-size:14px, font-weight:600. Overriding these creates broken, cut-off, or misshapen buttons.
 B7. The ONLY inline styles allowed on buttons are: flex:1 (for equal-width pairs), margin/gap adjustments, and width:100% (for full-width CTA). NEVER set: max-width, overflow:hidden, text-overflow, white-space:nowrap, font-size, padding, height, border-radius, or background on individual buttons.
-B8. Button labels: use clear, specific action verbs from the Avontus domain. Examples: "Save Reservation", "Ship Items", "Add Equipment", "Cancel", "Export Report", "Mark Complete", "Delete Equipment". NOT "Click Here", "Submit", "OK", "Go", "Process".
+B8. Button labels: use clear, specific action verbs from the Quantify domain. Examples: "Save Reservation", "Ship Items", "Add Equipment", "Cancel", "Export Report", "Mark Complete", "Delete Equipment". NOT "Click Here", "Submit", "OK", "Go", "Process".
 
 TOGGLE RULES (MANDATORY):
 T1. Every toggle MUST use .row-between: [text on left] + [label.switch on right]. No exceptions.
@@ -924,7 +924,7 @@ async function generateWebDesign(model, prompt, designTokens, designBrief, curre
     const textPart = assembleWebLayers({
       ...layerOpts,
       currentTree: null,
-      taskPrefix: 'You are looking at a wireframe or low-fidelity sketch. Use it ONLY to understand the screen structure and content — do NOT copy its visual style. Translate it into a production-quality Avontus design using the design system rules above. Apply the full brand: frosted glass app bar, Switzer font, Avontus blue (#0A3EFF), elevated cards, proper spacing.',
+      taskPrefix: 'You are looking at a wireframe or low-fidelity sketch. Use it ONLY to understand the screen structure and content — do NOT copy its visual style. Translate it into a production-quality Probe design using the design system rules above. Apply the full brand: sharp 0px corners, Switzer font, Probe Blue (#0A3EFF), pure neutral gray surfaces, proper spacing.',
     })
     userContent = [
       { type: 'text', text: textPart },
@@ -1056,7 +1056,7 @@ async function analyzeWireframe(model, imageUrl, prompt, designTokens, designBri
 function generateMockWebDesign(prompt, designBrief) {
   const title = (prompt || 'New shortage reservation').slice(0, 48)
   const product = designBrief?.productName || 'Quantify'
-  const company = designBrief?.companyName || 'Avontus'
+  const company = designBrief?.companyName || 'Probe'
 
   return {
     title,
@@ -1164,7 +1164,7 @@ function buildQualityChecklist(toggles, designTokens) {
 
   // Foundation
   if (toggles.avontusBrand) {
-    items.push('• Avontus Brand: Use Probe Blue #0A3EFF for primary actions. Switzer typography. 107° motif on hero screens. Navy #062175 for deep contrast. Teal #009B86 for success. Yellow #FFD91A NEVER as background/text. Brand-blue-tinted shadows. Confident, forward-looking copy voice.')
+    items.push('• Probe Brand: Use Probe Blue #0A3EFF for primary actions. Switzer typography (400/500 weights only). 0px border-radius on ALL elements (sharp corners). Navy #10296E for deep contrast. Green #22C55E for success. Pure neutral gray surfaces (#F8F8F8, #EEEEEE, #D4D4D4). Brand-blue-tinted shadows. Confident, forward-looking copy voice.')
   }
   if (toggles.tokenMap || toggles.noGenericFallback) {
     items.push(`• Token Enforcement: action=${t.primaryColor || '#6750A4'}, heading=${t.colors?.onSurface || '#1C1B1F'}, caption=${t.colors?.onSurfaceVariant || '#49454F'}, page bg=${t.backgroundColor || '#FFFFFF'}. Use role assignments, never raw hex guesses. No blue/Material defaults. If tokens missing → neutral white/gray.`)
@@ -1227,9 +1227,9 @@ function buildQualitySections(toggles, designTokens) {
   // ═══════════════════════════════════════════════════════════
 
   if (toggles.avontusBrand) {
-    sections.push(`## Quality: Avontus Brand Identity Guidelines
+    sections.push(`## Quality: Probe Brand Identity Guidelines
 
-Apply the official Avontus brand identity to every generated screen.
+Apply the official Probe brand identity to every generated screen.
 
 ### Brand Promise & Voice
 - **Tagline**: "Reach New Heights"
@@ -1280,7 +1280,7 @@ Filled: bg=#0A3EFF, text=#FFF (PRIMARY). Outlined: border=#0A3EFF (SECONDARY). T
 Shapes: None=0, XS=2px, S=4px, M=8px, L=12px, XL=16px, Full=9999px
 Spacing: 4→8→12→16→20→24→32→40→48→64→80px
 
-CRITICAL: Every screen must feel unmistakably Avontus — branded with Blue #0A3EFF, professional, and polished.`)
+CRITICAL: Every screen must feel unmistakably Probe — branded with Blue #0A3EFF, professional, and polished.`)
   }
 
   if ((toggles.tokenMap || toggles.noGenericFallback) && designTokens) {
@@ -1801,7 +1801,7 @@ export default async function handler(req, res) {
         const qt = qualityToggles || {}
         const activeLensNames = Object.entries(qt).filter(([, v]) => v).map(([k]) => {
           const names = {
-            avontusBrand: 'Avontus Brand', tokenMap: 'Color & Tokens', noGenericFallback: 'Color & Tokens',
+            avontusBrand: 'Probe Brand', tokenMap: 'Color & Tokens', noGenericFallback: 'Color & Tokens',
             componentRegistry: 'Component Registry', dnaAnalysis: 'Design DNA', dnaGeneration: 'Design DNA',
             designSystemPatterns: 'Structure & Patterns', designSystemArchitect: 'Structure & Patterns', artifactFix: 'Structure & Patterns',
             materialDesign3: 'Material Design 3', flutterMd3: 'Material Design 3',
@@ -1851,7 +1851,7 @@ export default async function handler(req, res) {
       const improveModel = (rm && ALLOWED_MODELS.has(rm) ? rm : MODEL)
       // Build active quality lenses
       const activeToggleNames = {
-        avontusBrand: 'Avontus Brand — Blue #0A3EFF, Switzer, 107° motif, navy/teal secondary palette, brand voice, blue-tinted shadows',
+        avontusBrand: 'Probe Brand — Blue #0A3EFF, Switzer, 0px border-radius (sharp corners), pure neutral gray surfaces, brand voice, blue-tinted shadows',
         tokenMap: 'Token Enforcement — map colors to semantic roles, no generic blue/Material defaults, missing tokens → neutral gray not invented colors',
         noGenericFallback: 'Token Enforcement — no generic blue/Material defaults, missing tokens → neutral gray not invented colors',
         componentRegistry: 'Component Registry — correct Uno/XAML component for every UI need, required props on every component, never raw unstyled primitives',
@@ -2112,7 +2112,7 @@ Analyze the wireframe image carefully and convert it to a component tree.
    - Back arrow on left = Read-only mode (MainCommand="Back")
    - Error/warning icon between X and checkmark = validation state
 
-8. Use realistic Avontus Quantify data for any placeholder content.
+8. Use realistic Quantify data for any placeholder content.
 
 9. Preserve the same core workflow and on-screen content from the image. Improve visual hierarchy and spacing, but DO NOT invent unrelated features or replace the screen purpose.
 
