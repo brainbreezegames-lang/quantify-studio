@@ -112,17 +112,6 @@ app.post('/api/generate-image-screen', async (req, res) => {
   }
 })
 
-// ── Quantify knowledge chat endpoint ──
-app.post('/api/quantify-chat', async (req, res) => {
-  try {
-    const handler = (await import('../api/quantify-chat.js')).default
-    await handler(req, res)
-  } catch (err) {
-    console.error('Quantify chat error:', err)
-    if (!res.headersSent) res.status(500).json({ error: 'Chat failed' })
-  }
-})
-
 setupVoiceRoutes(app)
 
 app.listen(PORT, () => {

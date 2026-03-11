@@ -52,10 +52,11 @@ export default function QuantifyChat() {
     setLoading(true)
 
     try {
-      const resp = await fetch('/api/quantify-chat', {
+      const resp = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          action: 'chat',
           messages: next,
           openRouterApiKey: getOpenRouterKey(),
         }),
