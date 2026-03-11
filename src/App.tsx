@@ -11,6 +11,7 @@ import QualityPanel from './components/QualityPanel'
 import ImprovementsPanel from './components/ImprovementsPanel'
 import OnboardingModal from './components/OnboardingModal'
 import TutorialOverlay from './components/TutorialOverlay'
+import QuantifyChat from './components/QuantifyChat'
 import { WebEditProvider } from './contexts/WebEditContext'
 
 export default function App() {
@@ -159,6 +160,7 @@ export default function App() {
           </div>
         </aside>
       </div>
+      <QuantifyChat />
     </div>
     </WebEditProvider>
   )
