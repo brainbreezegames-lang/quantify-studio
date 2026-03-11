@@ -95,8 +95,41 @@ export default function QuantifyChat() {
     localStorage.removeItem(STORAGE_KEY)
   }
 
+  // Blur the main app when chat is open
+  useEffect(() => {
+    const main = document.getElementById('main-content')
+    const header = main?.previousElementSibling as HTMLElement | null
+    if (open) {
+      main?.style.setProperty('filter', 'blur(4px)')
+      main?.style.setProperty('pointer-events', 'none')
+      main?.style.setProperty('transition', 'filter 0.2s ease')
+      header?.style.setProperty('filter', 'blur(4px)')
+      header?.style.setProperty('pointer-events', 'none')
+      header?.style.setProperty('transition', 'filter 0.2s ease')
+    } else {
+      main?.style.removeProperty('filter')
+      main?.style.removeProperty('pointer-events')
+      header?.style.removeProperty('filter')
+      header?.style.removeProperty('pointer-events')
+    }
+    return () => {
+      main?.style.removeProperty('filter')
+      main?.style.removeProperty('pointer-events')
+      header?.style.removeProperty('filter')
+      header?.style.removeProperty('pointer-events')
+    }
+  }, [open])
+
   return (
     <>
+      {/* Backdrop overlay — click to close */}
+      {open && (
+        <div
+          className="fixed inset-0 z-[9997] bg-black/20 transition-opacity duration-200"
+          onClick={() => setOpen(false)}
+        />
+      )}
+
       {/* Floating trigger button — bottom-right, subtle */}
       <button
         onClick={() => setOpen(o => !o)}
