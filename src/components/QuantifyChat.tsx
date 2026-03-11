@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
+import ReactMarkdown from 'react-markdown'
 import { getOpenRouterKey } from '../services/api'
 
 interface Message {
@@ -121,7 +122,7 @@ export default function QuantifyChat() {
 
       {/* Chat panel */}
       {open && (
-        <div className="fixed bottom-16 right-5 z-[9998] w-[360px] max-h-[520px] rounded-lg border border-studio-border bg-studio-surface shadow-2xl flex flex-col overflow-hidden"
+        <div className="fixed bottom-16 right-5 z-[9998] w-[380px] max-h-[540px] rounded-lg border border-studio-border bg-studio-surface shadow-2xl flex flex-col overflow-hidden"
           style={{ fontFamily: 'var(--font-sans, system-ui, sans-serif)' }}
         >
           {/* Header */}
@@ -169,15 +170,44 @@ export default function QuantifyChat() {
 
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div
-                  className={`max-w-[85%] text-[12px] leading-[1.6] rounded-lg px-3 py-2 whitespace-pre-wrap ${
-                    msg.role === 'user'
-                      ? 'bg-studio-accent/15 text-studio-text'
-                      : 'bg-studio-surface-2 text-studio-text'
-                  }`}
-                >
-                  {msg.content}
-                </div>
+                {msg.role === 'user' ? (
+                  <div className="max-w-[85%] text-[12px] leading-[1.6] rounded-lg px-3 py-2 bg-studio-accent/15 text-studio-text whitespace-pre-wrap">
+                    {msg.content}
+                  </div>
+                ) : (
+                  <div className="max-w-[90%] rounded-lg px-3 py-2 bg-studio-surface-2 text-studio-text qchat-prose">
+                    <ReactMarkdown
+                      components={{
+                        h1: ({ children }) => <h3 className="text-[13px] font-bold text-studio-text mt-3 mb-1.5 first:mt-0">{children}</h3>,
+                        h2: ({ children }) => <h4 className="text-[12px] font-bold text-studio-text mt-2.5 mb-1 first:mt-0">{children}</h4>,
+                        h3: ({ children }) => <h5 className="text-[12px] font-semibold text-studio-text mt-2 mb-1 first:mt-0">{children}</h5>,
+                        p: ({ children }) => <p className="text-[12px] leading-[1.65] text-studio-text mb-2 last:mb-0">{children}</p>,
+                        ul: ({ children }) => <ul className="text-[12px] leading-[1.65] mb-2 last:mb-0 pl-4 space-y-0.5 list-disc marker:text-studio-text-dim">{children}</ul>,
+                        ol: ({ children }) => <ol className="text-[12px] leading-[1.65] mb-2 last:mb-0 pl-4 space-y-0.5 list-decimal marker:text-studio-text-dim">{children}</ol>,
+                        li: ({ children }) => <li className="text-studio-text pl-0.5">{children}</li>,
+                        strong: ({ children }) => <strong className="font-semibold text-studio-text">{children}</strong>,
+                        em: ({ children }) => <em className="italic text-studio-text-muted">{children}</em>,
+                        code: ({ children, className }) => {
+                          const isBlock = className?.includes('language-')
+                          if (isBlock) {
+                            return <code className="block bg-studio-bg text-studio-text-muted text-[11px] leading-[1.5] rounded px-2.5 py-2 my-2 overflow-x-auto font-mono whitespace-pre">{children}</code>
+                          }
+                          return <code className="bg-studio-bg text-studio-accent text-[11px] px-1 py-0.5 rounded font-mono">{children}</code>
+                        },
+                        pre: ({ children }) => <div className="my-2">{children}</div>,
+                        blockquote: ({ children }) => <blockquote className="border-l-2 border-studio-accent/30 pl-3 my-2 text-studio-text-muted italic">{children}</blockquote>,
+                        hr: () => <hr className="border-studio-border my-3" />,
+                        a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-studio-accent hover:underline">{children}</a>,
+                        table: ({ children }) => <div className="overflow-x-auto my-2"><table className="text-[11px] w-full border-collapse">{children}</table></div>,
+                        thead: ({ children }) => <thead className="bg-studio-bg">{children}</thead>,
+                        th: ({ children }) => <th className="text-left text-[11px] font-semibold text-studio-text-muted px-2 py-1 border-b border-studio-border">{children}</th>,
+                        td: ({ children }) => <td className="text-[11px] text-studio-text px-2 py-1 border-b border-studio-border/50">{children}</td>,
+                      }}
+                    >
+                      {msg.content}
+                    </ReactMarkdown>
+                  </div>
+                )}
               </div>
             ))}
 
