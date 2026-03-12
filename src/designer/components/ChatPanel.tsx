@@ -2,7 +2,6 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { v4 as uuid } from 'uuid'
 import { useDesigner } from '../designer-store'
-import { DESIGNER_SYSTEM_PROMPT } from '../utils/designer-system-prompt'
 import type { ChatMessage, ArtboardAction } from '../types'
 
 function getOpenRouterKey(): string {
@@ -18,13 +17,56 @@ const SUGGESTED_PROMPTS = [
   'Create a return count screen',
 ]
 
+// ── Progressive HTML extraction from partial JSON ────────────────────────
+
+function extractProgressiveHtml(accumulated: string): string | null {
+  const marker = /"html"\s*:\s*"/
+  const match = accumulated.match(marker)
+  if (!match || match.index === undefined) return null
+
+  const startIdx = match.index + match[0].length
+  let result = ''
+  let i = startIdx
+
+  while (i < accumulated.length) {
+    const ch = accumulated[i]
+    if (ch === '\\' && i + 1 < accumulated.length) {
+      const next = accumulated[i + 1]
+      switch (next) {
+        case 'n': result += '\n'; i += 2; continue
+        case 't': result += '\t'; i += 2; continue
+        case '"': result += '"'; i += 2; continue
+        case '\\': result += '\\'; i += 2; continue
+        case '/': result += '/'; i += 2; continue
+        case 'r': result += '\r'; i += 2; continue
+        default: result += ch; i++; continue
+      }
+    }
+    if (ch === '"') break // End of JSON string value
+    result += ch
+    i++
+  }
+
+  return result || null
+}
+
+function extractProgressiveName(accumulated: string): string | null {
+  const match = accumulated.match(/"name"\s*:\s*"([^"\\]*(?:\\.[^"\\]*)*)"/)
+  if (!match) return null
+  return match[1].replace(/\\"/g, '"').replace(/\\\\/g, '\\')
+}
+
+// ── Component ────────────────────────────────────────────────────────────
+
 export default function ChatPanel() {
   const { state, dispatch } = useDesigner()
   const { messages, isGenerating, artboards, selectedArtboardId } = state
 
   const [input, setInput] = useState('')
+  const [streamingStatus, setStreamingStatus] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  const abortRef = useRef<AbortController | null>(null)
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -46,6 +88,11 @@ export default function ChatPanel() {
     setInput('')
     dispatch({ type: 'SET_GENERATING', value: true })
     dispatch({ type: 'SET_ERROR', error: null })
+    setStreamingStatus('Thinking...')
+
+    // Set up abort controller for cancellation
+    const abortController = new AbortController()
+    abortRef.current = abortController
 
     try {
       // Build context about current artboards
@@ -54,7 +101,7 @@ export default function ChatPanel() {
         name: a.name,
         width: a.width,
         height: a.height,
-        html: a.html.slice(0, 3000), // truncate for context window
+        html: a.html.slice(0, 3000),
       }))
 
       // Build conversation history for the API
@@ -78,7 +125,6 @@ export default function ChatPanel() {
         augmentedContent += `\n\n[Existing artboards on canvas: ${artboards.map(a => `"${a.name}" (id: ${a.id})`).join(', ')}]`
       }
 
-      // Replace the last user message content with augmented version
       const apiMessages = recentMessages.map((m, i) =>
         i === recentMessages.length - 1 && m.role === 'user'
           ? { ...m, content: augmentedContent }
@@ -88,6 +134,7 @@ export default function ChatPanel() {
       const resp = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: abortController.signal,
         body: JSON.stringify({
           action: 'designer',
           messages: apiMessages,
@@ -101,59 +148,192 @@ export default function ChatPanel() {
         throw new Error(err.error || 'Something went wrong')
       }
 
-      const data = await resp.json()
+      // Read SSE stream
+      const reader = resp.body!.getReader()
+      const decoder = new TextDecoder()
+      let accumulated = ''
+      let previewArtboardId: string | null = null
+      let lastRenderTime = 0
+      let sseBuffer = ''
 
-      // Process artboard actions
-      const actions: ArtboardAction[] = []
-      if (data.artboards && Array.isArray(data.artboards)) {
-        for (const ab of data.artboards) {
-          if (ab.action === 'create') {
-            const newId = uuid()
-            // Position new artboards next to existing ones
-            const lastArtboard = artboards.length > 0 ? artboards[artboards.length - 1] : null
-            const x = lastArtboard ? lastArtboard.x + lastArtboard.width + 60 : 100
-            const y = lastArtboard ? lastArtboard.y : 100
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
 
-            dispatch({
-              type: 'CREATE_ARTBOARD',
-              artboard: {
-                id: newId,
-                name: ab.name || 'New screen',
-                x,
-                y,
-                width: ab.width || 390,
-                height: ab.height || 844,
-                html: ab.html || '',
-                css: ab.css || '',
-                createdAt: Date.now(),
-                updatedAt: Date.now(),
-              },
-            })
-            actions.push({ type: 'create', artboardId: newId, artboardName: ab.name || 'New screen' })
-          } else if (ab.action === 'update' && ab.id) {
-            dispatch({
-              type: 'UPDATE_ARTBOARD',
-              id: ab.id,
-              updates: {
-                html: ab.html,
-                css: ab.css || '',
-                ...(ab.name ? { name: ab.name } : {}),
-              },
-            })
-            actions.push({ type: 'update', artboardId: ab.id, artboardName: ab.name || '' })
+        sseBuffer += decoder.decode(value, { stream: true })
+        // Split by double newline (SSE event boundary)
+        const events = sseBuffer.split('\n\n')
+        sseBuffer = events.pop()! // Keep incomplete event in buffer
+
+        for (const event of events) {
+          const lines = event.split('\n')
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue
+            const data = line.slice(6)
+
+            try {
+              const evt = JSON.parse(data)
+
+              if (evt.type === 'status') {
+                setStreamingStatus(evt.message || 'Designing...')
+              } else if (evt.type === 'delta') {
+                accumulated += evt.text
+
+                // Extract name for status
+                const name = extractProgressiveName(accumulated)
+                if (name) {
+                  setStreamingStatus(`Building ${name}...`)
+                }
+
+                // Throttled progressive rendering
+                const now = Date.now()
+                if (now - lastRenderTime >= 120) {
+                  lastRenderTime = now
+                  const html = extractProgressiveHtml(accumulated)
+                  if (html && html.length > 40) {
+                    const artboardName = name || 'New screen'
+
+                    if (!previewArtboardId) {
+                      // Create preview artboard
+                      previewArtboardId = uuid()
+                      const lastArtboard = artboards.length > 0 ? artboards[artboards.length - 1] : null
+                      const x = lastArtboard ? lastArtboard.x + lastArtboard.width + 60 : 100
+                      const y = lastArtboard ? lastArtboard.y : 100
+
+                      dispatch({
+                        type: 'CREATE_ARTBOARD',
+                        artboard: {
+                          id: previewArtboardId,
+                          name: artboardName,
+                          x, y,
+                          width: 390, height: 844,
+                          html,
+                          css: '',
+                          createdAt: Date.now(),
+                          updatedAt: Date.now(),
+                        },
+                      })
+                      dispatch({ type: 'SELECT_ARTBOARD', id: previewArtboardId })
+                    } else {
+                      // Update preview artboard with more HTML
+                      dispatch({
+                        type: 'UPDATE_ARTBOARD',
+                        id: previewArtboardId,
+                        updates: { html, name: artboardName },
+                      })
+                    }
+                  }
+                }
+              } else if (evt.type === 'done') {
+                // Final result — finalize artboards
+                setStreamingStatus(null)
+                const actions: ArtboardAction[] = []
+
+                if (evt.artboards && Array.isArray(evt.artboards)) {
+                  for (let idx = 0; idx < evt.artboards.length; idx++) {
+                    const ab = evt.artboards[idx]
+                    if (ab.action === 'create') {
+                      if (idx === 0 && previewArtboardId) {
+                        // Update the preview artboard with final sanitized HTML
+                        dispatch({
+                          type: 'UPDATE_ARTBOARD',
+                          id: previewArtboardId,
+                          updates: {
+                            html: ab.html || '',
+                            css: ab.css || '',
+                            name: ab.name || 'New screen',
+                          },
+                        })
+                        actions.push({ type: 'create', artboardId: previewArtboardId, artboardName: ab.name || 'New screen' })
+                      } else {
+                        // Create additional artboards
+                        const newId = uuid()
+                        const prevArtboard = previewArtboardId
+                          ? { x: (artboards.find(a => a.id === previewArtboardId)?.x || 100), width: 390 }
+                          : artboards.length > 0
+                            ? artboards[artboards.length - 1]
+                            : null
+                        const x = prevArtboard ? prevArtboard.x + (prevArtboard.width || 390) + 60 * (idx + 1) : 100 + 450 * idx
+                        const y = artboards.length > 0 ? artboards[0].y : 100
+
+                        dispatch({
+                          type: 'CREATE_ARTBOARD',
+                          artboard: {
+                            id: newId,
+                            name: ab.name || 'New screen',
+                            x, y,
+                            width: ab.width || 390,
+                            height: ab.height || 844,
+                            html: ab.html || '',
+                            css: ab.css || '',
+                            createdAt: Date.now(),
+                            updatedAt: Date.now(),
+                          },
+                        })
+                        actions.push({ type: 'create', artboardId: newId, artboardName: ab.name || 'New screen' })
+                      }
+                    } else if (ab.action === 'update' && ab.id) {
+                      dispatch({
+                        type: 'UPDATE_ARTBOARD',
+                        id: ab.id,
+                        updates: {
+                          html: ab.html,
+                          css: ab.css || '',
+                          ...(ab.name ? { name: ab.name } : {}),
+                        },
+                      })
+                      actions.push({ type: 'update', artboardId: ab.id, artboardName: ab.name || '' })
+                    }
+                  }
+                }
+
+                const assistantMsg: ChatMessage = {
+                  id: uuid(),
+                  role: 'assistant',
+                  content: evt.reply || 'Done.',
+                  timestamp: Date.now(),
+                  artboardActions: actions.length > 0 ? actions : undefined,
+                }
+                dispatch({ type: 'ADD_MESSAGE', message: assistantMsg })
+              } else if (evt.type === 'error') {
+                throw new Error(evt.error || 'Generation failed')
+              }
+            } catch (parseErr: any) {
+              // If it's a thrown Error (not a JSON parse error), re-throw
+              if (parseErr instanceof Error && parseErr.message !== 'Unexpected end of JSON input'
+                && !parseErr.message.includes('Unexpected token')
+                && !parseErr.message.includes('JSON')) {
+                throw parseErr
+              }
+              // Otherwise ignore (partial SSE chunks)
+            }
           }
         }
       }
 
-      const assistantMsg: ChatMessage = {
-        id: uuid(),
-        role: 'assistant',
-        content: data.reply || 'Done.',
-        timestamp: Date.now(),
-        artboardActions: actions.length > 0 ? actions : undefined,
+      // If we got deltas but no 'done' event (stream ended abruptly),
+      // do a final render with what we have
+      if (accumulated && !messages.find(m => m.timestamp > userMsg.timestamp)) {
+        const html = extractProgressiveHtml(accumulated)
+        if (html && previewArtboardId) {
+          dispatch({
+            type: 'UPDATE_ARTBOARD',
+            id: previewArtboardId,
+            updates: { html },
+          })
+        }
+        const assistantMsg: ChatMessage = {
+          id: uuid(),
+          role: 'assistant',
+          content: 'Design generated (stream ended early).',
+          timestamp: Date.now(),
+          artboardActions: previewArtboardId ? [{ type: 'create', artboardId: previewArtboardId, artboardName: extractProgressiveName(accumulated) || 'New screen' }] : undefined,
+        }
+        dispatch({ type: 'ADD_MESSAGE', message: assistantMsg })
       }
-      dispatch({ type: 'ADD_MESSAGE', message: assistantMsg })
     } catch (err: any) {
+      if (err.name === 'AbortError') return // User cancelled
+      setStreamingStatus(null)
       const errMsg: ChatMessage = {
         id: uuid(),
         role: 'assistant',
@@ -162,7 +342,9 @@ export default function ChatPanel() {
       }
       dispatch({ type: 'ADD_MESSAGE', message: errMsg })
     } finally {
+      setStreamingStatus(null)
       dispatch({ type: 'SET_GENERATING', value: false })
+      abortRef.current = null
     }
   }, [input, messages, isGenerating, artboards, selectedArtboardId, dispatch])
 
@@ -259,10 +441,9 @@ export default function ChatPanel() {
 
         {isGenerating && (
           <div className="flex justify-start">
-            <div className="bg-white/[0.05] text-white/40 text-[12px] rounded-lg px-3 py-2 flex items-center gap-1.5">
-              <span className="inline-block w-1 h-1 rounded-full bg-white/40 animate-pulse" />
-              <span className="inline-block w-1 h-1 rounded-full bg-white/40 animate-pulse" style={{ animationDelay: '0.15s' }} />
-              <span className="inline-block w-1 h-1 rounded-full bg-white/40 animate-pulse" style={{ animationDelay: '0.3s' }} />
+            <div className="bg-white/[0.05] text-white/40 text-[12px] rounded-lg px-3 py-2 flex items-center gap-2">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#0A3EFF]/60 animate-pulse" />
+              <span>{streamingStatus || 'Thinking...'}</span>
             </div>
           </div>
         )}

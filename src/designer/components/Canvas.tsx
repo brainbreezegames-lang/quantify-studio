@@ -48,27 +48,41 @@ export default function Canvas() {
     panStart.current = null
   }, [])
 
-  // Zoom toward cursor
+  // Two-finger scroll = pan, pinch (ctrlKey) = zoom
   const handleWheel = useCallback((e: React.WheelEvent) => {
     e.preventDefault()
-    const container = containerRef.current
-    if (!container) return
 
-    const rect = container.getBoundingClientRect()
-    const cursorX = e.clientX - rect.left
-    const cursorY = e.clientY - rect.top
+    if (e.ctrlKey || e.metaKey) {
+      // Pinch-to-zoom on trackpad (macOS sends ctrlKey=true for pinch)
+      // or Ctrl+scroll on mouse
+      const container = containerRef.current
+      if (!container) return
 
-    const zoomFactor = e.deltaY < 0 ? 1.08 : 1 / 1.08
-    const newZoom = Math.min(3, Math.max(0.1, viewport.zoom * zoomFactor))
+      const rect = container.getBoundingClientRect()
+      const cursorX = e.clientX - rect.left
+      const cursorY = e.clientY - rect.top
 
-    // Zoom toward cursor position
-    const newPanX = cursorX - (cursorX - viewport.panX) * (newZoom / viewport.zoom)
-    const newPanY = cursorY - (cursorY - viewport.panY) * (newZoom / viewport.zoom)
+      const zoomFactor = e.deltaY < 0 ? 1.04 : 1 / 1.04
+      const newZoom = Math.min(3, Math.max(0.1, viewport.zoom * zoomFactor))
 
-    dispatch({
-      type: 'SET_VIEWPORT',
-      viewport: { zoom: newZoom, panX: newPanX, panY: newPanY },
-    })
+      // Zoom toward cursor position
+      const newPanX = cursorX - (cursorX - viewport.panX) * (newZoom / viewport.zoom)
+      const newPanY = cursorY - (cursorY - viewport.panY) * (newZoom / viewport.zoom)
+
+      dispatch({
+        type: 'SET_VIEWPORT',
+        viewport: { zoom: newZoom, panX: newPanX, panY: newPanY },
+      })
+    } else {
+      // Two-finger scroll = pan
+      dispatch({
+        type: 'SET_VIEWPORT',
+        viewport: {
+          panX: viewport.panX - e.deltaX,
+          panY: viewport.panY - e.deltaY,
+        },
+      })
+    }
   }, [viewport, dispatch])
 
   // Spacebar for pan mode

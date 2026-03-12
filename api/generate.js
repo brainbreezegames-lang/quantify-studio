@@ -2173,6 +2173,35 @@ ${CORE_SYSTEM_SPEC}
 ${COMPONENT_RULES}
 ${DESIGN_PHILOSOPHY}
 
+═══════════════════════════════════════════
+GOLD EXAMPLES — MATCH THIS QUALITY
+═══════════════════════════════════════════
+
+Study these examples. They show the exact HTML density, structure, and compact patterns expected. Your output MUST match this level of quality:
+
+EXAMPLE — Dashboard:
+${GOLD_EXAMPLES['dashboard']}
+
+EXAMPLE — List screen:
+${GOLD_EXAMPLES['list-browse']}
+
+EXAMPLE — Detail view:
+${GOLD_EXAMPLES['detail-view']}
+
+EXAMPLE — Edit form:
+${GOLD_EXAMPLES['form-input']}
+
+KEY PATTERNS TO MATCH:
+- .list-item rows: icon-left + stacked text (in .col with flex:1) + badge/value + chevron — all in ONE horizontal row
+- Compact spacing: 2px margins on secondary text (style="margin:2px 0"), not 8px or 16px
+- .row-between for label+value pairs inside list items
+- .col with flex:1 for the text stack inside each list item
+- .section-header (uppercase) for group labels
+- .card wrapping groups of .list-items
+- Description-first product names: "Standard Frame 5×4" not "SCF-4824"
+- Inline styles for minor tweaks only (margin, flex, opacity) — use pre-loaded CSS classes for everything else
+- DENSE layout: many items visible at once, no wasted space
+
 SELF-CHECK:
 1. ONE clear primary action per area
 2. Sentence case everywhere
@@ -2183,54 +2212,118 @@ SELF-CHECK:
 7. Touch targets 48px+ for gloved hands
 8. Online/Offline pill in toolbar
 9. NEVER write custom CSS for .btn-filled/.btn-outlined — pre-styled
-10. Description-first products: "Ledger — 10ft" not "LED-10-STD"`
+10. Description-first products: "Ledger — 10ft" not "LED-10-STD"
+11. .list-item rows must be HORIZONTAL (icon + text-stack + badge + chevron)
+12. Match the density and compactness of the gold examples above`
 
         const apiMessages = [
           { role: 'system', content: DESIGNER_SYSTEM },
           ...designerMessages.slice(-15),
         ]
 
-        const { text } = await llmWithRetry(MODEL, apiMessages, 12000, undefined, designerApiKey)
+        // Set SSE headers for streaming
+        res.writeHead(200, {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache, no-transform',
+          'Connection': 'keep-alive',
+          'X-Accel-Buffering': 'no',
+        })
 
-        // Extract JSON from response
+        // Send initial status
+        res.write(`data: ${JSON.stringify({ type: 'status', message: 'Designing...' })}\n\n`)
+
+        const config = getProviderConfig(MODEL, designerApiKey)
+        const body = buildRequestBody(MODEL, apiMessages, 12000)
+        body.stream = true
+
+        const controller = new AbortController()
+        const timer = setTimeout(() => controller.abort(), 200000)
+
+        const response = await fetch(config.baseUrl, {
+          method: 'POST',
+          signal: controller.signal,
+          headers: {
+            'Authorization': `Bearer ${config.apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(body),
+        })
+
+        clearTimeout(timer)
+
+        if (!response.ok) {
+          const errText = await response.text()
+          res.write(`data: ${JSON.stringify({ type: 'error', error: `AI generation failed (${response.status}): ${errText.slice(0, 300)}` })}\n\n`)
+          res.end()
+          return
+        }
+
+        // Stream response chunks to client
+        let fullText = ''
+        const reader = response.body.getReader()
+        const decoder = new TextDecoder()
+        let sseBuffer = ''
+
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+
+          sseBuffer += decoder.decode(value, { stream: true })
+          const lines = sseBuffer.split('\n')
+          sseBuffer = lines.pop() // Keep incomplete line in buffer
+
+          for (const line of lines) {
+            const trimmed = line.trim()
+            if (!trimmed.startsWith('data: ')) continue
+            const data = trimmed.slice(6)
+            if (data === '[DONE]') continue
+            try {
+              const chunk = JSON.parse(data)
+              const delta = chunk.choices?.[0]?.delta?.content
+              if (delta) {
+                fullText += delta
+                res.write(`data: ${JSON.stringify({ type: 'delta', text: delta })}\n\n`)
+              }
+            } catch { /* ignore malformed chunks */ }
+          }
+        }
+
+        // Parse the final accumulated text
         let parsed = null
         try {
-          // Try direct parse first
-          parsed = JSON.parse(text)
+          parsed = JSON.parse(fullText)
         } catch {
-          // Try extracting JSON from markdown fences or mixed text
-          const jsonMatch = text.match(/\{[\s\S]*\}/)
+          const jsonMatch = fullText.match(/\{[\s\S]*\}/)
           if (jsonMatch) {
-            try {
-              parsed = JSON.parse(jsonMatch[0])
-            } catch { /* fall through */ }
+            try { parsed = JSON.parse(jsonMatch[0]) } catch { /* fall through */ }
           }
         }
 
         if (!parsed) {
-          // If we can't parse JSON, treat the whole response as a reply
-          return res.status(200).json({
-            artboards: [],
-            reply: text || 'I generated a response but it wasn\'t in the expected format. Please try again.',
-          })
+          res.write(`data: ${JSON.stringify({ type: 'done', artboards: [], reply: fullText || 'Response was not in expected format. Please try again.' })}\n\n`)
+        } else {
+          const artboards = (parsed.artboards || []).map(ab => ({
+            ...ab,
+            html: (ab.html || '')
+              .replace(/<script[\s\S]*?<\/script>/gi, '')
+              .replace(/on\w+\s*=\s*["'][^"']*["']/gi, ''),
+            css: ab.css || '',
+          }))
+          res.write(`data: ${JSON.stringify({ type: 'done', artboards, reply: parsed.reply || 'Design generated.' })}\n\n`)
         }
 
-        // Sanitize artboard HTML
-        const artboards = (parsed.artboards || []).map(ab => ({
-          ...ab,
-          html: (ab.html || '')
-            .replace(/<script[\s\S]*?<\/script>/gi, '')
-            .replace(/on\w+\s*=\s*["'][^"']*["']/gi, ''),
-          css: ab.css || '',
-        }))
-
-        return res.status(200).json({
-          artboards,
-          reply: parsed.reply || 'Design generated.',
-        })
+        res.end()
       } catch (designerErr) {
         console.error('Designer error:', designerErr)
-        return res.status(500).json({ error: designerErr?.message || 'Design generation failed — please try again.' })
+        try {
+          res.write(`data: ${JSON.stringify({ type: 'error', error: designerErr?.message || 'Design generation failed — please try again.' })}\n\n`)
+          res.end()
+        } catch {
+          // Headers may not have been sent yet
+          if (!res.headersSent) {
+            return res.status(500).json({ error: designerErr?.message || 'Design generation failed — please try again.' })
+          }
+        }
       }
     }
 
