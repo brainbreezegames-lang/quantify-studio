@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { v4 as uuid } from 'uuid'
 import { useDesigner } from '../designer-store'
-import type { ChatMessage, ArtboardAction } from '../types'
+import type { ChatMessage, ArtboardAction, QualityLens } from '../types'
 
 function getOpenRouterKey(): string {
   return localStorage.getItem('openrouter_api_key') || ''
@@ -15,6 +15,13 @@ const SUGGESTED_PROMPTS = [
   'Create a shipment detail screen',
   'Design a dashboard with today\'s stats',
   'Create a return count screen',
+]
+
+const LENS_OPTIONS: { id: QualityLens; label: string; icon: string }[] = [
+  { id: 'premium', label: 'Premium', icon: '✦' },
+  { id: 'gestalt', label: 'Gestalt', icon: '◎' },
+  { id: 'typography', label: 'Type', icon: 'Aa' },
+  { id: 'accessibility', label: 'A11y', icon: '♿' },
 ]
 
 // ── Progressive HTML extraction from partial JSON ────────────────────────
@@ -42,7 +49,7 @@ function extractProgressiveHtml(accumulated: string): string | null {
         default: result += ch; i++; continue
       }
     }
-    if (ch === '"') break // End of JSON string value
+    if (ch === '"') break
     result += ch
     i++
   }
@@ -60,12 +67,12 @@ function extractProgressiveName(accumulated: string): string | null {
 
 export default function ChatPanel() {
   const { state, dispatch } = useDesigner()
-  const { messages, isGenerating, artboards, selectedArtboardId } = state
+  const { messages, isGenerating, artboards, selectedArtboardId, activeLenses } = state
 
   const [input, setInput] = useState('')
   const [streamingStatus, setStreamingStatus] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLTextAreaElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
   const abortRef = useRef<AbortController | null>(null)
 
   useEffect(() => {
@@ -73,6 +80,14 @@ export default function ChatPanel() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
   }, [messages])
+
+  // Auto-resize textarea
+  useEffect(() => {
+    const ta = textareaRef.current
+    if (!ta) return
+    ta.style.height = 'auto'
+    ta.style.height = Math.min(ta.scrollHeight, 160) + 'px'
+  }, [input])
 
   const send = useCallback(async (text?: string) => {
     const content = (text || input).trim()
@@ -88,29 +103,40 @@ export default function ChatPanel() {
     setInput('')
     dispatch({ type: 'SET_GENERATING', value: true })
     dispatch({ type: 'SET_ERROR', error: null })
-    setStreamingStatus('Thinking...')
+    setStreamingStatus('Planning design...')
 
-    // Set up abort controller for cancellation
+    // Create blank artboard immediately so user sees it on canvas
+    const previewArtboardId = uuid()
+    const lastArtboard = artboards.length > 0 ? artboards[artboards.length - 1] : null
+    const x = lastArtboard ? lastArtboard.x + lastArtboard.width + 60 : 100
+    const y = lastArtboard ? lastArtboard.y : 100
+
+    dispatch({
+      type: 'CREATE_ARTBOARD',
+      artboard: {
+        id: previewArtboardId,
+        name: 'Generating...',
+        x, y,
+        width: 390, height: 844,
+        html: '', css: '',
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      },
+    })
+
     const abortController = new AbortController()
     abortRef.current = abortController
 
     try {
-      // Build context about current artboards
       const artboardContext = artboards.map(a => ({
-        id: a.id,
-        name: a.name,
-        width: a.width,
-        height: a.height,
+        id: a.id, name: a.name, width: a.width, height: a.height,
         html: a.html.slice(0, 3000),
       }))
 
-      // Build conversation history for the API
       const recentMessages = [...messages.slice(-14), userMsg].map(m => ({
-        role: m.role,
-        content: m.content,
+        role: m.role, content: m.content,
       }))
 
-      // Add artboard context to the user message
       let augmentedContent = content
       if (artboards.length > 0) {
         const selectedArtboard = selectedArtboardId
@@ -140,6 +166,7 @@ export default function ChatPanel() {
           messages: apiMessages,
           artboards: artboardContext,
           openRouterApiKey: getOpenRouterKey(),
+          activeLenses,
         }),
       })
 
@@ -152,18 +179,17 @@ export default function ChatPanel() {
       const reader = resp.body!.getReader()
       const decoder = new TextDecoder()
       let accumulated = ''
-      let previewArtboardId: string | null = null
       let lastRenderTime = 0
       let sseBuffer = ''
+      let artboardCreated = false
 
       while (true) {
         const { done, value } = await reader.read()
         if (done) break
 
         sseBuffer += decoder.decode(value, { stream: true })
-        // Split by double newline (SSE event boundary)
         const events = sseBuffer.split('\n\n')
-        sseBuffer = events.pop()! // Keep incomplete event in buffer
+        sseBuffer = events.pop()!
 
         for (const event of events) {
           const lines = event.split('\n')
@@ -179,53 +205,42 @@ export default function ChatPanel() {
               } else if (evt.type === 'delta') {
                 accumulated += evt.text
 
-                // Extract name for status
                 const name = extractProgressiveName(accumulated)
                 if (name) {
                   setStreamingStatus(`Building ${name}...`)
+                  // Update artboard name
+                  dispatch({ type: 'UPDATE_ARTBOARD', id: previewArtboardId, updates: { name } })
                 }
 
-                // Throttled progressive rendering
+                // Throttled progressive rendering (500ms to reduce flicker)
                 const now = Date.now()
-                if (now - lastRenderTime >= 120) {
+                if (now - lastRenderTime >= 500) {
                   lastRenderTime = now
                   const html = extractProgressiveHtml(accumulated)
                   if (html && html.length > 40) {
-                    const artboardName = name || 'New screen'
-
-                    if (!previewArtboardId) {
-                      // Create preview artboard
-                      previewArtboardId = uuid()
-                      const lastArtboard = artboards.length > 0 ? artboards[artboards.length - 1] : null
-                      const x = lastArtboard ? lastArtboard.x + lastArtboard.width + 60 : 100
-                      const y = lastArtboard ? lastArtboard.y : 100
-
-                      dispatch({
-                        type: 'CREATE_ARTBOARD',
-                        artboard: {
-                          id: previewArtboardId,
-                          name: artboardName,
-                          x, y,
-                          width: 390, height: 844,
-                          html,
-                          css: '',
-                          createdAt: Date.now(),
-                          updatedAt: Date.now(),
-                        },
-                      })
-                      dispatch({ type: 'SELECT_ARTBOARD', id: previewArtboardId })
-                    } else {
-                      // Update preview artboard with more HTML
-                      dispatch({
-                        type: 'UPDATE_ARTBOARD',
-                        id: previewArtboardId,
-                        updates: { html, name: artboardName },
-                      })
-                    }
+                    dispatch({
+                      type: 'UPDATE_ARTBOARD',
+                      id: previewArtboardId,
+                      updates: { html },
+                    })
+                    artboardCreated = true
                   }
                 }
+              } else if (evt.type === 'pass1_done') {
+                // Pass 1 complete — do a final render before pass 2 starts
+                const html = extractProgressiveHtml(accumulated)
+                if (html) {
+                  dispatch({
+                    type: 'UPDATE_ARTBOARD',
+                    id: previewArtboardId,
+                    updates: { html },
+                  })
+                  artboardCreated = true
+                }
+                // Reset accumulator for pass 2, keep same artboard
+                accumulated = ''
+                lastRenderTime = 0
               } else if (evt.type === 'done') {
-                // Final result — finalize artboards
                 setStreamingStatus(null)
                 const actions: ArtboardAction[] = []
 
@@ -233,8 +248,8 @@ export default function ChatPanel() {
                   for (let idx = 0; idx < evt.artboards.length; idx++) {
                     const ab = evt.artboards[idx]
                     if (ab.action === 'create') {
-                      if (idx === 0 && previewArtboardId) {
-                        // Update the preview artboard with final sanitized HTML
+                      if (idx === 0) {
+                        // Update the preview artboard with final HTML
                         dispatch({
                           type: 'UPDATE_ARTBOARD',
                           id: previewArtboardId,
@@ -246,22 +261,13 @@ export default function ChatPanel() {
                         })
                         actions.push({ type: 'create', artboardId: previewArtboardId, artboardName: ab.name || 'New screen' })
                       } else {
-                        // Create additional artboards
                         const newId = uuid()
-                        const prevArtboard = previewArtboardId
-                          ? { x: (artboards.find(a => a.id === previewArtboardId)?.x || 100), width: 390 }
-                          : artboards.length > 0
-                            ? artboards[artboards.length - 1]
-                            : null
-                        const x = prevArtboard ? prevArtboard.x + (prevArtboard.width || 390) + 60 * (idx + 1) : 100 + 450 * idx
-                        const y = artboards.length > 0 ? artboards[0].y : 100
-
                         dispatch({
                           type: 'CREATE_ARTBOARD',
                           artboard: {
                             id: newId,
                             name: ab.name || 'New screen',
-                            x, y,
+                            x: x + 450 * idx, y,
                             width: ab.width || 390,
                             height: ab.height || 844,
                             html: ab.html || '',
@@ -287,6 +293,11 @@ export default function ChatPanel() {
                   }
                 }
 
+                // If no artboards in done event, remove the blank preview
+                if (actions.length === 0 && !artboardCreated) {
+                  dispatch({ type: 'DELETE_ARTBOARD', id: previewArtboardId })
+                }
+
                 const assistantMsg: ChatMessage = {
                   id: uuid(),
                   role: 'assistant',
@@ -299,41 +310,28 @@ export default function ChatPanel() {
                 throw new Error(evt.error || 'Generation failed')
               }
             } catch (parseErr: any) {
-              // If it's a thrown Error (not a JSON parse error), re-throw
               if (parseErr instanceof Error && parseErr.message !== 'Unexpected end of JSON input'
                 && !parseErr.message.includes('Unexpected token')
                 && !parseErr.message.includes('JSON')) {
                 throw parseErr
               }
-              // Otherwise ignore (partial SSE chunks)
             }
           }
         }
       }
 
-      // If we got deltas but no 'done' event (stream ended abruptly),
-      // do a final render with what we have
-      if (accumulated && !messages.find(m => m.timestamp > userMsg.timestamp)) {
+      // Handle abrupt stream end — do final render
+      if (accumulated && !artboardCreated) {
         const html = extractProgressiveHtml(accumulated)
-        if (html && previewArtboardId) {
-          dispatch({
-            type: 'UPDATE_ARTBOARD',
-            id: previewArtboardId,
-            updates: { html },
-          })
+        if (html) {
+          dispatch({ type: 'UPDATE_ARTBOARD', id: previewArtboardId, updates: { html } })
         }
-        const assistantMsg: ChatMessage = {
-          id: uuid(),
-          role: 'assistant',
-          content: 'Design generated (stream ended early).',
-          timestamp: Date.now(),
-          artboardActions: previewArtboardId ? [{ type: 'create', artboardId: previewArtboardId, artboardName: extractProgressiveName(accumulated) || 'New screen' }] : undefined,
-        }
-        dispatch({ type: 'ADD_MESSAGE', message: assistantMsg })
       }
     } catch (err: any) {
-      if (err.name === 'AbortError') return // User cancelled
+      if (err.name === 'AbortError') return
       setStreamingStatus(null)
+      // Remove the blank preview artboard on error
+      dispatch({ type: 'DELETE_ARTBOARD', id: previewArtboardId })
       const errMsg: ChatMessage = {
         id: uuid(),
         role: 'assistant',
@@ -346,7 +344,7 @@ export default function ChatPanel() {
       dispatch({ type: 'SET_GENERATING', value: false })
       abortRef.current = null
     }
-  }, [input, messages, isGenerating, artboards, selectedArtboardId, dispatch])
+  }, [input, messages, isGenerating, artboards, selectedArtboardId, activeLenses, dispatch])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -357,33 +355,80 @@ export default function ChatPanel() {
 
   return (
     <div className="flex flex-col h-full bg-[#111114] border-l border-white/[0.06]" style={{ width: 380 }}>
-      {/* Header */}
-      <div className="px-4 py-3 border-b border-white/[0.06] flex items-center justify-between flex-shrink-0">
-        <div>
-          <div className="text-[13px] font-semibold text-white/90">Design chat</div>
-          <div className="text-[11px] text-white/30">Describe screens to generate</div>
+      {/* Prompt area — prominent, at top */}
+      <div className="flex-shrink-0 border-b border-white/[0.06]">
+        <div className="px-4 pt-4 pb-2">
+          <div className="text-[13px] font-semibold text-white/90 mb-2 flex items-center justify-between">
+            <span>Design chat</span>
+            {messages.length > 0 && (
+              <button
+                onClick={() => dispatch({ type: 'CLEAR_CHAT' })}
+                className="text-[10px] text-white/30 hover:text-white/50 px-2 py-1 rounded hover:bg-white/[0.05] transition-colors font-normal"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+          <div className="relative">
+            <textarea
+              ref={textareaRef}
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Describe a screen to design..."
+              rows={3}
+              className="w-full bg-white/[0.06] text-white/90 text-[13px] leading-[1.5] rounded-lg px-3.5 py-3 resize-none outline-none placeholder:text-white/25 focus:ring-1 focus:ring-[#0A3EFF]/40 focus:bg-white/[0.08] transition-colors"
+              style={{ minHeight: 72, maxHeight: 160 }}
+              disabled={isGenerating}
+            />
+            <button
+              onClick={() => send()}
+              disabled={!input.trim() || isGenerating}
+              className="absolute bottom-2.5 right-2.5 p-1.5 rounded-md bg-[#0A3EFF] text-white disabled:opacity-20 disabled:cursor-not-allowed transition-opacity hover:bg-[#0835D9]"
+              aria-label="Send"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14" />
+                <path d="M12 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
         </div>
-        {messages.length > 0 && (
-          <button
-            onClick={() => dispatch({ type: 'CLEAR_CHAT' })}
-            className="text-[10px] text-white/30 hover:text-white/50 px-2 py-1 rounded hover:bg-white/[0.05] transition-colors"
-          >
-            Clear
-          </button>
-        )}
+
+        {/* Quality lens toggles */}
+        <div className="px-4 pb-3 flex items-center gap-1.5">
+          <span className="text-[10px] text-white/25 mr-1">Lenses</span>
+          {LENS_OPTIONS.map(lens => {
+            const active = activeLenses.includes(lens.id)
+            return (
+              <button
+                key={lens.id}
+                onClick={() => dispatch({ type: 'TOGGLE_LENS', lens: lens.id })}
+                className={`text-[10px] px-2 py-1 rounded-full transition-all ${
+                  active
+                    ? 'bg-[#0A3EFF]/20 text-[#0A3EFF] ring-1 ring-[#0A3EFF]/30'
+                    : 'bg-white/[0.04] text-white/30 hover:text-white/50 hover:bg-white/[0.06]'
+                }`}
+                title={`${lens.label} quality lens`}
+              >
+                <span className="mr-0.5">{lens.icon}</span> {lens.label}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-3 min-h-0">
         {messages.length === 0 && !isGenerating && (
-          <div className="py-6">
-            <div className="text-[12px] text-white/30 mb-3">Try asking:</div>
-            <div className="space-y-1.5">
+          <div className="py-4">
+            <div className="text-[11px] text-white/25 mb-2">Try asking:</div>
+            <div className="space-y-1">
               {SUGGESTED_PROMPTS.map(q => (
                 <button
                   key={q}
                   onClick={() => send(q)}
-                  className="block w-full text-left text-[12px] text-[#0A3EFF]/70 hover:text-[#0A3EFF] px-3 py-2 rounded bg-white/[0.03] hover:bg-white/[0.06] transition-colors"
+                  className="block w-full text-left text-[12px] text-[#0A3EFF]/60 hover:text-[#0A3EFF] px-3 py-2 rounded bg-white/[0.02] hover:bg-white/[0.05] transition-colors"
                 >
                   {q}
                 </button>
@@ -400,7 +445,6 @@ export default function ChatPanel() {
               </div>
             ) : (
               <div className="max-w-[90%] rounded-lg px-3 py-2 bg-white/[0.05] text-white/80">
-                {/* Artboard action indicators */}
                 {msg.artboardActions && msg.artboardActions.length > 0 && (
                   <div className="mb-2 space-y-1">
                     {msg.artboardActions.map((action, i) => (
@@ -447,34 +491,6 @@ export default function ChatPanel() {
             </div>
           </div>
         )}
-      </div>
-
-      {/* Input */}
-      <div className="border-t border-white/[0.06] px-3 py-2 flex-shrink-0">
-        <div className="flex items-end gap-2">
-          <textarea
-            ref={inputRef}
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Describe a screen to design..."
-            rows={1}
-            className="flex-1 bg-white/[0.05] text-white/90 text-[12px] rounded-md px-3 py-2 resize-none outline-none placeholder:text-white/20 focus:ring-1 focus:ring-[#0A3EFF]/30 max-h-[100px] overflow-y-auto"
-            style={{ minHeight: 36 }}
-            disabled={isGenerating}
-          />
-          <button
-            onClick={() => send()}
-            disabled={!input.trim() || isGenerating}
-            className="p-2 rounded-md text-white/30 hover:text-white/60 hover:bg-white/[0.05] disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0"
-            aria-label="Send"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 2L11 13" />
-              <path d="M22 2L15 22L11 13L2 9L22 2Z" />
-            </svg>
-          </button>
-        </div>
       </div>
     </div>
   )

@@ -31,6 +31,8 @@ export interface CanvasViewport {
   zoom: number
 }
 
+export type QualityLens = 'premium' | 'gestalt' | 'typography' | 'accessibility'
+
 export interface DesignerState {
   projectName: string
   artboards: Artboard[]
@@ -39,6 +41,7 @@ export interface DesignerState {
   messages: ChatMessage[]
   isGenerating: boolean
   error: string | null
+  activeLenses: QualityLens[]
 }
 
 export type DesignerAction =
@@ -54,3 +57,4 @@ export type DesignerAction =
   | { type: 'SET_ERROR'; error: string | null }
   | { type: 'CLEAR_CHAT' }
   | { type: 'LOAD_STATE'; state: Partial<DesignerState> }
+  | { type: 'TOGGLE_LENS'; lens: QualityLens }

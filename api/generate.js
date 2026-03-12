@@ -1101,6 +1101,148 @@ async function llmWithRetry(model, messages, maxTokens, retries, requestKey) {
   return { text: '', modelUsed: model }
 }
 
+// ── Designer two-pass helpers ───────────────────────────────────────────
+
+async function streamLLMToSSE(res, model, messages, maxTokens, apiKey) {
+  const config = getProviderConfig(model, apiKey)
+  const body = buildRequestBody(model, messages, maxTokens)
+  body.stream = true
+
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), 200000)
+
+  const response = await fetch(config.baseUrl, {
+    method: 'POST',
+    signal: controller.signal,
+    headers: {
+      'Authorization': `Bearer ${config.apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  })
+
+  clearTimeout(timer)
+
+  if (!response.ok) {
+    const errText = await response.text()
+    throw new Error(`AI generation failed (${response.status}): ${errText.slice(0, 300)}`)
+  }
+
+  let fullText = ''
+  const reader = response.body.getReader()
+  const decoder = new TextDecoder()
+  let sseBuffer = ''
+
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+
+    sseBuffer += decoder.decode(value, { stream: true })
+    const lines = sseBuffer.split('\n')
+    sseBuffer = lines.pop()
+
+    for (const line of lines) {
+      const trimmed = line.trim()
+      if (!trimmed.startsWith('data: ')) continue
+      const data = trimmed.slice(6)
+      if (data === '[DONE]') continue
+      try {
+        const chunk = JSON.parse(data)
+        const delta = chunk.choices?.[0]?.delta?.content
+        if (delta) {
+          fullText += delta
+          res.write(`data: ${JSON.stringify({ type: 'delta', text: delta })}\n\n`)
+        }
+      } catch { /* ignore malformed chunks */ }
+    }
+  }
+
+  return fullText
+}
+
+function parseJsonResponse(text) {
+  if (!text) return null
+  try {
+    return JSON.parse(text)
+  } catch {
+    const jsonMatch = text.match(/\{[\s\S]*\}/)
+    if (jsonMatch) {
+      try { return JSON.parse(jsonMatch[0]) } catch { /* fall through */ }
+    }
+  }
+  return null
+}
+
+function pickClosestGoldExample(prompt) {
+  const lower = (prompt || '').toLowerCase()
+  if (lower.includes('dashboard') || lower.includes('home') || lower.includes('stat')) return GOLD_EXAMPLES['dashboard']
+  if (lower.includes('list') || lower.includes('reserv') || lower.includes('browse')) return GOLD_EXAMPLES['list-browse']
+  if (lower.includes('detail') || lower.includes('view') || lower.includes('info')) return GOLD_EXAMPLES['detail-view']
+  if (lower.includes('setting') || lower.includes('preference')) return GOLD_EXAMPLES['settings']
+  if (lower.includes('login') || lower.includes('sign in')) return GOLD_EXAMPLES['login']
+  if (lower.includes('empty') || lower.includes('no data')) return GOLD_EXAMPLES['empty-state']
+  // For edit/create/count/return/ship screens, use form-input as reference
+  if (lower.includes('form') || lower.includes('edit') || lower.includes('new') || lower.includes('create')
+    || lower.includes('count') || lower.includes('return') || lower.includes('ship') || lower.includes('scan'))
+    return GOLD_EXAMPLES['form-input']
+  return GOLD_EXAMPLES['detail-view'] // default to most complex
+}
+
+function sanitizeArtboardHtml(html) {
+  return (html || '')
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')
+}
+
+const QUALITY_LENS_PROMPTS = {
+  premium: `═══ PREMIUM UI DESIGN LENS ═══
+- Pick one dominant mood for the screen — a feeling, not a style
+- Find the hero element — one thing commands attention before anything else. Make it undeniably large
+- Backgrounds have atmosphere: subtle gradients, textures, tinted surfaces — never flat solid white
+- Hierarchy through SIZE: most important text 3-4x larger than secondary. Use opacity to de-emphasize (rgba not gray)
+- Every component earns its place — if you can remove it and the design still communicates, remove it
+- Active states look OBVIOUSLY different from default (not subtly). Add status indicators, badges, progress fills
+- Buttons communicate physics: primary CTAs feel pressable (filled, contrast). Secondary visually recedes
+- Spacing is intentional: comfortable padding inside cards, clear breathing room between sections
+- Typography does the heavy lifting: mix weights dramatically — light for labels, regular for body, bold for emphasis
+- The final test: would someone screenshot this for design inspiration?`,
+
+  gestalt: `═══ GESTALT VISUAL PERCEPTION LENS ═══
+- PROXIMITY: related elements closer together. Space BETWEEN groups must be noticeably larger than WITHIN groups
+- SIMILARITY: same function = same visual treatment everywhere. Different functions look visibly different
+- FIGURE-GROUND: clear contrast between foreground content and background. Primary CTA visually "lifted"
+- FOCAL POINT: ONE primary attention magnet per screen. It must match the user's primary task
+- CONTINUITY: multi-step flows need visual paths (progress bar, connecting lines, numbered steps)
+- COMMON REGION: related items inside same boundary (card, section bg). Max 2-3 nesting levels
+- SYMMETRY: grid-based layout, consistent column alignment. Spacing follows 4px/8px scale
+- SIMPLICITY: remove decorative elements until the design stops working. 3-4 functional colors max
+- PAST EXPERIENCE: use standard patterns users already know (hamburger menu, gear = settings, etc.)`,
+
+  typography: `═══ TYPOGRAPHY LENS ═══
+- Body text: 16px base, line-height 1.5-1.7 (1.6 sweet spot). Never 1.0 for multi-line text
+- Headings: line-height 1.1-1.3, letter-spacing -0.02em (tighter for large type)
+- ALL CAPS labels: letter-spacing 0.05-0.1em (looser for legibility)
+- Max 3-4 hierarchy levels per screen: display → heading → body → caption
+- Weight priority: size → weight → color (use size first, then weight, color last)
+- Body line length: 45-75 characters (66 ideal). Enforce with max-width
+- Minimum body font: 16px (below this, mobile browsers auto-zoom)
+- Text contrast: 4.5:1 minimum for normal text, 3:1 for large text
+- Mix weights dramatically within the same block: light labels, regular body, bold emphasis
+- Never center-align body text longer than 2 lines. Left-align by default`,
+
+  accessibility: `═══ ACCESSIBILITY LENS ═══
+- All images/icons need text alternatives (alt text or aria-label on icon buttons)
+- 4.5:1 contrast ratio for normal text, 3:1 for large text and UI components
+- Color must NEVER be the only indicator — always add icons, text, or borders alongside
+- Touch targets: 44×44px minimum recommended, 48px+ for industrial/gloved use
+- Every interactive element needs visible focus indicator (outline or ring)
+- Error messages in TEXT next to the field, not just red borders (screen readers can't see color)
+- Form inputs must have associated <label> elements
+- Heading hierarchy logical: h1 > h2 > h3, never skip levels
+- No content relies solely on hover to be discoverable
+- Status changes use aria-live regions for screen readers`,
+}
+
 function sanitizeWebDesign(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null
   const html = String(value.html || '')
@@ -2074,7 +2216,7 @@ export default async function handler(req, res) {
 
     // ── Quantify Designer — AI-powered design generation ─────────────────────
     if (action === 'designer') {
-      const { messages: designerMessages, artboards: existingArtboards } = req.body
+      const { messages: designerMessages, artboards: existingArtboards, activeLenses: reqLenses } = req.body
       if (!designerMessages || !Array.isArray(designerMessages) || designerMessages.length === 0) {
         return res.status(400).json({ error: 'Messages are required.' })
       }
@@ -2082,6 +2224,14 @@ export default async function handler(req, res) {
       if (!designerApiKey) {
         return res.status(400).json({ error: 'No API key configured.' })
       }
+
+      // Build active lens sections
+      const activeLenses = Array.isArray(reqLenses) ? reqLenses : []
+      const lensPromptSections = activeLenses
+        .filter(l => QUALITY_LENS_PROMPTS[l])
+        .map(l => QUALITY_LENS_PROMPTS[l])
+        .join('\n\n')
+
       try {
         // Build the mega system prompt with all Quantify context baked in
         const DESIGNER_SYSTEM = `You are Quantify Designer — an expert product designer and HTML/CSS engineer for Avontus Quantify, a scaffolding rental & inventory management system.
@@ -2202,6 +2352,12 @@ KEY PATTERNS TO MATCH:
 - Inline styles for minor tweaks only (margin, flex, opacity) — use pre-loaded CSS classes for everything else
 - DENSE layout: many items visible at once, no wasted space
 
+${lensPromptSections ? `═══════════════════════════════════════════
+ACTIVE QUALITY LENSES — APPLY THESE
+═══════════════════════════════════════════
+
+${lensPromptSections}` : ''}
+
 SELF-CHECK:
 1. ONE clear primary action per area
 2. Sentence case everywhere
@@ -2216,11 +2372,6 @@ SELF-CHECK:
 11. .list-item rows must be HORIZONTAL (icon + text-stack + badge + chevron)
 12. Match the density and compactness of the gold examples above`
 
-        const apiMessages = [
-          { role: 'system', content: DESIGNER_SYSTEM },
-          ...designerMessages.slice(-15),
-        ]
-
         // Set SSE headers for streaming
         res.writeHead(200, {
           'Content-Type': 'text/event-stream',
@@ -2229,87 +2380,132 @@ SELF-CHECK:
           'X-Accel-Buffering': 'no',
         })
 
-        // Send initial status
+        const lastUserContent = designerMessages[designerMessages.length - 1]?.content || ''
+
+        // ── Pass 0: Design Brief (fast, ~1s) ──
+        res.write(`data: ${JSON.stringify({ type: 'status', message: 'Planning design...' })}\n\n`)
+
+        let brief = ''
+        try {
+          const { text: briefText } = await llmWithRetry('google/gemini-3.1-flash-lite-preview', [
+            { role: 'user', content: `You are a mobile app design planner for Quantify (scaffolding rental/inventory).
+Given this request, output a concise design plan (5 bullet points max, no prose):
+- Screen sections top to bottom
+- Key UI components (steppers, chips, cards, scanner bar, etc.)
+- Realistic data to show (product names, quantities, IDs)
+- Toolbar pattern (X+check for edit, back+menu for read-only)
+- Special UX needs (offline pill, condition picker, progress bar, etc.)
+
+REQUEST: ${lastUserContent}
+
+Plan:` },
+          ], 400, 1, designerApiKey)
+          brief = (briefText || '').trim()
+        } catch (briefErr) {
+          console.warn('Brief generation failed (non-fatal):', briefErr?.message)
+        }
+
+        // ── Pass 1: Generate (streaming) ──
         res.write(`data: ${JSON.stringify({ type: 'status', message: 'Designing...' })}\n\n`)
 
-        const config = getProviderConfig(MODEL, designerApiKey)
-        const body = buildRequestBody(MODEL, apiMessages, 12000)
-        body.stream = true
+        const pass1Messages = [
+          { role: 'system', content: DESIGNER_SYSTEM },
+          ...designerMessages.slice(-15),
+        ]
+        // Inject brief into the last user message
+        if (brief) {
+          const lastIdx = pass1Messages.length - 1
+          if (pass1Messages[lastIdx]?.role === 'user') {
+            pass1Messages[lastIdx] = {
+              ...pass1Messages[lastIdx],
+              content: pass1Messages[lastIdx].content + `\n\n[Design plan — follow this structure]:\n${brief}`,
+            }
+          }
+        }
 
-        const controller = new AbortController()
-        const timer = setTimeout(() => controller.abort(), 200000)
+        const pass1Text = await streamLLMToSSE(res, MODEL, pass1Messages, 12000, designerApiKey)
+        const pass1Parsed = parseJsonResponse(pass1Text)
 
-        const response = await fetch(config.baseUrl, {
-          method: 'POST',
-          signal: controller.signal,
-          headers: {
-            'Authorization': `Bearer ${config.apiKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(body),
-        })
-
-        clearTimeout(timer)
-
-        if (!response.ok) {
-          const errText = await response.text()
-          res.write(`data: ${JSON.stringify({ type: 'error', error: `AI generation failed (${response.status}): ${errText.slice(0, 300)}` })}\n\n`)
+        if (!pass1Parsed) {
+          res.write(`data: ${JSON.stringify({ type: 'done', artboards: [], reply: pass1Text || 'Response was not in expected format. Please try again.' })}\n\n`)
           res.end()
           return
         }
 
-        // Stream response chunks to client
-        let fullText = ''
-        const reader = response.body.getReader()
-        const decoder = new TextDecoder()
-        let sseBuffer = ''
+        const pass1Html = pass1Parsed.artboards?.[0]?.html || ''
+        const pass1Name = pass1Parsed.artboards?.[0]?.name || 'Screen'
 
-        while (true) {
-          const { done, value } = await reader.read()
-          if (done) break
+        // ── Pass 2: Refine (streaming) — only if pass 1 produced HTML ──
+        if (pass1Html.length > 100) {
+          res.write(`data: ${JSON.stringify({ type: 'pass1_done' })}\n\n`)
+          res.write(`data: ${JSON.stringify({ type: 'status', message: 'Refining design...' })}\n\n`)
 
-          sseBuffer += decoder.decode(value, { stream: true })
-          const lines = sseBuffer.split('\n')
-          sseBuffer = lines.pop() // Keep incomplete line in buffer
+          const goldExample = pickClosestGoldExample(lastUserContent)
 
-          for (const line of lines) {
-            const trimmed = line.trim()
-            if (!trimmed.startsWith('data: ')) continue
-            const data = trimmed.slice(6)
-            if (data === '[DONE]') continue
-            try {
-              const chunk = JSON.parse(data)
-              const delta = chunk.choices?.[0]?.delta?.content
-              if (delta) {
-                fullText += delta
-                res.write(`data: ${JSON.stringify({ type: 'delta', text: delta })}\n\n`)
-              }
-            } catch { /* ignore malformed chunks */ }
+          const REFINE_SYSTEM = `You are a senior Quantify design reviewer. Your ONLY job: improve the given HTML to match the quality and density of the gold example.
+
+RESPONSE FORMAT — valid JSON only, no markdown fences, no text before/after:
+{
+  "artboards": [{ "action": "create", "name": "Screen Name", "html": "<div class='screen'>...</div>", "css": "" }],
+  "reply": "Improvements: ..."
+}
+
+REVIEW AND FIX ALL OF THESE:
+1. DENSITY — Compact layouts. Secondary text: margin:2px 0, not 8px+. No wasted vertical space.
+2. HORIZONTAL ROWS — Product/list rows must be HORIZONTAL: icon + .col(flex:1) with text-stack + controls/badge. Never stack rows vertically.
+3. TOUCH TARGETS — All interactive elements 48px+ height for gloved hands.
+4. CSS CLASSES — Use .list-item, .card, .badge, .chip, .row-between, .section-header, etc. Minimal custom CSS.
+5. SPACING — Tight within groups (2-4px), generous between sections (12-16px). Match gold example rhythm.
+6. DATA — Description-first product names: "Standard Frame 5×4" not "SCF-4824". Realistic quantities and dates.
+7. TOOLBAR — X (close) + check for edit screens. Back arrow + menu for read-only. Include Online/Offline pill.
+8. COMPLETENESS — Keep ALL content from the original. Do NOT remove sections, items, or features.
+
+CRITICAL: Return the COMPLETE improved HTML. Never abbreviate, truncate, or use "..." placeholders.
+Do NOT redesign. ONLY improve structure, spacing, density, and class usage of the existing design.
+
+${COMPONENT_RULES}`
+
+          const refineMessages = [
+            { role: 'system', content: REFINE_SYSTEM },
+            { role: 'user', content: `Screen: "${pass1Name}"
+
+HTML TO IMPROVE:
+${pass1Html}
+
+GOLD EXAMPLE (match this quality and density):
+${goldExample}
+
+Return the complete improved HTML in the JSON format specified above.` },
+          ]
+
+          let pass2Parsed = null
+          try {
+            const pass2Text = await streamLLMToSSE(res, MODEL, refineMessages, 12000, designerApiKey)
+            pass2Parsed = parseJsonResponse(pass2Text)
+          } catch (refineErr) {
+            console.warn('Refinement pass failed (using pass 1):', refineErr?.message)
           }
-        }
 
-        // Parse the final accumulated text
-        let parsed = null
-        try {
-          parsed = JSON.parse(fullText)
-        } catch {
-          const jsonMatch = fullText.match(/\{[\s\S]*\}/)
-          if (jsonMatch) {
-            try { parsed = JSON.parse(jsonMatch[0]) } catch { /* fall through */ }
-          }
-        }
-
-        if (!parsed) {
-          res.write(`data: ${JSON.stringify({ type: 'done', artboards: [], reply: fullText || 'Response was not in expected format. Please try again.' })}\n\n`)
-        } else {
-          const artboards = (parsed.artboards || []).map(ab => ({
+          // Use pass 2 if valid, fallback to pass 1
+          const finalParsed = (pass2Parsed?.artboards?.length > 0) ? pass2Parsed : pass1Parsed
+          const finalArtboards = (finalParsed.artboards || []).map(ab => ({
             ...ab,
-            html: (ab.html || '')
-              .replace(/<script[\s\S]*?<\/script>/gi, '')
-              .replace(/on\w+\s*=\s*["'][^"']*["']/gi, ''),
+            html: sanitizeArtboardHtml(ab.html),
             css: ab.css || '',
           }))
-          res.write(`data: ${JSON.stringify({ type: 'done', artboards, reply: parsed.reply || 'Design generated.' })}\n\n`)
+
+          const replyParts = [pass1Parsed.reply || 'Design generated.']
+          if (pass2Parsed?.reply) replyParts.push(`\n\n**Refinements:** ${pass2Parsed.reply}`)
+
+          res.write(`data: ${JSON.stringify({ type: 'done', artboards: finalArtboards, reply: replyParts.join('') })}\n\n`)
+        } else {
+          // No HTML to refine (question-only response or minimal output)
+          const finalArtboards = (pass1Parsed.artboards || []).map(ab => ({
+            ...ab,
+            html: sanitizeArtboardHtml(ab.html),
+            css: ab.css || '',
+          }))
+          res.write(`data: ${JSON.stringify({ type: 'done', artboards: finalArtboards, reply: pass1Parsed.reply || 'Done.' })}\n\n`)
         }
 
         res.end()
@@ -2319,7 +2515,6 @@ SELF-CHECK:
           res.write(`data: ${JSON.stringify({ type: 'error', error: designerErr?.message || 'Design generation failed — please try again.' })}\n\n`)
           res.end()
         } catch {
-          // Headers may not have been sent yet
           if (!res.headersSent) {
             return res.status(500).json({ error: designerErr?.message || 'Design generation failed — please try again.' })
           }

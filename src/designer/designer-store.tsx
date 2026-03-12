@@ -11,6 +11,7 @@ const initialState: DesignerState = {
   messages: [],
   isGenerating: false,
   error: null,
+  activeLenses: [],
 }
 
 function loadState(): DesignerState {
@@ -23,6 +24,7 @@ function loadState(): DesignerState {
       projectName: saved.projectName || initialState.projectName,
       artboards: saved.artboards || [],
       messages: (saved.messages || []).slice(-50),
+      activeLenses: saved.activeLenses || [],
     }
   } catch {
     return initialState
@@ -35,6 +37,7 @@ function saveState(state: DesignerState) {
       projectName: state.projectName,
       artboards: state.artboards,
       messages: state.messages.slice(-50),
+      activeLenses: state.activeLenses,
     }))
   } catch { /* quota exceeded */ }
 }
@@ -95,6 +98,14 @@ function reducer(state: DesignerState, action: DesignerAction): DesignerState {
     case 'LOAD_STATE':
       return { ...state, ...action.state }
 
+    case 'TOGGLE_LENS':
+      return {
+        ...state,
+        activeLenses: state.activeLenses.includes(action.lens)
+          ? state.activeLenses.filter(l => l !== action.lens)
+          : [...state.activeLenses, action.lens],
+      }
+
     default:
       return state
   }
@@ -110,7 +121,7 @@ export function DesignerProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     saveState(state)
-  }, [state.projectName, state.artboards, state.messages])
+  }, [state.projectName, state.artboards, state.messages, state.activeLenses])
 
   return (
     <DesignerContext.Provider value={{ state, dispatch }}>
