@@ -1,7 +1,7 @@
 import { useMemo, useRef, useEffect, useCallback, useState } from 'react'
 import { buildArtboardDoc } from '../utils/build-artboard-doc'
 import { useDesigner } from '../designer-store'
-import type { Artboard as ArtboardType } from '../types'
+import type { Artboard as ArtboardType, SelectedElement } from '../types'
 
 interface Props {
   artboard: ArtboardType
@@ -10,29 +10,29 @@ interface Props {
 }
 
 export default function Artboard({ artboard, isSelected, onSelect }: Props) {
-  const { state: { viewport }, dispatch } = useDesigner()
+  const { state: { viewport, editMode }, dispatch } = useDesigner()
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const initializedRef = useRef(false)
   const lastDocRef = useRef('')
   const [isResizing, setIsResizing] = useState(false)
 
+  const isEditing = isSelected && editMode && !!artboard.html
+
   const fullDoc = useMemo(
-    () => artboard.html ? buildArtboardDoc(artboard.html, artboard.css) : '',
-    [artboard.html, artboard.css]
+    () => artboard.html ? buildArtboardDoc(artboard.html, artboard.css, isEditing) : '',
+    [artboard.html, artboard.css, isEditing]
   )
 
-  // Update iframe content — use contentDocument.write() to avoid flash/flicker
+  // Update iframe content
   useEffect(() => {
     const iframe = iframeRef.current
     if (!iframe || !fullDoc) return
 
     if (!initializedRef.current) {
-      // First render: set srcdoc
       iframe.srcdoc = fullDoc
       initializedRef.current = true
       lastDocRef.current = fullDoc
     } else if (fullDoc !== lastDocRef.current) {
-      // Subsequent updates: use contentDocument.write() for flicker-free updates
       lastDocRef.current = fullDoc
       try {
         const doc = iframe.contentDocument
@@ -49,11 +49,53 @@ export default function Artboard({ artboard, isSelected, onSelect }: Props) {
     }
   }, [fullDoc])
 
-  // Reset when artboard ID changes entirely
+  // Reset when artboard ID changes
   useEffect(() => {
     initializedRef.current = false
     lastDocRef.current = ''
   }, [artboard.id])
+
+  // Listen for postMessage from edit script
+  useEffect(() => {
+    if (!isEditing) return
+
+    const handler = (e: MessageEvent) => {
+      if (!e.data || e.data.source !== 'designer-edit') return
+
+      if (e.data.type === 'select') {
+        dispatch({ type: 'SELECT_ELEMENT', element: e.data.data as SelectedElement | null })
+      } else if (e.data.type === 'htmlUpdated') {
+        // Update artboard HTML from iframe edits
+        dispatch({
+          type: 'UPDATE_ARTBOARD',
+          id: artboard.id,
+          updates: { html: e.data.data.html },
+        })
+      }
+    }
+
+    window.addEventListener('message', handler)
+    return () => window.removeEventListener('message', handler)
+  }, [isEditing, artboard.id, dispatch])
+
+  // Send commands to iframe
+  const sendToIframe = useCallback((type: string, data: Record<string, unknown>) => {
+    const iframe = iframeRef.current
+    if (!iframe?.contentWindow) return
+    iframe.contentWindow.postMessage({ source: 'designer-host', type, data }, '*')
+  }, [])
+
+  // Expose sendToIframe via a ref on window for the inspector to use
+  useEffect(() => {
+    if (isEditing) {
+      (window as any).__designerSendToIframe = sendToIframe
+    }
+    return () => {
+      if ((window as any).__designerSendToIframe === sendToIframe) {
+        delete (window as any).__designerSendToIframe
+      }
+    }
+  }, [isEditing, sendToIframe])
 
   // Resize drag handler
   const handleResizeStart = useCallback((e: React.MouseEvent) => {
@@ -124,7 +166,12 @@ export default function Artboard({ artboard, isSelected, onSelect }: Props) {
           alignItems: 'center',
         }}
       >
-        <span>{artboard.name}</span>
+        <span>
+          {artboard.name}
+          {isEditing && (
+            <span style={{ fontSize: 9, color: '#0A3EFF', marginLeft: 6, opacity: 0.6 }}>EDIT</span>
+          )}
+        </span>
         {isSelected && artboard.html && (
           <button
             onClick={(e) => { e.stopPropagation(); fitContent() }}
@@ -149,7 +196,9 @@ export default function Artboard({ artboard, isSelected, onSelect }: Props) {
         style={{
           width: artboard.width,
           height: artboard.height,
-          border: isSelected ? '2px solid #0A3EFF' : '1px solid rgba(255,255,255,0.08)',
+          border: isEditing
+            ? '2px solid #0A3EFF'
+            : isSelected ? '2px solid #0A3EFF' : '1px solid rgba(255,255,255,0.08)',
           borderRadius: 2,
           overflow: 'hidden',
           background: '#fff',
@@ -168,7 +217,7 @@ export default function Artboard({ artboard, isSelected, onSelect }: Props) {
               height: artboard.height,
               border: 'none',
               display: 'block',
-              pointerEvents: 'none',
+              pointerEvents: isEditing ? 'auto' : 'none',
             }}
             sandbox="allow-same-origin allow-scripts"
           />
@@ -185,7 +234,6 @@ export default function Artboard({ artboard, isSelected, onSelect }: Props) {
               background: '#FAFAFA',
             }}
           >
-            {/* Loading skeleton */}
             <div style={{ width: '70%', display: 'flex', flexDirection: 'column', gap: 8 }}>
               <div style={{ height: 44, borderRadius: 0, background: '#F0F0F0' }} />
               <div style={{ height: 12, width: '60%', borderRadius: 2, background: '#F0F0F0' }} />

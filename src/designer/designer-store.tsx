@@ -12,6 +12,9 @@ const initialState: DesignerState = {
   isGenerating: false,
   error: null,
   activeLenses: [],
+  editMode: false,
+  selectedElement: null,
+  rightPanel: 'chat',
 }
 
 function loadState(): DesignerState {
@@ -70,7 +73,7 @@ function reducer(state: DesignerState, action: DesignerAction): DesignerState {
       }
 
     case 'SELECT_ARTBOARD':
-      return { ...state, selectedArtboardId: action.id }
+      return { ...state, selectedArtboardId: action.id, selectedElement: null }
 
     case 'MOVE_ARTBOARD':
       return {
@@ -105,6 +108,23 @@ function reducer(state: DesignerState, action: DesignerAction): DesignerState {
           ? state.activeLenses.filter(l => l !== action.lens)
           : [...state.activeLenses, action.lens],
       }
+
+    case 'SET_EDIT_MODE':
+      return {
+        ...state,
+        editMode: action.value,
+        selectedElement: action.value ? state.selectedElement : null,
+      }
+
+    case 'SELECT_ELEMENT':
+      return {
+        ...state,
+        selectedElement: action.element,
+        rightPanel: action.element ? 'inspect' : state.rightPanel,
+      }
+
+    case 'SET_RIGHT_PANEL':
+      return { ...state, rightPanel: action.panel }
 
     default:
       return state

@@ -33,6 +33,18 @@ export interface CanvasViewport {
 
 export type QualityLens = 'premium' | 'gestalt' | 'typography' | 'accessibility'
 
+export interface SelectedElement {
+  path: string
+  tag: string
+  classes: string
+  text: string | null
+  hasChildren: boolean
+  rect: { x: number; y: number; w: number; h: number }
+  styles: Record<string, string>
+}
+
+export type RightPanel = 'chat' | 'inspect' | 'code'
+
 export interface DesignerState {
   projectName: string
   artboards: Artboard[]
@@ -42,6 +54,9 @@ export interface DesignerState {
   isGenerating: boolean
   error: string | null
   activeLenses: QualityLens[]
+  editMode: boolean
+  selectedElement: SelectedElement | null
+  rightPanel: RightPanel
 }
 
 export type DesignerAction =
@@ -58,3 +73,6 @@ export type DesignerAction =
   | { type: 'CLEAR_CHAT' }
   | { type: 'LOAD_STATE'; state: Partial<DesignerState> }
   | { type: 'TOGGLE_LENS'; lens: QualityLens }
+  | { type: 'SET_EDIT_MODE'; value: boolean }
+  | { type: 'SELECT_ELEMENT'; element: SelectedElement | null }
+  | { type: 'SET_RIGHT_PANEL'; panel: RightPanel }
