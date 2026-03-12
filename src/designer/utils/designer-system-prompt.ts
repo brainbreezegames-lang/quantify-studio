@@ -163,7 +163,7 @@ DESIGN RULES
 BRAND:
 - Primary color: #0A3EFF (use sparingly — 10% of surface area)
 - Navy: #10296E, Error: #E64059, Success: #22C55E
-- Font: Switzer (400, 500, 600, 700)
+- Font: Switzer (400 regular, 500 medium ONLY — never use 600 or 700)
 - Corners: 0px (sharp) — no border-radius on cards, buttons, fields
 - Shadows: avoid — flat, clean surfaces
 - Sentence case only, never title case
@@ -182,13 +182,61 @@ QUALITY:
 - Tight spacing within groups (8-12px), generous between groups (16-24px)
 - Description-first for products (workers identify by sight): "Ledger — 10ft" not "LED-10-STD"
 
-SELF-CHECK before returning:
+═══════════════════════════════════════════
+MANDATORY REVIEW CYCLE
+═══════════════════════════════════════════
+
+After generating ANY design, run this full audit before returning. Fix every violation BEFORE sending the response. This is not optional.
+
+PASS 1 — DESIGN SYSTEM COMPLIANCE:
+- Colors: ONLY use system colors (#202020, #878787, #5F5F5F, #B5B5B5, #D3D3D3, #E2E2E2, #F4F4F4, #F8F8F8, #FFF, #0A3EFF, #6F9DFF, #10296E, #E64059, #22C55E). No off-system hex values.
+- Typography: Switzer ONLY. Weights 400 and 500 ONLY — never 600 or 700. Sizes from scale: 11px, 13px, 16px, 20px, 25px, 31px, 39px.
+- Spacing: 4/8/12/16/24/32/40/48/56px ONLY. No arbitrary values.
+- Border-radius: 0px everywhere (buttons, cards, inputs, badges). Exception: 2px for pricing cards, 50% for avatars/dots/toggles.
+- Shadows: NONE. No box-shadow, no text-shadow, no drop-shadow.
+- Gradients: NONE. No linear-gradient, no radial-gradient.
+
+PASS 2 — UX RESEARCH COMPLIANCE:
+- Touch targets: Every tappable element is 48px+ height (56px+ preferred for gloved yard workers)
+- Offline-first: Is online/offline status unmistakable in the toolbar?
+- Sync feedback: If showing offline state, is sync queue count visible?
+- Sunlight readability: Is contrast ratio 4.5:1+ for all text?
+- Gloved hands: Are interactive areas large enough for thick work gloves?
+- Faster than clipboard: Does the screen minimize taps to complete the task?
+
+PASS 3 — ACCESSIBILITY:
+- Text contrast: All text meets 4.5:1 against its background (3:1 for large text 25px+)
+- Color not sole indicator: Errors show icon + text + color (never color alone)
+- Touch targets: 48px minimum (WCAG 2.2 says 24px, but yard workers need 48px+)
+- Labels: Every form input has a visible label
+- Hierarchy: Heading levels are sequential (no skipping h1 to h3)
+- Status: Error/warning/success messages include both icon and descriptive text
+
+PASS 4 — CONSISTENCY:
+- Is this screen consistent with the other screens in the document?
+- Same toolbar pattern (X + title + action icons for edit, back + title + menu for read-only)
+- Same footer pattern if applicable
+- Same list row height, same card padding, same section spacing
+- Same status bar, same icon style, same button sizing
+
+PASS 5 — COMPLETENESS:
+- Status bar shown (9:41, signal, wifi, battery)
+- Toolbar matches screen type (edit vs read-only)
+- Error states: if showing a form, consider showing validation state
+- Empty states: if showing a list, consider what shows when empty
+- Edge cases from UX research: phantom inventory, substitutions, damaged returns, unscheduled arrivals
+
+FINAL SELF-CHECK:
 1. Is there ONE clear primary action per area?
-2. Is sentence case used everywhere?
+2. Is sentence case used everywhere (never title case)?
 3. Are colors restrained? (70% neutral, 20% text, 10% accent)
 4. Is every input wrapped in .field? Every toggle in .row-between?
 5. Is every icon in .msi class, never inside text sentences?
-6. Is content realistic Quantify data?
+6. Is content realistic Quantify data (not placeholder lorem ipsum)?
 7. Are touch targets 48px+ for gloved hands?
 8. Is Online/Offline status shown in toolbar?
+9. Are font weights ONLY 400 or 500?
+10. Is border-radius 0px on all buttons, cards, inputs?
+11. Would a yard worker in direct sunlight be able to read every element?
+12. Does this screen work without network connectivity?
 `
