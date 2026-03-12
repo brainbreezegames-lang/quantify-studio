@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useDesigner } from '../designer-store'
+import { htmlToXaml } from '../utils/html-to-xaml'
 
 // ── Style field config ───
 
@@ -122,34 +123,50 @@ function highlightHtml(code: string): string {
     .replace(/class="/g, '<span class="text-[#22C55E]">class</span>=<span class="text-white/40">"</span>')
 }
 
+function highlightXaml(code: string): string {
+  return code
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/(&lt;\/?)([\w:.]+)/g, '$1<span class="text-[#C084FC]">$2</span>')
+    .replace(/([\w:.]+)=(")/g, '<span class="text-[#22C55E]">$1</span>=<span class="text-white/40">"</span>')
+    .replace(/&lt;!--(.+?)--&gt;/g, '<span class="text-white/25">&lt;!--$1--&gt;</span>')
+}
+
+function formatHtml(html: string): string {
+  try {
+    let indent = 0
+    return html.replace(/></g, '>\n<').split('\n').map(line => {
+      const trimmed = line.trim()
+      if (trimmed.startsWith('</')) indent = Math.max(0, indent - 1)
+      const result = '  '.repeat(indent) + trimmed
+      if (trimmed.startsWith('<') && !trimmed.startsWith('</') && !trimmed.endsWith('/>') && !trimmed.includes('</')) indent++
+      return result
+    }).join('\n')
+  } catch {
+    return html
+  }
+}
+
+type CodeTab = 'html' | 'xaml'
+
 function CodeView() {
   const { state } = useDesigner()
   const { artboards, selectedArtboardId } = state
   const artboard = artboards.find(a => a.id === selectedArtboardId)
   const [copied, setCopied] = useState(false)
+  const [tab, setTab] = useState<CodeTab>('html')
 
   const html = artboard?.html || ''
-  const formatted = useMemo(() => {
-    try {
-      // Simple indent formatting
-      let indent = 0
-      return html.replace(/></g, '>\n<').split('\n').map(line => {
-        const trimmed = line.trim()
-        if (trimmed.startsWith('</')) indent = Math.max(0, indent - 1)
-        const result = '  '.repeat(indent) + trimmed
-        if (trimmed.startsWith('<') && !trimmed.startsWith('</') && !trimmed.endsWith('/>') && !trimmed.includes('</')) indent++
-        return result
-      }).join('\n')
-    } catch {
-      return html
-    }
-  }, [html])
+  const formatted = useMemo(() => formatHtml(html), [html])
+  const xaml = useMemo(() => htmlToXaml(html), [html])
+
+  const activeCode = tab === 'html' ? html : xaml
+  const activeFormatted = tab === 'html' ? formatted : xaml
 
   const copy = useCallback(() => {
-    navigator.clipboard.writeText(html)
+    navigator.clipboard.writeText(activeCode)
     setCopied(true)
     setTimeout(() => setCopied(false), 1500)
-  }, [html])
+  }, [activeCode])
 
   if (!artboard) {
     return <div className="p-4 text-[11px] text-white/25">Select an artboard to view code</div>
@@ -157,16 +174,45 @@ function CodeView() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="px-4 py-2 border-b border-white/[0.06] flex items-center justify-between">
-        <span className="text-[11px] text-white/50">{artboard.name}</span>
+      <div className="px-3 py-2 border-b border-white/[0.06] flex items-center gap-2">
+        {/* Tab toggle */}
+        <div className="flex bg-white/[0.04] rounded p-0.5">
+          <button
+            onClick={() => setTab('html')}
+            className={`px-2.5 py-1 rounded text-[10px] font-medium transition-all ${
+              tab === 'html'
+                ? 'bg-white/[0.1] text-white/80'
+                : 'text-white/30 hover:text-white/50'
+            }`}
+          >
+            HTML
+          </button>
+          <button
+            onClick={() => setTab('xaml')}
+            className={`px-2.5 py-1 rounded text-[10px] font-medium transition-all ${
+              tab === 'xaml'
+                ? 'bg-[#C084FC]/20 text-[#C084FC]'
+                : 'text-white/30 hover:text-white/50'
+            }`}
+          >
+            XAML
+          </button>
+        </div>
+
+        <span className="flex-1 text-[11px] text-white/30 truncate">{artboard.name}</span>
+
         <button onClick={copy}
-          className="text-[10px] px-2 py-1 rounded bg-white/[0.06] text-white/40 hover:text-white/70 transition-colors">
+          className="text-[10px] px-2 py-1 rounded bg-white/[0.06] text-white/40 hover:text-white/70 transition-colors flex-shrink-0">
           {copied ? 'Copied' : 'Copy'}
         </button>
       </div>
       <div className="flex-1 overflow-auto p-3">
-        <pre className="text-[10px] leading-[1.6] text-white/60 font-mono whitespace-pre-wrap break-all"
-          dangerouslySetInnerHTML={{ __html: highlightHtml(formatted) }} />
+        <pre
+          className="text-[10px] leading-[1.6] text-white/60 font-mono whitespace-pre-wrap break-all"
+          dangerouslySetInnerHTML={{
+            __html: tab === 'html' ? highlightHtml(activeFormatted) : highlightXaml(activeFormatted)
+          }}
+        />
       </div>
     </div>
   )
