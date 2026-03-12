@@ -2214,9 +2214,102 @@ export default async function handler(req, res) {
       }
     }
 
+    // ── Designer Chat — discuss with AI before designing ───────────────────────
+    if (action === 'designer-chat') {
+      const { messages: chatMsgs, model: reqModel } = req.body
+      if (!chatMsgs || !Array.isArray(chatMsgs) || chatMsgs.length === 0) {
+        return res.status(400).json({ error: 'Messages are required.' })
+      }
+      const chatKey = rk || process.env.OPENROUTER_API_KEY
+      if (!chatKey) {
+        return res.status(400).json({ error: 'No API key configured.' })
+      }
+      const chatModel = (reqModel && ALLOWED_MODELS.has(reqModel)) ? reqModel : 'google/gemini-3.1-flash-lite-preview'
+
+      const DESIGNER_CHAT_SYSTEM = `You are a senior product designer specializing in Quantify — a scaffolding rental & inventory management mobile app for yard workers.
+
+You help the user think through design decisions BEFORE they start designing. You are a design partner, not just an AI — push back on bad ideas, suggest alternatives, and think critically.
+
+You have deep knowledge of the Quantify domain, UX research, and design system:
+
+═══════════════════════════════════════════
+QUANTIFY DOMAIN
+═══════════════════════════════════════════
+
+${QUANTIFY_KNOWLEDGE}
+
+═══════════════════════════════════════════
+UX RESEARCH — INDUSTRIAL CONSTRAINTS
+═══════════════════════════════════════════
+
+USERS: Yard workers, yard managers, inventory teams using iPads/Android tablets in rugged cases.
+
+PHYSICAL REALITIES:
+- Direct sunlight = severe glare — high contrast mandatory
+- Thick protective gloves = 48px+ touch targets minimum
+- Hands covered in grease/mud — removing gloves is hated
+- Tablets balanced on truck tailgates
+- The app competes with paper clipboards and Sharpies
+
+SCANNING:
+- Barcode scanning primary but unreliable (mud, rust, ripped stickers)
+- Workers identify products by sight, not labels
+- Manual quantity entry is mandatory fallback
+- Group scanning: one code for bundles (e.g., 50 braces)
+
+EDGE CASES: Phantom inventory, undocumented substitutions, damaged returns, unscheduled returns
+
+CONNECTIVITY: Yards are Faraday cages. Full offline mode NON-NEGOTIABLE. Online/Offline pill always visible.
+
+TOOLBAR PATTERNS:
+- Edit screens: X (cancel) left + checkmark (save) right
+- Read-only screens: back arrow left + 3-dot menu right
+- Online/Offline pill always visible
+
+═══════════════════════════════════════════
+DESIGN SYSTEM
+═══════════════════════════════════════════
+
+BRAND: Primary #0A3EFF, Navy #10296E, Error #E64059, Success #22C55E. Switzer font. 0px corners (sharp). No shadows. Sentence case only.
+
+LAYOUT: .screen (root), .content (main), .app-bar + .app-bar-title, .row, .row-between, .col, .bottom-actions
+TYPOGRAPHY: .display (39px), .headline (31px), .title-lg (25px), .title-md (16px 500), .title-sm (14px 500), .body-lg (16px), .body-md (16px), .body-sm (13px), .label-lg (16px), .label-md (13px), .label-sm (11px)
+CARDS: .card (bordered), .card-elevated, .card-filled, .stat-card, .stat-group, .stat-value, .stat-label
+BUTTONS: .btn-filled (primary), .btn-outlined (secondary), .btn-tonal, .btn-text, .btn-sm, .icon-btn — ONE btn-filled per action area
+BADGES: .badge + .badge-blue, .badge-success, .badge-error, .badge-warning, .badge-gray
+LISTS: .list-item (inside .card), .list-icon, .avatar
+FORMS: .field > .field-label + .field-input, .search-bar, .section-header
+CHIPS: .chip (in .filter-bar), .chip.active
+ICONS: <span class="msi">icon_name</span> — ONLY in .icon-btn, .list-icon
+
+═══════════════════════════════════════════
+YOUR ROLE
+═══════════════════════════════════════════
+
+- Discuss screen concepts, user flows, and design decisions
+- Suggest which components/patterns from the design system fit the use case
+- Point out edge cases the user may have missed (offline mode, gloved usage, barcode failures)
+- Reference real Quantify workflows and terminology
+- Keep responses concise and actionable — you're a collaborator, not a lecturer
+- When the user seems ready, encourage them to hit "Design screen" to generate the actual design
+- NEVER output HTML or JSON — you are in discussion mode only`
+
+      try {
+        const apiMessages = [
+          { role: 'system', content: DESIGNER_CHAT_SYSTEM },
+          ...chatMsgs.slice(-20),
+        ]
+        const { text: reply } = await llmWithRetry(chatModel, apiMessages, 2048, undefined, chatKey)
+        return res.status(200).json({ reply: reply || 'Sorry, I couldn\'t generate a response.' })
+      } catch (chatErr) {
+        console.error('Designer chat error:', chatErr)
+        return res.status(500).json({ error: 'Chat failed — please try again.' })
+      }
+    }
+
     // ── Quantify Designer — AI-powered design generation ─────────────────────
     if (action === 'designer') {
-      const { messages: designerMessages, artboards: existingArtboards, activeLenses: reqLenses } = req.body
+      const { messages: designerMessages, artboards: existingArtboards, activeLenses: reqLenses, model: reqDesignerModel } = req.body
       if (!designerMessages || !Array.isArray(designerMessages) || designerMessages.length === 0) {
         return res.status(400).json({ error: 'Messages are required.' })
       }
@@ -2224,6 +2317,7 @@ export default async function handler(req, res) {
       if (!designerApiKey) {
         return res.status(400).json({ error: 'No API key configured.' })
       }
+      const designerModel = (reqDesignerModel && ALLOWED_MODELS.has(reqDesignerModel)) ? reqDesignerModel : MODEL
 
       // Build active lens sections
       const activeLenses = Array.isArray(reqLenses) ? reqLenses : []
@@ -2423,7 +2517,7 @@ Plan:` },
           }
         }
 
-        const pass1Text = await streamLLMToSSE(res, MODEL, pass1Messages, 12000, designerApiKey)
+        const pass1Text = await streamLLMToSSE(res, designerModel, pass1Messages, 12000, designerApiKey)
         const pass1Parsed = parseJsonResponse(pass1Text)
 
         if (!pass1Parsed) {
@@ -2480,7 +2574,7 @@ Return the complete improved HTML in the JSON format specified above.` },
 
           let pass2Parsed = null
           try {
-            const pass2Text = await streamLLMToSSE(res, MODEL, refineMessages, 12000, designerApiKey)
+            const pass2Text = await streamLLMToSSE(res, designerModel, refineMessages, 12000, designerApiKey)
             pass2Parsed = parseJsonResponse(pass2Text)
           } catch (refineErr) {
             console.warn('Refinement pass failed (using pass 1):', refineErr?.message)
