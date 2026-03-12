@@ -11,6 +11,7 @@
     { "source": "/api/generate", "destination": "/api/generate" },
     { "source": "/api/voice", "destination": "/api/voice" },
     { "source": "/design-system", "destination": "/index.html" },
+    { "source": "/designer", "destination": "/index.html" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }

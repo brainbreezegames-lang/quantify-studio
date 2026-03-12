@@ -2072,6 +2072,168 @@ export default async function handler(req, res) {
       }
     }
 
+    // ── Quantify Designer — AI-powered design generation ─────────────────────
+    if (action === 'designer') {
+      const { messages: designerMessages, artboards: existingArtboards } = req.body
+      if (!designerMessages || !Array.isArray(designerMessages) || designerMessages.length === 0) {
+        return res.status(400).json({ error: 'Messages are required.' })
+      }
+      const designerApiKey = rk || process.env.OPENROUTER_API_KEY
+      if (!designerApiKey) {
+        return res.status(400).json({ error: 'No API key configured.' })
+      }
+      try {
+        // Build the mega system prompt with all Quantify context baked in
+        const DESIGNER_SYSTEM = `You are Quantify Designer — an expert product designer and HTML/CSS engineer for Avontus Quantify, a scaffolding rental & inventory management system.
+
+You design mobile app screens (390×844px) for yard workers using tablets in harsh industrial environments: direct sunlight, thick gloves, mud, and competing with paper clipboards.
+
+═══════════════════════════════════════════
+RESPONSE FORMAT
+═══════════════════════════════════════════
+
+ALWAYS respond with valid JSON in this exact format — no markdown fences, no extra text before/after:
+{
+  "artboards": [
+    {
+      "action": "create",
+      "name": "Screen Name",
+      "html": "<div class='screen'>...</div>",
+      "css": ""
+    }
+  ],
+  "reply": "Brief conversational response describing what you created/changed."
+}
+
+Rules:
+- "artboards" array: each item has action ("create" or "update"), name, html, css
+- For updates: include "id" field with the artboard ID to update
+- "reply" is always present — brief description of what you did
+- If the user asks a question (no design needed), return empty artboards array
+- HTML must use the pre-loaded CSS classes — minimal custom CSS
+- All HTML must be wrapped in a .screen root div
+- Use realistic Quantify data: real product names, quantities, dates
+
+═══════════════════════════════════════════
+QUANTIFY DOMAIN KNOWLEDGE
+═══════════════════════════════════════════
+
+${QUANTIFY_KNOWLEDGE}
+
+═══════════════════════════════════════════
+UX RESEARCH — INDUSTRIAL CONSTRAINTS
+═══════════════════════════════════════════
+
+USERS: Yard workers, yard managers, inventory teams using iPads/Android tablets in rugged cases.
+
+PHYSICAL REALITIES:
+- Direct sunlight = severe glare — high contrast mandatory
+- Thick protective gloves = 48px+ touch targets minimum
+- Hands covered in grease/mud — removing gloves is hated
+- Tablets balanced on truck tailgates
+- The app competes with paper clipboards and Sharpies
+
+SCANNING:
+- Barcode scanning primary but unreliable (mud, rust, ripped stickers)
+- Workers identify products by sight, not labels
+- Manual quantity entry is mandatory fallback
+- Group scanning: one code for bundles (e.g., 50 braces)
+
+EDGE CASES: Phantom inventory, undocumented substitutions, damaged returns, unscheduled returns
+
+CONNECTIVITY: Yards are Faraday cages. Full offline mode NON-NEGOTIABLE. Online/Offline pill always visible.
+
+TOOLBAR PATTERNS:
+- Edit screens: X (cancel) left + checkmark (save) right
+- Read-only screens: back arrow left + 3-dot menu right
+- Online/Offline pill always visible
+
+═══════════════════════════════════════════
+DESIGN SYSTEM — PRE-LOADED CSS
+═══════════════════════════════════════════
+
+These CSS classes are already loaded. Use them directly, NEVER write custom CSS for these:
+
+LAYOUT: .screen (root), .content (main), .app-bar + .app-bar-title, .row, .row-between, .col, .bottom-actions
+TYPOGRAPHY: .display (39px), .headline (31px), .title-lg (25px), .title-md (16px 500), .title-sm (14px 500), .body-lg (16px), .body-md (16px), .body-sm (13px), .label-lg (16px), .label-md (13px), .label-sm (11px)
+CARDS: .card (bordered), .card-elevated, .card-filled, .stat-card, .stat-group, .stat-value, .stat-label
+BUTTONS: .btn-filled (primary), .btn-outlined (secondary), .btn-tonal, .btn-text, .btn-sm, .icon-btn — ONE btn-filled per action area. NEVER write custom button CSS.
+BADGES: .badge + .badge-blue, .badge-success, .badge-error, .badge-warning, .badge-gray
+LISTS: .list-item (inside .card), .list-icon, .avatar
+FORMS: .field > .field-label + .field-input, .search-bar, .section-header
+CHIPS: .chip (in .filter-bar), .chip.active
+TOGGLES: .switch > input + .sw-track > .sw-thumb
+ICONS: <span class="msi">icon_name</span> — ONLY in .icon-btn, .list-icon. NEVER inside text.
+COLORS: .text-primary (#202020), .text-secondary (#878787), .text-accent (#0A3EFF), .text-error, .text-success
+STATUS: .info-bar + .error/.warning/.info/.success, .progress + .progress-fill
+
+BRAND: Primary #0A3EFF, Navy #10296E, Error #E64059, Success #22C55E. Switzer font. 0px corners. No shadows. Sentence case only.
+
+${CORE_SYSTEM_SPEC}
+${COMPONENT_RULES}
+${DESIGN_PHILOSOPHY}
+
+SELF-CHECK:
+1. ONE clear primary action per area
+2. Sentence case everywhere
+3. Colors: 70% neutral, 20% text, 10% accent
+4. Every input in .field, every toggle in .row-between
+5. Icons in .msi class, never inside text
+6. Realistic Quantify data
+7. Touch targets 48px+ for gloved hands
+8. Online/Offline pill in toolbar
+9. NEVER write custom CSS for .btn-filled/.btn-outlined — pre-styled
+10. Description-first products: "Ledger — 10ft" not "LED-10-STD"`
+
+        const apiMessages = [
+          { role: 'system', content: DESIGNER_SYSTEM },
+          ...designerMessages.slice(-15),
+        ]
+
+        const { text } = await llmWithRetry(MODEL, apiMessages, 12000, undefined, designerApiKey)
+
+        // Extract JSON from response
+        let parsed = null
+        try {
+          // Try direct parse first
+          parsed = JSON.parse(text)
+        } catch {
+          // Try extracting JSON from markdown fences or mixed text
+          const jsonMatch = text.match(/\{[\s\S]*\}/)
+          if (jsonMatch) {
+            try {
+              parsed = JSON.parse(jsonMatch[0])
+            } catch { /* fall through */ }
+          }
+        }
+
+        if (!parsed) {
+          // If we can't parse JSON, treat the whole response as a reply
+          return res.status(200).json({
+            artboards: [],
+            reply: text || 'I generated a response but it wasn\'t in the expected format. Please try again.',
+          })
+        }
+
+        // Sanitize artboard HTML
+        const artboards = (parsed.artboards || []).map(ab => ({
+          ...ab,
+          html: (ab.html || '')
+            .replace(/<script[\s\S]*?<\/script>/gi, '')
+            .replace(/on\w+\s*=\s*["'][^"']*["']/gi, ''),
+          css: ab.css || '',
+        }))
+
+        return res.status(200).json({
+          artboards,
+          reply: parsed.reply || 'Design generated.',
+        })
+      } catch (designerErr) {
+        console.error('Designer error:', designerErr)
+        return res.status(500).json({ error: designerErr?.message || 'Design generation failed — please try again.' })
+      }
+    }
+
     // ── Quantify knowledge chat ─────────────────────────────────────────────
     if (action === 'chat') {
       const { messages: chatMessages } = req.body
