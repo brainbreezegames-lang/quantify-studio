@@ -2685,11 +2685,52 @@ CHIPS: .chip (in .filter-bar), .chip.active
 ICONS: <span class="msi">icon_name</span> — inside .icon-btn or .list-icon
 COLORS: .text-primary (#202020), .text-secondary (#878787), .text-accent (#0A3EFF), .text-error, .text-success
 
-BRAND: Primary #0A3EFF, Navy #10296E, Error #E64059, Success #22C55E. Switzer font. 0px corners. No shadows. Sentence case.
+BRAND (only if not overridden by what you see in the image): Primary #0A3EFF, Navy #10296E, Error #E64059, Success #22C55E.
 
 ${COMPONENT_RULES}
 
-CRITICAL: Wrap all content in a .screen root div. Use ONLY the pre-loaded CSS classes — minimal custom CSS. Return COMPLETE HTML with every element from the image.`
+═══════════════════════════════════════════
+VISUAL ACCURACY — MOST CRITICAL RULES
+═══════════════════════════════════════════
+
+COLORS — you MUST use inline styles for every color you observe:
+- Text colors: add style="color:#XXXX" matching exactly what you see (dark text, gray text, blue text, orange text, etc.)
+- Background colors: add style="background:#XXXX" for cards, badges, banners, buttons
+- Border colors: add style="border:1px solid #XXXX" matching the exact border shade
+- The CSS classes have default colors but you MUST override them with inline styles to match the image
+
+BADGES & STATUS PILLS:
+- "Offline" with red dot: <div class="row" style="gap:6px; align-items:center;"><div style="width:8px;height:8px;border-radius:50%;background:#E64059;flex-shrink:0;"></div><span style="color:#E64059; font-size:13px; font-weight:500;">Offline</span></div>
+- "Online" with green dot: similar with #22C55E
+- Green pill badge: <span style="background:#dcfce7; color:#16a34a; font-size:11px; font-weight:500; padding:2px 8px; border-radius:999px;">Normal</span>
+- Red badge: similar with #fee2e2 / #dc2626
+- NEVER use yellow/amber for Offline — use the EXACT color you see in the image
+
+COUNTERS/STEPPERS (stepper boxes with − number +):
+- Match the exact border style: <div style="display:flex; align-items:center; border:1px solid #ddd; border-radius:0; min-width:140px;">
+  <button style="width:40px; height:40px; background:none; border:none; font-size:20px; color:#444; cursor:pointer; flex-shrink:0;">−</button>
+  <span style="flex:1; text-align:center; font-size:20px; font-weight:700; color:#202020;">50</span>
+  <button style="width:40px; height:40px; background:none; border:none; font-size:20px; color:#444; cursor:pointer; flex-shrink:0;">+</button>
+</div>
+- If the number is orange/amber (e.g. 35), use style="color:#f59e0b" or the exact shade
+
+PROGRESS BARS: if you see a progress bar, recreate it:
+<div style="height:4px; background:#e5e7eb; border-radius:0; overflow:hidden; margin:4px 0;">
+  <div style="height:100%; width:40%; background:#0A3EFF;"></div>
+</div>
+
+SCAN BARS / DARK BANNERS: if you see a dark colored banner:
+<div style="background:#10296E; padding:16px; display:flex; align-items:center; gap:12px;">
+  <span class="msi" style="color:white; font-size:24px;">qr_code_scanner</span>
+  <span style="color:rgba(255,255,255,0.7); font-size:15px;">Scan barcode or tap product to count...</span>
+</div>
+
+CONDITION BUTTONS (button groups):
+- Normal state: <button style="padding:8px 16px; border:1px solid #ddd; background:white; color:#444; font-size:13px;">Normal</button>
+- Active/selected state: <button style="padding:8px 16px; border:1px solid transparent; background:#E64059; color:white; font-size:13px;">Damaged</button>
+- Match the exact border color, text color, and background you see
+
+WRAP ALL in <div class="screen">. Return COMPLETE HTML with EVERY element. Use inline styles for ALL visual properties that must match the image exactly.`
 
       try {
         res.writeHead(200, {
@@ -2707,7 +2748,7 @@ CRITICAL: Wrap all content in a .screen root div. Use ONLY the pre-loaded CSS cl
           {
             role: 'user',
             content: [
-              { type: 'text', text: 'Recreate this screen exactly as HTML/CSS. Copy every element, every word of text, and every visual structure you see. Output valid JSON only.' },
+              { type: 'text', text: 'Recreate this screen with PIXEL-PERFECT visual accuracy. Match every color exactly using inline styles. Match every text, badge, button, border, and layout element. Use inline style="color:..." and style="background:..." everywhere to match the exact colors you see. Output valid JSON only.' },
               { type: 'image_url', image_url: { url: imageUrl } },
             ],
           },
@@ -2732,7 +2773,7 @@ CRITICAL: Wrap all content in a .screen root div. Use ONLY the pre-loaded CSS cl
           res.write(`data: ${JSON.stringify({ type: 'pass1_done' })}\n\n`)
           res.write(`data: ${JSON.stringify({ type: 'status', message: 'Verifying accuracy...' })}\n\n`)
 
-          const REFINE_IMAGE_SYSTEM = `You are a QA engineer verifying that an HTML recreation matches the original screenshot exactly.
+          const REFINE_IMAGE_SYSTEM = `You are a pixel-perfect QA engineer. Compare the HTML recreation against the original screenshot and make them VISUALLY IDENTICAL.
 
 RESPONSE FORMAT — valid JSON only, no markdown fences:
 {
@@ -2740,12 +2781,32 @@ RESPONSE FORMAT — valid JSON only, no markdown fences:
   "reply": "What was fixed."
 }
 
-REVIEW THE RECREATION AGAINST THE ORIGINAL IMAGE AND FIX:
-1. MISSING CONTENT — Add any text, rows, or sections visible in the image but absent from the HTML.
-2. WRONG TEXT — Correct any text that doesn't exactly match what's in the image.
-3. WRONG ORDER — Fix any elements that are in the wrong top-to-bottom position.
-4. STRUCTURE — Ensure .list-item rows are horizontal (icon + text + badge), not stacked.
-5. COMPLETENESS — Return the FULL corrected HTML. Never truncate or abbreviate.
+COMPARE AND FIX ALL VISUAL DIFFERENCES:
+
+1. WRONG COLORS (most common issue) — for every element check:
+   - Text color matches image exactly → fix with style="color:#XXXX"
+   - Background matches → fix with style="background:#XXXX"
+   - Border color matches → fix with style="border:1px solid #XXXX"
+   - Status dots: red (#E64059) for offline, green (#22C55E) for online — never yellow
+   - Badges/pills: match exact background + text color from image
+   - Active/selected buttons: match their exact fill color
+
+2. WRONG SIZES — check proportions and fix:
+   - Counter/stepper boxes sized correctly?
+   - Font sizes roughly proportional to what's shown?
+
+3. MISSING ELEMENTS:
+   - Progress bars (thin horizontal bars)
+   - Status indicator dots next to text
+   - Any visual element present in image but absent from HTML
+
+4. WRONG TEXT — correct verbatim to match image exactly
+
+5. WRONG STRUCTURE:
+   - .list-item must be horizontal flex row (never stacked vertically)
+   - Steppers must be horizontal (− | number | +)
+
+6. COMPLETENESS — return the FULL corrected HTML, never truncate
 
 ${COMPONENT_RULES}`
 
