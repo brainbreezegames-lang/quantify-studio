@@ -271,8 +271,9 @@ async function convertHtml() {
     var appRoot = iframeDoc.getElementById('app');
     if (!appRoot || !appRoot.firstElementChild) throw new Error('No root element found in HTML.');
 
-    var rootRect = appRoot.getBoundingClientRect();
-    var tree = walkDOM(appRoot.firstElementChild, rootRect, frameW);
+    var rootElement = appRoot.children.length === 1 ? appRoot.firstElementChild : appRoot;
+    var rootRect = rootElement.getBoundingClientRect();
+    var tree = walkDOM(rootElement, rootRect, frameW);
     if (!tree) throw new Error('DOM walker returned empty result.');
 
     setStatus('Creating Figma layers with auto-layout...', '#0A3EFF');
@@ -323,17 +324,33 @@ function walkDOM(element, parentRect, parentWidth) {
 
   // ── Material Symbol icon ──
   if (element.classList.contains('msi')) {
-    return { nodeType: 'icon', name: element.textContent.trim(), icon: element.textContent.trim(), iconSize: Math.round(parseFloat(cs.fontSize) || 24), iconColor: cs.color, w: Math.round(rect.width) || 24, h: Math.round(rect.height) || 24, x: Math.round(rect.x - parentRect.x), y: Math.round(rect.y - parentRect.y), flexGrow: parseFloat(cs.flexGrow) || 0 };
+    return { nodeType: 'icon', name: element.textContent.trim(), icon: element.textContent.trim(), iconSize: Math.round(parseFloat(cs.fontSize) || 24), iconColor: cs.color, w: Math.round(rect.width) || 24, h: Math.round(rect.height) || 24, x: Math.round(rect.x - parentRect.x), y: Math.round(rect.y - parentRect.y), flexGrow: parseFloat(cs.flexGrow) || 0, positioning: normalizePosition(cs.position), cssOrder: parseFloat(cs.order) || 0 };
   }
 
   // ── HR divider ──
   if (tag === 'hr') {
-    return { nodeType: 'divider', name: 'Divider', fill: cs.borderTopColor || '#E2E2E2', w: Math.round(rect.width) || parentWidth || 100, h: Math.max(Math.round(rect.height), 1), x: Math.round(rect.x - parentRect.x), y: Math.round(rect.y - parentRect.y), flexGrow: 0 };
+    return { nodeType: 'divider', name: 'Divider', fill: cs.borderTopColor || '#E2E2E2', w: Math.round(rect.width) || parentWidth || 100, h: Math.max(Math.round(rect.height), 1), x: Math.round(rect.x - parentRect.x), y: Math.round(rect.y - parentRect.y), flexGrow: 0, positioning: normalizePosition(cs.position), cssOrder: parseFloat(cs.order) || 0 };
   }
 
   // ── Image ──
   if (tag === 'img') {
-    return { nodeType: 'image', name: element.alt || 'Image', w: Math.round(rect.width) || 100, h: Math.round(rect.height) || 80, x: Math.round(rect.x - parentRect.x), y: Math.round(rect.y - parentRect.y), flexGrow: parseFloat(cs.flexGrow) || 0 };
+    return { nodeType: 'image', name: element.alt || 'Image', w: Math.round(rect.width) || 100, h: Math.round(rect.height) || 80, x: Math.round(rect.x - parentRect.x), y: Math.round(rect.y - parentRect.y), flexGrow: parseFloat(cs.flexGrow) || 0, positioning: normalizePosition(cs.position), cssOrder: parseFloat(cs.order) || 0 };
+  }
+
+  // ── SVG icon/vector ──
+  if (tag === 'svg') {
+    return {
+      nodeType: 'svg',
+      name: inferName(element, cs),
+      svg: element.outerHTML,
+      w: Math.round(rect.width) || parseFloat(element.getAttribute('width')) || 24,
+      h: Math.round(rect.height) || parseFloat(element.getAttribute('height')) || 24,
+      x: Math.round(rect.x - parentRect.x),
+      y: Math.round(rect.y - parentRect.y),
+      flexGrow: parseFloat(cs.flexGrow) || 0,
+      positioning: normalizePosition(cs.position),
+      cssOrder: parseFloat(cs.order) || 0
+    };
   }
 
   // ── Build frame node ──
@@ -357,6 +374,9 @@ function walkDOM(element, parentRect, parentWidth) {
     wrap: false,
     flexGrow: parseFloat(cs.flexGrow) || 0,
     fillCrossAxis: false,
+    layoutSource: null,
+    positioning: normalizePosition(cs.position),
+    cssOrder: parseFloat(cs.order) || 0,
     children: []
   };
 
@@ -365,6 +385,7 @@ function walkDOM(element, parentRect, parentWidth) {
   if (display === 'flex' || display === 'inline-flex') {
     var dir = cs.flexDirection || 'row';
     node.layout = dir.indexOf('column') > -1 ? 'column' : 'row';
+    node.layoutSource = 'css';
     node.gap = Math.round(parseFloat(cs.gap) || parseFloat(cs.columnGap) || 0);
     node.padding = extractPadding(cs);
     node.justifyContent = normalizeJustify(cs.justifyContent);
@@ -372,9 +393,18 @@ function walkDOM(element, parentRect, parentWidth) {
     node.wrap = cs.flexWrap === 'wrap';
   } else if (display === 'grid' || display === 'inline-grid') {
     node.layout = 'row';
+    node.layoutSource = 'css';
     node.wrap = true;
     node.gap = Math.round(parseFloat(cs.gap) || parseFloat(cs.rowGap) || 0);
     node.padding = extractPadding(cs);
+  } else if (display === 'block' || display === 'list-item' || display === 'flow-root') {
+    // CSS block flow = vertical stacking. Represent as column auto-layout in Figma.
+    node.padding = extractPadding(cs);
+    if (hasVisibleChildren(element, win)) {
+      node.layout = 'column';
+      node.layoutSource = 'block-flow';
+      node.gap = 0; // Block flow uses margins, not gap. Gap refined later by refineAutoLayoutMetrics.
+    }
   } else {
     node.padding = extractPadding(cs);
   }
@@ -385,25 +415,33 @@ function walkDOM(element, parentRect, parentWidth) {
   }
 
   // ── Text-only leaf ──
-  var hasChildEls = hasVisibleChildren(element, win);
+  var hasChildEls = element.children.length > 0 && hasVisibleChildren(element, win);
   var directText = getDirectText(element);
 
   if (!hasChildEls && directText) {
-    node.nodeType = 'text';
-    node.content = directText;
-    node.fontSize = Math.round(parseFloat(cs.fontSize) || 16);
-    node.fontWeight = cs.fontWeight || '400';
-    node.color = cs.color;
-    node.lineHeight = parseFloat(cs.lineHeight) || null;
-    node.letterSpacing = parseFloat(cs.letterSpacing) || 0;
-    node.textAlign = cs.textAlign || 'left';
+    if (shouldFlattenToTextNode(element, node, cs, tag)) {
+      node.nodeType = 'text';
+      node.content = directText;
+      node.fontSize = Math.round(parseFloat(cs.fontSize) || 16);
+      node.fontWeight = cs.fontWeight || '400';
+      node.color = cs.color;
+      node.lineHeight = parseFloat(cs.lineHeight) || null;
+      node.letterSpacing = parseFloat(cs.letterSpacing) || 0;
+      node.textAlign = cs.textAlign || 'left';
+      return node;
+    }
+
+    var textRect = getElementTextRect(element);
+    node.children.push(makeTextNode(directText, cs, textRect, rect));
     return node;
   }
 
   // ── Mixed content (text nodes + child elements) ──
   if (hasChildEls && hasTextNodes(element)) {
-    if (!node.layout) { node.layout = 'row'; node.gap = 0; node.alignItems = 'center'; }
     processMixed(element, node, rect, win);
+    maybeInferAutoLayout(node);
+    sortChildrenForLayout(node);
+    refineAutoLayoutMetrics(node);
     return node;
   }
 
@@ -412,6 +450,10 @@ function walkDOM(element, parentRect, parentWidth) {
     var childNode = walkDOM(element.children[i], rect, rect.width);
     if (childNode) node.children.push(childNode);
   }
+
+  maybeInferAutoLayout(node);
+  sortChildrenForLayout(node);
+  refineAutoLayoutMetrics(node);
 
   return node;
 }
@@ -424,13 +466,114 @@ function processMixed(element, parentNode, parentRect, win) {
       var t = child.textContent.trim();
       if (t) {
         var cs = win.getComputedStyle(element);
-        parentNode.children.push({ nodeType: 'text', name: t.slice(0, 30), content: t, fontSize: Math.round(parseFloat(cs.fontSize) || 16), fontWeight: cs.fontWeight || '400', color: cs.color, lineHeight: parseFloat(cs.lineHeight) || null, letterSpacing: parseFloat(cs.letterSpacing) || 0, textAlign: cs.textAlign || 'left', w: 0, h: 0, x: 0, y: 0, flexGrow: 0 });
+        var textRect = getTextNodeRect(child);
+        parentNode.children.push({
+          nodeType: 'text',
+          name: t.slice(0, 30),
+          content: t,
+          fontSize: Math.round(parseFloat(cs.fontSize) || 16),
+          fontWeight: cs.fontWeight || '400',
+          color: cs.color,
+          lineHeight: parseFloat(cs.lineHeight) || null,
+          letterSpacing: parseFloat(cs.letterSpacing) || 0,
+          textAlign: cs.textAlign || 'left',
+          w: Math.round(textRect.width) || 0,
+          h: Math.round(textRect.height) || 0,
+          x: Math.round(textRect.x - parentRect.x) || 0,
+          y: Math.round(textRect.y - parentRect.y) || 0,
+          flexGrow: 0,
+          positioning: 'static',
+          cssOrder: 0
+        });
       }
     } else if (child.nodeType === 1) {
       var cn = walkDOM(child, parentRect, parentRect.width);
       if (cn) parentNode.children.push(cn);
     }
   }
+}
+
+function getTextNodeRect(node) {
+  try {
+    var range = node.ownerDocument.createRange();
+    range.selectNodeContents(node);
+    return range.getBoundingClientRect();
+  } catch (e) {
+    return { x: 0, y: 0, width: 0, height: 0 };
+  }
+}
+
+function getElementTextRect(element) {
+  try {
+    var range = element.ownerDocument.createRange();
+    range.selectNodeContents(element);
+    return range.getBoundingClientRect();
+  } catch (e) {
+    return element.getBoundingClientRect();
+  }
+}
+
+function makeTextNode(content, cs, textRect, parentRect) {
+  return {
+    nodeType: 'text',
+    name: content.slice(0, 30),
+    content: content,
+    fontSize: Math.round(parseFloat(cs.fontSize) || 16),
+    fontWeight: cs.fontWeight || '400',
+    color: cs.color,
+    lineHeight: parseFloat(cs.lineHeight) || null,
+    letterSpacing: parseFloat(cs.letterSpacing) || 0,
+    textAlign: cs.textAlign || 'left',
+    w: Math.round(textRect.width) || 0,
+    h: Math.round(textRect.height) || 0,
+    x: Math.round(textRect.x - parentRect.x) || 0,
+    y: Math.round(textRect.y - parentRect.y) || 0,
+    flexGrow: 0,
+    positioning: 'static',
+    cssOrder: 0
+  };
+}
+
+function shouldFlattenToTextNode(element, node, cs, tag) {
+  if (tag === 'button' || tag === 'a' || tag === 'label') return false;
+  if (node.fill || node.border || node.radius > 0) return false;
+  if (hasPadding(node.padding)) return false;
+  if (cs.display === 'flex' || cs.display === 'inline-flex' || cs.display === 'grid' || cs.display === 'inline-grid') return false;
+  if ((node.w || 0) > 0 && (node.h || 0) > 0) {
+    var textRect = getElementTextRect(element);
+    if ((node.w - textRect.width) > 8 || (node.h - textRect.height) > 8) return false;
+  }
+  return true;
+}
+
+function hasPadding(padding) {
+  if (!padding || !padding.length) return false;
+  for (var i = 0; i < padding.length; i++) {
+    if ((padding[i] || 0) !== 0) return true;
+  }
+  return false;
+}
+
+function shouldPreferTextStack(node, children) {
+  if (!children || children.length < 2) return false;
+  for (var i = 0; i < children.length; i++) {
+    if (children[i].nodeType !== 'text') return false;
+  }
+
+  var totalWidth = 0;
+  var startPositions = [];
+  var firstSize = children[0].fontSize || 0;
+  var fontContrast = false;
+  for (var j = 0; j < children.length; j++) {
+    totalWidth += children[j].w || 0;
+    startPositions.push(children[j].x || 0);
+    if (Math.abs((children[j].fontSize || 0) - firstSize) >= 2) fontContrast = true;
+  }
+
+  if (spread(startPositions) > 12) return false;
+  if (fontContrast) return true;
+  if ((node.w || 0) > 0 && totalWidth > (node.w * 0.9)) return true;
+  return false;
 }
 
 // ── Helpers ──
@@ -451,6 +594,222 @@ function getDirectText(el) {
 }
 
 function parseBgColor(c) { return (!c || c === 'rgba(0, 0, 0, 0)' || c === 'transparent') ? null : c; }
+
+function normalizePosition(pos) {
+  if (!pos) return 'static';
+  if (pos === 'absolute' || pos === 'fixed') return pos;
+  return 'static';
+}
+
+function isAbsolutePositioning(node) {
+  return !!node && (node.positioning === 'absolute' || node.positioning === 'fixed' || node.positioning === 'sticky');
+}
+
+function sortChildrenForLayout(node) {
+  if (!node || !node.layout || !node.children || node.children.length < 2) return;
+  if (node.layoutSource === 'css') {
+    var hasOrderedChildren = false;
+    for (var i = 0; i < node.children.length; i++) {
+      if ((node.children[i].cssOrder || 0) !== 0) {
+        hasOrderedChildren = true;
+        break;
+      }
+    }
+    if (!hasOrderedChildren) return;
+  }
+  node.children.sort(function(a, b) {
+    var ao = a.cssOrder || 0;
+    var bo = b.cssOrder || 0;
+    if (ao !== bo) return ao - bo;
+    if (isAbsolutePositioning(a) !== isAbsolutePositioning(b)) return isAbsolutePositioning(a) ? 1 : -1;
+    if (node.layout === 'column') {
+      if (Math.abs((a.y || 0) - (b.y || 0)) > 2) return (a.y || 0) - (b.y || 0);
+      return (a.x || 0) - (b.x || 0);
+    }
+    if (Math.abs((a.x || 0) - (b.x || 0)) > 2) return (a.x || 0) - (b.x || 0);
+    return (a.y || 0) - (b.y || 0);
+  });
+}
+
+function maybeInferAutoLayout(node) {
+  if (!node || node.layout || !node.children || node.children.length < 2) return;
+  var flowChildren = node.children.filter(function(child) { return !isAbsolutePositioning(child); });
+  if (flowChildren.length < 2) return;
+
+  if (shouldPreferTextStack(node, flowChildren)) {
+    var textColumn = measureFlow(node, flowChildren, 'column');
+    if (textColumn.valid) {
+      node.layout = 'column';
+      node.layoutSource = 'inferred';
+      node.gap = textColumn.gap;
+      node.padding = textColumn.padding;
+      node.justifyContent = 'start';
+      node.alignItems = detectCrossAlignment(node, flowChildren, 'column');
+      return;
+    }
+  }
+
+  var column = measureFlow(node, flowChildren, 'column');
+  var row = measureFlow(node, flowChildren, 'row');
+  var pick = null;
+
+  if (column.valid && (!row.valid || column.score >= row.score + 0.08) && column.score >= 0.72) {
+    pick = { layout: 'column', measure: column };
+  } else if (row.valid && row.score >= 0.72) {
+    pick = { layout: 'row', measure: row };
+  }
+
+  if (!pick) return;
+
+  node.layout = pick.layout;
+  node.layoutSource = 'inferred';
+  node.gap = pick.measure.gap;
+  node.padding = pick.measure.padding;
+  node.justifyContent = 'start';
+  node.alignItems = detectCrossAlignment(node, flowChildren, pick.layout);
+}
+
+function refineAutoLayoutMetrics(node) {
+  if (!node || !node.layout || !node.children || node.children.length === 0) return;
+  var flowChildren = node.children.filter(function(child) { return !isAbsolutePositioning(child); });
+  if (!flowChildren.length) return;
+
+  var measured = measureFlow(node, flowChildren, node.layout);
+  if (!measured.valid) return;
+
+  node.gap = measured.gap;
+  node.padding = measured.padding;
+  node.alignItems = detectCrossAlignment(node, flowChildren, node.layout);
+}
+
+function measureFlow(node, children, layout) {
+  if (!children || children.length < 1) {
+    return { valid: false, score: 0, gap: 0, padding: [0, 0, 0, 0] };
+  }
+
+  var sorted = children.slice().sort(function(a, b) {
+    if (layout === 'column') {
+      if (Math.abs((a.y || 0) - (b.y || 0)) > 2) return (a.y || 0) - (b.y || 0);
+      return (a.x || 0) - (b.x || 0);
+    }
+    if (Math.abs((a.x || 0) - (b.x || 0)) > 2) return (a.x || 0) - (b.x || 0);
+    return (a.y || 0) - (b.y || 0);
+  });
+
+  var gaps = [];
+  var overlapPenalty = 0;
+  for (var i = 1; i < sorted.length; i++) {
+    var prev = sorted[i - 1];
+    var curr = sorted[i];
+    var gap = layout === 'column'
+      ? (curr.y || 0) - ((prev.y || 0) + (prev.h || 0))
+      : (curr.x || 0) - ((prev.x || 0) + (prev.w || 0));
+    if (gap < -4) overlapPenalty += Math.abs(gap);
+    gaps.push(Math.max(0, Math.round(gap)));
+  }
+
+  var minX = Infinity;
+  var minY = Infinity;
+  var maxRight = 0;
+  var maxBottom = 0;
+  var startVals = [];
+  var endVals = [];
+  var centerVals = [];
+  for (var j = 0; j < sorted.length; j++) {
+    var child = sorted[j];
+    var x = child.x || 0;
+    var y = child.y || 0;
+    var w = child.w || 0;
+    var h = child.h || 0;
+    minX = Math.min(minX, x);
+    minY = Math.min(minY, y);
+    maxRight = Math.max(maxRight, x + w);
+    maxBottom = Math.max(maxBottom, y + h);
+    if (layout === 'column') {
+      startVals.push(x);
+      endVals.push(x + w);
+      centerVals.push(x + w / 2);
+    } else {
+      startVals.push(y);
+      endVals.push(y + h);
+      centerVals.push(y + h / 2);
+    }
+  }
+
+  var crossSize = layout === 'column' ? Math.max(node.w || 1, 1) : Math.max(node.h || 1, 1);
+  var crossSpread = Math.min(spread(startVals), spread(endVals), spread(centerVals));
+  var score = Math.max(0, 1 - (crossSpread / Math.max(crossSize, 1)) - (overlapPenalty / Math.max(crossSize * 2, 1)));
+
+  return {
+    valid: overlapPenalty <= 8,
+    score: score,
+    gap: median(gaps),
+    padding: [
+      clampBox(Math.round(minY), node.h),
+      clampBox(Math.round((node.w || 0) - maxRight), node.w),
+      clampBox(Math.round((node.h || 0) - maxBottom), node.h),
+      clampBox(Math.round(minX), node.w)
+    ]
+  };
+}
+
+function detectCrossAlignment(node, children, layout) {
+  var stretchCount = 0;
+  var startVals = [];
+  var endVals = [];
+  var centerVals = [];
+  var availableCross = layout === 'column'
+    ? Math.max((node.w || 0) - ((node.padding && node.padding[1]) || 0) - ((node.padding && node.padding[3]) || 0), 1)
+    : Math.max((node.h || 0) - ((node.padding && node.padding[0]) || 0) - ((node.padding && node.padding[2]) || 0), 1);
+
+  for (var i = 0; i < children.length; i++) {
+    var child = children[i];
+    if (child.fillCrossAxis) stretchCount++;
+    if (layout === 'column') {
+      startVals.push(child.x || 0);
+      endVals.push((child.x || 0) + (child.w || 0));
+      centerVals.push((child.x || 0) + (child.w || 0) / 2);
+      if ((child.w || 0) >= availableCross - 4) stretchCount++;
+    } else {
+      startVals.push(child.y || 0);
+      endVals.push((child.y || 0) + (child.h || 0));
+      centerVals.push((child.y || 0) + (child.h || 0) / 2);
+      if ((child.h || 0) >= availableCross - 4) stretchCount++;
+    }
+  }
+
+  if (stretchCount >= children.length) return 'stretch';
+  var startSpread = spread(startVals);
+  var endSpread = spread(endVals);
+  var centerSpread = spread(centerVals);
+  var best = Math.min(startSpread, endSpread, centerSpread);
+  if (best === centerSpread && centerSpread <= 6) return 'center';
+  if (best === endSpread && endSpread <= 6) return 'end';
+  return 'start';
+}
+
+function spread(values) {
+  if (!values.length) return 0;
+  var min = values[0];
+  var max = values[0];
+  for (var i = 1; i < values.length; i++) {
+    min = Math.min(min, values[i]);
+    max = Math.max(max, values[i]);
+  }
+  return max - min;
+}
+
+function median(values) {
+  if (!values.length) return 0;
+  var sorted = values.slice().sort(function(a, b) { return a - b; });
+  var mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
+}
+
+function clampBox(value, maxSize) {
+  var max = typeof maxSize === 'number' && maxSize > 0 ? maxSize : 99999;
+  return Math.max(0, Math.min(value, max));
+}
 
 function extractBorder(cs) {
   var w = parseFloat(cs.borderTopWidth || cs.borderWidth || 0);
