@@ -65,8 +65,15 @@
     <input id="htmlHeight" type="number" value="844" style="width: 56px; padding: 5px 6px; font-size: 11px; border: 1px solid #ddd; border-radius: 4px; text-align: center;">
     <span style="font-size: 10px; color: #bbb;">px</span>
   </div>
-  <div style="font-size: 10px; color: #22C55E; margin-top: 8px; display: flex; align-items: center; gap: 4px;">
-    <span style="font-weight: 600;">&#10003;</span> No API key needed &mdash; auto-layout is parsed directly from CSS
+  <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
+    <label style="font-size: 11px; font-weight: 500; color: #555; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+      <input id="autoLayoutToggle" type="checkbox" checked style="margin: 0; accent-color: #0A3EFF;">
+      Auto-layout
+    </label>
+    <span style="font-size: 10px; color: #bbb;">Uncheck for flat absolute positioning (more reliable)</span>
+  </div>
+  <div style="font-size: 10px; color: #22C55E; margin-top: 6px; display: flex; align-items: center; gap: 4px;">
+    <span style="font-weight: 600;">&#10003;</span> No API key needed
   </div>
 </div>
 
@@ -276,13 +283,111 @@ async function convertHtml() {
     var tree = walkDOM(rootElement, rootRect, frameW);
     if (!tree) throw new Error('DOM walker returned empty result.');
 
-    setStatus('Creating Figma layers with auto-layout...', '#0A3EFF');
-    parent.postMessage({ pluginMessage: { type: 'convert-tree', data: { width: frameW, height: frameH, background: '#FFFFFF', tree: tree } } }, '*');
+    var useAutoLayout = document.getElementById('autoLayoutToggle') && document.getElementById('autoLayoutToggle').checked;
+
+    if (useAutoLayout) {
+      setStatus('Creating Figma layers with auto-layout...', '#0A3EFF');
+      parent.postMessage({ pluginMessage: { type: 'convert-tree', data: { width: frameW, height: frameH, background: '#FFFFFF', tree: tree } } }, '*');
+    } else {
+      setStatus('Creating flat Figma layers...', '#0A3EFF');
+      var flatElements = flattenTree(tree, 0, 0);
+      parent.postMessage({ pluginMessage: { type: 'convert-json', data: { width: frameW, height: frameH, background: '#FFFFFF', elements: flatElements } } }, '*');
+    }
   } catch (err) {
     setStatus('Error: ' + err.message, '#E64059');
     btn.disabled = false;
     btn.style.opacity = '1';
   }
+}
+
+// Flatten hierarchical tree into absolute-positioned elements for legacy convert-json
+function flattenTree(node, offsetX, offsetY) {
+  var elements = [];
+  if (!node) return elements;
+
+  var x = (node.x || 0) + offsetX;
+  var y = (node.y || 0) + offsetY;
+
+  if (node.nodeType === 'text') {
+    elements.push({
+      type: 'text',
+      content: node.content || '',
+      x: x, y: y,
+      fontSize: node.fontSize || 14,
+      fontWeight: node.fontWeight || 400,
+      color: node.color || '#202020',
+      lineHeight: node.lineHeight || null,
+      letterSpacing: node.letterSpacing || 0,
+      align: node.textAlign || 'left',
+      opacity: node.opacity !== undefined ? node.opacity : 1,
+      name: (node.name || node.content || 'Text').slice(0, 40)
+    });
+    return elements;
+  }
+
+  if (node.nodeType === 'icon') {
+    elements.push({
+      type: 'icon',
+      icon: node.icon || node.name || '',
+      x: x, y: y,
+      size: node.iconSize || node.w || 24,
+      color: node.iconColor || node.color || '#202020',
+      name: node.name || 'Icon'
+    });
+    return elements;
+  }
+
+  if (node.nodeType === 'divider') {
+    elements.push({
+      type: 'line',
+      x: x, y: y,
+      w: node.w || 1, h: Math.max(node.h || 1, 1),
+      color: node.fill || node.color || '#E2E2E2',
+      name: node.name || 'Divider'
+    });
+    return elements;
+  }
+
+  if (node.nodeType === 'image') {
+    elements.push({
+      type: 'rect',
+      x: x, y: y,
+      w: node.w || 100, h: node.h || 80,
+      fill: '#F4F4F4',
+      name: node.name || 'Image'
+    });
+    return elements;
+  }
+
+  // Frame — emit rect if it has visible fill or border, then recurse children
+  if (node.fill || (node.border && node.border.width)) {
+    var rect = {
+      type: 'rect',
+      x: x, y: y,
+      w: node.w || 1, h: node.h || 1,
+      fill: node.fill || 'transparent',
+      name: node.name || 'Frame',
+      opacity: node.opacity !== undefined ? node.opacity : 1
+    };
+    if (node.radius) rect.radius = node.radius;
+    if (node.border) {
+      rect.border = true;
+      rect.borderColor = node.border.color || '#E2E2E2';
+      rect.borderWidth = node.border.width || 1;
+    }
+    elements.push(rect);
+  }
+
+  if (node.children) {
+    for (var i = 0; i < node.children.length; i++) {
+      var childEls = flattenTree(node.children[i], x, y);
+      for (var j = 0; j < childEls.length; j++) {
+        elements.push(childEls[j]);
+      }
+    }
+  }
+
+  return elements;
 }
 
 function buildFullDocument(html, w, h) {
