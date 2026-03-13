@@ -488,6 +488,8 @@ function walkDOM(element, parentRect, parentWidth) {
     wrap: false,
     flexGrow: parseFloat(cs.flexGrow) || 0,
     fillCrossAxis: false,
+    preserveWidth: false,
+    preserveHeight: false,
     layoutSource: null,
     positioning: normalizePosition(cs.position),
     cssOrder: parseFloat(cs.order) || 0,
@@ -547,6 +549,7 @@ function walkDOM(element, parentRect, parentWidth) {
 
     var textRect = getElementTextRect(element);
     node.children.push(makeTextNode(directText, cs, textRect, rect));
+    applySizeHints(node, element, cs, tag, parentWidth);
     return node;
   }
 
@@ -556,6 +559,7 @@ function walkDOM(element, parentRect, parentWidth) {
     maybeInferAutoLayout(node);
     sortChildrenForLayout(node);
     refineAutoLayoutMetrics(node);
+    applySizeHints(node, element, cs, tag, parentWidth);
     return node;
   }
 
@@ -568,6 +572,7 @@ function walkDOM(element, parentRect, parentWidth) {
   maybeInferAutoLayout(node);
   sortChildrenForLayout(node);
   refineAutoLayoutMetrics(node);
+  applySizeHints(node, element, cs, tag, parentWidth);
 
   return node;
 }
@@ -666,6 +671,40 @@ function hasPadding(padding) {
     if ((padding[i] || 0) !== 0) return true;
   }
   return false;
+}
+
+function applySizeHints(node, element, cs, parentWidth) {
+  if (!node || node.nodeType !== 'frame') return;
+
+  var className = typeof element.className === 'string' ? element.className : '';
+  var isButtonLike = element.tagName.toLowerCase() === 'button' || /\b(btn|button|chip|tab|badge|toolbar-btn|icon-btn)\b/i.test(className);
+  var isCompactControl = (node.h || 0) > 0 && (node.h || 0) <= 64;
+  var isOutlinedOrFilled = !!node.fill || !!node.border;
+  var children = node.children || [];
+  var controlLikeChildren = isControlLikeChildren(children);
+
+  if (isButtonLike || (isCompactControl && isOutlinedOrFilled && controlLikeChildren)) {
+    node.preserveHeight = true;
+  }
+
+  if ((isButtonLike || controlLikeChildren) && isCompactControl && isOutlinedOrFilled) {
+    if ((parentWidth || 0) > 0 && (node.w || 0) < parentWidth * 0.92) {
+      node.preserveWidth = true;
+    }
+  }
+}
+
+function isControlLikeChildren(children) {
+  if (!children || children.length === 0 || children.length > 5) return false;
+  for (var i = 0; i < children.length; i++) {
+    var child = children[i];
+    if (!child) return false;
+    if (child.nodeType === 'icon') continue;
+    if (child.nodeType === 'text') continue;
+    if (child.nodeType === 'frame' && child.children && child.children.length === 1 && child.children[0].nodeType === 'text') continue;
+    return false;
+  }
+  return true;
 }
 
 function shouldPreferTextStack(node, children) {
@@ -786,25 +825,6 @@ function maybeInferAutoLayout(node) {
       return;
     }
   }
-
-  var column = measureFlow(node, flowChildren, 'column');
-  var row = measureFlow(node, flowChildren, 'row');
-  var pick = null;
-
-  if (column.valid && (!row.valid || column.score >= row.score + 0.08) && column.score >= 0.72) {
-    pick = { layout: 'column', measure: column };
-  } else if (row.valid && row.score >= 0.72) {
-    pick = { layout: 'row', measure: row };
-  }
-
-  if (!pick) return;
-
-  node.layout = pick.layout;
-  node.layoutSource = 'inferred';
-  node.gap = pick.measure.gap;
-  node.padding = pick.measure.padding;
-  node.justifyContent = 'start';
-  node.alignItems = detectCrossAlignment(node, flowChildren, pick.layout);
 }
 
 function refineAutoLayoutMetrics(node) {

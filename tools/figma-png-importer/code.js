@@ -342,16 +342,15 @@ function applyChildSizing(frame, node, parent) {
   try {
     // Standard flex child behavior: FILL cross-axis, HUG main-axis
     if (parent.layoutMode === "VERTICAL") {
-      // Column parent → children fill width, hug height
-      frame.layoutSizingHorizontal = "FILL";
-      frame.layoutSizingVertical = "HUG";
+      // Column parent -> children fill width, hug height
+      frame.layoutSizingHorizontal = node.preserveWidth ? "FIXED" : "FILL";
+      frame.layoutSizingVertical = node.preserveHeight ? "FIXED" : "HUG";
     } else {
-      // Row parent → children hug width, fill height
-      frame.layoutSizingHorizontal = "HUG";
-      frame.layoutSizingVertical = "FILL";
+      // Row parent -> children hug width, fill height
+      frame.layoutSizingHorizontal = node.preserveWidth ? "FIXED" : "HUG";
+      frame.layoutSizingVertical = node.preserveHeight ? "FIXED" : "FILL";
     }
 
-    // flex-grow: also fill the main axis
     if (node.flexGrow >= 1) {
       frame.layoutGrow = 1;
       if (parent.layoutMode === "VERTICAL") frame.layoutSizingVertical = "FILL";
@@ -371,18 +370,17 @@ function applyTextLayoutSizing(text, node, parent) {
 
   try {
     if (parent.layoutMode === "VERTICAL") {
-      // Column parent → text fills width (wraps to container), hugs height
+      // Column parent -> text fills width (wraps to container), hugs height
       text.textAutoResize = "HEIGHT";
       text.layoutSizingHorizontal = "FILL";
       text.layoutSizingVertical = "HUG";
     } else {
-      // Row parent → text hugs both axes (natural inline size)
+      // Row parent -> text hugs both axes (natural inline size)
       text.textAutoResize = "WIDTH_AND_HEIGHT";
       text.layoutSizingHorizontal = "HUG";
       text.layoutSizingVertical = "HUG";
     }
 
-    // flex-grow: fill the main axis
     if (node.flexGrow >= 1) {
       text.layoutGrow = 1;
       if (parent.layoutMode === "HORIZONTAL") {
