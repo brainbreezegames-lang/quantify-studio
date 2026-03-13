@@ -2616,6 +2616,189 @@ Return the complete improved HTML in the JSON format specified above.` },
       }
     }
 
+    // ── Designer Image — recreate uploaded screenshot as HTML/CSS ────────────
+    if (action === 'designer-image') {
+      const { imageUrl, model: reqImageModel } = req.body
+      if (!imageUrl || typeof imageUrl !== 'string') {
+        return res.status(400).json({ error: 'imageUrl is required.' })
+      }
+      const imageApiKey = rk || process.env.OPENROUTER_API_KEY
+      if (!imageApiKey) {
+        return res.status(400).json({ error: 'No API key configured.' })
+      }
+      // Use a vision-capable model; prefer the user's selection if vision-capable
+      const visionCapableModels = new Set([
+        'google/gemini-3.1-pro-preview',
+        'google/gemini-3.1-flash-lite-preview',
+        'anthropic/claude-opus-4.6',
+      ])
+      const imageModel = (reqImageModel && visionCapableModels.has(reqImageModel))
+        ? reqImageModel
+        : 'google/gemini-3.1-pro-preview'
+
+      const IMAGE_RECREATE_SYSTEM = `You are a pixel-perfect HTML/CSS implementation engineer for Quantify — a scaffolding rental & inventory management mobile app.
+
+You will receive a screenshot of a mobile app screen. Your job is to recreate it EXACTLY as HTML/CSS using the pre-loaded Quantify design system classes.
+
+═══════════════════════════════════════════
+RESPONSE FORMAT
+═══════════════════════════════════════════
+
+ALWAYS respond with valid JSON in this exact format — no markdown fences, no extra text before/after:
+{
+  "artboards": [
+    {
+      "action": "create",
+      "name": "Screen Name",
+      "html": "<div class='screen'>...</div>",
+      "css": ""
+    }
+  ],
+  "reply": "Brief description of what screen you recreated."
+}
+
+═══════════════════════════════════════════
+RECREATION RULES — FOLLOW EXACTLY
+═══════════════════════════════════════════
+
+1. EXACT CONTENT: Copy every word of text exactly as it appears in the image. Do not paraphrase or change any text.
+2. EXACT LAYOUT: Preserve the exact top-to-bottom order of all elements. If something is at the top of the image, put it at the top of the HTML.
+3. EXACT STRUCTURE: Count every list item, every row, every section. Recreate ALL of them — do not skip or consolidate.
+4. EXACT COLORS: Match the colors you see. If the image uses blue for active items, use the pre-loaded accent classes or inline styles that match.
+5. EXACT ICONS: Use the pre-loaded <span class="msi">icon_name</span> for any icons you can identify.
+6. NAME THE SCREEN: Look at the app bar title or overall context to name the artboard.
+
+═══════════════════════════════════════════
+DESIGN SYSTEM — PRE-LOADED CSS CLASSES
+═══════════════════════════════════════════
+
+These CSS classes are already loaded. Map elements from the image to the closest matching class:
+
+LAYOUT: .screen (root), .content (main), .app-bar + .app-bar-title, .row, .row-between, .col, .bottom-actions
+TYPOGRAPHY: .display (39px), .headline (31px), .title-lg (25px), .title-md (16px 500), .title-sm (14px 500), .body-lg (16px), .body-md (16px), .body-sm (13px), .label-lg (16px), .label-md (13px), .label-sm (11px)
+CARDS: .card (bordered), .card-elevated, .card-filled, .stat-card, .stat-group, .stat-value, .stat-label
+BUTTONS: .btn-filled (primary), .btn-outlined (secondary), .btn-tonal, .btn-text, .btn-sm, .icon-btn
+BADGES: .badge + .badge-blue, .badge-success, .badge-error, .badge-warning, .badge-gray
+LISTS: .list-item (inside .card), .list-icon, .avatar
+FORMS: .field > .field-label + .field-input, .search-bar, .section-header
+CHIPS: .chip (in .filter-bar), .chip.active
+ICONS: <span class="msi">icon_name</span> — inside .icon-btn or .list-icon
+COLORS: .text-primary (#202020), .text-secondary (#878787), .text-accent (#0A3EFF), .text-error, .text-success
+
+BRAND: Primary #0A3EFF, Navy #10296E, Error #E64059, Success #22C55E. Switzer font. 0px corners. No shadows. Sentence case.
+
+${COMPONENT_RULES}
+
+CRITICAL: Wrap all content in a .screen root div. Use ONLY the pre-loaded CSS classes — minimal custom CSS. Return COMPLETE HTML with every element from the image.`
+
+      try {
+        res.writeHead(200, {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache, no-transform',
+          'Connection': 'keep-alive',
+          'X-Accel-Buffering': 'no',
+        })
+
+        res.write(`data: ${JSON.stringify({ type: 'status', message: 'Analyzing image...' })}\n\n`)
+
+        // Pass 1: Analyze image and generate HTML
+        const pass1Messages = [
+          { role: 'system', content: IMAGE_RECREATE_SYSTEM },
+          {
+            role: 'user',
+            content: [
+              { type: 'text', text: 'Recreate this screen exactly as HTML/CSS. Copy every element, every word of text, and every visual structure you see. Output valid JSON only.' },
+              { type: 'image_url', image_url: { url: imageUrl } },
+            ],
+          },
+        ]
+
+        res.write(`data: ${JSON.stringify({ type: 'status', message: 'Recreating design...' })}\n\n`)
+
+        const pass1Text = await streamLLMToSSE(res, imageModel, pass1Messages, 14000, imageApiKey)
+        const pass1Parsed = parseJsonResponse(pass1Text)
+
+        if (!pass1Parsed || !pass1Parsed.artboards?.length) {
+          res.write(`data: ${JSON.stringify({ type: 'done', artboards: [], reply: 'Could not parse the image. Please try a clearer screenshot.' })}\n\n`)
+          res.end()
+          return
+        }
+
+        const pass1Html = pass1Parsed.artboards[0]?.html || ''
+        const pass1Name = pass1Parsed.artboards[0]?.name || 'Imported screen'
+
+        // Pass 2: Refine — verify completeness against the original image
+        if (pass1Html.length > 100) {
+          res.write(`data: ${JSON.stringify({ type: 'pass1_done' })}\n\n`)
+          res.write(`data: ${JSON.stringify({ type: 'status', message: 'Verifying accuracy...' })}\n\n`)
+
+          const REFINE_IMAGE_SYSTEM = `You are a QA engineer verifying that an HTML recreation matches the original screenshot exactly.
+
+RESPONSE FORMAT — valid JSON only, no markdown fences:
+{
+  "artboards": [{ "action": "create", "name": "Screen Name", "html": "<div class='screen'>...</div>", "css": "" }],
+  "reply": "What was fixed."
+}
+
+REVIEW THE RECREATION AGAINST THE ORIGINAL IMAGE AND FIX:
+1. MISSING CONTENT — Add any text, rows, or sections visible in the image but absent from the HTML.
+2. WRONG TEXT — Correct any text that doesn't exactly match what's in the image.
+3. WRONG ORDER — Fix any elements that are in the wrong top-to-bottom position.
+4. STRUCTURE — Ensure .list-item rows are horizontal (icon + text + badge), not stacked.
+5. COMPLETENESS — Return the FULL corrected HTML. Never truncate or abbreviate.
+
+${COMPONENT_RULES}`
+
+          const refineMessages = [
+            { role: 'system', content: REFINE_IMAGE_SYSTEM },
+            {
+              role: 'user',
+              content: [
+                { type: 'text', text: `Screen: "${pass1Name}"\n\nCurrent HTML recreation:\n${pass1Html}\n\nCompare against the original image and fix any differences. Return complete corrected HTML.` },
+                { type: 'image_url', image_url: { url: imageUrl } },
+              ],
+            },
+          ]
+
+          let pass2Parsed = null
+          try {
+            const pass2Text = await streamLLMToSSE(res, imageModel, refineMessages, 14000, imageApiKey)
+            pass2Parsed = parseJsonResponse(pass2Text)
+          } catch (refineErr) {
+            console.warn('Image refine pass failed (using pass 1):', refineErr?.message)
+          }
+
+          const finalParsed = (pass2Parsed?.artboards?.length > 0) ? pass2Parsed : pass1Parsed
+          const finalArtboards = (finalParsed.artboards || []).map(ab => ({
+            ...ab,
+            html: sanitizeArtboardHtml(ab.html),
+            css: ab.css || '',
+          }))
+
+          res.write(`data: ${JSON.stringify({ type: 'done', artboards: finalArtboards, reply: finalParsed.reply || `Recreated "${pass1Name}" from image.` })}\n\n`)
+        } else {
+          const finalArtboards = (pass1Parsed.artboards || []).map(ab => ({
+            ...ab,
+            html: sanitizeArtboardHtml(ab.html),
+            css: ab.css || '',
+          }))
+          res.write(`data: ${JSON.stringify({ type: 'done', artboards: finalArtboards, reply: pass1Parsed.reply || 'Done.' })}\n\n`)
+        }
+
+        res.end()
+      } catch (imgErr) {
+        console.error('Designer image error:', imgErr)
+        try {
+          res.write(`data: ${JSON.stringify({ type: 'error', error: imgErr?.message || 'Image recreation failed — please try again.' })}\n\n`)
+          res.end()
+        } catch {
+          if (!res.headersSent) {
+            return res.status(500).json({ error: imgErr?.message || 'Image recreation failed.' })
+          }
+        }
+      }
+    }
+
     // ── Quantify knowledge chat ─────────────────────────────────────────────
     if (action === 'chat') {
       const { messages: chatMessages } = req.body

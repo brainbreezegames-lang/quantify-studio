@@ -87,8 +87,10 @@ export default function ChatPanel() {
   const [isChatting, setIsChatting] = useState(false)
   const [selectedModel, setSelectedModel] = useState<string>(MODELS[0].id)
   const [showModelPicker, setShowModelPicker] = useState(false)
+  const [uploadedImage, setUploadedImage] = useState<{ dataUrl: string; name: string } | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const abortRef = useRef<AbortController | null>(null)
 
   const isBusy = isGenerating || isChatting
@@ -417,6 +419,198 @@ export default function ChatPanel() {
     }
   }, [input, messages, isBusy, artboards, selectedArtboardId, activeLenses, selectedModel, dispatch])
 
+  // ── Image upload: recreate screenshot exactly ──────────────────────────
+  const handleImageFile = useCallback((file: File) => {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string
+      setUploadedImage({ dataUrl, name: file.name })
+    }
+    reader.readAsDataURL(file)
+  }, [])
+
+  const sendImageDesign = useCallback(async () => {
+    if (!uploadedImage || isBusy) return
+
+    const userMsg: ChatMessage = {
+      id: uuid(),
+      role: 'user',
+      content: `Recreate this screen from image: ${uploadedImage.name}`,
+      timestamp: Date.now(),
+    }
+    dispatch({ type: 'ADD_MESSAGE', message: userMsg })
+    setUploadedImage(null)
+    dispatch({ type: 'SET_GENERATING', value: true })
+    dispatch({ type: 'SET_ERROR', error: null })
+    setStreamingStatus('Analyzing image...')
+
+    const previewArtboardId = uuid()
+    const lastArtboard = artboards.length > 0 ? artboards[artboards.length - 1] : null
+    const x = lastArtboard ? lastArtboard.x + lastArtboard.width + 60 : 100
+    const y = lastArtboard ? lastArtboard.y : 100
+
+    dispatch({
+      type: 'CREATE_ARTBOARD',
+      artboard: {
+        id: previewArtboardId,
+        name: 'Recreating...',
+        x, y,
+        width: 390, height: 844,
+        html: '', css: '',
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      },
+    })
+
+    const abortController = new AbortController()
+    abortRef.current = abortController
+
+    try {
+      const resp = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: abortController.signal,
+        body: JSON.stringify({
+          action: 'designer-image',
+          imageUrl: uploadedImage.dataUrl,
+          model: selectedModel,
+          openRouterApiKey: getOpenRouterKey(),
+        }),
+      })
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({ error: 'Request failed' }))
+        throw new Error(err.error || 'Something went wrong')
+      }
+
+      // Read SSE stream (same as sendDesign)
+      const reader = resp.body!.getReader()
+      const decoder = new TextDecoder()
+      let accumulated = ''
+      let lastRenderTime = 0
+      let sseBuffer = ''
+      let artboardCreated = false
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        sseBuffer += decoder.decode(value, { stream: true })
+        const events = sseBuffer.split('\n\n')
+        sseBuffer = events.pop()!
+
+        for (const event of events) {
+          const lines = event.split('\n')
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue
+            const data = line.slice(6)
+
+            try {
+              const evt = JSON.parse(data)
+
+              if (evt.type === 'status') {
+                setStreamingStatus(evt.message || 'Recreating...')
+              } else if (evt.type === 'delta') {
+                accumulated += evt.text
+
+                const name = extractProgressiveName(accumulated)
+                if (name) {
+                  dispatch({ type: 'UPDATE_ARTBOARD', id: previewArtboardId, updates: { name } })
+                }
+
+                const now = Date.now()
+                if (now - lastRenderTime >= 500) {
+                  lastRenderTime = now
+                  const html = extractProgressiveHtml(accumulated)
+                  if (html && html.length > 40) {
+                    dispatch({ type: 'UPDATE_ARTBOARD', id: previewArtboardId, updates: { html } })
+                    artboardCreated = true
+                  }
+                }
+              } else if (evt.type === 'pass1_done') {
+                const html = extractProgressiveHtml(accumulated)
+                if (html) {
+                  dispatch({ type: 'UPDATE_ARTBOARD', id: previewArtboardId, updates: { html } })
+                  artboardCreated = true
+                }
+                accumulated = ''
+                lastRenderTime = 0
+              } else if (evt.type === 'done') {
+                setStreamingStatus(null)
+                const actions: ArtboardAction[] = []
+
+                if (evt.artboards && Array.isArray(evt.artboards)) {
+                  for (let idx = 0; idx < evt.artboards.length; idx++) {
+                    const ab = evt.artboards[idx]
+                    if (idx === 0) {
+                      dispatch({
+                        type: 'UPDATE_ARTBOARD',
+                        id: previewArtboardId,
+                        updates: { html: ab.html || '', css: ab.css || '', name: ab.name || 'Imported screen' },
+                      })
+                      actions.push({ type: 'create', artboardId: previewArtboardId, artboardName: ab.name || 'Imported screen' })
+                    } else {
+                      const newId = uuid()
+                      dispatch({
+                        type: 'CREATE_ARTBOARD',
+                        artboard: {
+                          id: newId,
+                          name: ab.name || 'Imported screen',
+                          x: x + 450 * idx, y,
+                          width: ab.width || 390,
+                          height: ab.height || 844,
+                          html: ab.html || '',
+                          css: ab.css || '',
+                          createdAt: Date.now(),
+                          updatedAt: Date.now(),
+                        },
+                      })
+                      actions.push({ type: 'create', artboardId: newId, artboardName: ab.name || 'Imported screen' })
+                    }
+                  }
+                }
+
+                if (actions.length === 0 && !artboardCreated) {
+                  dispatch({ type: 'DELETE_ARTBOARD', id: previewArtboardId })
+                }
+
+                const assistantMsg: ChatMessage = {
+                  id: uuid(),
+                  role: 'assistant',
+                  content: evt.reply || 'Done.',
+                  timestamp: Date.now(),
+                  artboardActions: actions.length > 0 ? actions : undefined,
+                }
+                dispatch({ type: 'ADD_MESSAGE', message: assistantMsg })
+              } else if (evt.type === 'error') {
+                throw new Error(evt.error || 'Recreation failed')
+              }
+            } catch (parseErr: any) {
+              if (parseErr instanceof Error && !parseErr.message.includes('JSON') && !parseErr.message.includes('Unexpected')) {
+                throw parseErr
+              }
+            }
+          }
+        }
+      }
+    } catch (err: any) {
+      if (err.name === 'AbortError') return
+      setStreamingStatus(null)
+      dispatch({ type: 'DELETE_ARTBOARD', id: previewArtboardId })
+      const errMsg: ChatMessage = {
+        id: uuid(),
+        role: 'assistant',
+        content: `Error: ${err.message || 'Something went wrong.'}`,
+        timestamp: Date.now(),
+      }
+      dispatch({ type: 'ADD_MESSAGE', message: errMsg })
+    } finally {
+      setStreamingStatus(null)
+      dispatch({ type: 'SET_GENERATING', value: false })
+      abortRef.current = null
+    }
+  }, [uploadedImage, isBusy, artboards, selectedModel, dispatch])
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
@@ -577,6 +771,39 @@ export default function ChatPanel() {
         </div>
 
         <div className="px-4 pb-4 pt-1.5">
+          {/* Hidden file input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={e => {
+              const file = e.target.files?.[0]
+              if (file) handleImageFile(file)
+              e.target.value = ''
+            }}
+          />
+
+          {/* Image preview */}
+          {uploadedImage && (
+            <div className="mb-2 flex items-center gap-2 bg-white/[0.05] rounded-lg px-3 py-2">
+              <img src={uploadedImage.dataUrl} alt="Upload preview" className="w-10 h-10 rounded object-cover flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="text-[11px] text-white/70 truncate">{uploadedImage.name}</div>
+                <div className="text-[10px] text-[#0A3EFF]/60">Ready to recreate</div>
+              </div>
+              <button
+                onClick={() => setUploadedImage(null)}
+                className="text-white/30 hover:text-white/60 transition-colors flex-shrink-0"
+                aria-label="Remove image"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          )}
+
           <div className="relative">
             <textarea
               ref={textareaRef}
@@ -604,19 +831,52 @@ export default function ChatPanel() {
             </button>
           </div>
 
-          {/* Design screen button */}
-          <button
-            onClick={() => sendDesign()}
-            disabled={!input.trim() || isBusy}
-            className="w-full mt-2 py-2 rounded-lg text-[13px] font-medium bg-[#0A3EFF] text-white hover:bg-[#0835D9] disabled:opacity-25 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="0" />
-              <path d="M3 9h18" />
-              <path d="M9 21V9" />
-            </svg>
-            Design screen
-          </button>
+          {/* Bottom action row */}
+          <div className="flex gap-2 mt-2">
+            {/* Upload image button */}
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isBusy}
+              className="flex-shrink-0 px-3 py-2 rounded-lg text-[12px] font-medium bg-white/[0.06] text-white/50 hover:bg-white/[0.1] hover:text-white/70 disabled:opacity-25 disabled:cursor-not-allowed transition-all flex items-center gap-1.5"
+              title="Upload a screenshot to recreate it exactly"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
+              {uploadedImage ? 'Change' : 'Import'}
+            </button>
+
+            {/* Recreate from image button (shown when image is loaded) */}
+            {uploadedImage ? (
+              <button
+                onClick={sendImageDesign}
+                disabled={isBusy}
+                className="flex-1 py-2 rounded-lg text-[13px] font-medium bg-[#0A3EFF] text-white hover:bg-[#0835D9] disabled:opacity-25 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="0" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <polyline points="21 15 16 10 5 21" />
+                </svg>
+                Recreate from image
+              </button>
+            ) : (
+              <button
+                onClick={() => sendDesign()}
+                disabled={!input.trim() || isBusy}
+                className="flex-1 py-2 rounded-lg text-[13px] font-medium bg-[#0A3EFF] text-white hover:bg-[#0835D9] disabled:opacity-25 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="0" />
+                  <path d="M3 9h18" />
+                  <path d="M9 21V9" />
+                </svg>
+                Design screen
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
