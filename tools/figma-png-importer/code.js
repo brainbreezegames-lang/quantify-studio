@@ -297,9 +297,9 @@ function applyAutoLayout(frame, node) {
   frame.primaryAxisAlignItems = mapJustifyToFigma(node.justifyContent);
   frame.counterAxisAlignItems = mapAlignToFigma(node.alignItems);
 
-  // Fixed sizing by default (matches measured HTML dimensions)
-  frame.primaryAxisSizingMode = "FIXED";
-  frame.counterAxisSizingMode = "FIXED";
+  // HUG content by default — auto-layout frames should size to fit their children
+  frame.primaryAxisSizingMode = "AUTO";
+  frame.counterAxisSizingMode = "AUTO";
 
   // Wrap
   if (node.wrap) {
@@ -346,6 +346,9 @@ async function buildFromTree(data) {
   // Root auto-layout
   if (tree.layout) {
     applyAutoLayout(root, tree);
+    // Override: root frame stays FIXED at screen dimensions (not HUG)
+    root.primaryAxisSizingMode = "FIXED";
+    root.counterAxisSizingMode = "FIXED";
   }
 
   // Process children
@@ -418,13 +421,19 @@ async function createFrameNode(node, parent) {
       frame.layoutGrow = 1;
     }
 
-    // Try to set sizing modes for better auto-layout behavior
+    // Smart sizing: children should fill the cross-axis by default and hug the main-axis
     try {
-      // Default: FIXED sizing preserves measured dimensions
-      frame.layoutSizingHorizontal = "FIXED";
-      frame.layoutSizingVertical = "FIXED";
+      if (parent.layoutMode === "VERTICAL") {
+        // Column parent: children fill width (cross), hug height (main)
+        frame.layoutSizingHorizontal = "FILL";
+        frame.layoutSizingVertical = "HUG";
+      } else {
+        // Row parent: children hug width (main), fill height (cross)
+        frame.layoutSizingHorizontal = "HUG";
+        frame.layoutSizingVertical = "FILL";
+      }
 
-      // If this child fills the cross-axis (common in column layouts)
+      // Explicit fillCrossAxis override
       if (node.fillCrossAxis) {
         if (parent.layoutMode === "VERTICAL") {
           frame.layoutSizingHorizontal = "FILL";
@@ -433,12 +442,22 @@ async function createFrameNode(node, parent) {
         }
       }
 
-      // If flex-grow, fill the main axis
+      // flex-grow: fill the main axis
       if (node.flexGrow >= 1) {
         if (parent.layoutMode === "VERTICAL") {
           frame.layoutSizingVertical = "FILL";
         } else {
           frame.layoutSizingHorizontal = "FILL";
+        }
+      }
+
+      // If this frame has its own auto-layout and a fixed measured size,
+      // keep FIXED when there's no flex-grow (prevents collapsing to 0)
+      if (node.layout && !node.flexGrow) {
+        if (parent.layoutMode === "VERTICAL" && node.h > 0) {
+          frame.layoutSizingVertical = "HUG";
+        } else if (parent.layoutMode === "HORIZONTAL" && node.w > 0) {
+          frame.layoutSizingHorizontal = "HUG";
         }
       }
     } catch(e) {
@@ -532,12 +551,22 @@ async function createTextNode(node, parent) {
   // Flex child sizing
   if (parent.layoutMode) {
     try {
-      text.layoutSizingHorizontal = "HUG";
-      text.layoutSizingVertical = "HUG";
+      if (parent.layoutMode === "VERTICAL") {
+        // In column layout: text fills width so it wraps, hugs height
+        text.layoutSizingHorizontal = "FILL";
+        text.layoutSizingVertical = "HUG";
+        text.textAutoResize = "HEIGHT"; // Allow width to fill, height adapts
+      } else {
+        // In row layout: text hugs both axes by default
+        text.layoutSizingHorizontal = "HUG";
+        text.layoutSizingVertical = "HUG";
+      }
+
       if (node.flexGrow >= 1) {
         text.layoutGrow = 1;
         if (parent.layoutMode === "HORIZONTAL") {
           text.layoutSizingHorizontal = "FILL";
+          text.textAutoResize = "HEIGHT"; // Fill width, adapt height
         } else {
           text.layoutSizingVertical = "FILL";
         }
