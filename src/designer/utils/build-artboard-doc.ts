@@ -245,7 +245,9 @@ const EDIT_SCRIPT = `
       styles: { color: cs.color, backgroundColor: cs.backgroundColor, fontSize: cs.fontSize, fontWeight: cs.fontWeight,
         lineHeight: cs.lineHeight, letterSpacing: cs.letterSpacing, padding: cs.padding, margin: cs.margin,
         borderRadius: cs.borderRadius, gap: cs.gap, textAlign: cs.textAlign, display: cs.display,
-        width: cs.width, height: cs.height, opacity: cs.opacity, border: cs.border }
+        width: cs.width, height: cs.height, opacity: cs.opacity, border: cs.border,
+        flexDirection: cs.flexDirection, justifyContent: cs.justifyContent, alignItems: cs.alignItems,
+        flexWrap: cs.flexWrap, flexGrow: cs.flexGrow, flexShrink: cs.flexShrink, alignSelf: cs.alignSelf }
     };
   }
 

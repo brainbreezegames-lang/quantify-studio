@@ -1,0 +1,603 @@
+<html>
+<body style="font-family: Inter, system-ui, sans-serif; padding: 0; margin: 0; font-size: 12px; background: #fff;">
+
+<!-- Header -->
+<div style="padding: 16px 16px 0; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px;">
+  <p style="font-weight: 600; margin: 0 0 2px; font-size: 14px; color: #111;">Paper to Figma</p>
+  <p style="color: #888; margin: 0; font-size: 11px;">Convert screenshots or HTML to Figma with auto-layout</p>
+</div>
+
+<!-- API Key (only for screenshot mode) -->
+<div id="apiKeySection" style="padding: 12px 16px 0;">
+  <div id="apiKeySaved" style="display: none; font-size: 11px; color: #22C55E;">
+    API key saved <span onclick="showKeyEditor()" style="color: #0A3EFF; cursor: pointer; margin-left: 6px;">Change</span>
+  </div>
+  <div id="apiKeyEditor">
+    <label style="font-size: 11px; font-weight: 500; color: #555; display: block; margin-bottom: 4px;">OpenRouter API Key</label>
+    <div style="display: flex; gap: 6px;">
+      <input id="apiKey" type="password" placeholder="sk-or-..." style="flex: 1; padding: 7px 10px; font-size: 11px; border: 1px solid #ddd; border-radius: 4px; font-family: monospace;">
+      <button onclick="saveKey()" style="padding: 4px 10px; font-size: 10px; background: #0A3EFF; color: white; border: none; border-radius: 4px; cursor: pointer; white-space: nowrap;">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Model selector (only for screenshot mode) -->
+<div id="modelSection" style="padding: 8px 16px 0;">
+  <label style="font-size: 11px; font-weight: 500; color: #555; display: block; margin-bottom: 4px;">Vision Model</label>
+  <select id="model" style="width: 100%; padding: 7px 10px; font-size: 11px; border: 1px solid #ddd; border-radius: 4px; background: #fff;">
+    <option value="google/gemini-3.1-pro-preview">Gemini 3.1 Pro (recommended)</option>
+    <option value="google/gemini-3.1-flash-lite-preview">Gemini 3.1 Flash Lite (faster)</option>
+  </select>
+</div>
+
+<!-- Mode tabs -->
+<div style="padding: 12px 16px 0;">
+  <div style="display: flex; gap: 0; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
+    <button id="tabScreenshot" onclick="switchTab('screenshot')" style="flex: 1; padding: 7px 0; font-size: 11px; font-weight: 500; border: none; cursor: pointer; background: #0A3EFF; color: white; transition: all 0.15s;">Screenshot</button>
+    <button id="tabHtml" onclick="switchTab('html')" style="flex: 1; padding: 7px 0; font-size: 11px; font-weight: 500; border: none; cursor: pointer; background: #fff; color: #555; transition: all 0.15s;">Paste HTML</button>
+  </div>
+</div>
+
+<!-- Screenshot mode -->
+<div id="modeScreenshot" style="padding: 12px 16px 0;">
+  <div id="dropZone" onclick="document.getElementById('fileInput').click()"
+    style="border: 2px dashed #ddd; border-radius: 6px; padding: 24px 16px; text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s;">
+    <div id="dropContent">
+      <div style="font-size: 24px; margin-bottom: 4px; opacity: 0.3;">&#128247;</div>
+      <div style="font-size: 12px; color: #888; font-weight: 500;">Click or drop PNG here</div>
+      <div style="font-size: 10px; color: #bbb; margin-top: 2px;">2x export recommended</div>
+    </div>
+    <div id="previewContent" style="display: none;">
+      <img id="previewImg" style="max-width: 100%; max-height: 140px; border-radius: 4px; margin-bottom: 4px;">
+      <div id="fileName" style="font-size: 10px; color: #888;"></div>
+    </div>
+  </div>
+  <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp" style="display: none;" onchange="handleFile(this.files[0])">
+</div>
+
+<!-- HTML mode -->
+<div id="modeHtml" style="padding: 12px 16px 0; display: none;">
+  <textarea id="htmlInput" placeholder="Paste your HTML here (from Quantify designer or any HTML/CSS)..." style="width: 100%; height: 160px; padding: 10px; font-size: 11px; font-family: 'SF Mono', Menlo, monospace; border: 1px solid #ddd; border-radius: 6px; resize: vertical; box-sizing: border-box; line-height: 1.5; tab-size: 2;"></textarea>
+  <div style="display: flex; gap: 8px; margin-top: 6px; align-items: center;">
+    <label style="font-size: 11px; font-weight: 500; color: #555;">Frame size:</label>
+    <input id="htmlWidth" type="number" value="390" style="width: 56px; padding: 5px 6px; font-size: 11px; border: 1px solid #ddd; border-radius: 4px; text-align: center;">
+    <span style="font-size: 11px; color: #bbb;">&times;</span>
+    <input id="htmlHeight" type="number" value="844" style="width: 56px; padding: 5px 6px; font-size: 11px; border: 1px solid #ddd; border-radius: 4px; text-align: center;">
+    <span style="font-size: 10px; color: #bbb;">px</span>
+  </div>
+  <div style="font-size: 10px; color: #22C55E; margin-top: 8px; display: flex; align-items: center; gap: 4px;">
+    <span style="font-weight: 600;">&#10003;</span> No API key needed &mdash; auto-layout is parsed directly from CSS
+  </div>
+</div>
+
+<!-- Convert button -->
+<div style="padding: 12px 16px 0;">
+  <button onclick="convert()" id="btn" style="width: 100%; padding: 10px 20px; background: #0A3EFF; color: white; border: none; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer;">Convert to Figma Layers</button>
+</div>
+
+<!-- Status -->
+<div id="status" style="padding: 8px 16px 16px; font-size: 11px; color: #888; min-height: 18px;"></div>
+
+<!-- Hidden iframe for DOM parsing (HTML mode) -->
+<iframe id="renderFrame" style="position: absolute; left: -9999px; top: -9999px; width: 390px; height: 844px; border: none; visibility: hidden;"></iframe>
+
+<script>
+var imageBase64 = null;
+var imageMimeType = null;
+var currentMode = 'screenshot';
+
+// ── Design System CSS (from Quantify Studio build-artboard-doc.ts) ──
+var DESIGN_SYSTEM_CSS = '*{box-sizing:border-box}' +
+'img{max-width:100%;display:block}' +
+'.screen{display:flex;flex-direction:column;min-height:100%;background:#FFFFFF;font-family:"Switzer","Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;color:#202020;letter-spacing:-0.02em}' +
+'.app-bar{position:sticky;top:0;z-index:10;height:56px;display:flex;align-items:center;padding:0 4px;background:#FFFFFF;border-bottom:1px solid #E2E2E2;gap:4px;flex-shrink:0}' +
+'.app-bar-title{flex:1;font-size:20px;font-weight:500;letter-spacing:-0.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 8px}' +
+'.content{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:12px}' +
+'.card{background:#fff;border-radius:0;border:1px solid #E2E2E2;padding:16px;display:flex;flex-direction:column;gap:8px}' +
+'.card-elevated{background:#F8F8F8;border-radius:0;border:1px solid #E2E2E2;padding:16px;display:flex;flex-direction:column;gap:8px}' +
+'.card-filled{background:#F4F4F4;border-radius:0;border:none;padding:16px;display:flex;flex-direction:column;gap:8px}' +
+'.stat-group{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}' +
+'.stat-card{background:#fff;border-radius:0;border:1px solid #E2E2E2;padding:16px;display:flex;flex-direction:column;gap:4px}' +
+'.stat-value{font-size:32px;font-weight:500;letter-spacing:-0.04em;line-height:1.1;color:#0A3EFF}' +
+'.stat-label{font-size:13px;font-weight:400;letter-spacing:-0.01em;color:#878787}' +
+'.section-header{font-size:13px;font-weight:500;letter-spacing:-0.01em;color:#878787;margin:4px 0 0}' +
+'.row{display:flex;align-items:center;gap:12px}' +
+'.row-between{display:flex;align-items:center;justify-content:space-between}' +
+'.col{display:flex;flex-direction:column;gap:4px}' +
+'.label-sm{font-size:11px;letter-spacing:-0.01em;color:#878787;font-weight:400}' +
+'.body-sm{font-size:13px;color:#878787;line-height:1.3;letter-spacing:-0.01em}' +
+'.body-md{font-size:16px;color:#202020;line-height:1.4;letter-spacing:-0.02em}' +
+'.title-md{font-size:16px;font-weight:500;color:#202020;letter-spacing:-0.02em}' +
+'.title-lg{font-size:25px;font-weight:500;color:#202020;letter-spacing:-0.02em}' +
+'.headline{font-size:31px;font-weight:500;color:#202020;letter-spacing:-0.02em}' +
+'.display{font-size:39px;font-weight:500;color:#202020;letter-spacing:-0.02em;line-height:1.1}' +
+'.title-sm{font-size:14px;font-weight:500;color:#202020;letter-spacing:-0.02em}' +
+'.body-lg{font-size:16px;color:#202020;line-height:1.4;letter-spacing:-0.02em}' +
+'.label-md{font-size:13px;letter-spacing:-0.01em;color:#878787;font-weight:400}' +
+'.label-lg{font-size:16px;letter-spacing:-0.02em;color:#5F5F5F;font-weight:500}' +
+'.link{color:#0A3EFF;text-decoration:underline;cursor:pointer}' +
+'.badge{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:9999px;font-size:11px;font-weight:500;letter-spacing:-0.01em}' +
+'.badge-blue{background:#E8EEFF;color:#0A3EFF}' +
+'.badge-success{background:#DCFCE7;color:#14532D}' +
+'.badge-error{background:#FFE5E9;color:#5F1422}' +
+'.badge-warning{background:#FFF3CD;color:#5D4300}' +
+'.badge-gray{background:#F4F4F4;color:#5F5F5F}' +
+'.list-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid #E2E2E2}' +
+'.list-item:last-child{border-bottom:none}' +
+'.list-icon{width:40px;height:40px;border-radius:0;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#F4F4F4;color:#0A3EFF}' +
+'.avatar{width:40px;height:40px;border-radius:9999px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#0A3EFF;color:#fff;font-size:14px;font-weight:500}' +
+'.bottom-actions{padding:16px;background:#FFFFFF;border-top:1px solid #E2E2E2;display:flex;gap:10px;flex-shrink:0}' +
+'.filter-bar{display:flex;align-items:center;gap:8px;padding:8px 0;overflow-x:auto}' +
+'.chip{display:inline-flex;align-items:center;height:32px;padding:0 12px;border-radius:0;font-size:13px;font-weight:400;border:1px solid #E2E2E2;background:#fff;color:#5F5F5F;cursor:pointer;white-space:nowrap;letter-spacing:-0.01em}' +
+'.chip.active{background:#E8EEFF;border-color:#0A3EFF;color:#0A3EFF}' +
+'button{font-family:inherit;cursor:pointer;transition:opacity .15s;letter-spacing:-0.02em}button:hover{opacity:.85}' +
+'.btn-filled{background:#0A3EFF;color:#fff;border:none;border-radius:0;height:40px;padding:0 16px;font-size:16px;font-weight:400;display:inline-flex;align-items:center;gap:8px}' +
+'.btn-outlined{background:transparent;color:#0A3EFF;border:1px solid #0A3EFF;border-radius:0;height:40px;padding:0 16px;font-size:16px;font-weight:400;display:inline-flex;align-items:center;gap:8px}' +
+'.btn-text{background:transparent;color:#0A3EFF;border:none;border-radius:0;height:40px;padding:0 12px;font-size:16px;font-weight:400;display:inline-flex;align-items:center;gap:8px}' +
+'.btn-tonal{background:rgba(10,62,255,0.08);color:#0A3EFF;border:none;border-radius:0;height:40px;padding:0 16px;font-size:16px;font-weight:400;display:inline-flex;align-items:center;gap:8px}' +
+'.icon-btn{background:transparent;border:none;border-radius:0;width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;color:#5F5F5F}' +
+'.msi{font-family:"Material Symbols Outlined";font-size:24px;font-weight:400;line-height:24px;height:24px;width:24px;letter-spacing:normal;text-transform:none;white-space:nowrap;direction:ltr;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;flex-shrink:0;text-align:center;overflow:hidden}' +
+'.msi.sm{font-size:18px;line-height:18px;height:18px;width:18px}.msi.lg{font-size:32px;line-height:32px;height:32px;width:32px}' +
+'.switch{display:inline-flex;align-items:center;cursor:pointer}.switch input{display:none}' +
+'.sw-track{position:relative;width:52px;height:32px;border-radius:16px;background:#B5B5B5;border:none;transition:.2s;flex-shrink:0}' +
+'.switch input:checked+.sw-track{background:#0A3EFF}' +
+'.sw-thumb{position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,0.2);transition:left .2s}' +
+'.switch input:checked+.sw-track .sw-thumb{left:24px}' +
+'.field{position:relative;border:1px solid #E2E2E2;border-radius:0;height:56px;padding:0 16px;background:#fff;display:flex;align-items:center;transition:border-color .15s;box-sizing:border-box;overflow:visible}' +
+'.field-label{position:absolute;top:0;left:12px;transform:translateY(-50%);font-size:12px;font-weight:400;color:#0A3EFF;background:#fff;padding:0 4px;pointer-events:none;z-index:1;letter-spacing:-0.01em}' +
+'.field-input{width:100%;border:none;outline:none;background:transparent;font-size:16px;font-family:inherit;color:#202020;display:block;letter-spacing:-0.02em}' +
+'.search-bar{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #E2E2E2;border-radius:0;padding:0 16px;height:48px}' +
+'hr.divider{border:none;border-top:1px solid #E2E2E2;margin:0}' +
+'.progress{height:4px;background:#F4F4F4;border-radius:0;overflow:hidden}' +
+'.progress-fill{height:100%;background:#0A3EFF;border-radius:0}' +
+'.info-bar{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:0;font-size:13px;line-height:1.3;letter-spacing:-0.01em}' +
+'.info-bar.error{background:#FFE5E9;color:#5F1422;border:1px solid #E64059}' +
+'.info-bar.warning{background:#FFF3CD;color:#5D4300;border:1px solid #F9A825}' +
+'.info-bar.info{background:#E8EEFF;color:#10296E;border:1px solid #0A3EFF}' +
+'.info-bar.success{background:#DCFCE7;color:#14532D;border:1px solid #22C55E}' +
+'.tab-bar{display:flex;border-bottom:1px solid #E2E2E2;gap:0}' +
+'.tab{flex:1;padding:12px 16px;font-size:16px;font-weight:400;color:#878787;text-align:center;border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;letter-spacing:-0.02em}' +
+'.tab.active{color:#0A3EFF;border-bottom-color:#0A3EFF;font-weight:500}' +
+'.surface-container{background:#F8F8F8;border-radius:0;padding:16px}' +
+'.text-primary{color:#202020}.text-secondary{color:#878787}.text-disabled{color:#B5B5B5}.text-on-primary{color:#FFFFFF}.text-error{color:#E64059}.text-success{color:#22C55E}.text-accent{color:#0A3EFF}' +
+'.fab{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:0;background:#0A3EFF;color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5}' +
+'.fab-extended{position:fixed;bottom:24px;right:24px;height:56px;padding:0 20px;border-radius:0;background:#0A3EFF;color:#fff;border:none;display:flex;align-items:center;gap:8px;font-size:16px;font-weight:500;cursor:pointer;z-index:5}';
+
+// ── Tab switching ──
+function switchTab(mode) {
+  currentMode = mode;
+  document.getElementById('modeScreenshot').style.display = mode === 'screenshot' ? 'block' : 'none';
+  document.getElementById('modeHtml').style.display = mode === 'html' ? 'block' : 'none';
+  document.getElementById('tabScreenshot').style.background = mode === 'screenshot' ? '#0A3EFF' : '#fff';
+  document.getElementById('tabScreenshot').style.color = mode === 'screenshot' ? 'white' : '#555';
+  document.getElementById('tabHtml').style.background = mode === 'html' ? '#0A3EFF' : '#fff';
+  document.getElementById('tabHtml').style.color = mode === 'html' ? 'white' : '#555';
+  document.getElementById('apiKeySection').style.display = mode === 'screenshot' ? 'block' : 'none';
+  document.getElementById('modelSection').style.display = mode === 'screenshot' ? 'block' : 'none';
+  setStatus('');
+}
+
+// ── Load saved API key ──
+(function() {
+  try {
+    var saved = localStorage.getItem('paper-to-figma-apikey');
+    if (saved) {
+      document.getElementById('apiKey').value = saved;
+      document.getElementById('apiKeySaved').style.display = 'block';
+      document.getElementById('apiKeyEditor').style.display = 'none';
+    }
+  } catch(e) {}
+})();
+
+function showKeyEditor() {
+  document.getElementById('apiKeySaved').style.display = 'none';
+  document.getElementById('apiKeyEditor').style.display = 'block';
+  document.getElementById('apiKey').focus();
+}
+
+function saveKey() {
+  var key = document.getElementById('apiKey').value.trim();
+  if (!key) { setStatus('Enter a key first', '#E64059'); return; }
+  try { localStorage.setItem('paper-to-figma-apikey', key); } catch(e) {}
+  document.getElementById('apiKeySaved').style.display = 'block';
+  document.getElementById('apiKeyEditor').style.display = 'none';
+  setStatus('API key saved', '#22C55E');
+}
+
+// ── Drag & drop ──
+var dropZone = document.getElementById('dropZone');
+dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.style.borderColor = '#0A3EFF'; dropZone.style.background = '#f8f9ff'; });
+dropZone.addEventListener('dragleave', function(e) { e.preventDefault(); dropZone.style.borderColor = '#ddd'; dropZone.style.background = ''; });
+dropZone.addEventListener('drop', function(e) { e.preventDefault(); dropZone.style.borderColor = '#ddd'; dropZone.style.background = ''; if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]); });
+
+function handleFile(file) {
+  if (!file) return;
+  imageMimeType = file.type || 'image/png';
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var dataUrl = e.target.result;
+    imageBase64 = dataUrl.split(',')[1];
+    document.getElementById('previewImg').src = dataUrl;
+    document.getElementById('fileName').textContent = file.name + ' (' + Math.round(file.size/1024) + ' KB)';
+    document.getElementById('dropContent').style.display = 'none';
+    document.getElementById('previewContent').style.display = 'block';
+    setStatus('Ready to convert', '#22C55E');
+  };
+  reader.readAsDataURL(file);
+}
+
+function setStatus(msg, color) {
+  var el = document.getElementById('status');
+  el.textContent = msg;
+  el.style.color = color || '#888';
+}
+
+// ══════════════════════════════════════════════
+// CONVERT ENTRY POINT
+// ══════════════════════════════════════════════
+
+async function convert() {
+  if (currentMode === 'screenshot') await convertScreenshot();
+  else await convertHtml();
+}
+
+// ══════════════════════════════════════════════
+// HTML MODE: Direct DOM parsing — NO AI needed
+// ══════════════════════════════════════════════
+
+async function convertHtml() {
+  var html = document.getElementById('htmlInput').value.trim();
+  if (!html) { setStatus('Please paste HTML first', '#E64059'); return; }
+
+  var frameW = parseInt(document.getElementById('htmlWidth').value) || 390;
+  var frameH = parseInt(document.getElementById('htmlHeight').value) || 844;
+  var btn = document.getElementById('btn');
+  btn.disabled = true;
+  btn.style.opacity = '0.6';
+  setStatus('Parsing HTML structure...', '#0A3EFF');
+
+  try {
+    var fullDoc = buildFullDocument(html, frameW, frameH);
+    var iframe = document.getElementById('renderFrame');
+    iframe.style.width = frameW + 'px';
+    iframe.style.height = frameH + 'px';
+    iframe.srcdoc = fullDoc;
+
+    await new Promise(function(resolve) { iframe.onload = resolve; setTimeout(resolve, 3000); });
+    await new Promise(function(resolve) { setTimeout(resolve, 200); });
+
+    setStatus('Extracting layout structure...', '#0A3EFF');
+    var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+    var appRoot = iframeDoc.getElementById('app');
+    if (!appRoot || !appRoot.firstElementChild) throw new Error('No root element found in HTML.');
+
+    var rootRect = appRoot.getBoundingClientRect();
+    var tree = walkDOM(appRoot.firstElementChild, rootRect, frameW);
+    if (!tree) throw new Error('DOM walker returned empty result.');
+
+    setStatus('Creating Figma layers with auto-layout...', '#0A3EFF');
+    parent.postMessage({ pluginMessage: { type: 'convert-tree', data: { width: frameW, height: frameH, background: '#FFFFFF', tree: tree } } }, '*');
+  } catch (err) {
+    setStatus('Error: ' + err.message, '#E64059');
+    btn.disabled = false;
+    btn.style.opacity = '1';
+  }
+}
+
+function buildFullDocument(html, w, h) {
+  var lc = html.toLowerCase();
+  var customCSS = '';
+  if (lc.indexOf('<!doctype') > -1 || lc.indexOf('<html') > -1) {
+    var styleMatches = html.match(/<style[^>]*>([\s\S]*?)<\/style>/gi);
+    if (styleMatches) {
+      for (var i = 0; i < styleMatches.length; i++) {
+        var inner = styleMatches[i].replace(/<\/?style[^>]*>/gi, '');
+        if (inner.indexOf('.screen{') === -1) customCSS += inner + '\n';
+      }
+    }
+    var bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+    if (bodyMatch) html = bodyMatch[1];
+  }
+  return '<!DOCTYPE html><html><head><meta charset="utf-8"><style>' +
+    'html,body{margin:0;padding:0;width:' + w + 'px;height:' + h + 'px;overflow:hidden;background:#FFFFFF;color:#202020;font-family:"Switzer","Segoe UI",Roboto,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-size:16px;letter-spacing:-0.02em;}' +
+    '#app{width:100%;height:100%;overflow:auto;}' +
+    DESIGN_SYSTEM_CSS + customCSS +
+    '</style></head><body><div id="app">' + html + '</div></body></html>';
+}
+
+// ══════════════════════════════════════════════
+// DOM WALKER — Extracts hierarchical layout tree
+// ══════════════════════════════════════════════
+
+var SEMANTIC_CLASSES = ['screen','app-bar','app-bar-title','content','card','card-elevated','card-filled','bottom-actions','row','row-between','col','field','field-label','field-input','btn-filled','btn-outlined','btn-tonal','btn-text','icon-btn','list-item','list-icon','avatar','badge','stat-card','stat-group','stat-value','stat-label','stat-delta','chip','filter-bar','search-bar','tab-bar','tab','info-bar','progress','progress-fill','fab','fab-extended','surface-container','section-header','switch','sw-track','sw-thumb','divider','display','headline','title-lg','title-md','title-sm','body-lg','body-md','body-sm','label-lg','label-md','label-sm'];
+
+function walkDOM(element, parentRect, parentWidth) {
+  var win = element.ownerDocument.defaultView;
+  var cs = win.getComputedStyle(element);
+  var rect = element.getBoundingClientRect();
+  var tag = element.tagName.toLowerCase();
+
+  if (cs.display === 'none' || cs.visibility === 'hidden') return null;
+  if (rect.width < 1 && rect.height < 1) return null;
+  if (tag === 'script' || tag === 'style' || tag === 'meta' || tag === 'link') return null;
+
+  // ── Material Symbol icon ──
+  if (element.classList.contains('msi')) {
+    return { nodeType: 'icon', name: element.textContent.trim(), icon: element.textContent.trim(), iconSize: Math.round(parseFloat(cs.fontSize) || 24), iconColor: cs.color, w: Math.round(rect.width) || 24, h: Math.round(rect.height) || 24, x: Math.round(rect.x - parentRect.x), y: Math.round(rect.y - parentRect.y), flexGrow: parseFloat(cs.flexGrow) || 0 };
+  }
+
+  // ── HR divider ──
+  if (tag === 'hr') {
+    return { nodeType: 'divider', name: 'Divider', fill: cs.borderTopColor || '#E2E2E2', w: Math.round(rect.width) || parentWidth || 100, h: Math.max(Math.round(rect.height), 1), x: Math.round(rect.x - parentRect.x), y: Math.round(rect.y - parentRect.y), flexGrow: 0 };
+  }
+
+  // ── Image ──
+  if (tag === 'img') {
+    return { nodeType: 'image', name: element.alt || 'Image', w: Math.round(rect.width) || 100, h: Math.round(rect.height) || 80, x: Math.round(rect.x - parentRect.x), y: Math.round(rect.y - parentRect.y), flexGrow: parseFloat(cs.flexGrow) || 0 };
+  }
+
+  // ── Build frame node ──
+  var node = {
+    nodeType: 'frame',
+    name: inferName(element, cs),
+    w: Math.round(rect.width),
+    h: Math.round(rect.height),
+    x: Math.round(rect.x - parentRect.x),
+    y: Math.round(rect.y - parentRect.y),
+    fill: parseBgColor(cs.backgroundColor),
+    border: extractBorder(cs),
+    radius: Math.round(parseFloat(cs.borderRadius) || 0),
+    opacity: parseFloat(cs.opacity),
+    clipsContent: (cs.overflow === 'hidden' || cs.overflow === 'auto' || cs.overflow === 'scroll'),
+    layout: null,
+    gap: 0,
+    padding: [0, 0, 0, 0],
+    justifyContent: 'start',
+    alignItems: 'start',
+    wrap: false,
+    flexGrow: parseFloat(cs.flexGrow) || 0,
+    fillCrossAxis: false,
+    children: []
+  };
+
+  // Detect flex layout
+  var display = cs.display;
+  if (display === 'flex' || display === 'inline-flex') {
+    var dir = cs.flexDirection || 'row';
+    node.layout = dir.indexOf('column') > -1 ? 'column' : 'row';
+    node.gap = Math.round(parseFloat(cs.gap) || parseFloat(cs.columnGap) || 0);
+    node.padding = extractPadding(cs);
+    node.justifyContent = normalizeJustify(cs.justifyContent);
+    node.alignItems = normalizeAlign(cs.alignItems);
+    node.wrap = cs.flexWrap === 'wrap';
+  } else if (display === 'grid' || display === 'inline-grid') {
+    node.layout = 'row';
+    node.wrap = true;
+    node.gap = Math.round(parseFloat(cs.gap) || parseFloat(cs.rowGap) || 0);
+    node.padding = extractPadding(cs);
+  } else {
+    node.padding = extractPadding(cs);
+  }
+
+  // Detect cross-axis fill
+  if (parentWidth > 0 && rect.width > 0 && (rect.width / parentWidth) > 0.9) {
+    node.fillCrossAxis = true;
+  }
+
+  // ── Text-only leaf ──
+  var hasChildEls = hasVisibleChildren(element, win);
+  var directText = getDirectText(element);
+
+  if (!hasChildEls && directText) {
+    node.nodeType = 'text';
+    node.content = directText;
+    node.fontSize = Math.round(parseFloat(cs.fontSize) || 16);
+    node.fontWeight = cs.fontWeight || '400';
+    node.color = cs.color;
+    node.lineHeight = parseFloat(cs.lineHeight) || null;
+    node.letterSpacing = parseFloat(cs.letterSpacing) || 0;
+    node.textAlign = cs.textAlign || 'left';
+    return node;
+  }
+
+  // ── Mixed content (text nodes + child elements) ──
+  if (hasChildEls && hasTextNodes(element)) {
+    if (!node.layout) { node.layout = 'row'; node.gap = 0; node.alignItems = 'center'; }
+    processMixed(element, node, rect, win);
+    return node;
+  }
+
+  // ── Recurse child elements ──
+  for (var i = 0; i < element.children.length; i++) {
+    var childNode = walkDOM(element.children[i], rect, rect.width);
+    if (childNode) node.children.push(childNode);
+  }
+
+  return node;
+}
+
+function processMixed(element, parentNode, parentRect, win) {
+  var nodes = element.childNodes;
+  for (var i = 0; i < nodes.length; i++) {
+    var child = nodes[i];
+    if (child.nodeType === 3) {
+      var t = child.textContent.trim();
+      if (t) {
+        var cs = win.getComputedStyle(element);
+        parentNode.children.push({ nodeType: 'text', name: t.slice(0, 30), content: t, fontSize: Math.round(parseFloat(cs.fontSize) || 16), fontWeight: cs.fontWeight || '400', color: cs.color, lineHeight: parseFloat(cs.lineHeight) || null, letterSpacing: parseFloat(cs.letterSpacing) || 0, textAlign: cs.textAlign || 'left', w: 0, h: 0, x: 0, y: 0, flexGrow: 0 });
+      }
+    } else if (child.nodeType === 1) {
+      var cn = walkDOM(child, parentRect, parentRect.width);
+      if (cn) parentNode.children.push(cn);
+    }
+  }
+}
+
+// ── Helpers ──
+function hasVisibleChildren(el, win) {
+  for (var i = 0; i < el.children.length; i++) { if (win.getComputedStyle(el.children[i]).display !== 'none') return true; }
+  return false;
+}
+
+function hasTextNodes(el) {
+  for (var i = 0; i < el.childNodes.length; i++) { if (el.childNodes[i].nodeType === 3 && el.childNodes[i].textContent.trim()) return true; }
+  return false;
+}
+
+function getDirectText(el) {
+  var t = '';
+  for (var i = 0; i < el.childNodes.length; i++) { if (el.childNodes[i].nodeType === 3) t += el.childNodes[i].textContent; }
+  return t.trim();
+}
+
+function parseBgColor(c) { return (!c || c === 'rgba(0, 0, 0, 0)' || c === 'transparent') ? null : c; }
+
+function extractBorder(cs) {
+  var w = parseFloat(cs.borderTopWidth || cs.borderWidth || 0);
+  if (!w) return null;
+  var s = cs.borderTopStyle || cs.borderStyle || 'none';
+  if (s === 'none') return null;
+  return { color: cs.borderTopColor || cs.borderColor || '#E2E2E2', width: Math.round(w) };
+}
+
+function extractPadding(cs) {
+  return [Math.round(parseFloat(cs.paddingTop)||0), Math.round(parseFloat(cs.paddingRight)||0), Math.round(parseFloat(cs.paddingBottom)||0), Math.round(parseFloat(cs.paddingLeft)||0)];
+}
+
+function normalizeJustify(v) { if (v==='center') return 'center'; if (v==='flex-end'||v==='end') return 'end'; if (v==='space-between') return 'space-between'; return 'start'; }
+function normalizeAlign(v) { if (v==='center') return 'center'; if (v==='flex-end'||v==='end') return 'end'; if (v==='stretch') return 'stretch'; return 'start'; }
+
+function inferName(el, cs) {
+  var tag = el.tagName.toLowerCase();
+  var cls = el.className;
+  if (typeof cls === 'string' && cls) {
+    var arr = cls.split(' ').filter(function(c) { return c && c.length > 1; });
+    for (var i = 0; i < arr.length; i++) { if (SEMANTIC_CLASSES.indexOf(arr[i]) > -1) return arr[i]; }
+    if (arr.length > 0) return arr[0];
+  }
+  if (tag === 'button') { var t = el.textContent.trim().slice(0, 20); return t ? 'Button: ' + t : 'Button'; }
+  if (tag === 'input') return 'Input: ' + (el.placeholder || el.type || 'text');
+  if (tag === 'select') return 'Select';
+  return tag;
+}
+
+// ══════════════════════════════════════════════
+// SCREENSHOT MODE: AI with hierarchical output
+// ══════════════════════════════════════════════
+
+async function convertScreenshot() {
+  var apiKey = document.getElementById('apiKey').value.trim();
+  if (!apiKey) { setStatus('Please enter your OpenRouter API key', '#E64059'); return; }
+  if (!imageBase64) { setStatus('Please upload a PNG first', '#E64059'); return; }
+
+  var model = document.getElementById('model').value;
+  var btn = document.getElementById('btn');
+  btn.disabled = true;
+  btn.style.opacity = '0.6';
+  setStatus('Analyzing screenshot with AI...', '#0A3EFF');
+
+  try {
+    var response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + apiKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: model,
+        messages: [
+          { role: 'system', content: getScreenshotPrompt() },
+          { role: 'user', content: [
+            { type: 'image_url', image_url: { url: 'data:' + imageMimeType + ';base64,' + imageBase64 } },
+            { type: 'text', text: 'Analyze this screenshot. Identify the layout structure (rows, columns, gaps, padding). Output hierarchical JSON only — no markdown, no explanation.' }
+          ]}
+        ],
+        max_tokens: 16000,
+      })
+    });
+
+    if (!response.ok) { var errText = await response.text(); throw new Error('API error (' + response.status + '): ' + errText.slice(0, 200)); }
+
+    var data = await response.json();
+    var content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+    if (!content) throw new Error('Empty response from AI');
+
+    var jsonStr = content.replace(/^```json?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
+    var parsed;
+    try { parsed = JSON.parse(jsonStr); }
+    catch (e) { var match = jsonStr.match(/\{[\s\S]*\}/); if (match) parsed = JSON.parse(match[0]); else throw new Error('Could not parse AI response as JSON'); }
+
+    if (parsed.elements && !parsed.tree) {
+      setStatus('Creating Figma layers (flat mode)...', '#0A3EFF');
+      parent.postMessage({ pluginMessage: { type: 'convert-json', data: parsed } }, '*');
+    } else {
+      setStatus('Creating Figma layers with auto-layout...', '#0A3EFF');
+      parent.postMessage({ pluginMessage: { type: 'convert-tree', data: parsed } }, '*');
+    }
+  } catch (err) {
+    setStatus('Error: ' + err.message, '#E64059');
+    btn.disabled = false;
+    btn.style.opacity = '1';
+  }
+}
+
+function getScreenshotPrompt() {
+  return [
+    'You analyze screenshots of mobile app UI and output a HIERARCHICAL JSON describing the layout with nested containers and auto-layout properties.',
+    '',
+    'OUTPUT FORMAT (JSON only, no markdown):',
+    '{"width":390,"height":844,"background":"#FFFFFF","tree":{',
+    '  "nodeType":"frame","name":"Screen","layout":"column","gap":0,"padding":[0,0,0,0],',
+    '  "justifyContent":"start","alignItems":"start","fill":"#FFFFFF","w":390,"h":844,',
+    '  "children":[',
+    '    {"nodeType":"frame","name":"App Bar","layout":"row","gap":4,"padding":[0,4,0,4],"alignItems":"center","fill":"#FFFFFF","border":{"color":"#E2E2E2","width":1},"w":390,"h":56,"children":[',
+    '      {"nodeType":"icon","icon":"arrow_back","iconSize":24,"iconColor":"#202020","w":40,"h":40},',
+    '      {"nodeType":"text","content":"Title","fontSize":20,"fontWeight":"500","color":"#202020","flexGrow":1},',
+    '      {"nodeType":"icon","icon":"more_vert","iconSize":24,"iconColor":"#5F5F5F","w":40,"h":40}',
+    '    ]},',
+    '    {"nodeType":"frame","name":"Content","layout":"column","gap":12,"padding":[16,16,16,16],"fill":null,"flexGrow":1,"children":[]}',
+    '  ]',
+    '}}',
+    '',
+    'NODE TYPES:',
+    '- "frame": Container with layout. Props: layout ("row"/"column"/null), gap, padding [t,r,b,l], justifyContent (start/center/end/space-between), alignItems (start/center/end/stretch), fill (bg hex or null), border ({color,width} or null), radius, opacity, clipsContent, children array, flexGrow (0 or 1).',
+    '- "text": Text leaf. Props: content, fontSize, fontWeight ("400"/"500"), color, lineHeight, letterSpacing, textAlign, flexGrow.',
+    '- "icon": Icon leaf. Props: icon (Material Symbols name), iconSize, iconColor, w, h.',
+    '- "divider": Line. Props: fill (color), w, h (usually 1).',
+    '',
+    'LAYOUT RULES:',
+    '- Root: always column layout.',
+    '- App bars: row layout, gap 4, h 56, align center. Title has flexGrow:1.',
+    '- Content areas: column layout, gap 12, padding [16,16,16,16], flexGrow:1.',
+    '- Cards: column layout, gap 8, padding [16,16,16,16], border {color:"#E2E2E2",width:1}.',
+    '- Horizontal rows: row layout, gap 8-12, align center.',
+    '- Bottom actions: row layout, gap 10, padding [16,16,16,16], border top.',
+    '- Buttons: row layout, gap 8, align center, h 40.',
+    '- Items filling space: flexGrow:1.',
+    '',
+    'ACCURACY:',
+    '- Every visible element must be included.',
+    '- Font sizes exact (11/12/13/14/16/20/25/31/39px). Weights "400" or "500".',
+    '- Colors exact hex. System: #202020 #878787 #5F5F5F #B5B5B5 #E2E2E2 #F4F4F4 #0A3EFF #E64059 #22C55E.',
+    '- ALL text word-for-word. Nesting must match visual grouping.',
+  ].join('\n');
+}
+
+// ── Messages from plugin ──
+onmessage = function(e) {
+  var msg = e.data.pluginMessage;
+  if (!msg) return;
+  if (msg.type === 'done') {
+    setStatus('Done! Created ' + msg.count + ' layers with auto-layout.', '#22C55E');
+    document.getElementById('btn').disabled = false;
+    document.getElementById('btn').style.opacity = '1';
+  }
+  if (msg.type === 'error') {
+    setStatus('Error: ' + msg.message, '#E64059');
+    document.getElementById('btn').disabled = false;
+    document.getElementById('btn').style.opacity = '1';
+  }
+  if (msg.type === 'progress') {
+    setStatus(msg.message, '#0A3EFF');
+  }
+};
+</script>
+</body>
+</html>

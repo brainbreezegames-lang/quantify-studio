@@ -36,6 +36,19 @@ const LAYOUT_FIELDS: StyleField[] = [
   { key: 'height', label: 'Height', type: 'text' },
 ]
 
+const FLEX_CONTAINER_FIELDS: StyleField[] = [
+  { key: 'flexDirection', label: 'Direction', type: 'select', options: ['row', 'column', 'row-reverse', 'column-reverse'] },
+  { key: 'justifyContent', label: 'Justify', type: 'select', options: ['flex-start', 'center', 'flex-end', 'space-between', 'space-around', 'space-evenly'] },
+  { key: 'alignItems', label: 'Align', type: 'select', options: ['flex-start', 'center', 'flex-end', 'stretch', 'baseline'] },
+  { key: 'flexWrap', label: 'Wrap', type: 'select', options: ['nowrap', 'wrap', 'wrap-reverse'] },
+]
+
+const FLEX_CHILD_FIELDS: StyleField[] = [
+  { key: 'flexGrow', label: 'Grow', type: 'select', options: ['0', '1'] },
+  { key: 'flexShrink', label: 'Shrink', type: 'select', options: ['0', '1'] },
+  { key: 'alignSelf', label: 'Self', type: 'select', options: ['auto', 'flex-start', 'center', 'flex-end', 'stretch'] },
+]
+
 // ── Helpers ───
 
 function rgbToHex(rgb: string): string {
@@ -324,6 +337,22 @@ export default function InspectorPanel() {
           {/* Layout */}
           <Section title="Layout" icon="▦">
             {LAYOUT_FIELDS.map(f => (
+              <StyleFieldInput key={f.key} field={f} value={selectedElement.styles[f.key] || ''} onChange={handleStyleChange} />
+            ))}
+          </Section>
+
+          {/* Flex Container — shown when display is flex/inline-flex */}
+          {(selectedElement.styles.display === 'flex' || selectedElement.styles.display === 'inline-flex') && (
+            <Section title="Auto-Layout" icon="⇄">
+              {FLEX_CONTAINER_FIELDS.map(f => (
+                <StyleFieldInput key={f.key} field={f} value={selectedElement.styles[f.key] || ''} onChange={handleStyleChange} />
+              ))}
+            </Section>
+          )}
+
+          {/* Flex Child — always shown (parent may be flex) */}
+          <Section title="Flex Child" icon="↔">
+            {FLEX_CHILD_FIELDS.map(f => (
               <StyleFieldInput key={f.key} field={f} value={selectedElement.styles[f.key] || ''} onChange={handleStyleChange} />
             ))}
           </Section>
