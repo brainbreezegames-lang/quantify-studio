@@ -28,6 +28,7 @@ function loadState(): DesignerState {
       artboards: saved.artboards || [],
       messages: (saved.messages || []).slice(-50),
       activeLenses: saved.activeLenses || [],
+      viewport: saved.viewport || initialState.viewport,
     }
   } catch {
     return initialState
@@ -41,6 +42,7 @@ function saveState(state: DesignerState) {
       artboards: state.artboards,
       messages: state.messages.slice(-50),
       activeLenses: state.activeLenses,
+      viewport: state.viewport,
     }))
   } catch { /* quota exceeded */ }
 }
@@ -141,7 +143,7 @@ export function DesignerProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     saveState(state)
-  }, [state.projectName, state.artboards, state.messages, state.activeLenses])
+  }, [state.projectName, state.artboards, state.messages, state.activeLenses, state.viewport])
 
   return (
     <DesignerContext.Provider value={{ state, dispatch }}>

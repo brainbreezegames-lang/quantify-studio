@@ -11,6 +11,10 @@ export default function Canvas() {
   const [spaceHeld, setSpaceHeld] = useState(false)
   const panStart = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null)
 
+  // Keep a ref to current viewport so effects don't need it as a dependency
+  const viewportRef = useRef(viewport)
+  useEffect(() => { viewportRef.current = viewport }, [viewport])
+
   // Pan: spacebar + drag or middle mouse
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     // Middle mouse button or spacebar held
@@ -53,8 +57,6 @@ export default function Canvas() {
     e.preventDefault()
 
     if (e.ctrlKey || e.metaKey) {
-      // Pinch-to-zoom on trackpad (macOS sends ctrlKey=true for pinch)
-      // or Ctrl+scroll on mouse
       const container = containerRef.current
       if (!container) return
 
@@ -65,7 +67,6 @@ export default function Canvas() {
       const zoomFactor = e.deltaY < 0 ? 1.04 : 1 / 1.04
       const newZoom = Math.min(3, Math.max(0.1, viewport.zoom * zoomFactor))
 
-      // Zoom toward cursor position
       const newPanX = cursorX - (cursorX - viewport.panX) * (newZoom / viewport.zoom)
       const newPanY = cursorY - (cursorY - viewport.panY) * (newZoom / viewport.zoom)
 
@@ -74,7 +75,6 @@ export default function Canvas() {
         viewport: { zoom: newZoom, panX: newPanX, panY: newPanY },
       })
     } else {
-      // Two-finger scroll = pan
       dispatch({
         type: 'SET_VIEWPORT',
         viewport: {
@@ -85,12 +85,20 @@ export default function Canvas() {
     }
   }, [viewport, dispatch])
 
-  // Spacebar for pan mode
+  // Keyboard: spacebar for pan, Delete/Backspace to delete selected artboard
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.code === 'Space' && !e.repeat && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
+      const isInput = e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement
+      if (isInput) return
+
+      if (e.code === 'Space' && !e.repeat) {
         e.preventDefault()
         setSpaceHeld(true)
+        return
+      }
+
+      if ((e.code === 'Delete' || e.code === 'Backspace') && selectedArtboardId) {
+        dispatch({ type: 'DELETE_ARTBOARD', id: selectedArtboardId })
       }
     }
     const onKeyUp = (e: KeyboardEvent) => {
@@ -106,7 +114,7 @@ export default function Canvas() {
       window.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('keyup', onKeyUp)
     }
-  }, [])
+  }, [selectedArtboardId, dispatch])
 
   // Global mouseup for pan release
   useEffect(() => {
@@ -117,6 +125,25 @@ export default function Canvas() {
     window.addEventListener('mouseup', onUp)
     return () => window.removeEventListener('mouseup', onUp)
   }, [])
+
+  // Auto-pan to newly created artboards
+  const prevArtboardIdsRef = useRef<Set<string>>(new Set(artboards.map(a => a.id)))
+  useEffect(() => {
+    const prevIds = prevArtboardIdsRef.current
+    const newArts = artboards.filter(a => !prevIds.has(a.id))
+    prevArtboardIdsRef.current = new Set(artboards.map(a => a.id))
+
+    if (newArts.length === 0 || !containerRef.current) return
+
+    // Pan to center on the first newly created artboard
+    const target = newArts[0]
+    const { zoom } = viewportRef.current
+    const rect = containerRef.current.getBoundingClientRect()
+    const newPanX = rect.width / 2 - (target.x + target.width / 2) * zoom
+    const newPanY = rect.height / 2 - (target.y + target.height / 2) * zoom
+
+    dispatch({ type: 'SET_VIEWPORT', viewport: { panX: newPanX, panY: newPanY } })
+  }, [artboards, dispatch])
 
   const cursor = isPanning ? 'grabbing' : spaceHeld ? 'grab' : 'default'
 
@@ -160,6 +187,13 @@ export default function Canvas() {
       <div className="absolute bottom-4 left-4 text-[11px] text-white/30 font-mono select-none pointer-events-none">
         {Math.round(viewport.zoom * 100)}%
       </div>
+
+      {/* Delete hint when artboard selected */}
+      {selectedArtboardId && (
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[11px] text-white/20 select-none pointer-events-none">
+          Del to delete · drag header to move
+        </div>
+      )}
 
       {/* Empty state */}
       {artboards.length === 0 && (

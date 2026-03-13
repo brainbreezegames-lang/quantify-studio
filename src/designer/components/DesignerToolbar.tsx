@@ -17,9 +17,10 @@ export default function DesignerToolbar() {
   const [showPresets, setShowPresets] = useState(false)
 
   const addArtboard = (width = 390, height = 844) => {
-    const lastArtboard = artboards.length > 0 ? artboards[artboards.length - 1] : null
-    const x = lastArtboard ? lastArtboard.x + lastArtboard.width + 60 : 100
-    const y = lastArtboard ? lastArtboard.y : 100
+    const GRID_COLS = 5
+    const idx = artboards.length
+    const x = 100 + (idx % GRID_COLS) * 450
+    const y = 100 + Math.floor(idx / GRID_COLS) * 1060
 
     dispatch({
       type: 'CREATE_ARTBOARD',

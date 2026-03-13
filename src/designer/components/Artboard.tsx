@@ -15,6 +15,8 @@ export default function Artboard({ artboard, isSelected, onSelect }: Props) {
   const initializedRef = useRef(false)
   const lastDocRef = useRef('')
   const [isResizing, setIsResizing] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const dragStart = useRef<{ mouseX: number; mouseY: number; artX: number; artY: number } | null>(null)
 
   const isEditing = isSelected && editMode && !!artboard.html
 
@@ -97,6 +99,42 @@ export default function Artboard({ artboard, isSelected, onSelect }: Props) {
     }
   }, [isEditing, sendToIframe])
 
+  // Drag to move handler
+  const handleDragStart = useCallback((e: React.MouseEvent) => {
+    if (e.button !== 0) return
+    e.stopPropagation()
+    e.preventDefault()
+    onSelect()
+    setIsDragging(true)
+    dragStart.current = {
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+      artX: artboard.x,
+      artY: artboard.y,
+    }
+
+    const zoom = viewport.zoom
+    const onMove = (me: MouseEvent) => {
+      if (!dragStart.current) return
+      const dx = (me.clientX - dragStart.current.mouseX) / zoom
+      const dy = (me.clientY - dragStart.current.mouseY) / zoom
+      dispatch({
+        type: 'MOVE_ARTBOARD',
+        id: artboard.id,
+        x: Math.round(dragStart.current.artX + dx),
+        y: Math.round(dragStart.current.artY + dy),
+      })
+    }
+    const onUp = () => {
+      setIsDragging(false)
+      dragStart.current = null
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseup', onUp)
+    }
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseup', onUp)
+  }, [artboard.id, artboard.x, artboard.y, viewport.zoom, onSelect, dispatch])
+
   // Resize drag handler
   const handleResizeStart = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
@@ -151,9 +189,10 @@ export default function Artboard({ artboard, isSelected, onSelect }: Props) {
         onSelect()
       }}
     >
-      {/* Artboard name + fit button */}
+      {/* Artboard name + fit button — drag here to move */}
       <div
         className="select-none"
+        onMouseDown={handleDragStart}
         style={{
           fontSize: 12,
           fontWeight: 500,
@@ -164,6 +203,7 @@ export default function Artboard({ artboard, isSelected, onSelect }: Props) {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          cursor: isDragging ? 'grabbing' : 'grab',
         }}
       >
         <span>

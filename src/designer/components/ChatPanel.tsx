@@ -37,6 +37,21 @@ const HIDDEN_DESIGN_CONTEXT = `
 [CONTEXT — automatically included, not written by user]
 You are designing for Quantify by Avontus — a scaffolding rental and inventory management app used by yard workers on tablets in harsh outdoor environments (direct sunlight, thick gloves, mud, competing with paper clipboards). The design system uses Switzer font, #0A3EFF primary blue, 0px border radius (sharp corners), no shadows, sentence case only. Products are scaffolding equipment: frames, braces, ledgers, jacks, planks, couplers. Users manage reservations, shipments, returns, yard counts, and inventory. Every screen needs an Online/Offline pill in the toolbar. Touch targets must be 48px+ for gloved hands. Think like a senior product designer who has spent years understanding industrial mobile UX — not a generic UI generator.`
 
+// ── Grid layout: 5 artboards per row ─────────────────────────────────────
+const GRID_COLS = 5
+const COL_STRIDE = 450   // artboard width (390) + gap (60)
+const ROW_STRIDE = 1060  // artboard height (844) + label area + gap
+const ORIGIN_X = 100
+const ORIGIN_Y = 100
+
+function gridPosition(existingCount: number, offset = 0) {
+  const idx = existingCount + offset
+  return {
+    x: ORIGIN_X + (idx % GRID_COLS) * COL_STRIDE,
+    y: ORIGIN_Y + Math.floor(idx / GRID_COLS) * ROW_STRIDE,
+  }
+}
+
 // ── Progressive HTML extraction from partial JSON ────────────────────────
 
 function extractProgressiveHtml(accumulated: string): string | null {
@@ -187,9 +202,7 @@ export default function ChatPanel() {
 
     // Create blank artboard immediately so user sees it on canvas
     const previewArtboardId = uuid()
-    const lastArtboard = artboards.length > 0 ? artboards[artboards.length - 1] : null
-    const x = lastArtboard ? lastArtboard.x + lastArtboard.width + 60 : 100
-    const y = lastArtboard ? lastArtboard.y : 100
+    const { x, y } = gridPosition(artboards.length)
 
     dispatch({
       type: 'CREATE_ARTBOARD',
@@ -437,20 +450,18 @@ export default function ChatPanel() {
     dispatch({ type: 'SET_ERROR', error: null })
     setStreamingStatus('Generating 3 design options...')
 
-    const lastArtboard = artboards.length > 0 ? artboards[artboards.length - 1] : null
-    const startX = lastArtboard ? lastArtboard.x + lastArtboard.width + 60 : 100
-    const startY = lastArtboard ? lastArtboard.y : 100
     const OPTION_NAMES = ['Option A — Efficiency First', 'Option B — Information Rich', 'Option C — Guided Clarity']
     const artboardIds = [uuid(), uuid(), uuid()]
 
     for (let i = 0; i < 3; i++) {
+      const { x, y } = gridPosition(artboards.length, i)
       dispatch({
         type: 'CREATE_ARTBOARD',
         artboard: {
           id: artboardIds[i],
           name: OPTION_NAMES[i],
-          x: startX + 450 * i,
-          y: startY,
+          x,
+          y,
           width: 390, height: 844,
           html: '', css: '',
           createdAt: Date.now(),
@@ -553,9 +564,7 @@ export default function ChatPanel() {
     setStreamingStatus('Analyzing image...')
 
     const previewArtboardId = uuid()
-    const lastArtboard = artboards.length > 0 ? artboards[artboards.length - 1] : null
-    const x = lastArtboard ? lastArtboard.x + lastArtboard.width + 60 : 100
-    const y = lastArtboard ? lastArtboard.y : 100
+    const { x, y } = gridPosition(artboards.length)
 
     dispatch({
       type: 'CREATE_ARTBOARD',
