@@ -650,24 +650,20 @@ function createImageNode(node, parent) {
 }
 
 function createSvgNode(node, parent) {
-  if (!node || !node.svg) return null;
-  try {
-    var svgNode = figma.createNodeFromSvg(node.svg);
-    svgNode.name = (node.name || "SVG").slice(0, 40);
-    if (node.w > 0 && node.h > 0) {
-      try { svgNode.resize(node.w, node.h); } catch (e) {}
-    }
-    appendNode(parent, svgNode, node);
-    if (isAutoLayoutParent(parent) && !isAbsolutePositioning(node)) {
-      try {
-        svgNode.layoutSizingHorizontal = "FIXED";
-        svgNode.layoutSizingVertical = "FIXED";
-      } catch (e) {}
-    }
-    return svgNode;
-  } catch (e) {
-    return createIconNode({ name: node.name || "SVG", w: node.w, h: node.h, position: node.positioning }, parent);
-  }
+  // Always delegate to Lucide icon library — never render raw SVG
+  return createIconNode({
+    name: node.name || "icon",
+    icon: node.name || node.icon || "icon",
+    iconSize: node.w || 24,
+    iconColor: node.iconColor || node.color || "#202020",
+    w: node.w || 24,
+    h: node.h || 24,
+    x: node.x,
+    y: node.y,
+    flexGrow: node.flexGrow,
+    positioning: node.positioning,
+    cssOrder: node.cssOrder
+  }, parent);
 }
 
 // ══════════════════════════════════════════════
