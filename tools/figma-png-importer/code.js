@@ -150,6 +150,8 @@ var ICONS = {
   "chevron-left": '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#202020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>',
   "x": '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#202020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
   "check": '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  "plus": '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#202020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  "minus": '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#202020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>',
   "alert-circle": '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E64059" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
   "wifi": '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#202020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>',
   "signal": '<svg width="17" height="12" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#1A1B1E"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#1A1B1E"/><rect x="9" y="0.5" width="3" height="11.5" rx="1" fill="#1A1B1E"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="#1A1B1E"/></svg>',
@@ -176,7 +178,7 @@ var MATERIAL_TO_LUCIDE = {
   "person": "user", "person_outline": "user", "settings": "settings", "home": "home",
   "visibility": "eye", "visibility_off": "eye-off", "lock": "lock", "lock_open": "lock",
   "wifi": "wifi", "wifi_off": "cloud-off", "edit": "file-text", "delete": "x",
-  "add": "check", "remove": "x", "done": "check", "clear": "x",
+  "add": "plus", "remove": "minus", "done": "check", "clear": "x",
   "navigate_next": "chevron-right", "navigate_before": "chevron-left",
   "qr_code": "scan-barcode", "barcode": "scan-barcode", "local_shipping": "clipboard-list",
   "inventory_2": "clipboard-list", "assignment": "file-text", "schedule": "settings",
@@ -313,7 +315,7 @@ function isAutoLayoutParent(parent) {
 }
 
 function isAbsolutePositioning(node) {
-  return !!node && (node.positioning === "absolute" || node.positioning === "fixed" || node.positioning === "sticky");
+  return !!node && (node.positioning === "absolute" || node.positioning === "fixed");
 }
 
 function appendNode(parent, child, node) {
@@ -461,6 +463,8 @@ async function processNode(node, parent) {
       return createDividerNode(node, parent);
     case "image":
       return createImageNode(node, parent);
+    case "svg":
+      return createSvgNode(node, parent);
     default:
       return await createFrameNode(node, parent);
   }
@@ -516,39 +520,21 @@ async function createTextNode(node, parent) {
   var content = node.content || "";
   if (!content) return null;
 
-  // Try design system text style
-  var ts = findTextStyle(fontSize, fontWeight);
-
   var fontInfo;
-  if (ts && ts.fontName) {
-    await loadFont(ts.fontName.family, ts.fontName.style);
-    fontInfo = ts.fontName;
-  } else {
-    fontInfo = await ensureFont(String(fontWeight));
-  }
+  fontInfo = await ensureFont(String(fontWeight));
 
   var text = figma.createText();
   text.fontName = fontInfo;
   text.characters = content;
   text.fontSize = fontSize;
 
-  // Apply design system text style
-  if (ts) {
-    try { text.textStyleId = ts.id; } catch(e) {}
-  }
-
-  // Set line height (only if not from text style)
-  if (!ts && node.lineHeight && !isNaN(node.lineHeight) && node.lineHeight > 0) {
+  if (node.lineHeight && !isNaN(node.lineHeight) && node.lineHeight > 0) {
     text.lineHeight = { value: node.lineHeight, unit: "PIXELS" };
   }
 
-  // Letter spacing
+  // Letter spacing — DOM walker returns computed pixels (e.g. -0.32px from -0.02em)
   if (node.letterSpacing && Math.abs(node.letterSpacing) > 0.001) {
-    if (Math.abs(node.letterSpacing) < 1) {
-      text.letterSpacing = { value: node.letterSpacing * 100, unit: "PERCENT" };
-    } else {
-      text.letterSpacing = { value: node.letterSpacing, unit: "PIXELS" };
-    }
+    text.letterSpacing = { value: node.letterSpacing, unit: "PIXELS" };
   }
 
   // Color
@@ -572,13 +558,6 @@ async function createTextNode(node, parent) {
 
   appendNode(parent, text, node);
   applyTextLayoutSizing(text, node, parent);
-
-  // Paint style for color (linked style)
-  var colorHex = colorStrToHex(node.color);
-  var ps = colorHex ? findPaintStyle(colorHex) : null;
-  if (ps) {
-    try { text.fillStyleId = ps.id; } catch(e) {}
-  }
 
   return text;
 }
@@ -668,6 +647,27 @@ function createImageNode(node, parent) {
     } catch(e) {}
   }
   return frame;
+}
+
+function createSvgNode(node, parent) {
+  if (!node || !node.svg) return null;
+  try {
+    var svgNode = figma.createNodeFromSvg(node.svg);
+    svgNode.name = (node.name || "SVG").slice(0, 40);
+    if (node.w > 0 && node.h > 0) {
+      try { svgNode.resize(node.w, node.h); } catch (e) {}
+    }
+    appendNode(parent, svgNode, node);
+    if (isAutoLayoutParent(parent) && !isAbsolutePositioning(node)) {
+      try {
+        svgNode.layoutSizingHorizontal = "FIXED";
+        svgNode.layoutSizingVertical = "FIXED";
+      } catch (e) {}
+    }
+    return svgNode;
+  } catch (e) {
+    return createIconNode({ name: node.name || "SVG", w: node.w, h: node.h, position: node.positioning }, parent);
+  }
 }
 
 // ══════════════════════════════════════════════
