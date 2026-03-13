@@ -105,6 +105,7 @@ export default function Artboard({ artboard, isSelected, onSelect }: Props) {
     e.stopPropagation()
     e.preventDefault()
     onSelect()
+    dispatch({ type: 'SAVE_HISTORY' })
     setIsDragging(true)
     dragStart.current = {
       mouseX: e.clientX,

@@ -57,6 +57,8 @@ export interface DesignerState {
   editMode: boolean
   selectedElement: SelectedElement | null
   rightPanel: RightPanel
+  history: Artboard[][]
+  future: Artboard[][]
 }
 
 export type DesignerAction =
@@ -66,6 +68,7 @@ export type DesignerAction =
   | { type: 'DELETE_ARTBOARD'; id: string }
   | { type: 'SELECT_ARTBOARD'; id: string | null }
   | { type: 'MOVE_ARTBOARD'; id: string; x: number; y: number }
+  | { type: 'SAVE_HISTORY' }
   | { type: 'SET_VIEWPORT'; viewport: Partial<CanvasViewport> }
   | { type: 'ADD_MESSAGE'; message: ChatMessage }
   | { type: 'SET_GENERATING'; value: boolean }
@@ -76,3 +79,5 @@ export type DesignerAction =
   | { type: 'SET_EDIT_MODE'; value: boolean }
   | { type: 'SELECT_ELEMENT'; element: SelectedElement | null }
   | { type: 'SET_RIGHT_PANEL'; panel: RightPanel }
+  | { type: 'UNDO' }
+  | { type: 'REDO' }

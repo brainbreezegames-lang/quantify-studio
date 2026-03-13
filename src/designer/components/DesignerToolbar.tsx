@@ -20,7 +20,7 @@ export default function DesignerToolbar() {
     const GRID_COLS = 5
     const idx = artboards.length
     const x = 100 + (idx % GRID_COLS) * 450
-    const y = 100 + Math.floor(idx / GRID_COLS) * 1060
+    const y = 100 + Math.floor(idx / GRID_COLS) * 960
 
     dispatch({
       type: 'CREATE_ARTBOARD',

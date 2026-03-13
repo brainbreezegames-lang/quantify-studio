@@ -1190,8 +1190,14 @@ function pickClosestGoldExample(prompt) {
 
 function sanitizeArtboardHtml(html) {
   return (html || '')
-    .replace(/<script[\s\S]*?<\/script>/gi, '')
-    .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')
+    // Remove entire script elements including content
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+    // Remove inline event handlers
+    .replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, '')
+    // Remove any leftover bare JS that leaked outside script tags (icon fix script pattern)
+    .replace(/\bvar\s+(root|t|sp)\s*=[\s\S]{0,200}\.msi\b[^<]*/g, '')
+    .replace(/document\.addEventListener\(['"]DOMContentLoaded[\s\S]{0,1000}?\}\)/g, '')
+    .replace(/fixContainers\([\s\S]*?\}\)/g, '')
 }
 
 const QUALITY_LENS_PROMPTS = {
@@ -2636,9 +2642,11 @@ Return the complete improved HTML in the JSON format specified above.` },
         ? reqImageModel
         : 'google/gemini-3.1-pro-preview'
 
-      const IMAGE_RECREATE_SYSTEM = `You are a pixel-perfect HTML/CSS implementation engineer for Quantify — a scaffolding rental & inventory management mobile app.
+      const IMAGE_RECREATE_SYSTEM = `You are a pixel-perfect visual cloning engineer. You receive a mobile app screenshot and produce HTML/CSS that looks IDENTICAL to it.
 
-You will receive a screenshot of a mobile app screen. Your job is to recreate it EXACTLY as HTML/CSS using the pre-loaded Quantify design system classes.
+⛔ ABSOLUTE PROHIBITION: NO JavaScript whatsoever. No <script> tags. No onclick, onload, oninput, or ANY on* attributes. No event handlers. Pure HTML and CSS only. JavaScript is injected externally — you must not include any.
+
+You will receive a screenshot of a mobile app screen. Your job is to recreate it EXACTLY as HTML/CSS.
 
 ═══════════════════════════════════════════
 RESPONSE FORMAT
@@ -2774,6 +2782,9 @@ WRAP ALL in <div class="screen">. Return COMPLETE HTML with EVERY element. Use i
           res.write(`data: ${JSON.stringify({ type: 'status', message: 'Verifying accuracy...' })}\n\n`)
 
           const REFINE_IMAGE_SYSTEM = `You are a pixel-perfect QA engineer. Compare the HTML recreation against the original screenshot and make them VISUALLY IDENTICAL.
+
+⛔ NO JavaScript. No <script> tags. No on* event handlers. Pure HTML/CSS only.
+
 
 RESPONSE FORMAT — valid JSON only, no markdown fences:
 {

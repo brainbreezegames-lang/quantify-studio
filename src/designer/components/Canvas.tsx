@@ -4,20 +4,56 @@ import Artboard from './Artboard'
 
 export default function Canvas() {
   const { state, dispatch } = useDesigner()
-  const { artboards, selectedArtboardId, viewport } = state
+  const { artboards, selectedArtboardId, viewport, history, future } = state
 
   const containerRef = useRef<HTMLDivElement>(null)
   const [isPanning, setIsPanning] = useState(false)
   const [spaceHeld, setSpaceHeld] = useState(false)
   const panStart = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null)
 
-  // Keep a ref to current viewport so effects don't need it as a dependency
+  // Keep a stable ref to viewport so wheel/pan handlers don't need it as dep
   const viewportRef = useRef(viewport)
   useEffect(() => { viewportRef.current = viewport }, [viewport])
 
+  // Non-passive wheel listener so e.preventDefault() actually works
+  // (React synthetic onWheel is passive in Chrome, so ctrl+scroll leaks to browser zoom)
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault()
+
+      const { panX, panY, zoom } = viewportRef.current
+
+      if (e.ctrlKey || e.metaKey) {
+        // Smooth zoom: use exponential scaling so trackpad feels natural
+        // deltaY ~1-3 for trackpad, ~100 for mouse wheel
+        const zoomFactor = Math.pow(0.999, e.deltaY)
+        const newZoom = Math.min(3, Math.max(0.08, zoom * zoomFactor))
+
+        const rect = container.getBoundingClientRect()
+        const cursorX = e.clientX - rect.left
+        const cursorY = e.clientY - rect.top
+
+        const newPanX = cursorX - (cursorX - panX) * (newZoom / zoom)
+        const newPanY = cursorY - (cursorY - panY) * (newZoom / zoom)
+
+        dispatch({ type: 'SET_VIEWPORT', viewport: { zoom: newZoom, panX: newPanX, panY: newPanY } })
+      } else {
+        dispatch({
+          type: 'SET_VIEWPORT',
+          viewport: { panX: panX - e.deltaX, panY: panY - e.deltaY },
+        })
+      }
+    }
+
+    container.addEventListener('wheel', handleWheel, { passive: false })
+    return () => container.removeEventListener('wheel', handleWheel)
+  }, [dispatch])
+
   // Pan: spacebar + drag or middle mouse
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    // Middle mouse button or spacebar held
     if (e.button === 1 || (e.button === 0 && spaceHeld)) {
       e.preventDefault()
       setIsPanning(true)
@@ -28,7 +64,6 @@ export default function Canvas() {
         panY: viewport.panY,
       }
     }
-    // Click on canvas background = deselect
     if (e.button === 0 && !spaceHeld && e.target === containerRef.current) {
       dispatch({ type: 'SELECT_ARTBOARD', id: null })
     }
@@ -52,40 +87,7 @@ export default function Canvas() {
     panStart.current = null
   }, [])
 
-  // Two-finger scroll = pan, pinch (ctrlKey) = zoom
-  const handleWheel = useCallback((e: React.WheelEvent) => {
-    e.preventDefault()
-
-    if (e.ctrlKey || e.metaKey) {
-      const container = containerRef.current
-      if (!container) return
-
-      const rect = container.getBoundingClientRect()
-      const cursorX = e.clientX - rect.left
-      const cursorY = e.clientY - rect.top
-
-      const zoomFactor = e.deltaY < 0 ? 1.04 : 1 / 1.04
-      const newZoom = Math.min(3, Math.max(0.1, viewport.zoom * zoomFactor))
-
-      const newPanX = cursorX - (cursorX - viewport.panX) * (newZoom / viewport.zoom)
-      const newPanY = cursorY - (cursorY - viewport.panY) * (newZoom / viewport.zoom)
-
-      dispatch({
-        type: 'SET_VIEWPORT',
-        viewport: { zoom: newZoom, panX: newPanX, panY: newPanY },
-      })
-    } else {
-      dispatch({
-        type: 'SET_VIEWPORT',
-        viewport: {
-          panX: viewport.panX - e.deltaX,
-          panY: viewport.panY - e.deltaY,
-        },
-      })
-    }
-  }, [viewport, dispatch])
-
-  // Keyboard: spacebar for pan, Delete/Backspace to delete selected artboard
+  // Keyboard: space = pan mode, Delete = delete selected, Cmd+Z = undo, Cmd+Shift+Z = redo
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       const isInput = e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement
@@ -99,6 +101,16 @@ export default function Canvas() {
 
       if ((e.code === 'Delete' || e.code === 'Backspace') && selectedArtboardId) {
         dispatch({ type: 'DELETE_ARTBOARD', id: selectedArtboardId })
+        return
+      }
+
+      if ((e.metaKey || e.ctrlKey) && e.code === 'KeyZ') {
+        e.preventDefault()
+        if (e.shiftKey) {
+          dispatch({ type: 'REDO' })
+        } else {
+          dispatch({ type: 'UNDO' })
+        }
       }
     }
     const onKeyUp = (e: KeyboardEvent) => {
@@ -118,10 +130,7 @@ export default function Canvas() {
 
   // Global mouseup for pan release
   useEffect(() => {
-    const onUp = () => {
-      setIsPanning(false)
-      panStart.current = null
-    }
+    const onUp = () => { setIsPanning(false); panStart.current = null }
     window.addEventListener('mouseup', onUp)
     return () => window.removeEventListener('mouseup', onUp)
   }, [])
@@ -135,7 +144,6 @@ export default function Canvas() {
 
     if (newArts.length === 0 || !containerRef.current) return
 
-    // Pan to center on the first newly created artboard
     const target = newArts[0]
     const { zoom } = viewportRef.current
     const rect = containerRef.current.getBoundingClientRect()
@@ -146,6 +154,8 @@ export default function Canvas() {
   }, [artboards, dispatch])
 
   const cursor = isPanning ? 'grabbing' : spaceHeld ? 'grab' : 'default'
+  const canUndo = history.length > 0
+  const canRedo = future.length > 0
 
   return (
     <div
@@ -161,9 +171,8 @@ export default function Canvas() {
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
-      onWheel={handleWheel}
     >
-      {/* Transform layer */}
+      {/* Transform layer — only canvas content is scaled, not the panels */}
       <div
         style={{
           transform: `translate(${viewport.panX}px, ${viewport.panY}px) scale(${viewport.zoom})`,
@@ -183,15 +192,22 @@ export default function Canvas() {
         ))}
       </div>
 
-      {/* Zoom indicator */}
-      <div className="absolute bottom-4 left-4 text-[11px] text-white/30 font-mono select-none pointer-events-none">
-        {Math.round(viewport.zoom * 100)}%
+      {/* Zoom + undo/redo indicator */}
+      <div className="absolute bottom-4 left-4 flex items-center gap-3 select-none pointer-events-none">
+        <span className="text-[11px] text-white/30 font-mono">
+          {Math.round(viewport.zoom * 100)}%
+        </span>
+        {(canUndo || canRedo) && (
+          <span className="text-[10px] text-white/20">
+            {canUndo ? `${history.length} undo` : ''}{canUndo && canRedo ? ' · ' : ''}{canRedo ? `${future.length} redo` : ''}
+          </span>
+        )}
       </div>
 
-      {/* Delete hint when artboard selected */}
+      {/* Hint bar when artboard selected */}
       {selectedArtboardId && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[11px] text-white/20 select-none pointer-events-none">
-          Del to delete · drag header to move
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[11px] text-white/20 select-none pointer-events-none whitespace-nowrap">
+          Del to delete · drag header to move · ⌘Z to undo
         </div>
       )}
 

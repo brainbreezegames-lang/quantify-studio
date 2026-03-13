@@ -2,6 +2,7 @@ import { createContext, useContext, useReducer, useEffect, type ReactNode } from
 import type { DesignerState, DesignerAction } from './types'
 
 const STORAGE_KEY = 'quantify-designer-project'
+const HISTORY_MAX = 40
 
 const initialState: DesignerState = {
   projectName: 'Untitled project',
@@ -15,6 +16,8 @@ const initialState: DesignerState = {
   editMode: false,
   selectedElement: null,
   rightPanel: 'chat',
+  history: [],
+  future: [],
 }
 
 function loadState(): DesignerState {
@@ -47,6 +50,14 @@ function saveState(state: DesignerState) {
   } catch { /* quota exceeded */ }
 }
 
+function pushHistory(state: DesignerState): DesignerState {
+  return {
+    ...state,
+    history: [...state.history.slice(-(HISTORY_MAX - 1)), state.artboards],
+    future: [],
+  }
+}
+
 function reducer(state: DesignerState, action: DesignerAction): DesignerState {
   switch (action.type) {
     case 'SET_PROJECT_NAME':
@@ -54,7 +65,7 @@ function reducer(state: DesignerState, action: DesignerAction): DesignerState {
 
     case 'CREATE_ARTBOARD':
       return {
-        ...state,
+        ...pushHistory(state),
         artboards: [...state.artboards, action.artboard],
         selectedArtboardId: action.artboard.id,
       }
@@ -69,13 +80,16 @@ function reducer(state: DesignerState, action: DesignerAction): DesignerState {
 
     case 'DELETE_ARTBOARD':
       return {
-        ...state,
+        ...pushHistory(state),
         artboards: state.artboards.filter(a => a.id !== action.id),
         selectedArtboardId: state.selectedArtboardId === action.id ? null : state.selectedArtboardId,
       }
 
     case 'SELECT_ARTBOARD':
       return { ...state, selectedArtboardId: action.id, selectedElement: null }
+
+    case 'SAVE_HISTORY':
+      return pushHistory(state)
 
     case 'MOVE_ARTBOARD':
       return {
@@ -84,6 +98,30 @@ function reducer(state: DesignerState, action: DesignerAction): DesignerState {
           a.id === action.id ? { ...a, x: action.x, y: action.y } : a
         ),
       }
+
+    case 'UNDO': {
+      if (state.history.length === 0) return state
+      const prev = state.history[state.history.length - 1]
+      return {
+        ...state,
+        artboards: prev,
+        selectedArtboardId: null,
+        history: state.history.slice(0, -1),
+        future: [state.artboards, ...state.future.slice(0, HISTORY_MAX - 1)],
+      }
+    }
+
+    case 'REDO': {
+      if (state.future.length === 0) return state
+      const next = state.future[0]
+      return {
+        ...state,
+        artboards: next,
+        selectedArtboardId: null,
+        history: [...state.history.slice(-(HISTORY_MAX - 1)), state.artboards],
+        future: state.future.slice(1),
+      }
+    }
 
     case 'SET_VIEWPORT':
       return { ...state, viewport: { ...state.viewport, ...action.viewport } }

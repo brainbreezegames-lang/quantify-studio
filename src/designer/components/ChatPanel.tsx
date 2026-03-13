@@ -39,8 +39,8 @@ You are designing for Quantify by Avontus — a scaffolding rental and inventory
 
 // ── Grid layout: 5 artboards per row ─────────────────────────────────────
 const GRID_COLS = 5
-const COL_STRIDE = 450   // artboard width (390) + gap (60)
-const ROW_STRIDE = 1060  // artboard height (844) + label area + gap
+const COL_STRIDE = 450  // artboard width (390) + gap (60)
+const ROW_STRIDE = 960  // artboard height (844) + label (~30) + gap (~86)
 const ORIGIN_X = 100
 const ORIGIN_Y = 100
 
