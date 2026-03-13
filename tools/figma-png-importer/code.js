@@ -297,7 +297,8 @@ function applyAutoLayout(frame, node) {
   frame.primaryAxisAlignItems = mapJustifyToFigma(node.justifyContent);
   frame.counterAxisAlignItems = mapAlignToFigma(node.alignItems);
 
-  // HUG content by default — auto-layout frames should size to fit their children
+  // HUG children by default — auto-layout sizes to fit content.
+  // Only the root frame overrides this to FIXED after calling applyAutoLayout.
   frame.primaryAxisSizingMode = "AUTO";
   frame.counterAxisSizingMode = "AUTO";
 
@@ -305,6 +306,91 @@ function applyAutoLayout(frame, node) {
   if (node.wrap) {
     try { frame.layoutWrap = "WRAP"; } catch(e) {}
   }
+}
+
+function isAutoLayoutParent(parent) {
+  return !!parent && (parent.layoutMode === "HORIZONTAL" || parent.layoutMode === "VERTICAL");
+}
+
+function isAbsolutePositioning(node) {
+  return !!node && (node.positioning === "absolute" || node.positioning === "fixed" || node.positioning === "sticky");
+}
+
+function appendNode(parent, child, node) {
+  parent.appendChild(child);
+  var absoluteInAutoLayout = false;
+
+  if (isAutoLayoutParent(parent) && isAbsolutePositioning(node)) {
+    try {
+      child.layoutPositioning = "ABSOLUTE";
+      absoluteInAutoLayout = true;
+    } catch(e) {}
+  }
+
+  if (!isAutoLayoutParent(parent) || absoluteInAutoLayout) {
+    child.x = node && typeof node.x === "number" ? node.x : 0;
+    child.y = node && typeof node.y === "number" ? node.y : 0;
+  }
+
+  return absoluteInAutoLayout;
+}
+
+function applyChildSizing(frame, node, parent) {
+  if (!isAutoLayoutParent(parent) || isAbsolutePositioning(node)) return;
+  try {
+    // Standard flex child behavior: FILL cross-axis, HUG main-axis
+    if (parent.layoutMode === "VERTICAL") {
+      // Column parent → children fill width, hug height
+      frame.layoutSizingHorizontal = "FILL";
+      frame.layoutSizingVertical = "HUG";
+    } else {
+      // Row parent → children hug width, fill height
+      frame.layoutSizingHorizontal = "HUG";
+      frame.layoutSizingVertical = "FILL";
+    }
+
+    // flex-grow: also fill the main axis
+    if (node.flexGrow >= 1) {
+      frame.layoutGrow = 1;
+      if (parent.layoutMode === "VERTICAL") frame.layoutSizingVertical = "FILL";
+      else frame.layoutSizingHorizontal = "FILL";
+    }
+  } catch(e) {}
+}
+
+function applyTextLayoutSizing(text, node, parent) {
+  var autoLayoutParent = isAutoLayoutParent(parent) && !isAbsolutePositioning(node);
+
+  if (!autoLayoutParent) {
+    // No auto-layout parent: use measured dimensions
+    text.textAutoResize = "WIDTH_AND_HEIGHT";
+    return;
+  }
+
+  try {
+    if (parent.layoutMode === "VERTICAL") {
+      // Column parent → text fills width (wraps to container), hugs height
+      text.textAutoResize = "HEIGHT";
+      text.layoutSizingHorizontal = "FILL";
+      text.layoutSizingVertical = "HUG";
+    } else {
+      // Row parent → text hugs both axes (natural inline size)
+      text.textAutoResize = "WIDTH_AND_HEIGHT";
+      text.layoutSizingHorizontal = "HUG";
+      text.layoutSizingVertical = "HUG";
+    }
+
+    // flex-grow: fill the main axis
+    if (node.flexGrow >= 1) {
+      text.layoutGrow = 1;
+      if (parent.layoutMode === "HORIZONTAL") {
+        text.layoutSizingHorizontal = "FILL";
+        text.textAutoResize = "HEIGHT";
+      } else {
+        text.layoutSizingVertical = "FILL";
+      }
+    }
+  } catch(e) {}
 }
 
 // ══════════════════════════════════════════════
@@ -411,59 +497,8 @@ async function createFrameNode(node, parent) {
     applyAutoLayout(frame, node);
   }
 
-  // Append to parent BEFORE setting child layout props
-  parent.appendChild(frame);
-
-  // Set flex child properties (must be after appending to auto-layout parent)
-  if (parent.layoutMode) {
-    // flex-grow → layoutGrow
-    if (node.flexGrow >= 1) {
-      frame.layoutGrow = 1;
-    }
-
-    // Smart sizing: children should fill the cross-axis by default and hug the main-axis
-    try {
-      if (parent.layoutMode === "VERTICAL") {
-        // Column parent: children fill width (cross), hug height (main)
-        frame.layoutSizingHorizontal = "FILL";
-        frame.layoutSizingVertical = "HUG";
-      } else {
-        // Row parent: children hug width (main), fill height (cross)
-        frame.layoutSizingHorizontal = "HUG";
-        frame.layoutSizingVertical = "FILL";
-      }
-
-      // Explicit fillCrossAxis override
-      if (node.fillCrossAxis) {
-        if (parent.layoutMode === "VERTICAL") {
-          frame.layoutSizingHorizontal = "FILL";
-        } else {
-          frame.layoutSizingVertical = "FILL";
-        }
-      }
-
-      // flex-grow: fill the main axis
-      if (node.flexGrow >= 1) {
-        if (parent.layoutMode === "VERTICAL") {
-          frame.layoutSizingVertical = "FILL";
-        } else {
-          frame.layoutSizingHorizontal = "FILL";
-        }
-      }
-
-      // If this frame has its own auto-layout and a fixed measured size,
-      // keep FIXED when there's no flex-grow (prevents collapsing to 0)
-      if (node.layout && !node.flexGrow) {
-        if (parent.layoutMode === "VERTICAL" && node.h > 0) {
-          frame.layoutSizingVertical = "HUG";
-        } else if (parent.layoutMode === "HORIZONTAL" && node.w > 0) {
-          frame.layoutSizingHorizontal = "HUG";
-        }
-      }
-    } catch(e) {
-      // layoutSizingHorizontal/Vertical may not be available in older API
-    }
-  }
+  appendNode(parent, frame, node);
+  applyChildSizing(frame, node, parent);
 
   // Process children
   if (node.children && node.children.length > 0) {
@@ -527,9 +562,6 @@ async function createTextNode(node, parent) {
   if (align === "center") text.textAlignHorizontal = "CENTER";
   else if (align === "right" || align === "end") text.textAlignHorizontal = "RIGHT";
 
-  // Auto-resize
-  text.textAutoResize = "WIDTH_AND_HEIGHT";
-
   // Opacity
   if (node.opacity !== undefined && node.opacity !== null && node.opacity < 1) {
     text.opacity = node.opacity;
@@ -538,40 +570,14 @@ async function createTextNode(node, parent) {
   // Name
   text.name = content.slice(0, 40);
 
-  // Append
-  parent.appendChild(text);
+  appendNode(parent, text, node);
+  applyTextLayoutSizing(text, node, parent);
 
   // Paint style for color (linked style)
   var colorHex = colorStrToHex(node.color);
   var ps = colorHex ? findPaintStyle(colorHex) : null;
   if (ps) {
     try { text.fillStyleId = ps.id; } catch(e) {}
-  }
-
-  // Flex child sizing
-  if (parent.layoutMode) {
-    try {
-      if (parent.layoutMode === "VERTICAL") {
-        // In column layout: text fills width so it wraps, hugs height
-        text.layoutSizingHorizontal = "FILL";
-        text.layoutSizingVertical = "HUG";
-        text.textAutoResize = "HEIGHT"; // Allow width to fill, height adapts
-      } else {
-        // In row layout: text hugs both axes by default
-        text.layoutSizingHorizontal = "HUG";
-        text.layoutSizingVertical = "HUG";
-      }
-
-      if (node.flexGrow >= 1) {
-        text.layoutGrow = 1;
-        if (parent.layoutMode === "HORIZONTAL") {
-          text.layoutSizingHorizontal = "FILL";
-          text.textAutoResize = "HEIGHT"; // Fill width, adapt height
-        } else {
-          text.layoutSizingVertical = "FILL";
-        }
-      }
-    } catch(e) {}
   }
 
   return text;
@@ -596,8 +602,8 @@ function createIconNode(node, parent) {
       var svgNode = figma.createNodeFromSvg(svgStr);
       svgNode.name = iconName || iconKey || "Icon";
       if (size !== 24) svgNode.resize(size, size);
-      parent.appendChild(svgNode);
-      if (parent.layoutMode) {
+      appendNode(parent, svgNode, node);
+      if (isAutoLayoutParent(parent) && !isAbsolutePositioning(node)) {
         try {
           svgNode.layoutSizingHorizontal = "FIXED";
           svgNode.layoutSizingVertical = "FIXED";
@@ -612,8 +618,8 @@ function createIconNode(node, parent) {
   frame.resize(size, size);
   frame.fills = [{ type: "SOLID", color: { r: 0.9, g: 0.9, b: 0.9 }, opacity: 1 }];
   frame.name = iconName || "Icon";
-  parent.appendChild(frame);
-  if (parent.layoutMode) {
+  appendNode(parent, frame, node);
+  if (isAutoLayoutParent(parent) && !isAbsolutePositioning(node)) {
     try {
       frame.layoutSizingHorizontal = "FIXED";
       frame.layoutSizingVertical = "FIXED";
@@ -631,10 +637,10 @@ function createDividerNode(node, parent) {
   var colorStr = node.fill || node.color || "#E2E2E2";
   applyFillColor(line, colorStr);
   line.name = node.name || "Divider";
-  parent.appendChild(line);
+  appendNode(parent, line, node);
 
   // In auto-layout, divider should fill cross-axis
-  if (parent.layoutMode) {
+  if (isAutoLayoutParent(parent) && !isAbsolutePositioning(node)) {
     try {
       if (parent.layoutMode === "VERTICAL") {
         line.layoutSizingHorizontal = "FILL";
@@ -654,8 +660,8 @@ function createImageNode(node, parent) {
   frame.resize(Math.max(node.w || 100, 1), Math.max(node.h || 80, 1));
   frame.fills = [{ type: "SOLID", color: { r: 0.96, g: 0.96, b: 0.96 }, opacity: 1 }];
   frame.name = (node.name || "Image").slice(0, 40);
-  parent.appendChild(frame);
-  if (parent.layoutMode) {
+  appendNode(parent, frame, node);
+  if (isAutoLayoutParent(parent) && !isAbsolutePositioning(node)) {
     try {
       frame.layoutSizingHorizontal = "FIXED";
       frame.layoutSizingVertical = "FIXED";
