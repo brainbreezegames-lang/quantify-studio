@@ -718,9 +718,8 @@ async function createLegacyText(el, parent) {
   text.fontSize = fontSize;
   if (ts) { try { text.textStyleId = ts.id; } catch(e) {} }
   if (!ts && el.lineHeight) { text.lineHeight = { value: el.lineHeight, unit: "PIXELS" }; }
-  if (!ts && el.letterSpacing) {
-    if (Math.abs(el.letterSpacing) < 1) { text.letterSpacing = { value: el.letterSpacing * 100, unit: "PERCENT" }; }
-    else { text.letterSpacing = { value: el.letterSpacing, unit: "PIXELS" }; }
+  if (!ts && el.letterSpacing && Math.abs(el.letterSpacing) > 0.001) {
+    text.letterSpacing = { value: el.letterSpacing, unit: "PIXELS" };
   }
   var col = parseColor(el.color);
   if (col) text.fills = [{ type: "SOLID", color: col.color, opacity: col.opacity }];
