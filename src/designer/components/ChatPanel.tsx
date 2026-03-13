@@ -37,19 +37,39 @@ const HIDDEN_DESIGN_CONTEXT = `
 [CONTEXT — automatically included, not written by user]
 You are designing for Quantify by Avontus — a scaffolding rental and inventory management app used by yard workers on tablets in harsh outdoor environments (direct sunlight, thick gloves, mud, competing with paper clipboards). The design system uses Switzer font, #0A3EFF primary blue, 0px border radius (sharp corners), no shadows, sentence case only. Products are scaffolding equipment: frames, braces, ledgers, jacks, planks, couplers. Users manage reservations, shipments, returns, yard counts, and inventory. Every screen needs an Online/Offline pill in the toolbar. Touch targets must be 48px+ for gloved hands. Think like a senior product designer who has spent years understanding industrial mobile UX — not a generic UI generator.`
 
-// ── Grid layout: 5 artboards per row ─────────────────────────────────────
-const GRID_COLS = 5
+// ── Smart artboard placement ───────────────────────────────────────────────
+// Places next to existing artboards, wrapping to a new row when the row is full.
+// Uses actual artboard positions so it works correctly after drag/delete.
+import type { Artboard as ArtboardType } from '../types'
+
 const COL_STRIDE = 450  // artboard width (390) + gap (60)
-const ROW_STRIDE = 960  // artboard height (844) + label (~30) + gap (~86)
+const MAX_COLS = 5
+const ROW_GAP = 80      // vertical gap between rows
 const ORIGIN_X = 100
 const ORIGIN_Y = 100
 
-function gridPosition(existingCount: number, offset = 0) {
-  const idx = existingCount + offset
-  return {
-    x: ORIGIN_X + (idx % GRID_COLS) * COL_STRIDE,
-    y: ORIGIN_Y + Math.floor(idx / GRID_COLS) * ROW_STRIDE,
+function nextPositions(artboards: ArtboardType[], count = 1): { x: number; y: number }[] {
+  const maxRowX = ORIGIN_X + MAX_COLS * COL_STRIDE
+
+  if (artboards.length === 0) {
+    return Array.from({ length: count }, (_, i) => ({ x: ORIGIN_X + i * COL_STRIDE, y: ORIGIN_Y }))
   }
+
+  // Find the row with the highest Y (bottom row)
+  const maxY = Math.max(...artboards.map(a => a.y))
+  const bottomRow = artboards.filter(a => Math.abs(a.y - maxY) < 200)
+  const rightmost = bottomRow.reduce((m, a) => (a.x + a.width > m.x + m.width ? a : m))
+  const startX = rightmost.x + rightmost.width + 60
+
+  // All requested artboards fit in the current row
+  if (startX + count * COL_STRIDE - 60 <= maxRowX) {
+    return Array.from({ length: count }, (_, i) => ({ x: startX + i * COL_STRIDE, y: maxY }))
+  }
+
+  // Start a new row just below the bottom of all artboards
+  const overallBottom = Math.max(...artboards.map(a => a.y + a.height))
+  const newY = overallBottom + ROW_GAP
+  return Array.from({ length: count }, (_, i) => ({ x: ORIGIN_X + i * COL_STRIDE, y: newY }))
 }
 
 // ── Progressive HTML extraction from partial JSON ────────────────────────
@@ -202,7 +222,7 @@ export default function ChatPanel() {
 
     // Create blank artboard immediately so user sees it on canvas
     const previewArtboardId = uuid()
-    const { x, y } = gridPosition(artboards.length)
+    const [{ x, y }] = nextPositions(artboards, 1)
 
     dispatch({
       type: 'CREATE_ARTBOARD',
@@ -452,9 +472,10 @@ export default function ChatPanel() {
 
     const OPTION_NAMES = ['Option A — Efficiency First', 'Option B — Information Rich', 'Option C — Guided Clarity']
     const artboardIds = [uuid(), uuid(), uuid()]
+    const variantPositions = nextPositions(artboards, 3)
 
     for (let i = 0; i < 3; i++) {
-      const { x, y } = gridPosition(artboards.length, i)
+      const { x, y } = variantPositions[i]
       dispatch({
         type: 'CREATE_ARTBOARD',
         artboard: {
@@ -564,7 +585,7 @@ export default function ChatPanel() {
     setStreamingStatus('Analyzing image...')
 
     const previewArtboardId = uuid()
-    const { x, y } = gridPosition(artboards.length)
+    const [{ x, y }] = nextPositions(artboards, 1)
 
     dispatch({
       type: 'CREATE_ARTBOARD',

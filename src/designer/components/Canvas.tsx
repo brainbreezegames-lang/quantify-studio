@@ -27,10 +27,11 @@ export default function Canvas() {
       const { panX, panY, zoom } = viewportRef.current
 
       if (e.ctrlKey || e.metaKey) {
-        // Smooth zoom: use exponential scaling so trackpad feels natural
-        // deltaY ~1-3 for trackpad, ~100 for mouse wheel
-        const zoomFactor = Math.pow(0.999, e.deltaY)
-        const newZoom = Math.min(3, Math.max(0.08, zoom * zoomFactor))
+        // Figma-like zoom: cap deltaY to ±10 so trackpad is smooth (1-3% per event)
+        // and mouse wheel is snappy (~10% per notch). Both feel natural.
+        const capped = Math.max(-10, Math.min(10, e.deltaY))
+        const zoomFactor = Math.pow(0.99, capped) // -10→+10.5%, +10→-9.6%
+        const newZoom = Math.min(4, Math.max(0.05, zoom * zoomFactor))
 
         const rect = container.getBoundingClientRect()
         const cursorX = e.clientX - rect.left
