@@ -154,6 +154,7 @@ export function buildArtboardDoc(html: string, css: string = '', editMode: boole
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
 html, body {
   margin: 0;
@@ -178,6 +179,7 @@ ${css}
 <body>
 <div id="app">${html}</div>
 <script>${ICON_SCRIPT}</script>
+<script>document.addEventListener('DOMContentLoaded',function(){if(typeof lucide!=='undefined')lucide.createIcons();});</script>
 ${editMode ? `<script>${EDIT_SCRIPT}</script>` : ''}
 </body>
 </html>`

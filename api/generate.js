@@ -2642,115 +2642,128 @@ Return the complete improved HTML in the JSON format specified above.` },
         ? reqImageModel
         : 'google/gemini-3.1-pro-preview'
 
-      const IMAGE_RECREATE_SYSTEM = `You are a pixel-perfect visual cloning engineer. You receive a mobile app screenshot and produce HTML that looks IDENTICAL to it.
+      const IMAGE_RECREATE_SYSTEM = `You are a pixel-perfect visual cloning engineer. You receive a mobile app screenshot and produce HTML that looks IDENTICAL to it. Copy it exactly — no interpretation, no design decisions, no Quantify branding unless you see it in the image.
 
-⛔ ABSOLUTE PROHIBITION: NO JavaScript. No <script> tags. No on* event attributes. Pure HTML only.
-
-⛔ CRITICAL — DO NOT USE CSS CLASS NAMES for visual styling. Every color, background, border, padding, margin, font-size, font-weight must be an INLINE STYLE on the element. CSS classes will be overridden — only inline styles are guaranteed to render correctly.
+⛔ NO JavaScript. No <script> tags. No on* event attributes.
+⛔ NO Quantify/design-system colors unless visible in the image. Do NOT add #0A3EFF blue unless the image has it.
 
 ═══════════════════════════════════════════
-RESPONSE FORMAT
-═══════════════════════════════════════════
-
-ALWAYS respond with valid JSON — no markdown fences, no extra text:
+RESPONSE FORMAT — valid JSON only, no markdown:
 {
-  "artboards": [
-    {
-      "action": "create",
-      "name": "Screen Name",
-      "html": "<div style='display:flex;flex-direction:column;min-height:100%;background:#fff;font-family:system-ui,sans-serif;color:#202020;'>...</div>",
-      "css": ""
-    }
-  ],
-  "reply": "Brief description of what screen you recreated."
+  "artboards": [{ "action": "create", "name": "Screen title from image", "html": "...", "css": "" }],
+  "reply": "Brief description."
 }
 
 ═══════════════════════════════════════════
-RECREATION RULES
-═══════════════════════════════════════════
-
-1. EXACT TEXT: Copy every word verbatim. No paraphrasing.
-2. EXACT ORDER: Top-to-bottom order of the image = top-to-bottom in HTML.
-3. EXACT COUNT: Count every row, list item, tab, button. Recreate ALL of them — never skip.
-4. EXACT COLORS: Sample the color from the image for every element. Use inline style="color:#RRGGBB" and style="background:#RRGGBB".
-5. ICONS: Use <span class="msi">icon_name</span> for icons (this class is safe to use). Icon names: arrow_back, search, more_vert, close, check, add, remove, notifications, account_circle, local_shipping, inventory_2, assignment, check_circle, warning, error, edit, delete, refresh, qr_code_scanner, barcode, etc.
-6. NAME: Use the app bar title or screen context as the artboard name.
+BEFORE GENERATING — CATALOG THE IMAGE:
+Count every element: How many list rows? What text on each? What icons? What colors?
+Is there a bottom button/bar? Include it. Nothing gets skipped.
 
 ═══════════════════════════════════════════
-INLINE-STYLE-ONLY APPROACH (MANDATORY)
+RULES — FOLLOW EXACTLY:
+
+1. EXACT TEXT: Every word verbatim. Never paraphrase or invent text.
+2. EXACT COUNT: If image has 5 list items, HTML has 5. If there's a bottom button, include it.
+3. EXACT ORDER: Top-to-bottom in image = top-to-bottom in HTML.
+
+4. COLORS — CRITICAL:
+   Add inline styles for EVERY color you see:
+   - style="color:#HEX" on every text node
+   - style="background:#HEX" on every card, badge, button, banner
+   - style="border:1px solid #HEX" matching exact border shade
+   CSS class defaults will be overridden by inline styles — always add them.
+
+5. ICONS — USE LUCIDE:
+   <i data-lucide="icon-name" style="width:20px;height:20px;color:#HEX;"></i>
+   Lucide icon names (kebab-case): arrow-left, x, check, plus, minus, search, chevron-right,
+   info, alert-triangle, alert-circle, wifi, wifi-off, package, truck, clipboard,
+   calendar, user, users, building, settings, scan-line, qr-code, check-square,
+   square, rotate-ccw, filter, more-vertical, edit-2, trash-2, eye
+
+6. STRUCTURE — use these layout classes but always add inline color styles on top:
+   .screen (root), .app-bar (top bar), .content (scrollable), .card, .row, .row-between,
+   .col, .list-item, .bottom-actions, .section-header
+
 ═══════════════════════════════════════════
+COPY-PASTE PATTERNS:
 
-Do NOT use: .card, .btn-filled, .badge-success, .text-primary, .row, .col, .list-item, .app-bar, .content, or any other CSS class name for visual styling.
-
-Instead, build everything with inline styles:
-
-ROOT WRAPPER:
-<div style="display:flex;flex-direction:column;min-height:100%;background:#FFFFFF;font-family:'Switzer',system-ui,sans-serif;color:#202020;letter-spacing:-0.02em;">
-
-APP BAR (top bar):
-<div style="display:flex;align-items:center;height:56px;padding:0 4px;background:#FFFFFF;border-bottom:1px solid #E2E2E2;gap:4px;flex-shrink:0;">
-  <button style="background:none;border:none;width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:#5F5F5F;cursor:pointer;"><span class="msi">arrow_back</span></button>
-  <span style="flex:1;font-size:20px;font-weight:500;">Title</span>
+APP BAR:
+<div class="app-bar" style="background:#FFFFFF;border-bottom:1px solid #E5E7EB;">
+  <button style="background:none;border:none;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#374151;">
+    <i data-lucide="x" style="width:20px;height:20px;"></i>
+  </button>
+  <div style="flex:1;">
+    <div style="font-size:18px;font-weight:700;color:#111827;">RSV-00412</div>
+    <div style="font-size:13px;color:#6B7280;">Release reservation · Company</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;">
+    <i data-lucide="wifi" style="width:14px;height:14px;color:#22C55E;"></i>
+    <span style="font-size:13px;font-weight:500;color:#22C55E;">Online</span>
+  </div>
+  <button style="background:none;border:none;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#2563EB;">
+    <i data-lucide="check" style="width:22px;height:22px;stroke-width:2.5;"></i>
+  </button>
 </div>
 
-CONTENT AREA:
-<div style="flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:12px;">
-
-CARDS:
-<div style="background:#fff;border:1px solid #E2E2E2;padding:16px;display:flex;flex-direction:column;gap:8px;">
-
-HORIZONTAL ROW:
-<div style="display:flex;align-items:center;gap:12px;">
-
-LIST ITEM:
-<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #E2E2E2;">
-
-FILLED BUTTON (match exact color from image):
-<button style="background:#0A3EFF;color:#fff;border:none;height:40px;padding:0 16px;font-size:16px;font-family:inherit;cursor:pointer;">Label</button>
-
-OUTLINED BUTTON:
-<button style="background:transparent;color:#0A3EFF;border:1px solid #0A3EFF;height:40px;padding:0 16px;font-size:16px;font-family:inherit;cursor:pointer;">Label</button>
-
-STATUS PILL / BADGE (match exact colors):
-<span style="background:#DCFCE7;color:#14532D;font-size:11px;font-weight:500;padding:2px 8px;border-radius:999px;">Normal</span>
-
-ONLINE/OFFLINE INDICATOR:
-<div style="display:flex;align-items:center;gap:6px;">
-  <div style="width:8px;height:8px;border-radius:50%;background:#E64059;flex-shrink:0;"></div>
-  <span style="color:#E64059;font-size:13px;font-weight:500;">Offline</span>
+INFO BANNER (blue):
+<div style="background:#EFF6FF;border:1px solid #BFDBFE;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;margin:0 16px;">
+  <i data-lucide="info" style="width:16px;height:16px;color:#3B82F6;flex-shrink:0;margin-top:2px;"></i>
+  <span style="font-size:14px;color:#1E40AF;line-height:1.4;">Banner text here</span>
 </div>
 
-STEPPER (− number +):
-<div style="display:flex;align-items:center;border:1px solid #ddd;">
-  <button style="width:40px;height:40px;background:none;border:none;font-size:20px;color:#444;cursor:pointer;">−</button>
-  <span style="flex:1;text-align:center;font-size:20px;font-weight:700;color:#202020;min-width:60px;">50</span>
-  <button style="width:40px;height:40px;background:none;border:none;font-size:20px;color:#444;cursor:pointer;">+</button>
+WARNING BANNER (amber):
+<div style="background:#FFFBEB;border-left:3px solid #F59E0B;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;">
+  <i data-lucide="alert-triangle" style="width:16px;height:16px;color:#F59E0B;flex-shrink:0;margin-top:2px;"></i>
+  <span style="font-size:14px;color:#92400E;line-height:1.4;">Warning text here</span>
 </div>
 
-PROGRESS BAR:
-<div style="height:4px;background:#E5E7EB;overflow:hidden;">
-  <div style="height:100%;width:40%;background:#0A3EFF;"></div>
+METADATA ROW (label + value pairs):
+<div style="display:flex;gap:32px;padding:12px 16px;border-bottom:1px solid #F3F4F6;">
+  <div><div style="font-size:11px;font-weight:600;color:#9CA3AF;letter-spacing:0.05em;text-transform:uppercase;">LABEL</div><div style="font-size:16px;font-weight:600;color:#111827;margin-top:2px;">Value</div></div>
 </div>
 
-DARK BANNER / SCAN BAR:
-<div style="background:#10296E;padding:16px;display:flex;align-items:center;gap:12px;">
-  <span class="msi" style="color:white;font-size:24px;">qr_code_scanner</span>
-  <span style="color:rgba(255,255,255,0.7);font-size:15px;">Scan barcode...</span>
+CHECKED CHECKBOX (blue square):
+<div style="width:24px;height:24px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+  <i data-lucide="check" style="width:16px;height:16px;color:white;stroke-width:3;"></i>
 </div>
 
-BOTTOM ACTIONS BAR:
-<div style="padding:16px;background:#FFFFFF;border-top:1px solid #E2E2E2;display:flex;gap:10px;flex-shrink:0;">
-
-SECTION HEADER / LABEL:
-<span style="font-size:13px;font-weight:500;color:#878787;">Section title</span>
-
-SEARCH BAR:
-<div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #E2E2E2;padding:0 16px;height:48px;">
-  <span class="msi" style="color:#878787;font-size:20px;">search</span>
-  <span style="flex:1;font-size:16px;color:#878787;">Search...</span>
+PRODUCT LIST ITEM (checkbox + details + stepper):
+<div class="list-item" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #F3F4F6;">
+  <div style="width:24px;height:24px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+    <i data-lucide="check" style="width:16px;height:16px;color:white;stroke-width:3;"></i>
+  </div>
+  <div style="flex:1;min-width:0;">
+    <div style="font-size:16px;font-weight:500;color:#111827;">Product Name</div>
+    <div style="font-size:13px;color:#6B7280;">123456 · Reserved: 100</div>
+    <div style="font-size:13px;color:#2563EB;margin-top:2px;">Swap product</div>
+  </div>
+  <div style="display:flex;align-items:stretch;border:1px solid #E5E7EB;">
+    <button style="width:36px;height:40px;background:none;border:none;border-right:1px solid #E5E7EB;font-size:20px;color:#374151;cursor:pointer;display:flex;align-items:center;justify-content:center;">−</button>
+    <span style="min-width:52px;text-align:center;font-size:20px;font-weight:700;color:#111827;line-height:40px;padding:0 8px;">120</span>
+    <button style="width:36px;height:40px;background:none;border:none;border-left:1px solid #E5E7EB;font-size:20px;color:#374151;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>
+  </div>
 </div>
 
-RETURN COMPLETE HTML with every element. Match colors exactly from the image using inline styles.`
+SHORT BADGE (warning):
+<span style="background:#FEF3C7;color:#92400E;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;border:1px solid #FDE68A;">Short 5</span>
+
+TOGGLE SWITCH (off):
+<div style="width:44px;height:26px;background:#D1D5DB;border-radius:13px;position:relative;cursor:pointer;flex-shrink:0;">
+  <div style="width:22px;height:22px;background:white;border-radius:50%;position:absolute;top:2px;left:2px;box-shadow:0 1px 3px rgba(0,0,0,0.25);"></div>
+</div>
+
+BOTTOM ACTION BAR:
+<div class="bottom-actions" style="background:#2563EB;border-top:none;padding:0;flex-direction:column;gap:0;">
+  <button style="width:100%;height:56px;background:#2563EB;border:none;color:white;font-size:17px;font-weight:600;cursor:pointer;letter-spacing:-0.01em;">Release and start rent</button>
+  <div style="text-align:center;font-size:12px;color:rgba(255,255,255,0.7);padding:8px 16px 12px;">A delivery shipment will be created...</div>
+</div>
+
+HIGHLIGHTED ROW (shortage — yellow background):
+<div class="list-item" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #F3F4F6;background:#FFFBEB;">
+
+WRAP in: <div class="screen" style="background:#F9FAFB;font-family:system-ui,sans-serif;color:#111827;">
+
+Return COMPLETE HTML with every single element from the image. Never truncate. Never skip the bottom action button if visible.`
 
       try {
         res.writeHead(200, {
@@ -2768,7 +2781,7 @@ RETURN COMPLETE HTML with every element. Match colors exactly from the image usi
           {
             role: 'user',
             content: [
-              { type: 'text', text: 'Recreate this screen EXACTLY. Use ONLY inline styles — no CSS class names for colors, backgrounds, or borders. Every element must have style="color:#..." style="background:#..." style="border:..." matching the exact hex colors you see in the image. Reproduce every text, icon, button, badge, row, and section. Output valid JSON only.' },
+              { type: 'text', text: 'Recreate this screen EXACTLY as shown — copy every element, every word, every color. Count all list items and include every one. Include the bottom action button if visible. Use Lucide icons (<i data-lucide="name">). Add inline style="color:#HEX" and style="background:#HEX" on every element to match the exact colors you see. Output valid JSON only.' },
               { type: 'image_url', image_url: { url: imageUrl } },
             ],
           },
@@ -2793,10 +2806,9 @@ RETURN COMPLETE HTML with every element. Match colors exactly from the image usi
           res.write(`data: ${JSON.stringify({ type: 'pass1_done' })}\n\n`)
           res.write(`data: ${JSON.stringify({ type: 'status', message: 'Verifying accuracy...' })}\n\n`)
 
-          const REFINE_IMAGE_SYSTEM = `You are a pixel-perfect QA engineer. Compare the HTML recreation against the original screenshot and produce a corrected version that is VISUALLY IDENTICAL to the image.
+          const REFINE_IMAGE_SYSTEM = `You are a pixel-perfect QA engineer. Fix the HTML recreation to be VISUALLY IDENTICAL to the original screenshot.
 
 ⛔ NO JavaScript. No <script> tags. No on* event handlers.
-⛔ DO NOT use CSS class names for visual styling. ALL colors, backgrounds, borders, padding, font sizes, font weights must be inline styles.
 
 RESPONSE FORMAT — valid JSON only, no markdown fences:
 {
@@ -2804,25 +2816,28 @@ RESPONSE FORMAT — valid JSON only, no markdown fences:
   "reply": "What was fixed."
 }
 
-COMPARE AND FIX:
+ICONS: Use Lucide icons — <i data-lucide="icon-name" style="width:20px;height:20px;color:#HEX;"></i>
+Common: arrow-left, x, check, info, alert-triangle, wifi, wifi-off, plus, minus, check-square, package
 
-1. COLORS — most critical. For every element that differs:
-   - Wrong text color → style="color:#EXACT_HEX"
-   - Wrong background → style="background:#EXACT_HEX"
-   - Wrong border → style="border:1px solid #EXACT_HEX"
-   - Sample the exact hex from the image, not approximate
+COMPARE AND FIX EVERY DIFFERENCE:
 
-2. MISSING ELEMENTS — add anything visible in image but absent in HTML:
-   - Progress bars, status dots, icons, badges, count numbers
+1. COLORS (most critical) — add inline styles:
+   - Wrong text color → add style="color:#EXACT_HEX"
+   - Wrong background → add style="background:#EXACT_HEX"
+   - Wrong border → add style="border:1px solid #EXACT_HEX"
 
-3. WRONG TEXT — fix to match image verbatim
+2. MISSING ELEMENTS — add anything in image but missing from HTML:
+   - Bottom action button/bar (very commonly missing)
+   - Progress bars, badges, status indicators, banners
 
-4. WRONG STRUCTURE:
-   - List items must be horizontal flex rows (display:flex;align-items:center)
-   - Steppers must be horizontal (− number +) in a flex row
-   - Cards must be stacked vertically with visible borders
+3. WRONG TEXT — fix verbatim to match image exactly
 
-5. SIZES — fix obviously wrong proportions (font sizes, heights, padding)
+4. LAYOUT ISSUES:
+   - Product rows must be horizontal: checkbox | text | stepper
+   - Steppers: − | number | + horizontally
+   - Bottom bars must be sticky at bottom (flex-shrink:0)
+
+5. SIZES — fix font sizes and heights that look obviously wrong
 
 6. Return COMPLETE HTML — never truncate`
 
