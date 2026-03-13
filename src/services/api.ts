@@ -1,4 +1,4 @@
-import type { ComponentNode, Decision, DesignBrief, DesignTokens, QualityToggles, WebDesign } from '../types'
+import type { ComponentNode, Decision, DesignBrief, DesignTokens, DesignVariant, QualityToggles, WebDesign } from '../types'
 
 export function getOpenRouterKey(): string {
   return localStorage.getItem('openrouter_api_key') || ''
@@ -157,6 +157,41 @@ export async function generateImageScreen(req: {
   } finally {
     clearTimeout(timeout)
   }
+}
+
+export interface GenerateVariantsResponse {
+  variants: Omit<DesignVariant, 'id'>[]
+}
+
+export async function generateVariants(req: GenerateRequest): Promise<GenerateVariantsResponse> {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 290_000)
+
+  let response: Response
+  try {
+    response = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...req, action: 'variants', openRouterApiKey: getOpenRouterKey() }),
+      signal: controller.signal,
+    })
+  } catch (err) {
+    clearTimeout(timeout)
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw new Error('Generation timed out — please try again.')
+    }
+    throw new Error('Network error — check your connection and try again.')
+  } finally {
+    clearTimeout(timeout)
+  }
+
+  if (!response.ok) {
+    if (response.status === 504) throw new Error('Generation timed out — please try again.')
+    const err = await response.json().catch(() => ({ error: 'Variants generation failed' }))
+    throw new Error(err.error || 'Variants generation failed')
+  }
+
+  return response.json()
 }
 
 export async function enhancePrompt(

@@ -17,7 +17,19 @@ app.use(express.json({ limit: '2mb' }))
 
 app.post('/api/generate', async (req, res) => {
   try {
-    const { prompt, designTokens, currentTree, designBrief, imageUrl, qualityToggles } = req.body
+    const { action, prompt, designTokens, currentTree, designBrief, imageUrl, qualityToggles } = req.body
+
+    // Actions handled exclusively in the Vercel handler — delegate
+    if (action === 'variants' || action === 'improve' || action === 'enhance' || action === 'chat' || action === 'designer' || action === 'designer-chat' || action === 'designer-image') {
+      try {
+        const { default: handler } = await import('../api/generate.js')
+        return await handler(req, res)
+      } catch (err) {
+        console.error(`Action "${action}" handler error:`, err)
+        if (!res.headersSent) res.status(500).json({ error: err?.message || 'Action failed' })
+        return
+      }
+    }
 
     if ((!prompt || typeof prompt !== 'string') && !imageUrl) {
       return res.status(400).json({ error: 'Prompt or image URL is required' })

@@ -2938,6 +2938,59 @@ ${cssSnippet}`
       }
     }
 
+    // ── 3 Design Variants ─────────────────────────────────────────────────────
+    if (action === 'variants') {
+      if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
+        return res.status(400).json({ error: 'Prompt is required for design variants' })
+      }
+      if (!rk && !process.env.OPENROUTER_API_KEY) {
+        return res.status(503).json({ error: 'API key required. Please add your OpenRouter API key in settings.' })
+      }
+
+      const VARIANT_DIRECTIONS = [
+        {
+          label: 'A',
+          title: 'Efficiency First',
+          direction: 'Optimize for speed and task completion. Minimize taps and cognitive load. Place the single most important action in an obvious, easily reachable position. Use progressive disclosure — show only what the user needs right now; move supporting info to secondary areas. Keep the layout lean and the path to completion direct.',
+          uxPrinciple: "Hick's Law · Fitts's Law · Direct Manipulation",
+        },
+        {
+          label: 'B',
+          title: 'Information Rich',
+          direction: 'Maximize situational awareness. Show comprehensive data, metrics, and supporting context upfront. Use stat cards for key numbers, status badges on every meaningful data row, progress indicators, and grouped summaries. Allow the user to see the full picture at a glance without drilling down.',
+          uxPrinciple: 'Situation Awareness · Recognition over Recall · Data Density',
+        },
+        {
+          label: 'C',
+          title: 'Guided Clarity',
+          direction: 'Reduce cognitive load through generous whitespace and clear hierarchy. ONE dominant primary action per view. Use explicit field labels and helper text. Apply chunking — group related items visually and reveal advanced options behind secondary controls. Add confirmation or review steps before irreversible actions.',
+          uxPrinciple: "Miller's Law · Cognitive Load Theory · Error Prevention",
+        },
+      ]
+
+      const variantModel = (requestModel && ALLOWED_MODELS.has(requestModel) ? requestModel : MODEL)
+
+      const variantPromises = VARIANT_DIRECTIONS.map((dir) => {
+        const directionSection = `\n\n## UX DESIGN DIRECTION — COMMIT TO THIS APPROACH:\n${dir.direction}\n\nUX Principles driving this design: ${dir.uxPrinciple}\n\nMake design choices that clearly reflect this direction. It should feel distinctly different from a default generic output.`
+        const augmentedQualitySections = qualitySections + directionSection
+        return generateWebDesign(variantModel, prompt, designTokens, designBrief, currentTree, imageUrl, augmentedQualitySections, qualityChecklist, rk)
+          .then((webDesign) => ({ label: dir.label, webDesign, rationale: { title: dir.title, direction: dir.direction, uxPrinciple: dir.uxPrinciple } }))
+          .catch((err) => {
+            console.warn(`Variant "${dir.title}" failed:`, err?.message)
+            return null
+          })
+      })
+
+      const results = await Promise.all(variantPromises)
+      const variants = results.filter(Boolean).filter((v) => v?.webDesign?.html)
+
+      if (variants.length === 0) {
+        return res.status(500).json({ error: 'All variant generations failed. Please try again.' })
+      }
+
+      return res.json({ variants })
+    }
+
     // Input validation
     if ((!prompt || typeof prompt !== 'string') && !imageUrl) {
       return res.status(400).json({ error: 'Prompt or image URL is required' })

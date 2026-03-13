@@ -129,6 +129,19 @@ export interface WebDesign {
   css: string
 }
 
+export interface DesignVariantRationale {
+  title: string
+  direction: string
+  uxPrinciple: string
+}
+
+export interface DesignVariant {
+  id: string
+  label: string
+  webDesign: WebDesign
+  rationale: DesignVariantRationale
+}
+
 export interface Decision {
   principle: string
   description: string
@@ -675,6 +688,7 @@ export interface AppState {
   originalWebDesign: WebDesign | null
   viewingImproveIndex: number | null
   currentImageDataUri: string | null
+  designVariants: DesignVariant[] | null
 }
 
 export type AppAction =
@@ -708,6 +722,8 @@ export type AppAction =
   | { type: 'VIEW_IMPROVE_VERSION'; index: number | null }
   | { type: 'REVERT_TO_VERSION'; index: number }
   | { type: 'UPDATE_WEB_DESIGN'; html: string; css: string }
+  | { type: 'SET_VARIANTS'; variants: DesignVariant[] }
+  | { type: 'CLEAR_VARIANTS' }
 
 export interface EditableProperty {
   key: string
