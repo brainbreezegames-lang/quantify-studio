@@ -88,6 +88,7 @@ export default function ChatPanel() {
   const [selectedModel, setSelectedModel] = useState<string>(MODELS[0].id)
   const [showModelPicker, setShowModelPicker] = useState(false)
   const [uploadedImage, setUploadedImage] = useState<{ dataUrl: string; name: string } | null>(null)
+  const [generate3Options, setGenerate3Options] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -418,6 +419,113 @@ export default function ChatPanel() {
       abortRef.current = null
     }
   }, [input, messages, isBusy, artboards, selectedArtboardId, activeLenses, selectedModel, dispatch])
+
+  // ── Generate 3 design options (non-streaming) ───────────────────────────
+  const sendVariants = useCallback(async () => {
+    const content = input.trim()
+    if (!content || isBusy) return
+
+    const userMsg: ChatMessage = {
+      id: uuid(),
+      role: 'user',
+      content,
+      timestamp: Date.now(),
+    }
+    dispatch({ type: 'ADD_MESSAGE', message: userMsg })
+    setInput('')
+    dispatch({ type: 'SET_GENERATING', value: true })
+    dispatch({ type: 'SET_ERROR', error: null })
+    setStreamingStatus('Generating 3 design options...')
+
+    const lastArtboard = artboards.length > 0 ? artboards[artboards.length - 1] : null
+    const startX = lastArtboard ? lastArtboard.x + lastArtboard.width + 60 : 100
+    const startY = lastArtboard ? lastArtboard.y : 100
+    const OPTION_NAMES = ['Option A — Efficiency First', 'Option B — Information Rich', 'Option C — Guided Clarity']
+    const artboardIds = [uuid(), uuid(), uuid()]
+
+    for (let i = 0; i < 3; i++) {
+      dispatch({
+        type: 'CREATE_ARTBOARD',
+        artboard: {
+          id: artboardIds[i],
+          name: OPTION_NAMES[i],
+          x: startX + 450 * i,
+          y: startY,
+          width: 390, height: 844,
+          html: '', css: '',
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        },
+      })
+    }
+
+    try {
+      const resp = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'variants',
+          prompt: content,
+          model: selectedModel,
+          openRouterApiKey: getOpenRouterKey(),
+        }),
+      })
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({ error: 'Request failed' }))
+        throw new Error(err.error || 'Something went wrong')
+      }
+
+      const data = await resp.json()
+      const variants: Array<{
+        label: string
+        rationale?: { title: string; direction: string; uxPrinciple: string }
+        title?: string
+        direction?: string
+        uxPrinciple?: string
+        webDesign?: { html: string; css: string } | null
+      }> = data.variants || []
+
+      for (let i = 0; i < Math.min(variants.length, 3); i++) {
+        const v = variants[i]
+        const title = v.rationale?.title || v.title || ''
+        dispatch({
+          type: 'UPDATE_ARTBOARD',
+          id: artboardIds[i],
+          updates: {
+            name: `Option ${v.label} — ${title}`,
+            html: v.webDesign?.html || '',
+            css: v.webDesign?.css || '',
+          },
+        })
+      }
+
+      const lines = variants.slice(0, 3).map(v => {
+        const title = v.rationale?.title || v.title || ''
+        const direction = v.rationale?.direction || v.direction || ''
+        return `**${v.label} — ${title}:** ${direction}`
+      })
+      const assistantMsg: ChatMessage = {
+        id: uuid(),
+        role: 'assistant',
+        content: `Here are 3 design options for "${content}":\n\n${lines.join('\n\n')}`,
+        timestamp: Date.now(),
+      }
+      dispatch({ type: 'ADD_MESSAGE', message: assistantMsg })
+    } catch (err: any) {
+      for (const id of artboardIds) dispatch({ type: 'DELETE_ARTBOARD', id })
+      const errMsg: ChatMessage = {
+        id: uuid(),
+        role: 'assistant',
+        content: `Error: ${err.message || 'Something went wrong.'}`,
+        timestamp: Date.now(),
+      }
+      dispatch({ type: 'ADD_MESSAGE', message: errMsg })
+    } finally {
+      setStreamingStatus(null)
+      dispatch({ type: 'SET_GENERATING', value: false })
+    }
+  }, [input, isBusy, artboards, selectedModel, dispatch])
 
   // ── Image upload: recreate screenshot exactly ──────────────────────────
   const handleImageFile = useCallback((file: File) => {
@@ -863,18 +971,51 @@ export default function ChatPanel() {
                 Recreate from image
               </button>
             ) : (
-              <button
-                onClick={() => sendDesign()}
-                disabled={!input.trim() || isBusy}
-                className="flex-1 py-2 rounded-lg text-[13px] font-medium bg-[#0A3EFF] text-white hover:bg-[#0835D9] disabled:opacity-25 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="3" width="18" height="18" rx="0" />
-                  <path d="M3 9h18" />
-                  <path d="M9 21V9" />
-                </svg>
-                Design screen
-              </button>
+              <>
+                <button
+                  onClick={generate3Options ? sendVariants : () => sendDesign()}
+                  disabled={!input.trim() || isBusy}
+                  className="flex-1 py-2 rounded-lg text-[13px] font-medium bg-[#0A3EFF] text-white hover:bg-[#0835D9] disabled:opacity-25 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                >
+                  {generate3Options ? (
+                    <>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="2" y="3" width="6" height="18" rx="0" />
+                        <rect x="9" y="3" width="6" height="18" rx="0" />
+                        <rect x="16" y="3" width="6" height="18" rx="0" />
+                      </svg>
+                      Generate 3 options
+                    </>
+                  ) : (
+                    <>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="0" />
+                        <path d="M3 9h18" />
+                        <path d="M9 21V9" />
+                      </svg>
+                      Design screen
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => setGenerate3Options(v => !v)}
+                  disabled={isBusy}
+                  title={generate3Options ? '3 options mode on — click to turn off' : 'Generate 3 different design options side by side'}
+                  className={`flex-shrink-0 w-9 flex items-center justify-center rounded-lg text-[11px] transition-all border ${
+                    generate3Options
+                      ? 'bg-[#0A3EFF]/20 border-[#0A3EFF]/60 text-[#4d7fff]'
+                      : 'bg-white/[0.06] border-white/[0.12] text-white/40 hover:bg-white/[0.1] hover:text-white/60 hover:border-white/[0.2]'
+                  } disabled:opacity-25 disabled:cursor-not-allowed`}
+                  aria-label="Toggle 3 design options"
+                  aria-pressed={generate3Options}
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="3" width="6" height="18" rx="0" />
+                    <rect x="9" y="3" width="6" height="18" rx="0" />
+                    <rect x="16" y="3" width="6" height="18" rx="0" />
+                  </svg>
+                </button>
+              </>
             )}
           </div>
         </div>

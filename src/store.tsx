@@ -185,7 +185,6 @@ const initialState: AppState = {
   originalWebDesign: restoredDesign.originalWebDesign,
   viewingImproveIndex: null,
   currentImageDataUri: null,
-  designVariants: null,
 }
 
 /* ── Tree mutation helpers ────────────────────────────────────── */
@@ -437,7 +436,6 @@ function reducer(state: AppState, action: AppAction): AppState {
         originalWebDesign: null,
         viewingImproveIndex: null,
         currentImageDataUri: action.imageDataUri ?? null,
-        designVariants: null,
       }
     }
 
@@ -737,12 +735,6 @@ function reducer(state: AppState, action: AppAction): AppState {
         showingBefore: false,
       }
     }
-
-    case 'SET_VARIANTS':
-      return { ...state, designVariants: action.variants }
-
-    case 'CLEAR_VARIANTS':
-      return { ...state, designVariants: null }
 
     default:
       return state

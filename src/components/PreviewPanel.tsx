@@ -1,4 +1,4 @@
-import { Smartphone, Monitor, Tablet, Loader2, Undo2, Redo2, Download, Code2, Check } from 'lucide-react'
+import { Smartphone, Monitor, Tablet, Loader2, Undo2, Redo2, Download, Code2 } from 'lucide-react'
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import html2canvas from 'html2canvas'
 import { createPortal } from 'react-dom'
@@ -763,12 +763,11 @@ function GeneratingOverlay() {
 }
 
 export default function PreviewPanel() {
-  const { currentTree, currentWebDesign, previousWebDesign, improveDecisions, showingBefore, designTokens, designBrief, qualityToggles, selectedComponentId, isGenerating, canUndo, canRedo, improveHistory, originalWebDesign, viewingImproveIndex, currentImageDataUri, designVariants } = useAppState()
+  const { currentTree, currentWebDesign, previousWebDesign, improveDecisions, showingBefore, designTokens, designBrief, qualityToggles, selectedComponentId, isGenerating, canUndo, canRedo, improveHistory, originalWebDesign, viewingImproveIndex, currentImageDataUri } = useAppState()
   const dispatch = useAppDispatch()
   const [device, setDevice] = useState<DeviceFrame>('phone')
   const [scale, setScale] = useState(0.75)
   const [previewMode, setPreviewMode] = useState<'design' | 'edit'>('edit')
-  const [activeVariantIndex, setActiveVariantIndex] = useState(0)
   const [isDragOver, setIsDragOver] = useState(false)
   const [dropLineY, setDropLineY] = useState<number | null>(null)
   const [isExporting, setIsExporting] = useState(false)
@@ -778,13 +777,10 @@ export default function PreviewPanel() {
   const pendingUploadId = useRef<string | null>(null)
 
   const { width, height } = DEVICE_SIZES[device]
-  const activeVariant = designVariants ? designVariants[Math.min(activeVariantIndex, designVariants.length - 1)] : null
-  const hasPreview = Boolean(currentTree || currentWebDesign?.html || activeVariant?.webDesign?.html)
-  const canUseWeb = Boolean(activeVariant?.webDesign?.html || currentWebDesign?.html)
+  const hasPreview = Boolean(currentTree || currentWebDesign?.html)
+  const canUseWeb = Boolean(currentWebDesign?.html)
   const effectiveMode: 'design' | 'edit' = hasPreview ? previewMode : 'edit'
-  const displayedWebDesign = activeVariant
-    ? activeVariant.webDesign
-    : viewingImproveIndex === -1
+  const displayedWebDesign = viewingImproveIndex === -1
     ? originalWebDesign
     : viewingImproveIndex !== null && improveHistory[viewingImproveIndex]
     ? improveHistory[viewingImproveIndex].webDesign
@@ -869,12 +865,6 @@ export default function PreviewPanel() {
     }
     prevTreeRef.current = currentTree
   }, [currentTree])
-
-  // Reset active variant to 0 when variants change
-  useEffect(() => {
-    setActiveVariantIndex(0)
-    if (designVariants) setPreviewMode('design')
-  }, [designVariants])
 
   // ─── Keyboard shortcuts ───
 
@@ -1541,59 +1531,6 @@ export default function PreviewPanel() {
           )}
         </button>
       </div>
-
-      {/* ─── Design Variants Banner ─── */}
-      {designVariants && designVariants.length > 0 && (
-        <div className="border-b border-studio-border bg-studio-surface">
-          {/* Tab row */}
-          <div className="flex items-center px-3 pt-2 gap-1.5">
-            {designVariants.map((v, i) => (
-              <button
-                key={v.id}
-                onClick={() => setActiveVariantIndex(i)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-t-lg text-[11px] font-medium transition-all border-t border-x ${
-                  i === activeVariantIndex
-                    ? 'bg-studio-bg border-studio-border text-studio-text'
-                    : 'border-transparent text-studio-text-dim hover:text-studio-text hover:bg-studio-bg/50'
-                }`}
-              >
-                <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold flex-shrink-0 ${
-                  i === activeVariantIndex ? 'bg-studio-accent text-white' : 'bg-studio-surface-3 text-studio-text-dim'
-                }`}>{v.label}</span>
-                {v.rationale.title}
-              </button>
-            ))}
-            <div className="flex-1" />
-            <button
-              onClick={() => dispatch({ type: 'CLEAR_VARIANTS' })}
-              className="text-[10px] text-studio-text-dim hover:text-studio-text px-2 py-1 rounded transition-colors"
-              title="Dismiss all options"
-            >
-              Dismiss
-            </button>
-          </div>
-          {/* Active variant rationale */}
-          {activeVariant && (
-            <div className="mx-3 mb-2 mt-1 flex items-start justify-between gap-3 rounded-lg bg-studio-bg/60 border border-studio-border px-3 py-2">
-              <div className="flex-1 min-w-0">
-                <p className="text-[11px] font-medium text-studio-text leading-snug">{activeVariant.rationale.direction}</p>
-                <p className="text-[10px] text-studio-text-dim mt-0.5">{activeVariant.rationale.uxPrinciple}</p>
-              </div>
-              <button
-                onClick={() => {
-                  if (!activeVariant.webDesign) return
-                  const tree = currentTree ?? { id: 'page-root', type: 'Page' as const, properties: { Background: '#FFFFFF' }, children: [] }
-                  dispatch({ type: 'SET_TREE', tree, webDesign: activeVariant.webDesign, prompt: `[Variant ${activeVariant.label}] ${activeVariant.rationale.title}` })
-                }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-studio-accent text-white hover:bg-studio-accent-hover transition-all flex-shrink-0"
-              >
-                <Check size={11} />
-                Use this
-              </button>
-            </div>
-          )}
-        </div>
-      )}
 
       <div className="flex-1 overflow-auto bg-studio-bg relative" style={{ backgroundImage: 'radial-gradient(circle, rgb(var(--studio-border) / 0.3) 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
         {isGenerating && <GeneratingOverlay />}

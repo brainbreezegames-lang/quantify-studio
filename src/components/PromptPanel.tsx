@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
-import { Send, Loader2, AlertCircle, Layout, ChevronRight, ImagePlus, X, Plus, ArrowLeft, Upload, Sparkles, Wand2, Trash2, ChevronDown, Check, Mic, MicOff, Image as ImageIcon, Layers } from 'lucide-react'
+import { Send, Loader2, AlertCircle, Layout, ChevronRight, ImagePlus, X, Plus, ArrowLeft, Upload, Sparkles, Wand2, Trash2, ChevronDown, Check, Mic, MicOff, Image as ImageIcon } from 'lucide-react'
 import Tooltip from '@mui/material/Tooltip'
 import { useAppState, useAppDispatch } from '../store'
-import { generateScreen, generateVariants, enhancePrompt, improveDesign, generateImageScreen, getOpenRouterKey, setOpenRouterKey as saveOpenRouterKey } from '../services/api'
+import { generateScreen, enhancePrompt, improveDesign, generateImageScreen, getOpenRouterKey, setOpenRouterKey as saveOpenRouterKey } from '../services/api'
 import { useDeepgram } from '../hooks/useDeepgram'
 import { WIREFRAME_SCREENS } from '../data/wireframe-screens'
 import type { WireframeScreen } from '../data/wireframe-screens'
@@ -57,13 +57,6 @@ const WIREFRAME_LOADER_MESSAGES = [
   'Assembling screen…',
 ]
 
-const VARIANTS_LOADER_MESSAGES = [
-  'Exploring 3 design directions…',
-  'Generating Efficiency First option…',
-  'Generating Information Rich option…',
-  'Generating Guided Clarity option…',
-  'Finalizing all 3 options…',
-]
 
 // Improve loader: context-aware messages based on active quality lenses
 const IMPROVE_LENS_MESSAGES: Record<string, string[]> = {
@@ -432,9 +425,7 @@ export default function PromptPanel() {
   const [modelPickerAnchor, setModelPickerAnchor] = useState<{ bottom: number; left: number } | null>(null)
   const [isEnhancing, setIsEnhancing] = useState(false)
   const [isGeneratingImage, setIsGeneratingImage] = useState(false)
-  const [variantsMode, setVariantsMode] = useState(false)
-  const [isGeneratingVariants, setIsGeneratingVariants] = useState(false)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+const textareaRef = useRef<HTMLTextAreaElement>(null)
   const historyEndRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const modelBtnRef = useRef<HTMLButtonElement>(null)
@@ -660,28 +651,6 @@ export default function PromptPanel() {
       dispatch({ type: 'SET_ERROR', error: err instanceof Error ? err.message : 'Generation failed' })
     } finally {
       dispatch({ type: 'SET_GENERATING', value: false })
-    }
-  }
-
-  const handleGenerateVariants = async () => {
-    const trimmed = prompt.trim()
-    if (!trimmed || isGenerating) return
-    if (!requireApiKey()) return
-    dispatch({ type: 'SET_GENERATING', value: true })
-    setIsGeneratingVariants(true)
-    setPrompt('')
-    try {
-      const result = await generateVariants({ prompt: trimmed, designTokens, designBrief, currentTree, qualityToggles, model: selectedModel })
-      const variants = result.variants.map((v, i) => ({
-        ...v,
-        id: `variant-${i}-${Date.now()}`,
-      }))
-      dispatch({ type: 'SET_VARIANTS', variants })
-    } catch (err) {
-      dispatch({ type: 'SET_ERROR', error: err instanceof Error ? err.message : 'Variants generation failed' })
-    } finally {
-      dispatch({ type: 'SET_GENERATING', value: false })
-      setIsGeneratingVariants(false)
     }
   }
 
@@ -914,7 +883,7 @@ export default function PromptPanel() {
         {/* ─── HOME VIEW — hero prompt experience ─── */}
         {view === 'home' && (
           <>
-            {isGenerating && <InlineLoader messages={isGeneratingVariants ? VARIANTS_LOADER_MESSAGES : isWireframeMode ? WIREFRAME_LOADER_MESSAGES : LOADER_MESSAGES} />}
+            {isGenerating && <InlineLoader messages={isWireframeMode ? WIREFRAME_LOADER_MESSAGES : LOADER_MESSAGES} />}
 
             {error && !isGenerating && (
               <div role="alert" className="flex gap-2 items-start text-sm px-3 py-2.5 bg-studio-error/10 rounded-xl border border-studio-error/20">
@@ -1516,36 +1485,14 @@ export default function PromptPanel() {
         // Prompt typed → Generate / Update action
         if (hasPrompt) {
           return (
-            <div className="px-3 pb-3 flex flex-col gap-1.5">
-              <div className="flex gap-1.5">
-                <button
-                  onClick={variantsMode ? handleGenerateVariants : handleSubmit}
-                  className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-[11px] font-medium bg-studio-accent text-white hover:bg-studio-accent-hover active:scale-[0.99] transition-all"
-                >
-                  {variantsMode ? <Layers size={12} /> : <Send size={12} />}
-                  {variantsMode ? 'Generate 3 Options' : hasDesign ? 'Update Screen' : 'Generate Screen'}
-                </button>
-                <Tip title={variantsMode ? 'Generating 3 design options — click to turn off' : 'Generate 3 design options with different UX approaches'}>
-                  <button
-                    type="button"
-                    onClick={() => setVariantsMode(v => !v)}
-                    className={`w-9 flex items-center justify-center rounded-lg text-[11px] transition-all border ${
-                      variantsMode
-                        ? 'bg-studio-accent/10 border-studio-accent/40 text-studio-accent'
-                        : 'border-studio-border text-studio-text-dim hover:text-studio-text hover:border-studio-border-hover'
-                    }`}
-                    aria-label="Toggle 3 design options mode"
-                    aria-pressed={variantsMode}
-                  >
-                    <Layers size={13} />
-                  </button>
-                </Tip>
-              </div>
-              {variantsMode && (
-                <p className="text-[10px] text-studio-text-secondary text-center leading-tight">
-                  3 directions: Efficiency · Information · Clarity
-                </p>
-              )}
+            <div className="px-3 pb-3">
+              <button
+                onClick={handleSubmit}
+                className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-[11px] font-medium bg-studio-accent text-white hover:bg-studio-accent-hover active:scale-[0.99] transition-all"
+              >
+                <Send size={12} />
+                {hasDesign ? 'Update Screen' : 'Generate Screen'}
+              </button>
             </div>
           )
         }
