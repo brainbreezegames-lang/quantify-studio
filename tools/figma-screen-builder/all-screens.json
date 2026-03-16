@@ -1,0 +1,886 @@
+[
+  {
+    "name": "01. Login",
+    "width": 390,
+    "height": 844,
+    "fill": "#FFFFFF",
+    "children": [
+      {
+        "type": "frame", "name": "BrandHeader", "layout": "vertical",
+        "gap": 8, "padding": { "top": 0, "bottom": 0, "left": 0, "right": 0 },
+        "stretch": true, "fixedHeight": 220,
+        "fill": "#0A3EFF", "crossAlign": "CENTER", "mainAlign": "CENTER",
+        "children": [
+          { "type": "text", "content": "Q", "fontSize": 48, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF", "align": "center" },
+          { "type": "text", "content": "Quantify", "fontSize": 24, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF", "align": "center" },
+          { "type": "text", "content": "Scaffolding Management", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#FFFFFF", "align": "center", "opacity": 0.7 }
+        ]
+      },
+      { "type": "spacer", "height": 32 },
+      {
+        "type": "frame", "name": "Form", "layout": "vertical",
+        "gap": 20, "padding": { "top": 0, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "component", "component": "TextBox",
+            "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+            "text": { "Label": "Username" },
+            "stretch": true
+          },
+          {
+            "type": "component", "component": "PasswordBox",
+            "variant": { "Type": "Outlined", "Leading": "None" },
+            "text": { "Label": "Password" },
+            "stretch": true
+          },
+          { "type": "spacer", "height": 4 },
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Filled", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Sign In" },
+            "stretch": true
+          },
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Text", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Connection Settings" },
+            "stretch": true
+          }
+        ]
+      },
+      { "type": "spacer", "grow": true },
+      {
+        "type": "frame", "name": "StatusBar", "layout": "horizontal",
+        "gap": 0, "padding": { "top": 14, "bottom": 14, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER", "mainAlign": "CENTER",
+        "fill": "#F5F5F5",
+        "children": [
+          { "type": "text", "content": "Connected to mycompany.quantifycloud.com", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555", "align": "center" }
+        ]
+      },
+      {
+        "type": "frame", "name": "Footer", "layout": "vertical",
+        "gap": 0, "padding": { "top": 10, "bottom": 28, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+        "children": [
+          { "type": "text", "content": "v1.2.3  ·  © 2008–2026 Avontus Software Corp.", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#999999", "align": "center" }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "01b. Login – Validation",
+    "width": 390,
+    "height": 844,
+    "fill": "#FFFFFF",
+    "children": [
+      {
+        "type": "frame", "name": "BrandHeader", "layout": "vertical",
+        "gap": 8, "padding": { "top": 0, "bottom": 0, "left": 0, "right": 0 },
+        "stretch": true, "fixedHeight": 220,
+        "fill": "#0A3EFF", "crossAlign": "CENTER", "mainAlign": "CENTER",
+        "children": [
+          { "type": "text", "content": "Q", "fontSize": 48, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF", "align": "center" },
+          { "type": "text", "content": "Quantify", "fontSize": 24, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF", "align": "center" },
+          { "type": "text", "content": "Scaffolding Management", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#FFFFFF", "align": "center", "opacity": 0.7 }
+        ]
+      },
+      { "type": "spacer", "height": 32 },
+      {
+        "type": "frame", "name": "Form", "layout": "vertical",
+        "gap": 6, "padding": { "top": 0, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "component", "component": "TextBox",
+            "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+            "text": { "Label": "Username" },
+            "stretch": true
+          },
+          { "type": "text", "content": "Username is required", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" },
+          { "type": "spacer", "height": 10 },
+          {
+            "type": "component", "component": "PasswordBox",
+            "variant": { "Type": "Outlined", "Leading": "None" },
+            "text": { "Label": "Password" },
+            "stretch": true
+          },
+          { "type": "text", "content": "Password is required", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" },
+          { "type": "spacer", "height": 20 },
+          {
+            "type": "frame", "name": "ErrorBanner", "layout": "vertical",
+            "gap": 4, "padding": { "top": 16, "bottom": 16, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "fill": "#FDECEA", "cornerRadius": 12,
+            "children": [
+              { "type": "text", "content": "Sign in failed", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#D32F2F" },
+              { "type": "text", "content": "Please fill in all required fields.", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#D32F2F" }
+            ]
+          },
+          { "type": "spacer", "height": 20 },
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Filled", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Sign In" },
+            "stretch": true
+          },
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Text", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Connection Settings" },
+            "stretch": true
+          }
+        ]
+      },
+      { "type": "spacer", "grow": true },
+      {
+        "type": "frame", "name": "StatusBar", "layout": "horizontal",
+        "gap": 0, "padding": { "top": 14, "bottom": 14, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER", "mainAlign": "CENTER",
+        "fill": "#F5F5F5",
+        "children": [
+          { "type": "text", "content": "Connected to mycompany.quantifycloud.com", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555", "align": "center" }
+        ]
+      },
+      {
+        "type": "frame", "name": "Footer", "layout": "vertical",
+        "gap": 0, "padding": { "top": 10, "bottom": 28, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+        "children": [
+          { "type": "text", "content": "v1.2.3  ·  © 2008–2026 Avontus Software Corp.", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#999999", "align": "center" }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "02. Connection Settings",
+    "width": 390,
+    "height": 844,
+    "fill": "#FFFFFF",
+    "children": [
+      {
+        "type": "component", "component": "NavigationBar",
+        "variant": { "Content": "Title" },
+        "text": { "Text": "Connection" },
+        "stretch": true
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      {
+        "type": "frame", "name": "Content", "layout": "vertical",
+        "gap": 0, "padding": { "top": 24, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          { "type": "text", "content": "SERVER", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#555555" },
+          { "type": "spacer", "height": 16 },
+          {
+            "type": "component", "component": "TextBox",
+            "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "True", "Placeholder": "False", "Multiline": "False" },
+            "text": { "Label": "Remote server", "Text": "myinstance.mycompany.com" },
+            "stretch": true
+          },
+          { "type": "spacer", "height": 28 },
+          {
+            "type": "frame", "name": "ProtocolRow", "layout": "horizontal",
+            "gap": 0, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "children": [
+              { "type": "text", "content": "Protocol", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111" },
+              { "type": "text", "content": "https://", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A3EFF" }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "frame", "name": "SSLRow", "layout": "horizontal",
+            "gap": 0, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "children": [
+              { "type": "text", "content": "Use SSL", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111" },
+              { "type": "component", "component": "ToggleSwitch", "variant": { "State": "Enabled", "Selected": "True" } }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "height": 32 },
+      {
+        "type": "frame", "name": "Actions", "layout": "vertical",
+        "gap": 20, "padding": { "top": 0, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Filled", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Test Connection" },
+            "stretch": true
+          },
+          {
+            "type": "frame", "name": "ErrorCard", "layout": "vertical",
+            "gap": 6, "padding": { "top": 16, "bottom": 16, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "fill": "#FDECEA", "cornerRadius": 12,
+            "children": [
+              { "type": "text", "content": "Connection failed", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#D32F2F" },
+              { "type": "text", "content": "Unable to reach server. Check your network and server address.", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#D32F2F" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "03. Home",
+    "width": 390,
+    "height": 844,
+    "fill": "#F2F2F2",
+    "children": [
+      {
+        "type": "component", "component": "NavigationBar",
+        "variant": { "Content": "Title" },
+        "text": { "Text": "Home" },
+        "stretch": true
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      {
+        "type": "frame", "name": "WelcomeCard", "layout": "vertical",
+        "gap": 6, "padding": { "top": 32, "bottom": 32, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER", "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "name": "Avatar", "layout": "vertical",
+            "gap": 0, "padding": { "top": 16, "bottom": 16, "left": 20, "right": 20 },
+            "hugHeight": true, "hugWidth": true, "cornerRadius": 100, "fill": "#0A3EFF",
+            "children": [
+              { "type": "text", "content": "MA", "fontSize": 22, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" }
+            ]
+          },
+          { "type": "spacer", "height": 12 },
+          { "type": "text", "content": "Welcome back, Marcus", "fontSize": 22, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111", "align": "center" },
+          { "type": "text", "content": "Yard Worker  ·  Portland", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555", "align": "center" }
+        ]
+      },
+      { "type": "spacer", "height": 12 },
+      {
+        "type": "frame", "name": "NavSection", "layout": "vertical",
+        "gap": 0, "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "name": "NavHeader", "layout": "vertical",
+            "gap": 0, "padding": { "top": 20, "bottom": 8, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "QUICK ACTIONS", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#555555" }
+            ]
+          },
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+            "text": { "Label": "Who Am I" }, "stretch": true
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+            "text": { "Label": "Sample Form" }, "stretch": true
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+            "text": { "Label": "Scan Barcode" }, "stretch": true
+          }
+        ]
+      },
+      { "type": "spacer", "height": 12 },
+      {
+        "type": "frame", "name": "BarcodeCard", "layout": "vertical",
+        "gap": 8, "padding": { "top": 20, "bottom": 20, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          { "type": "text", "content": "LAST SCAN", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#555555" },
+          { "type": "text", "content": "No barcode scanned yet", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#999999" }
+        ]
+      },
+      { "type": "spacer", "grow": true },
+      {
+        "type": "frame", "name": "Footer", "layout": "vertical",
+        "gap": 0, "padding": { "top": 16, "bottom": 28, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+        "children": [
+          { "type": "text", "content": "v1.2.3  ·  © 2008–2026 Avontus Software Corp.", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#999999", "align": "center" }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "04. Who Am I",
+    "width": 390,
+    "height": 844,
+    "fill": "#F2F2F2",
+    "children": [
+      {
+        "type": "component", "component": "NavigationBar",
+        "variant": { "Content": "Title" },
+        "text": { "Text": "Who Am I" },
+        "stretch": true
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      {
+        "type": "frame", "name": "ProfileCard", "layout": "vertical",
+        "gap": 6, "padding": { "top": 36, "bottom": 28, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER", "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "name": "Avatar", "layout": "vertical",
+            "gap": 0, "padding": { "top": 22, "bottom": 22, "left": 26, "right": 26 },
+            "hugHeight": true, "hugWidth": true, "cornerRadius": 100, "fill": "#0A3EFF",
+            "children": [
+              { "type": "text", "content": "MA", "fontSize": 28, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" }
+            ]
+          },
+          { "type": "spacer", "height": 16 },
+          { "type": "text", "content": "Marcus Aurelio", "fontSize": 24, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111", "align": "center" },
+          { "type": "text", "content": "marcus.aurelio@company.com", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555", "align": "center" }
+        ]
+      },
+      { "type": "spacer", "height": 12 },
+      {
+        "type": "frame", "name": "DetailsCard", "layout": "vertical",
+        "gap": 0, "padding": { "top": 4, "bottom": 4, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "name": "RoleRow", "layout": "horizontal",
+            "gap": 0, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "children": [
+              { "type": "text", "content": "Role", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+              { "type": "text", "content": "Yard Worker", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "frame", "name": "PermRow", "layout": "horizontal",
+            "gap": 0, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "children": [
+              { "type": "text", "content": "Permissions", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+              { "type": "text", "content": "Standard Access", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "frame", "name": "UsernameRow", "layout": "horizontal",
+            "gap": 0, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "children": [
+              { "type": "text", "content": "Username", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+              { "type": "text", "content": "marcus.aurelio", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "height": 12 },
+      {
+        "type": "frame", "name": "BranchesCard", "layout": "vertical",
+        "gap": 14, "padding": { "top": 20, "bottom": 24, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          { "type": "text", "content": "BRANCH OFFICES", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#555555" },
+          {
+            "type": "frame", "name": "ChipGroup", "layout": "horizontal",
+            "gap": 10, "stretch": true, "hugHeight": true, "wrap": true,
+            "children": [
+              { "type": "component", "component": "Chip", "variant": { "Type": "Outlined", "State": "Enabled", "Selected": "False" }, "text": { "Label": "Portland" } },
+              { "type": "component", "component": "Chip", "variant": { "Type": "Outlined", "State": "Enabled", "Selected": "False" }, "text": { "Label": "Chicago" } },
+              { "type": "component", "component": "Chip", "variant": { "Type": "Outlined", "State": "Enabled", "Selected": "False" }, "text": { "Label": "Salt Lake City" } }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "grow": true },
+      {
+        "type": "frame", "name": "BottomAction", "layout": "vertical",
+        "gap": 0, "padding": { "top": 0, "bottom": 32, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Outlined", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Sign Out" },
+            "stretch": true
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "05. Sample Form",
+    "width": 390,
+    "height": 1280,
+    "fill": "#F2F2F2",
+    "children": [
+      {
+        "type": "component", "component": "NavigationBar",
+        "variant": { "Content": "Title" },
+        "text": { "Text": "Parent" },
+        "stretch": true
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      {
+        "type": "frame", "name": "FormContent", "layout": "vertical",
+        "gap": 12, "padding": { "top": 12, "bottom": 0, "left": 0, "right": 0 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "frame", "name": "TextFieldsCard", "layout": "vertical",
+            "gap": 16, "padding": { "top": 20, "bottom": 24, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              { "type": "text", "content": "TEXT FIELDS", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#555555" },
+              {
+                "type": "component", "component": "TextBox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+                "text": { "Label": "Alphanumeric (required)" },
+                "stretch": true
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "AttachmentsCard", "layout": "vertical",
+            "gap": 0, "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Files and pictures (6)" }, "stretch": true
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "BooleansCard", "layout": "vertical",
+            "gap": 0, "padding": { "top": 20, "bottom": 8, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              { "type": "text", "content": "BOOLEAN CONTROLS", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#555555" },
+              { "type": "spacer", "height": 12 },
+              {
+                "type": "frame", "name": "Toggle1", "layout": "horizontal",
+                "gap": 16, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+                "children": [
+                  { "type": "text", "content": "Must be turned true", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111", "grow": true },
+                  { "type": "component", "component": "ToggleSwitch", "variant": { "State": "Enabled", "Selected": "False" } }
+                ]
+              },
+              { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "frame", "name": "Toggle2", "layout": "horizontal",
+                "gap": 16, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+                "children": [
+                  { "type": "text", "content": "Must be turned false", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111", "grow": true },
+                  { "type": "component", "component": "ToggleSwitch", "variant": { "State": "Enabled", "Selected": "True" } }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "SelectCard", "layout": "vertical",
+            "gap": 0, "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Combobox? Select widget (required)" }, "stretch": true
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "DateFieldsCard", "layout": "vertical",
+            "gap": 0, "padding": { "top": 20, "bottom": 0, "left": 0, "right": 0 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              {
+                "type": "frame", "name": "DateLabel", "layout": "vertical",
+                "gap": 0, "padding": { "top": 0, "bottom": 12, "left": 24, "right": 24 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "DATE FIELDS", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#555555" }
+                ]
+              },
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Minimum date (required)" }, "stretch": true
+              },
+              { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Maximum date (required)" }, "stretch": true
+              },
+              { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Minimum date (not required)" }, "stretch": true
+              },
+              { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Maximum date (not required)" }, "stretch": true
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "NumericCard", "layout": "vertical",
+            "gap": 16, "padding": { "top": 20, "bottom": 24, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              { "type": "text", "content": "NUMERIC FIELDS", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#555555" },
+              {
+                "type": "component", "component": "TextBox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+                "text": { "Label": "Numeric value (nullable - required)" },
+                "stretch": true
+              },
+              {
+                "type": "component", "component": "TextBox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+                "text": { "Label": "Currency numeric (null - required)" },
+                "stretch": true
+              },
+              {
+                "type": "frame", "name": "Result", "layout": "horizontal",
+                "gap": 0, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+                "padding": { "top": 0, "bottom": 0, "left": 20, "right": 20 },
+                "fill": "#F2F2F2", "cornerRadius": 12,
+                "children": [
+                  { "type": "text", "content": "Result", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+                  { "type": "text", "content": "$0.00", "fontSize": 22, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "height": 12 },
+      {
+        "type": "frame", "name": "BottomActions", "layout": "horizontal",
+        "gap": 12, "padding": { "top": 0, "bottom": 32, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Outlined", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Cancel" },
+            "grow": true
+          },
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Filled", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Save" },
+            "grow": true
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "02b. Connection – Success",
+    "width": 390,
+    "height": 844,
+    "fill": "#FFFFFF",
+    "children": [
+      {
+        "type": "component", "component": "NavigationBar",
+        "variant": { "Content": "Title" },
+        "text": { "Text": "Connection" },
+        "stretch": true
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      {
+        "type": "frame", "name": "Content", "layout": "vertical",
+        "gap": 0, "padding": { "top": 24, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          { "type": "text", "content": "SERVER", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#555555" },
+          { "type": "spacer", "height": 16 },
+          {
+            "type": "component", "component": "TextBox",
+            "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "True", "Placeholder": "False", "Multiline": "False" },
+            "text": { "Label": "Remote server", "Text": "myinstance.mycompany.com" },
+            "stretch": true
+          },
+          { "type": "spacer", "height": 28 },
+          {
+            "type": "frame", "name": "ProtocolRow", "layout": "horizontal",
+            "gap": 0, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "children": [
+              { "type": "text", "content": "Protocol", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111" },
+              { "type": "text", "content": "https://", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A3EFF" }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "frame", "name": "SSLRow", "layout": "horizontal",
+            "gap": 0, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "children": [
+              { "type": "text", "content": "Use SSL", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111" },
+              { "type": "component", "component": "ToggleSwitch", "variant": { "State": "Enabled", "Selected": "True" } }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "height": 32 },
+      {
+        "type": "frame", "name": "Actions", "layout": "vertical",
+        "gap": 20, "padding": { "top": 0, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Filled", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Test Connection" },
+            "stretch": true
+          },
+          {
+            "type": "frame", "name": "SuccessCard", "layout": "vertical",
+            "gap": 6, "padding": { "top": 16, "bottom": 16, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "fill": "#E8F5E9", "cornerRadius": 12,
+            "children": [
+              { "type": "text", "content": "Connected successfully", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#2E7D32" },
+              { "type": "text", "content": "Server is reachable. You can now sign in.", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#2E7D32" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "05b. Form – Validation",
+    "width": 390,
+    "height": 1480,
+    "fill": "#F2F2F2",
+    "children": [
+      {
+        "type": "component", "component": "NavigationBar",
+        "variant": { "Content": "Title" },
+        "text": { "Text": "Parent" },
+        "stretch": true
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      {
+        "type": "frame", "name": "ErrorSummary", "layout": "vertical",
+        "gap": 4, "padding": { "top": 16, "bottom": 16, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "fill": "#FDECEA",
+        "children": [
+          { "type": "text", "content": "7 validation errors", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#D32F2F" },
+          { "type": "text", "content": "Fix the highlighted fields before saving.", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#D32F2F" }
+        ]
+      },
+      {
+        "type": "frame", "name": "FormContent", "layout": "vertical",
+        "gap": 12, "padding": { "top": 12, "bottom": 0, "left": 0, "right": 0 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "frame", "name": "TextFieldsCard", "layout": "vertical",
+            "gap": 6, "padding": { "top": 20, "bottom": 24, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              { "type": "text", "content": "TEXT FIELDS", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#555555" },
+              { "type": "spacer", "height": 10 },
+              {
+                "type": "component", "component": "TextBox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+                "text": { "Label": "Alphanumeric (required)" },
+                "stretch": true
+              },
+              { "type": "text", "content": "This field is required", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" }
+            ]
+          },
+          {
+            "type": "frame", "name": "AttachmentsCard", "layout": "vertical",
+            "gap": 0, "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Files and pictures (6)" }, "stretch": true
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "BooleansCard", "layout": "vertical",
+            "gap": 0, "padding": { "top": 20, "bottom": 8, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              { "type": "text", "content": "BOOLEAN CONTROLS", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#555555" },
+              { "type": "spacer", "height": 12 },
+              {
+                "type": "frame", "name": "Toggle1Wrapper", "layout": "vertical",
+                "gap": 6, "stretch": true, "hugHeight": true,
+                "children": [
+                  {
+                    "type": "frame", "name": "Toggle1", "layout": "horizontal",
+                    "gap": 16, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+                    "children": [
+                      { "type": "text", "content": "Must be turned true", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111", "grow": true },
+                      { "type": "component", "component": "ToggleSwitch", "variant": { "State": "Enabled", "Selected": "False" } }
+                    ]
+                  },
+                  { "type": "text", "content": "Must be set to true", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" }
+                ]
+              },
+              { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "frame", "name": "Toggle2Wrapper", "layout": "vertical",
+                "gap": 6, "stretch": true, "hugHeight": true,
+                "children": [
+                  {
+                    "type": "frame", "name": "Toggle2", "layout": "horizontal",
+                    "gap": 16, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+                    "children": [
+                      { "type": "text", "content": "Must be turned false", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111", "grow": true },
+                      { "type": "component", "component": "ToggleSwitch", "variant": { "State": "Enabled", "Selected": "True" } }
+                    ]
+                  },
+                  { "type": "text", "content": "Must be set to false", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "SelectCard", "layout": "vertical",
+            "gap": 6, "padding": { "top": 0, "bottom": 12, "left": 0, "right": 0 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Combobox? Select widget (required)" }, "stretch": true
+              },
+              {
+                "type": "frame", "name": "SelectErr", "layout": "vertical",
+                "gap": 0, "padding": { "top": 0, "bottom": 0, "left": 24, "right": 24 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Selection is required", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "DateFieldsCard", "layout": "vertical",
+            "gap": 0, "padding": { "top": 20, "bottom": 0, "left": 0, "right": 0 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              {
+                "type": "frame", "name": "DateLabel", "layout": "vertical",
+                "gap": 0, "padding": { "top": 0, "bottom": 12, "left": 24, "right": 24 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "DATE FIELDS", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#555555" }
+                ]
+              },
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Minimum date (required)" }, "stretch": true
+              },
+              {
+                "type": "frame", "name": "DateErr1", "layout": "vertical",
+                "gap": 0, "padding": { "top": 6, "bottom": 10, "left": 24, "right": 24 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Date is required", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" }
+                ]
+              },
+              { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Maximum date (required)" }, "stretch": true
+              },
+              {
+                "type": "frame", "name": "DateErr2", "layout": "vertical",
+                "gap": 0, "padding": { "top": 6, "bottom": 10, "left": 24, "right": 24 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Date is required", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" }
+                ]
+              },
+              { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Minimum date (not required)" }, "stretch": true
+              },
+              { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Maximum date (not required)" }, "stretch": true
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "NumericCard", "layout": "vertical",
+            "gap": 6, "padding": { "top": 20, "bottom": 24, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              { "type": "text", "content": "NUMERIC FIELDS", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#555555" },
+              { "type": "spacer", "height": 10 },
+              {
+                "type": "component", "component": "TextBox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+                "text": { "Label": "Numeric value (nullable - required)" },
+                "stretch": true
+              },
+              { "type": "text", "content": "Numeric value is required", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" },
+              { "type": "spacer", "height": 10 },
+              {
+                "type": "component", "component": "TextBox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+                "text": { "Label": "Currency numeric (null - required)" },
+                "stretch": true
+              },
+              { "type": "text", "content": "Currency value is required", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" },
+              { "type": "spacer", "height": 10 },
+              {
+                "type": "frame", "name": "Result", "layout": "horizontal",
+                "gap": 0, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+                "padding": { "top": 0, "bottom": 0, "left": 20, "right": 20 },
+                "fill": "#F2F2F2", "cornerRadius": 12,
+                "children": [
+                  { "type": "text", "content": "Result", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+                  { "type": "text", "content": "$0.00", "fontSize": 22, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "height": 12 },
+      {
+        "type": "frame", "name": "BottomActions", "layout": "horizontal",
+        "gap": 12, "padding": { "top": 0, "bottom": 32, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Outlined", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Cancel" },
+            "grow": true
+          },
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Filled", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Save" },
+            "grow": true
+          }
+        ]
+      }
+    ]
+  }
+]

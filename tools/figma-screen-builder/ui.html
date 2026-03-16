@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, 'Inter', sans-serif; background: #FFF; color: #202020; font-size: 13px; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+    .header { padding: 16px 16px 10px; flex-shrink: 0; display: flex; align-items: center; gap: 8px; }
+    .logo { width: 28px; height: 28px; background: #0A3EFF; display: flex; align-items: center; justify-content: center; border-radius: 3px; flex-shrink: 0; }
+    .logo span { color: white; font-size: 14px; font-weight: 700; }
+    .title { font-size: 15px; font-weight: 600; flex: 1; }
+
+    .body-area { flex: 1; display: flex; flex-direction: column; padding: 0 16px; overflow: hidden; gap: 8px; }
+
+    .prompt-box { width: 100%; min-height: 60px; max-height: 90px; resize: none; padding: 10px 12px; border: 1.5px solid #E0E0E0; border-radius: 8px; font-size: 13px; font-family: inherit; outline: none; background: #FAFAFA; line-height: 1.5; flex-shrink: 0; }
+    .prompt-box:focus { border-color: #0A3EFF; background: #FFF; }
+
+    .image-zone { border: 1.5px dashed #D4D4D4; border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; cursor: pointer; min-height: 44px; flex-shrink: 0; background: #FAFAFA; }
+    .image-zone:hover { border-color: #0A3EFF; }
+    .image-zone.has-image { border-style: solid; border-color: #22C55E; background: #F0FDF4; }
+    .iz-text { font-size: 11px; color: #ABABAB; flex: 1; }
+    .image-zone.has-image .iz-text { color: #15803D; }
+
+    .api-row { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+    .api-row label { font-size: 10px; color: #ABABAB; font-weight: 500; white-space: nowrap; }
+    .api-input { flex: 1; padding: 6px 8px; border: 1px solid #DDD; border-radius: 4px; font-size: 11px; outline: none; font-family: monospace; }
+    .api-input:focus { border-color: #0A3EFF; }
+
+    .log { flex: 1; overflow-y: auto; background: #F8F8F8; border: 1px solid #EEE; border-radius: 6px; padding: 8px 10px; font-size: 10px; line-height: 1.6; color: #787878; font-family: 'SF Mono', 'JetBrains Mono', monospace; }
+    .log .ok { color: #14532D; font-weight: 500; }
+    .log .err { color: #E64059; }
+
+    .banner { display: none; padding: 8px 12px; font-size: 11px; border-radius: 6px; flex-shrink: 0; font-weight: 500; }
+    .banner.error { display: block; background: #FEF2F2; color: #E64059; }
+    .banner.success { display: block; background: #F0FDF4; color: #14532D; }
+
+    .footer { padding: 10px 16px 14px; display: flex; gap: 8px; flex-shrink: 0; }
+    .btn-build { flex: 1; height: 40px; background: #0A3EFF; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-build:hover:not(:disabled) { opacity: 0.9; }
+    .btn-build:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-close { height: 40px; width: 60px; background: transparent; color: #787878; border: 1px solid #D4D4D4; border-radius: 8px; font-size: 12px; cursor: pointer; }
+
+    .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+    .running .spinner { display: block; }
+    .running .btn-text { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="logo"><span>Q</span></div>
+    <div class="title">Quantify Screen Builder</div>
+  </div>
+
+  <div class="body-area">
+    <textarea class="prompt-box" id="prompt" placeholder="Optional: describe what you want or add context&#10;Or just drop a wireframe image below"></textarea>
+
+    <div class="image-zone" id="imageZone">
+      <span class="iz-text" id="imageLabel">Click to add wireframe / screenshot</span>
+      <input type="file" id="fileInput" accept="image/*" style="display:none" />
+    </div>
+
+    <div class="api-row">
+      <label>API Key</label>
+      <input class="api-input" type="password" id="apiKey" placeholder="sk-or-..." />
+    </div>
+
+    <div class="log" id="log">
+      <div>Ready. Add a wireframe image or type a prompt, then press Build.</div>
+    </div>
+
+    <div class="banner" id="banner"></div>
+  </div>
+
+  <div class="footer">
+    <button class="btn-build" id="btnBuild">
+      <div class="spinner"></div>
+      <span class="btn-text">Build Screen</span>
+    </button>
+    <button class="btn-close" id="btnDiag" style="width:70px;color:#0A3EFF;border-color:#0A3EFF">Test</button>
+    <button class="btn-close" id="btnClose">Close</button>
+  </div>
+
+  <script>
+    // Elements
+    var prompt = document.getElementById('prompt');
+    var imageZone = document.getElementById('imageZone');
+    var imageLabel = document.getElementById('imageLabel');
+    var fileInput = document.getElementById('fileInput');
+    var apiKeyInput = document.getElementById('apiKey');
+    var logEl = document.getElementById('log');
+    var banner = document.getElementById('banner');
+    var btnBuild = document.getElementById('btnBuild');
+    var btnClose = document.getElementById('btnClose');
+
+    var imageDataUrl = null;
+
+    // Load saved API key from Figma storage
+    parent.postMessage({ pluginMessage: { type: 'getApiKey' } }, '*');
+
+    // ── Image click ──
+    imageZone.addEventListener('click', function() {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', function() {
+      var file = fileInput.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        imageDataUrl = ev.target.result;
+        imageZone.classList.add('has-image');
+        imageLabel.textContent = file.name + ' (' + Math.round(file.size / 1024) + 'KB) — click to change';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // ── Drag & drop ──
+    imageZone.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      imageZone.style.borderColor = '#0A3EFF';
+    });
+    imageZone.addEventListener('dragleave', function() {
+      imageZone.style.borderColor = '';
+    });
+    imageZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      imageZone.style.borderColor = '';
+      var file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+          imageDataUrl = ev.target.result;
+          imageZone.classList.add('has-image');
+          imageLabel.textContent = file.name + ' (' + Math.round(file.size / 1024) + 'KB) — click to change';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // ── Build ──
+    btnBuild.addEventListener('click', function() {
+      var userPrompt = prompt.value.trim();
+
+      // If pasting JSON, no API key needed
+      var isJSON = userPrompt.trim().charAt(0) === '[' || userPrompt.trim().charAt(0) === '{';
+
+      if (!isJSON) {
+        var key = apiKeyInput.value.trim();
+        if (!key) {
+          addLog('Enter your OpenRouter API key first (sk-or-...)', 'err');
+          apiKeyInput.focus();
+          return;
+        }
+        // Save key persistently via Figma storage
+        parent.postMessage({ pluginMessage: { type: 'saveApiKey', key: key } }, '*');
+      }
+
+      if (!userPrompt && !imageDataUrl) {
+        addLog('Add a wireframe image or type a prompt first.', 'err');
+        return;
+      }
+
+      var finalPrompt = userPrompt || 'Analyze this wireframe and recreate it as a polished Quantify mobile screen. Identify every UI element, map them to the best Uno component from the catalog, improve spacing and hierarchy, and keep all text content from the wireframe.';
+
+      clearLog();
+      clearBanner();
+      btnBuild.disabled = true;
+      btnBuild.classList.add('running');
+
+      // If prompt is JSON, build directly without AI
+      var trimmed = finalPrompt.trim();
+      if (trimmed.charAt(0) === '[' || trimmed.charAt(0) === '{') {
+        addLog('JSON detected — building directly...');
+        parent.postMessage({ pluginMessage: { type: 'build', schema: trimmed } }, '*');
+      } else {
+        addLog('Sending to AI...');
+        parent.postMessage({ pluginMessage: {
+          type: 'generate',
+          apiKey: key,
+          prompt: finalPrompt,
+          imageUrl: imageDataUrl
+        } }, '*');
+      }
+    });
+
+    // ── Diagnose ──
+    var btnDiag = document.getElementById('btnDiag');
+    btnDiag.addEventListener('click', function() {
+      clearLog();
+      addLog('Running Button diagnostic...');
+      parent.postMessage({ pluginMessage: { type: 'diagnose' } }, '*');
+    });
+
+    // ── Close ──
+    btnClose.addEventListener('click', function() {
+      parent.postMessage({ pluginMessage: { type: 'close' } }, '*');
+    });
+
+    // ── Logging ──
+    function addLog(text, cls) {
+      var div = document.createElement('div');
+      if (cls) div.className = cls;
+      div.textContent = text;
+      logEl.appendChild(div);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function clearLog() { logEl.innerHTML = ''; }
+
+    function clearBanner() {
+      banner.className = 'banner';
+      banner.textContent = '';
+    }
+
+    // ── Messages from plugin ──
+    window.onmessage = function(e) {
+      var msg = e.data.pluginMessage;
+      if (!msg) return;
+
+      if (msg.type === 'apiKey') {
+        if (msg.key) apiKeyInput.value = msg.key;
+        return;
+      }
+
+      if (msg.type === 'step') {
+        var isDone = msg.text.indexOf('\u2705') === 0;
+        var isErr = msg.text.indexOf('\u2717') === 0;
+        addLog(msg.text, isDone ? 'ok' : isErr ? 'err' : '');
+      }
+
+      if (msg.type === 'done') {
+        btnBuild.disabled = false;
+        btnBuild.classList.remove('running');
+        if (msg.errors && msg.errors.length > 0) {
+          banner.className = 'banner error';
+          banner.textContent = msg.errors.length + ' issue(s) — check log for details';
+        } else {
+          banner.className = 'banner success';
+          banner.textContent = 'Screen built with real Uno components';
+        }
+      }
+
+      if (msg.type === 'error') {
+        addLog('Error: ' + msg.message, 'err');
+        btnBuild.disabled = false;
+        btnBuild.classList.remove('running');
+        banner.className = 'banner error';
+        banner.textContent = msg.message;
+      }
+    };
+  </script>
+</body>
+</html>

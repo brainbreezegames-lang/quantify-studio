@@ -1,0 +1,89 @@
+[
+  {
+    "name": "01. Login",
+    "width": 390,
+    "height": 844,
+    "fill": "#FFFFFF",
+    "children": [
+      { "type": "spacer", "height": 80 },
+      {
+        "type": "frame", "name": "Hero", "layout": "vertical",
+        "gap": 8, "padding": { "top": 0, "bottom": 40, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "crossAlign": "CENTER",
+        "children": [
+          {
+            "type": "text", "content": "Quantify",
+            "fontSize": 28, "fontFamily": "Switzer", "fontStyle": "Semibold",
+            "color": "#202020", "align": "center"
+          }
+        ]
+      },
+      {
+        "type": "frame", "name": "Form", "layout": "vertical",
+        "gap": 16, "padding": { "top": 0, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "component", "component": "TextBox",
+            "variant": {
+              "Type": "Outlined", "State": "Enabled",
+              "Label": "True", "Populated": "False",
+              "Placeholder": "True", "Multiline": "False"
+            },
+            "text": { "Label": "Username", "Text": "Enter username" },
+            "stretch": true
+          },
+          {
+            "type": "component", "component": "PasswordBox",
+            "variant": { "Type": "Outlined", "Leading": "None" },
+            "text": { "Label": "Password", "Text": "Enter password" },
+            "stretch": true
+          },
+          {
+            "type": "frame", "name": "Buttons", "layout": "vertical",
+            "gap": 12, "stretch": true, "hugHeight": true,
+            "children": [
+              {
+                "type": "component", "component": "Button",
+                "variant": { "Style": "Filled" },
+                "text": { "Label": "Sign In" },
+                "stretch": true
+              },
+              {
+                "type": "component", "component": "Button",
+                "variant": { "Style": "Outlined" },
+                "text": { "Label": "Connection" },
+                "stretch": true
+              }
+            ]
+          },
+          {
+            "type": "text", "content": "Connected to https://mycompany.quantifycloud.com",
+            "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Regular",
+            "color": "#737373"
+          }
+        ]
+      },
+      { "type": "spacer", "grow": true },
+      {
+        "type": "frame", "name": "Footer", "layout": "vertical",
+        "gap": 4, "padding": { "top": 0, "bottom": 40, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "crossAlign": "CENTER",
+        "children": [
+          {
+            "type": "text", "content": "Version 1.2.3 | © 2008-2026 Avontus Software Corporation",
+            "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Regular",
+            "color": "#ABABAB", "align": "center"
+          },
+          {
+            "type": "text", "content": "About Quantify",
+            "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium",
+            "color": "#0A3EFF", "align": "center"
+          }
+        ]
+      }
+    ]
+  }
+]
