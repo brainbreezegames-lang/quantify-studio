@@ -2,96 +2,145 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScaffoldIQ">
+<meta name="theme-color" content="#FFFFFF">
 <title>ScaffoldIQ</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:100%;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 body{
-  font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
-  background:#f8f8f7;color:#111;
+  font-family:'Switzer',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:#F8F8F8;color:#202020;
   height:100vh;display:flex;flex-direction:column;overflow:hidden;
+  letter-spacing:-0.02em;
 }
 
-/* ── Vars ── */
 :root{
-  --brand:#1a1a2e;
-  --accent:#3b82f6;
-  --accent-hover:#2563eb;
-  --red:#ef4444;--red-bg:#fef2f2;
-  --amber:#f59e0b;--amber-bg:#fffbeb;
-  --green:#10b981;--green-bg:#ecfdf5;
-  --blue:#3b82f6;--blue-bg:#eff6ff;
+  --blue:#0A3EFF;
+  --blue-mid:#6F9DFF;
+  --blue-dark:#10296E;
+  --white:#FFFFFF;
+  --gray-xlight:#F4F4F4;
+  --gray-light:#E2E2E2;
+  --gray-mid:#B5B5B5;
+  --gray-dark:#878787;
+  --gray-xdark:#5F5F5F;
+  --black:#202020;
+  --red:#E64059;--red-bg:#fef2f2;
+  --green:#22C55E;--green-bg:#f0fdf4;
+  --amber:#F9A825;--amber-bg:#fffbeb;
   --mono:'JetBrains Mono',monospace;
 }
 
 /* ── Layout ── */
 .app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
 
-/* ── Top Header ── */
-.top-header{
-  padding:12px 24px;
+/* ── Header ── */
+.header{
+  height:56px;padding:0 24px;
   display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid #eee;flex-shrink:0;
-  background:#fff;
+  border-bottom:1px solid var(--gray-light);
+  background:var(--white);flex-shrink:0;
 }
-.top-header-left{display:flex;align-items:center;gap:10px}
-.top-logo{
-  width:30px;height:30px;background:var(--brand);border-radius:8px;
+.header-left{display:flex;align-items:center;gap:12px}
+.logo{
+  width:32px;height:32px;background:var(--blue);
   display:flex;align-items:center;justify-content:center;
-  font-weight:700;font-size:14px;color:#fff;
+  font-weight:500;font-size:15px;color:#fff;
 }
-.top-brand{font-weight:700;font-size:16px;letter-spacing:-0.02em}
-.top-sep{width:1px;height:18px;background:#e5e5e5;margin:0 4px}
-.top-site{font-size:13px;color:#999}
-.top-header-right{display:flex;align-items:center;gap:14px}
-.top-status{font-size:12px;color:#aaa;display:flex;align-items:center;gap:5px}
-.top-status::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s ease-in-out infinite}
+.brand{font-weight:500;font-size:20px;letter-spacing:-0.02em;color:var(--black)}
+.sep{width:1px;height:20px;background:var(--gray-light)}
+.site{font-size:13px;color:var(--gray-dark);letter-spacing:-0.01em}
+.header-right{display:flex;align-items:center;gap:16px}
+.live{font-size:12px;color:var(--gray-dark);display:flex;align-items:center;gap:6px}
+.live::before{content:'';width:6px;height:6px;background:var(--green);animation:blink 2s ease infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.top-avatar{
-  width:30px;height:30px;border-radius:50%;
-  background:var(--brand);color:#fff;
+.avatar{
+  width:32px;height:32px;background:var(--blue-dark);color:#fff;
   display:flex;align-items:center;justify-content:center;
-  font-weight:600;font-size:12px;cursor:pointer;
+  font-weight:500;font-size:13px;cursor:pointer;
 }
 
-/* ── Main Chat Area ── */
-.chat-main{
-  flex:1;display:flex;flex-direction:column;
-  background:#fff;overflow:hidden;
+/* ── Topic Strip (always visible) ── */
+.topic-strip{
+  border-bottom:1px solid var(--gray-light);
+  background:var(--white);flex-shrink:0;
+  padding:0 24px;
+  display:flex;align-items:stretch;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
 }
+.topic-strip::-webkit-scrollbar{display:none}
 
-/* Chat header - removed, using top-header instead */
+.topic-tab{
+  display:flex;align-items:center;gap:8px;
+  padding:12px 16px;
+  font-size:13px;font-weight:400;color:var(--gray-dark);
+  cursor:pointer;white-space:nowrap;
+  border-bottom:2px solid transparent;
+  transition:all .12s ease;
+  letter-spacing:-0.01em;
+}
+.topic-tab:hover{color:var(--black);background:var(--gray-xlight)}
+.topic-tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:500}
+.topic-tab .tab-count{
+  font-family:var(--mono);font-size:11px;font-weight:500;
+  color:var(--gray-mid);
+}
+.topic-tab.active .tab-count{color:var(--blue-mid)}
 
-/* Messages */
+/* ── Chat Area ── */
+.chat{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
 .messages{
-  flex:1;overflow-y:auto;
-  padding:24px 24px;
-  scroll-behavior:smooth;
+  flex:1;overflow-y:auto;padding:24px 24px 16px;
 }
-.messages-inner{
-  max-width:760px;
-  margin:0 auto;
+.messages-inner{max-width:720px;margin:0 auto;width:100%}
+.messages::-webkit-scrollbar{width:3px}
+.messages::-webkit-scrollbar-thumb{background:var(--gray-light)}
+
+/* Welcome message */
+.welcome-text{
+  padding:24px 0 16px;
+  font-size:15px;color:var(--gray-xdark);line-height:1.5;
 }
-.messages::-webkit-scrollbar{width:4px}
-.messages::-webkit-scrollbar-thumb{background:#ddd;border-radius:4px}
+.welcome-text strong{color:var(--black);font-weight:500}
 
-/* Welcome - removed, using proactive first message instead */
+/* Summary strip inside welcome */
+.summary-row{
+  display:flex;gap:1px;background:var(--gray-light);
+  margin-bottom:24px;
+}
+.summary-cell{
+  flex:1;background:var(--white);padding:16px 20px;
+  cursor:pointer;transition:background .12s ease;
+}
+.summary-cell:hover{background:var(--gray-xlight)}
+.summary-cell .s-num{
+  font-size:28px;font-weight:500;letter-spacing:-0.03em;
+  line-height:1;margin-bottom:4px;
+  font-variant-numeric:tabular-nums;
+}
+.summary-cell .s-label{font-size:11px;color:var(--gray-dark);letter-spacing:-0.01em}
+.s-num.red{color:var(--red)}
+.s-num.amber{color:var(--amber)}
+.s-num.green{color:var(--green)}
+.s-num.blue{color:var(--blue)}
 
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-
-/* Message bubbles */
+/* ── Messages ── */
 .msg{margin-bottom:24px;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
 .msg-user{display:flex;justify-content:flex-end}
 .msg-user .bubble{
-  background:#111;color:#fff;
-  border-radius:18px 18px 4px 18px;
+  background:var(--blue-dark);color:#fff;
   padding:10px 16px;font-size:14px;line-height:1.5;
-  max-width:480px;
+  max-width:480px;letter-spacing:-0.01em;
 }
 
 .msg-ai{max-width:100%}
@@ -99,254 +148,201 @@ body{
   display:flex;align-items:center;gap:8px;margin-bottom:8px;
 }
 .ai-icon{
-  width:24px;height:24px;border-radius:6px;
-  background:linear-gradient(135deg,#3b82f6,#8b5cf6);
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
+  width:24px;height:24px;background:var(--blue);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
-.ai-icon svg{width:14px;height:14px;color:#fff}
-.ai-label{font-size:12px;font-weight:600;color:#888}
+.ai-icon svg{width:13px;height:13px;color:#fff}
+.ai-label{font-size:12px;font-weight:500;color:var(--gray-dark)}
 
 .msg-ai .prose{
-  font-size:14px;line-height:1.7;color:#333;
-  margin-bottom:12px;max-width:640px;
+  font-size:14px;line-height:1.6;color:var(--gray-xdark);
+  margin-bottom:12px;max-width:600px;
 }
-.msg-ai .prose strong{color:#111;font-weight:600}
+.msg-ai .prose strong{color:var(--black);font-weight:500}
 
-/* ── Rich Response Components ── */
-
-/* Metric row */
-.metrics-row{
-  display:flex;gap:8px;margin:12px 0;flex-wrap:wrap;
-}
-.metric{
-  background:#fafafa;border:1px solid #f0f0f0;border-radius:10px;
-  padding:12px 16px;min-width:110px;flex:1;
-}
+/* ── Metrics ── */
+.metrics-row{display:flex;gap:1px;margin:14px 0;background:var(--gray-light)}
+.metric{background:var(--gray-xlight);padding:14px 16px;flex:1}
 .metric-val{
-  font-size:22px;font-weight:700;letter-spacing:-0.02em;
+  font-size:24px;font-weight:500;letter-spacing:-0.03em;
   line-height:1;margin-bottom:3px;
   font-variant-numeric:tabular-nums;
 }
 .metric-val.red{color:var(--red)}
 .metric-val.amber{color:var(--amber)}
 .metric-val.green{color:var(--green)}
-.metric-label{font-size:11px;color:#999;font-weight:500}
+.metric-label{font-size:11px;color:var(--gray-dark)}
 
-/* Inline chart - horizontal bars */
+/* ── Bar Charts ── */
 .chart-bars{margin:14px 0;max-width:520px}
-.chart-bar-row{
-  display:flex;align-items:center;gap:10px;
-  margin-bottom:6px;
-}
-.chart-bar-label{
-  font-size:12px;color:#666;width:130px;flex-shrink:0;
-  text-align:right;font-weight:500;
-}
-.chart-bar-track{
-  flex:1;height:24px;background:#f5f5f5;border-radius:6px;
-  overflow:hidden;position:relative;
-}
-.chart-bar-fill{
-  height:100%;border-radius:6px;
-  display:flex;align-items:center;padding:0 8px;
-  transition:width .8s cubic-bezier(.22,1,.36,1);
-}
-.chart-bar-fill span{
-  font-size:10px;font-weight:600;color:#fff;white-space:nowrap;
-}
-.chart-bar-count{
-  font-size:12px;font-weight:600;color:#333;
-  width:44px;text-align:right;font-variant-numeric:tabular-nums;
-  font-family:var(--mono);
-}
+.chart-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.chart-bar-label{font-size:12px;color:var(--gray-xdark);width:120px;flex-shrink:0;text-align:right;font-weight:400}
+.chart-bar-track{flex:1;height:26px;background:var(--gray-xlight);overflow:hidden}
+.chart-bar-fill{height:100%;display:flex;align-items:center;padding:0 8px;transition:width .8s cubic-bezier(.22,1,.36,1)}
+.chart-bar-fill span{font-size:10px;font-weight:500;color:#fff;white-space:nowrap}
+.chart-bar-count{font-size:12px;font-weight:500;color:var(--black);width:44px;text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono)}
 
-/* Data table */
-.data-table{
-  width:100%;max-width:600px;
-  border-collapse:collapse;margin:12px 0;
-  font-size:13px;
-}
+/* ── Donut ── */
+.chart-donut{display:flex;align-items:center;gap:24px;margin:14px 0}
+.chart-donut svg{flex-shrink:0}
+.chart-legend{display:flex;flex-direction:column;gap:5px}
+.chart-legend-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gray-xdark)}
+.chart-legend-dot{width:10px;height:10px;flex-shrink:0}
+.chart-legend-val{font-weight:500;color:var(--black);margin-left:auto;font-family:var(--mono);font-size:11px}
+
+/* ── Data Tables ── */
+.data-table{width:100%;max-width:600px;border-collapse:collapse;margin:12px 0;font-size:13px}
 .data-table th{
-  text-align:left;font-weight:600;color:#888;
-  padding:8px 12px;border-bottom:2px solid #f0f0f0;
-  font-size:11px;text-transform:uppercase;letter-spacing:0.05em;
+  text-align:left;font-weight:500;color:var(--gray-dark);
+  padding:8px 12px;border-bottom:2px solid var(--gray-light);
+  font-size:11px;text-transform:uppercase;letter-spacing:0.03em;
 }
-.data-table td{
-  padding:10px 12px;border-bottom:1px solid #f5f5f5;
-  color:#333;
-}
-.data-table tr:hover td{background:#fafafa}
+.data-table td{padding:10px 12px;border-bottom:1px solid var(--gray-xlight);color:var(--gray-xdark)}
+.data-table tr:hover td{background:var(--gray-xlight)}
 .data-table .mono{font-family:var(--mono);font-size:12px;font-weight:500}
-.data-table .status{
-  display:inline-flex;align-items:center;gap:5px;
-  font-size:12px;font-weight:500;
-  padding:2px 8px;border-radius:100px;
-}
+.data-table strong{font-weight:500;color:var(--black)}
+.status{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:2px 8px}
 .status-pass{background:var(--green-bg);color:var(--green)}
 .status-fail{background:var(--red-bg);color:var(--red)}
 .status-pending{background:var(--amber-bg);color:var(--amber)}
-.status-info{background:var(--blue-bg);color:var(--blue)}
-
-/* Status dot */
-.dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.status-info{background:#eff6ff;color:var(--blue)}
+.dot{width:6px;height:6px;display:inline-block}
 .dot-red{background:var(--red)}.dot-green{background:var(--green)}
 .dot-amber{background:var(--amber)}.dot-blue{background:var(--blue)}
 
-/* Pie/donut chart (SVG) */
-.chart-donut{
-  display:flex;align-items:center;gap:24px;
-  margin:14px 0;
-}
-.chart-donut svg{flex-shrink:0}
-.chart-legend{display:flex;flex-direction:column;gap:6px}
-.chart-legend-item{
-  display:flex;align-items:center;gap:8px;font-size:12px;color:#555;
-}
-.chart-legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
-.chart-legend-val{font-weight:600;color:#111;margin-left:auto;font-family:var(--mono);font-size:11px}
-
-/* Source/Actions section */
-.sources{
-  margin-top:12px;padding-top:10px;
-  border-top:1px solid #f0f0f0;
-}
+/* ── Sources ── */
+.sources{margin-top:12px;padding-top:10px;border-top:1px solid var(--gray-xlight)}
 .sources-toggle{
   display:flex;align-items:center;gap:6px;
-  font-size:11px;color:#aaa;cursor:pointer;
-  background:none;border:none;font-family:inherit;
-  transition:color .12s ease;
+  font-size:11px;color:var(--gray-mid);cursor:pointer;
+  background:none;border:none;font-family:inherit;transition:color .12s;
 }
-.sources-toggle:hover{color:#666}
-.sources-toggle svg{width:12px;height:12px;transition:transform .2s ease}
+.sources-toggle:hover{color:var(--gray-xdark)}
+.sources-toggle svg{width:12px;height:12px;transition:transform .2s}
 .sources-toggle.open svg{transform:rotate(90deg)}
-.sources-list{
-  display:none;margin-top:8px;padding-left:2px;
-}
+.sources-list{display:none;margin-top:8px}
 .sources-list.visible{display:block}
-.source-item{
-  font-size:11px;color:#bbb;padding:3px 0;
-  display:flex;align-items:center;gap:6px;
-  font-family:var(--mono);
-}
-.source-item::before{
-  content:'';width:4px;height:4px;border-radius:50%;
-  background:#ddd;flex-shrink:0;
-}
+.source-item{font-size:11px;color:var(--gray-mid);padding:3px 0;display:flex;align-items:center;gap:6px;font-family:var(--mono)}
+.source-item::before{content:'';width:4px;height:4px;background:var(--gray-light);flex-shrink:0}
 
-/* Follow-up suggestions */
+/* ── Followups ── */
 .followups{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
 .followup-btn{
   font-size:12px;font-weight:500;
-  color:var(--accent);background:var(--blue-bg);
-  border:1px solid #dbeafe;border-radius:100px;
+  color:var(--blue);background:transparent;
+  border:1px solid var(--blue);
   padding:6px 14px;cursor:pointer;
-  transition:all .12s ease;font-family:inherit;
+  transition:all .12s;font-family:inherit;
+  letter-spacing:-0.01em;
 }
-.followup-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.followup-btn:hover{background:var(--blue);color:#fff}
 
-/* Topic cards in welcome message */
-.topic-grid{
-  display:grid;grid-template-columns:1fr 1fr 1fr;
-  gap:8px;margin:16px 0 4px;
-}
-.topic-card{
-  border:1px solid #eee;border-radius:10px;
-  padding:14px 16px;cursor:pointer;
-  transition:all .15s ease;background:#fff;
-}
-.topic-card:hover{border-color:#ccc;background:#fafafa;transform:translateY(-1px)}
-.topic-card-icon{
-  width:32px;height:32px;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  margin-bottom:10px;
-}
-.topic-card-icon svg{width:16px;height:16px}
-.topic-card-title{font-size:13px;font-weight:600;margin-bottom:3px;color:#111}
-.topic-card-desc{font-size:11px;color:#999;line-height:1.4}
-.topic-card-preview{
-  margin-top:8px;font-size:11px;color:#bbb;
-  font-style:italic;
-}
-
-/* Compact summary bar in welcome */
-.summary-bar{
-  display:flex;gap:1px;margin:14px 0;
-  background:#f0f0f0;border-radius:8px;overflow:hidden;
-}
-.summary-item{
-  flex:1;background:#fafafa;
-  padding:12px 14px;text-align:center;
-  cursor:pointer;transition:background .12s ease;
-}
-.summary-item:hover{background:#f0f0f0}
-.summary-item .s-val{
-  font-size:18px;font-weight:700;line-height:1;
-  margin-bottom:3px;font-variant-numeric:tabular-nums;
-}
-.summary-item .s-label{font-size:10px;color:#999;font-weight:500}
-.summary-item .s-val.red{color:var(--red)}
-.summary-item .s-val.amber{color:var(--amber)}
-.summary-item .s-val.green{color:var(--green)}
-
-/* ── Input Area ── */
-.input-area{
-  padding:16px 24px 20px;
-  border-top:1px solid #f0f0f0;
-  flex-shrink:0;background:#fff;
-}
-.input-wrap{
-  max-width:640px;margin:0 auto;
-  background:#f8f8f7;border:1px solid #e8e8e8;
-  border-radius:14px;display:flex;align-items:center;
-  padding:4px 6px 4px 18px;
-  transition:all .2s ease;
-}
-.input-wrap:focus-within{
-  background:#fff;border-color:#111;
-  box-shadow:0 0 0 3px rgba(0,0,0,0.03);
-}
-.input-wrap input{
-  flex:1;border:none;outline:none;
-  font-family:inherit;font-size:14px;
-  background:transparent;color:#111;padding:10px 0;
-}
-.input-wrap input::placeholder{color:#bbb}
-.send-btn{
-  width:36px;height:36px;border:none;
-  background:#111;color:#fff;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all .12s ease;flex-shrink:0;
-}
-.send-btn:hover{background:#333;transform:scale(1.03)}
-.send-btn svg{width:16px;height:16px}
-
-/* Typing */
-.typing-indicator{
-  display:flex;gap:4px;padding:12px;width:fit-content;
-}
-.typing-indicator span{
-  width:6px;height:6px;border-radius:50%;background:#ccc;
-  animation:typeBounce .6s ease infinite;
-}
+/* ── Typing ── */
+.typing-indicator{display:flex;gap:4px;padding:12px 0;width:fit-content}
+.typing-indicator span{width:6px;height:6px;background:var(--gray-mid);animation:typeBounce .6s ease infinite}
 .typing-indicator span:nth-child(2){animation-delay:.1s}
 .typing-indicator span:nth-child(3){animation-delay:.2s}
 @keyframes typeBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 
-/* ── Responsive ── */
-@media(max-width:768px){
-  .top-sep,.top-site{display:none}
-  .topic-grid{grid-template-columns:1fr 1fr}
-  .metrics-row{flex-direction:column}
-  .chart-donut{flex-direction:column;align-items:flex-start}
-  .messages{padding:16px}
-  .input-area{padding:12px 16px 16px}
-  .summary-bar{flex-wrap:wrap}
-  .summary-item{min-width:45%}
+/* ── Input ── */
+.input-area{
+  padding:14px 24px 18px;border-top:1px solid var(--gray-light);
+  flex-shrink:0;background:var(--white);
 }
+.input-wrap{
+  max-width:720px;margin:0 auto;
+  border:1px solid var(--gray-light);
+  display:flex;align-items:center;
+  padding:4px 6px 4px 18px;
+  transition:all .15s;background:var(--white);
+}
+.input-wrap:focus-within{border-color:var(--blue)}
+.input-wrap input{
+  flex:1;border:none;outline:none;
+  font-family:inherit;font-size:14px;
+  background:transparent;color:var(--black);
+  padding:10px 0;letter-spacing:-0.01em;
+}
+.input-wrap input::placeholder{color:var(--gray-mid)}
+.send-btn{
+  width:36px;height:36px;border:none;
+  background:var(--blue);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background .12s;flex-shrink:0;
+}
+.send-btn:hover{background:var(--blue-dark)}
+.send-btn svg{width:16px;height:16px}
+
+/* ── Responsive / Mobile-First iOS Feel ── */
+@media(max-width:768px){
+  body{background:var(--gray-xlight)}
+
+  .header{
+    height:auto;
+    padding:env(safe-area-inset-top,12px) 16px 10px;
+    background:var(--white);
+  }
+  .sep,.site{display:none}
+
+  .topic-strip{
+    padding:0 16px;gap:0;
+    background:var(--white);
+    -webkit-overflow-scrolling:touch;
+  }
+  .topic-tab{padding:10px 14px;font-size:12px}
+  .topic-tab .tab-count{font-size:10px}
+
+  .messages{padding:12px 16px}
+  .messages-inner{max-width:100%}
+
+  .msg-user .bubble{font-size:15px;padding:10px 14px}
+  .msg-ai .prose{font-size:15px;line-height:1.6}
+
+  .metrics-row{flex-wrap:wrap;gap:1px}
+  .metric{min-width:calc(50% - 1px);padding:12px 14px}
+  .metric-val{font-size:22px}
+
+  .summary-row{flex-wrap:wrap}
+  .summary-cell{min-width:calc(50% - 1px);padding:14px 16px}
+
+  .chart-donut{flex-direction:column;align-items:flex-start;gap:16px}
+  .chart-bar-label{width:90px;font-size:12px}
+  .chart-bar-track{height:32px}
+
+  .data-table{font-size:13px}
+  .data-table th,.data-table td{padding:10px 10px}
+
+  .followup-btn{font-size:13px;padding:8px 16px;min-height:36px}
+
+  /* iOS-style fixed bottom input */
+  .input-area{
+    padding:10px 16px calc(env(safe-area-inset-bottom,12px) + 10px);
+    background:var(--white);
+    border-top:1px solid var(--gray-light);
+  }
+  .input-wrap{
+    border:1px solid var(--gray-light);
+    background:var(--gray-xlight);
+  }
+  .input-wrap input{font-size:16px;padding:12px 0}
+  .send-btn{width:38px;height:38px}
+}
+
 @media(max-width:480px){
-  .top-header{padding:10px 16px}
-  .chart-bar-label{width:80px;font-size:11px}
+  .summary-cell .s-num{font-size:24px}
+  .brand{font-size:17px}
+  .topic-tab{padding:10px 10px;font-size:11px}
+  .metric-val{font-size:20px}
+}
+
+/* Standalone PWA - extra padding for notch */
+@media(display-mode:standalone){
+  .header{padding-top:env(safe-area-inset-top,44px)}
+}
+
+/* Prevent iOS zoom on input focus */
+@supports(-webkit-touch-callout:none){
+  .input-wrap input{font-size:16px}
 }
 </style>
 </head>
@@ -354,112 +350,60 @@ body{
 
 <div class="app">
 
-<!-- ── Header ── -->
-<header class="top-header">
-  <div class="top-header-left">
-    <div class="top-logo">S</div>
-    <span class="top-brand">ScaffoldIQ</span>
-    <span class="top-sep"></span>
-    <span class="top-site">Big Gore Refinery</span>
+<!-- Header -->
+<header class="header">
+  <div class="header-left">
+    <div class="logo">S</div>
+    <span class="brand">ScaffoldIQ</span>
+    <span class="sep"></span>
+    <span class="site">Big Gore Refinery</span>
   </div>
-  <div class="top-header-right">
-    <span class="top-status">Live data</span>
-    <div class="top-avatar" title="Zaib Wemyss">Z</div>
+  <div class="header-right">
+    <span class="live">Live data</span>
+    <div class="avatar" title="Zaib Wemyss">Z</div>
   </div>
 </header>
 
-<!-- ── Chat ── -->
-<div class="chat-main">
+<!-- Topic Strip — ALWAYS VISIBLE -->
+<div class="topic-strip" id="topicStrip">
+  <div class="topic-tab active" data-topic="home" onclick="switchTopic(this)">Overview</div>
+  <div class="topic-tab" data-topic="scaffolds" onclick="switchTopic(this)">Scaffolds <span class="tab-count">1,645</span></div>
+  <div class="topic-tab" data-topic="requests" onclick="switchTopic(this)">Requests <span class="tab-count">3,024</span></div>
+  <div class="topic-tab" data-topic="inspections" onclick="switchTopic(this)">Inspections <span class="tab-count">703</span></div>
+  <div class="topic-tab" data-topic="areas" onclick="switchTopic(this)">Areas <span class="tab-count">10</span></div>
+  <div class="topic-tab" data-topic="people" onclick="switchTopic(this)">People <span class="tab-count">54</span></div>
+  <div class="topic-tab" data-topic="safety" onclick="switchTopic(this)">Safety</div>
+</div>
+
+<!-- Chat -->
+<div class="chat">
   <div class="messages" id="messages">
     <div class="messages-inner" id="messagesInner">
 
-    <!-- Proactive first message — teaches by showing -->
-    <div class="msg msg-ai" id="welcomeMsg" style="animation:fadeIn .5s ease">
-      <div class="msg-ai-header">
-        <div class="ai-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <span class="ai-label">ScaffoldIQ</span>
-      </div>
-
-      <div class="prose" id="greetingText">Good afternoon, Zaib. Here's your site at a glance.</div>
-
-      <div class="summary-bar">
-        <div class="summary-item" onclick="askQ('Show me all standing scaffolds with their status')">
-          <div class="s-val">1,645</div>
-          <div class="s-label">Standing</div>
-        </div>
-        <div class="summary-item" onclick="askQ('Show me the request pipeline')">
-          <div class="s-val amber">3,024</div>
-          <div class="s-label">Open Requests</div>
-        </div>
-        <div class="summary-item" onclick="askQ('Show me inspection results')">
-          <div class="s-val red">703</div>
-          <div class="s-label">Awaiting Inspection</div>
-        </div>
-        <div class="summary-item" onclick="askQ('Show me the team workload')">
-          <div class="s-val green">31</div>
-          <div class="s-label">Active This Week</div>
+      <!-- Welcome -->
+      <div id="welcomeContent">
+        <div class="welcome-text" id="greetingText">Good afternoon, <strong>Zaib</strong>. Your site snapshot for Big Gore Refinery:</div>
+        <div class="summary-row">
+          <div class="summary-cell" onclick="switchAndAsk('scaffolds','Show me all standing scaffolds with their status')">
+            <div class="s-num">1,645</div><div class="s-label">Standing scaffolds</div>
+          </div>
+          <div class="summary-cell" onclick="switchAndAsk('requests','Show me the request pipeline')">
+            <div class="s-num amber">3,024</div><div class="s-label">Open requests</div>
+          </div>
+          <div class="summary-cell" onclick="switchAndAsk('inspections','Show me inspection results')">
+            <div class="s-num red">703</div><div class="s-label">Awaiting inspection</div>
+          </div>
+          <div class="summary-cell" onclick="switchAndAsk('people','Show me the team workload')">
+            <div class="s-num green">31</div><div class="s-label">Active this week</div>
+          </div>
         </div>
       </div>
-
-      <div class="prose">I can query your live data and generate reports. Pick a topic to explore:</div>
-
-      <div class="topic-grid">
-        <div class="topic-card" onclick="askQ('Show me all standing scaffolds with their status')">
-          <div class="topic-card-icon" style="background:var(--blue-bg);color:var(--blue)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/></svg>
-          </div>
-          <div class="topic-card-title">Scaffolds</div>
-          <div class="topic-card-desc">Status, tags, locations, build &amp; dismantle dates</div>
-          <div class="topic-card-preview">Charts &amp; breakdowns</div>
-        </div>
-        <div class="topic-card" onclick="askQ('Show me the request pipeline')">
-          <div class="topic-card-icon" style="background:#f3e8ff;color:#8b5cf6">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          </div>
-          <div class="topic-card-title">Requests</div>
-          <div class="topic-card-desc">Approval pipeline, bottlenecks, throughput</div>
-          <div class="topic-card-preview">Pipeline visualization</div>
-        </div>
-        <div class="topic-card" onclick="askQ('Show me inspection results')">
-          <div class="topic-card-icon" style="background:var(--red-bg);color:var(--red)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </div>
-          <div class="topic-card-title">Inspections</div>
-          <div class="topic-card-desc">Pass/fail results, compliance, handovers</div>
-          <div class="topic-card-preview">Tables &amp; status tracking</div>
-        </div>
-        <div class="topic-card" onclick="askQ('Show me scaffolds by area')">
-          <div class="topic-card-icon" style="background:var(--green-bg);color:var(--green)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
-          </div>
-          <div class="topic-card-title">Areas</div>
-          <div class="topic-card-desc">Site hierarchy, scaffold distribution</div>
-          <div class="topic-card-preview">Area comparison charts</div>
-        </div>
-        <div class="topic-card" onclick="askQ('Show me the team workload')">
-          <div class="topic-card-icon" style="background:var(--amber-bg);color:var(--amber)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
-          </div>
-          <div class="topic-card-title">People</div>
-          <div class="topic-card-desc">Team workload, contractors, contacts</div>
-          <div class="topic-card-preview">Activity tables</div>
-        </div>
-        <div class="topic-card" onclick="askQ('Give me a safety compliance summary')">
-          <div class="topic-card-icon" style="background:#fef3c7;color:#b45309">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          </div>
-          <div class="topic-card-title">Safety</div>
-          <div class="topic-card-desc">Compliance score, overdue items, risks</div>
-          <div class="topic-card-preview">Compliance overview</div>
-        </div>
-      </div>
-    </div>
 
     </div>
   </div>
 
   <div class="input-area">
-    <div class="input-wrap" style="max-width:760px">
+    <div class="input-wrap" style="max-width:720px">
       <input type="text" id="input" placeholder="Ask about scaffolds, inspections, requests..." autocomplete="off" />
       <button class="send-btn" onclick="send()" title="Send">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -472,7 +416,20 @@ body{
 
 <script>
 // ============================================
-// Response templates — each type looks DIFFERENT
+// Topic → Query mapping
+// ============================================
+const topicQueries = {
+  home: null,
+  scaffolds: 'Show me all standing scaffolds with their status',
+  requests: 'Show me the request pipeline',
+  inspections: 'Show me inspection results',
+  areas: 'Show me scaffolds by area',
+  people: 'Show me the team workload',
+  safety: 'Give me a safety compliance summary',
+};
+
+// ============================================
+// Response templates
 // ============================================
 const responses = {
 
@@ -480,34 +437,31 @@ const responses = {
   actions: ['Search Scaffolds (all)', 'Search Scaffolds (StatusName Eq AwaitingBuild)', 'Search Scaffolds (StatusName Eq Dismantled)'],
   html: `
     <div class="prose">Here's the current scaffold inventory across all areas. <strong>1,645 scaffolds</strong> are standing, with the majority awaiting repair or inspection.</div>
-
     <div class="metrics-row">
       <div class="metric"><div class="metric-val">1,645</div><div class="metric-label">Standing</div></div>
       <div class="metric"><div class="metric-val amber">703</div><div class="metric-label">Awaiting Inspection</div></div>
       <div class="metric"><div class="metric-val">467</div><div class="metric-label">Awaiting Repair</div></div>
       <div class="metric"><div class="metric-val green">16</div><div class="metric-label">Awaiting Build</div></div>
     </div>
-
     <div class="chart-donut">
-      <svg width="140" height="140" viewBox="0 0 140 140">
-        <circle cx="70" cy="70" r="54" fill="none" stroke="#f0f0f0" stroke-width="14"/>
-        <circle cx="70" cy="70" r="54" fill="none" stroke="#f59e0b" stroke-width="14" stroke-dasharray="145 194" stroke-dashoffset="0" transform="rotate(-90 70 70)"/>
-        <circle cx="70" cy="70" r="54" fill="none" stroke="#ef4444" stroke-width="14" stroke-dasharray="96 243" stroke-dashoffset="-145" transform="rotate(-90 70 70)"/>
-        <circle cx="70" cy="70" r="54" fill="none" stroke="#8b5cf6" stroke-width="14" stroke-dasharray="47 292" stroke-dashoffset="-241" transform="rotate(-90 70 70)"/>
-        <circle cx="70" cy="70" r="54" fill="none" stroke="#3b82f6" stroke-width="14" stroke-dasharray="29 310" stroke-dashoffset="-288" transform="rotate(-90 70 70)"/>
-        <circle cx="70" cy="70" r="54" fill="none" stroke="#10b981" stroke-width="14" stroke-dasharray="5 334" stroke-dashoffset="-317" transform="rotate(-90 70 70)"/>
-        <text x="70" y="66" text-anchor="middle" font-size="22" font-weight="700" fill="#111" font-family="DM Sans">1,645</text>
-        <text x="70" y="82" text-anchor="middle" font-size="10" fill="#999" font-family="DM Sans">standing</text>
+      <svg width="130" height="130" viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="54" fill="none" stroke="var(--gray-xlight)" stroke-width="14"/>
+        <circle cx="70" cy="70" r="54" fill="none" stroke="var(--amber)" stroke-width="14" stroke-dasharray="145 194" stroke-dashoffset="0" transform="rotate(-90 70 70)"/>
+        <circle cx="70" cy="70" r="54" fill="none" stroke="var(--red)" stroke-width="14" stroke-dasharray="96 243" stroke-dashoffset="-145" transform="rotate(-90 70 70)"/>
+        <circle cx="70" cy="70" r="54" fill="none" stroke="var(--blue)" stroke-width="14" stroke-dasharray="47 292" stroke-dashoffset="-241" transform="rotate(-90 70 70)"/>
+        <circle cx="70" cy="70" r="54" fill="none" stroke="var(--blue-mid)" stroke-width="14" stroke-dasharray="29 310" stroke-dashoffset="-288" transform="rotate(-90 70 70)"/>
+        <circle cx="70" cy="70" r="54" fill="none" stroke="var(--green)" stroke-width="14" stroke-dasharray="5 334" stroke-dashoffset="-317" transform="rotate(-90 70 70)"/>
+        <text x="70" y="66" text-anchor="middle" font-size="22" font-weight="500" fill="var(--black)" font-family="Switzer">1,645</text>
+        <text x="70" y="82" text-anchor="middle" font-size="10" fill="var(--gray-dark)" font-family="Switzer">standing</text>
       </svg>
       <div class="chart-legend">
-        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#f59e0b"></div> Awaiting Inspection <span class="chart-legend-val">703</span></div>
-        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#ef4444"></div> Awaiting Repair <span class="chart-legend-val">467</span></div>
-        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#8b5cf6"></div> Build In Progress <span class="chart-legend-val">140</span></div>
-        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#3b82f6"></div> Dismantle In Progress <span class="chart-legend-val">139</span></div>
-        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#10b981"></div> Do Not Use <span class="chart-legend-val">65</span></div>
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--amber)"></div> Awaiting Inspection <span class="chart-legend-val">703</span></div>
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--red)"></div> Awaiting Repair <span class="chart-legend-val">467</span></div>
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--blue)"></div> Build In Progress <span class="chart-legend-val">140</span></div>
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--blue-mid)"></div> Dismantle In Progress <span class="chart-legend-val">139</span></div>
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--green)"></div> Do Not Use <span class="chart-legend-val">65</span></div>
       </div>
     </div>
-
     <div class="prose">All <strong>1,645 tags are red</strong>. <strong>1,622</strong> (98.6%) are past their planned dismantle date.</div>
   `,
   followups: ['Show scaffolds in AMRU', 'Which are past dismantle date?', 'Recent builds this week']
@@ -516,41 +470,15 @@ const responses = {
 'Show me the request pipeline': {
   actions: ['Search Requests (all statuses)', 'Search Requests (Status Lt: 6)', 'Search Requests (Status Eq: 6)'],
   html: `
-    <div class="prose">There are <strong>3,024 open requests</strong> in the pipeline. The majority are in the approval stages. Here's the breakdown by status:</div>
-
+    <div class="prose">There are <strong>3,024 open requests</strong> in the pipeline. The majority are in the approval stages:</div>
     <div class="chart-bars">
-      <div class="chart-bar-row">
-        <div class="chart-bar-label">Initial Approval</div>
-        <div class="chart-bar-track"><div class="chart-bar-fill" style="width:85%;background:#6366f1"><span>35.0%</span></div></div>
-        <div class="chart-bar-count">1,059</div>
-      </div>
-      <div class="chart-bar-row">
-        <div class="chart-bar-label">Final Approval</div>
-        <div class="chart-bar-track"><div class="chart-bar-fill" style="width:83%;background:#8b5cf6"><span>34.1%</span></div></div>
-        <div class="chart-bar-count">1,031</div>
-      </div>
-      <div class="chart-bar-row">
-        <div class="chart-bar-label">Secondary</div>
-        <div class="chart-bar-track"><div class="chart-bar-fill" style="width:50%;background:#a78bfa"><span>20.3%</span></div></div>
-        <div class="chart-bar-count">613</div>
-      </div>
-      <div class="chart-bar-row">
-        <div class="chart-bar-label">Estimate</div>
-        <div class="chart-bar-track"><div class="chart-bar-fill" style="width:25%;background:#c4b5fd"><span>10.0%</span></div></div>
-        <div class="chart-bar-count">302</div>
-      </div>
-      <div class="chart-bar-row">
-        <div class="chart-bar-label">Awaiting Build</div>
-        <div class="chart-bar-track"><div class="chart-bar-fill" style="width:3%;background:#10b981"></div></div>
-        <div class="chart-bar-count">16</div>
-      </div>
-      <div class="chart-bar-row">
-        <div class="chart-bar-label">Modification</div>
-        <div class="chart-bar-track"><div class="chart-bar-fill" style="width:1%;background:#94a3b8"></div></div>
-        <div class="chart-bar-count">2</div>
-      </div>
+      <div class="chart-bar-row"><div class="chart-bar-label">Initial Approval</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:85%;background:var(--blue)"><span>35.0%</span></div></div><div class="chart-bar-count">1,059</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">Final Approval</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:83%;background:var(--blue-mid)"><span>34.1%</span></div></div><div class="chart-bar-count">1,031</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">Secondary</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:50%;background:#93b4ff"><span>20.3%</span></div></div><div class="chart-bar-count">613</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">Estimate</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:25%;background:#b8ceff"><span>10.0%</span></div></div><div class="chart-bar-count">302</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">Awaiting Build</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:3%;background:var(--green)"></div></div><div class="chart-bar-count">16</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">Modification</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:1%;background:var(--gray-mid)"></div></div><div class="chart-bar-count">2</div></div>
     </div>
-
     <div class="prose"><strong>16 requests</strong> are fully approved and ready for build. <strong>47 requests</strong> have been stuck in approval for more than 7 days — the oldest is R-0002847 in STFA (14 days).</div>
   `,
   followups: ['Show stuck requests over 7 days', 'Who are the approvers?', 'Request throughput this week']
@@ -559,17 +487,14 @@ const responses = {
 'Show me inspection results': {
   actions: ['Search Inspections (Status Eq: 3)', 'List All Inspections', 'Search Scaffolds (Status Eq 211)', 'Search Handovers (Status Eq: 3)'],
   html: `
-    <div class="prose">Here's the safety and inspection overview. <strong>703 scaffolds</strong> are awaiting inspection. The pass rate over the last 30 days is <strong>87.3%</strong>.</div>
-
+    <div class="prose">Here's the safety and inspection overview. <strong>703 scaffolds</strong> are awaiting inspection. Pass rate over the last 30 days is <strong>87.3%</strong>.</div>
     <div class="metrics-row">
       <div class="metric"><div class="metric-val amber">703</div><div class="metric-label">Awaiting Inspection</div></div>
       <div class="metric"><div class="metric-val red">561</div><div class="metric-label">Total Failed</div></div>
       <div class="metric"><div class="metric-val">23</div><div class="metric-label">Failed This Week</div></div>
       <div class="metric"><div class="metric-val green">87.3%</div><div class="metric-label">Pass Rate (30d)</div></div>
     </div>
-
-    <div class="prose" style="margin-top:4px"><strong>Recent inspections:</strong></div>
-
+    <div class="prose"><strong>Recent inspections:</strong></div>
     <table class="data-table">
       <thead><tr><th>Inspection</th><th>Scaffold</th><th>Result</th><th>Area</th><th>Inspector</th></tr></thead>
       <tbody>
@@ -580,38 +505,34 @@ const responses = {
         <tr><td class="mono">I-0000644</td><td class="mono">S-0001056</td><td><span class="status status-pass"><span class="dot dot-green"></span> Pass</span></td><td>STFA</td><td>C. Wilson</td></tr>
       </tbody>
     </table>
-
-    <div class="prose">Most failures are <strong>GPS distance warnings</strong> — inspectors scanning tags from too far away. This is concentrated in ALKY and AMRU areas. There are also <strong>4 failed handovers</strong> pending resolution.</div>
+    <div class="prose">Most failures are <strong>GPS distance warnings</strong> — inspectors scanning from too far. Concentrated in ALKY and AMRU. Also <strong>4 failed handovers</strong> pending resolution.</div>
   `,
-  followups: ['Show failure reasons breakdown', 'Inspections in ALKY', 'Failed handover details', 'Inspector workload']
+  followups: ['Show failure reasons', 'Inspections in ALKY', 'Failed handover details', 'Inspector workload']
 },
 
 'Show me scaffolds by area': {
   actions: ['List All Areas', 'Areas by Scaffold Count'],
   html: `
-    <div class="prose">Your site has <strong>10 areas</strong>. Here's the scaffold distribution — AMRU has the highest concentration with 350 scaffolds.</div>
-
+    <div class="prose">Your site has <strong>10 areas</strong>. AMRU has the highest concentration with 350 scaffolds.</div>
     <div class="chart-bars">
-      <div class="chart-bar-row"><div class="chart-bar-label">AMRU</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:100%;background:#1a1a2e"><span>350</span></div></div><div class="chart-bar-count">350</div></div>
-      <div class="chart-bar-row"><div class="chart-bar-label">ALKY</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:82%;background:#2d2d4a"></div></div><div class="chart-bar-count">288</div></div>
-      <div class="chart-bar-row"><div class="chart-bar-label">LFSP</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:79%;background:#3d3d5c"></div></div><div class="chart-bar-count">277</div></div>
-      <div class="chart-bar-row"><div class="chart-bar-label">STFA</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:59%;background:#4d4d6e"></div></div><div class="chart-bar-count">207</div></div>
-      <div class="chart-bar-row"><div class="chart-bar-label">VRU3</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:40%;background:#5d5d80"></div></div><div class="chart-bar-count">141</div></div>
-      <div class="chart-bar-row"><div class="chart-bar-label">12PS</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:40%;background:#5d5d80"></div></div><div class="chart-bar-count">141</div></div>
-      <div class="chart-bar-row"><div class="chart-bar-label">TANK</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:20%;background:#7d7d98"></div></div><div class="chart-bar-count">71</div></div>
-      <div class="chart-bar-row"><div class="chart-bar-label">UTIL</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:14%;background:#9d9daa"></div></div><div class="chart-bar-count">48</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">AMRU</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:100%;background:var(--blue-dark)"><span>350</span></div></div><div class="chart-bar-count">350</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">ALKY</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:82%;background:var(--blue)"></div></div><div class="chart-bar-count">288</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">LFSP</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:79%;background:var(--blue)"></div></div><div class="chart-bar-count">277</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">STFA</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:59%;background:var(--blue-mid)"></div></div><div class="chart-bar-count">207</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">VRU3</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:40%;background:var(--blue-mid)"></div></div><div class="chart-bar-count">141</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">12PS</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:40%;background:#93b4ff"></div></div><div class="chart-bar-count">141</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">TANK</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:20%;background:#b8ceff"></div></div><div class="chart-bar-count">71</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">UTIL</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:14%;background:#d0dfff"></div></div><div class="chart-bar-count">48</div></div>
     </div>
-
-    <div class="prose">AMRU, ALKY, and LFSP together account for <strong>55.6%</strong> of all standing scaffolds. Most failed inspections are also concentrated in these three areas.</div>
+    <div class="prose">AMRU, ALKY, and LFSP account for <strong>55.6%</strong> of all standing scaffolds. Most failed inspections are also concentrated there.</div>
   `,
-  followups: ['Drill into AMRU', 'Show sub-areas for ALKY', 'Which areas have the most failures?']
+  followups: ['Drill into AMRU', 'Sub-areas for ALKY', 'Which areas have the most failures?']
 },
 
 'Show me the team workload': {
   actions: ['Search People', 'List Administrators', 'Search Activities (all)'],
   html: `
-    <div class="prose">There are <strong>54 people</strong> registered in the system. <strong>31 have been active this week</strong>. Here are the busiest team members by activity count:</div>
-
+    <div class="prose"><strong>54 people</strong> registered. <strong>31 active this week</strong>. Busiest by activity count:</div>
     <table class="data-table">
       <thead><tr><th>Name</th><th>Company</th><th>Activities</th><th>Status</th></tr></thead>
       <tbody>
@@ -622,7 +543,6 @@ const responses = {
         <tr><td><strong>Austin Gibson</strong></td><td>AAA Scaffolding</td><td class="mono">0</td><td><span class="status status-pending"><span class="dot dot-amber"></span> Inactive</span></td></tr>
       </tbody>
     </table>
-
     <div class="metrics-row">
       <div class="metric"><div class="metric-val green">31</div><div class="metric-label">Active This Week</div></div>
       <div class="metric"><div class="metric-val amber">23</div><div class="metric-label">Inactive</div></div>
@@ -630,73 +550,80 @@ const responses = {
       <div class="metric"><div class="metric-val">3</div><div class="metric-label">Contractors</div></div>
     </div>
   `,
-  followups: ['Show all inactive users', 'Contractor breakdown', 'Contact directory', 'Workload by area']
+  followups: ['Show inactive users', 'Contractor breakdown', 'Contact directory', 'Workload by area']
 },
 
 'Give me a safety compliance summary': {
   actions: ['Search Scaffolds (Status Eq 211)', 'Search Inspections (Status Eq: 3)', 'Search Handovers (Status Eq: 3)', 'Search Scaffolds (all standing)'],
   html: `
-    <div class="prose">Here's the safety and compliance overview for Big Gore Refinery:</div>
-
+    <div class="prose">Safety and compliance overview for Big Gore Refinery:</div>
     <div class="metrics-row">
       <div class="metric"><div class="metric-val green">87.3%</div><div class="metric-label">Inspection Pass Rate (30d)</div></div>
       <div class="metric"><div class="metric-val amber">703</div><div class="metric-label">Awaiting Inspection</div></div>
-      <div class="metric"><div class="metric-val red">561</div><div class="metric-label">Total Failed Inspections</div></div>
+      <div class="metric"><div class="metric-val red">561</div><div class="metric-label">Total Failed</div></div>
       <div class="metric"><div class="metric-val">4</div><div class="metric-label">Failed Handovers</div></div>
     </div>
-
-    <div class="prose" style="margin-top:4px"><strong>Key risks:</strong></div>
-
+    <div class="prose"><strong>Key risks:</strong></div>
     <table class="data-table">
       <thead><tr><th>Risk</th><th>Count</th><th>Severity</th><th>Trend</th></tr></thead>
       <tbody>
         <tr><td>Scaffolds past dismantle date</td><td class="mono">1,622</td><td><span class="status status-fail"><span class="dot dot-red"></span> High</span></td><td>98.6% of standing</td></tr>
         <tr><td>Awaiting inspection</td><td class="mono">703</td><td><span class="status status-pending"><span class="dot dot-amber"></span> Medium</span></td><td>42.7% of standing</td></tr>
-        <tr><td>Failed inspections (this week)</td><td class="mono">23</td><td><span class="status status-pending"><span class="dot dot-amber"></span> Medium</span></td><td>+12% vs last week</td></tr>
+        <tr><td>Failed inspections (week)</td><td class="mono">23</td><td><span class="status status-pending"><span class="dot dot-amber"></span> Medium</span></td><td>+12% vs last week</td></tr>
         <tr><td>Failed handovers</td><td class="mono">4</td><td><span class="status status-info"><span class="dot dot-blue"></span> Low</span></td><td>0.2% failure rate</td></tr>
         <tr><td>All tags red</td><td class="mono">1,645</td><td><span class="status status-fail"><span class="dot dot-red"></span> High</span></td><td>100% red status</td></tr>
       </tbody>
     </table>
-
-    <div class="prose">The primary concern is that <strong>98.6% of standing scaffolds</strong> are past their planned dismantle date, and all tags are red. The inspection pass rate of 87.3% is within normal range but the volume awaiting inspection is high.</div>
+    <div class="prose"><strong>98.6% of standing scaffolds</strong> are past dismantle date and all tags are red. Inspection pass rate of 87.3% is within normal range but inspection backlog is high.</div>
   `,
-  followups: ['Show uninspected scaffolds', 'Export compliance report', 'Failed handover details', 'Inspection schedule']
+  followups: ['Uninspected scaffolds', 'Export compliance report', 'Failed handover details', 'Inspection schedule']
 },
 
 };
 
-// Fallback for unrecognized queries
 const fallbackResponse = {
   actions: ['Search Scaffolds', 'Search Requests'],
   html: `
-    <div class="prose">I can provide detailed information across several key areas of the ScaffoldIQ system:</div>
+    <div class="prose">I can query your live data across these areas:</div>
     <div class="prose">
-      <strong>Scaffolds</strong> — Status tracking, location, build/dismantle dates, assigned personnel<br>
-      <strong>Requests</strong> — Approval pipeline, bottlenecks, work history<br>
-      <strong>Inspections</strong> — Pass/fail results, compliance status, handovers<br>
-      <strong>Areas</strong> — Site hierarchy, scaffold counts, activity by location<br>
-      <strong>People</strong> — Team workload, contact info, contractor assignments
+      <strong>Scaffolds</strong> — Status, tags, locations, build/dismantle dates<br>
+      <strong>Requests</strong> — Approval pipeline, bottlenecks, throughput<br>
+      <strong>Inspections</strong> — Pass/fail results, compliance, handovers<br>
+      <strong>Areas</strong> — Site hierarchy, scaffold distribution<br>
+      <strong>People</strong> — Team workload, contacts, contractors
     </div>
   `,
   followups: ['Standing scaffolds', 'Request pipeline', 'Inspection results', 'Area breakdown', 'Team workload']
 };
 
 // ============================================
-// Chat logic
+// Topic tabs
+// ============================================
+function switchTopic(tab) {
+  document.querySelectorAll('.topic-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  const topic = tab.dataset.topic;
+  const query = topicQueries[topic];
+  if (query) askQ(query);
+}
+
+function switchAndAsk(topic, query) {
+  document.querySelectorAll('.topic-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.topic === topic);
+  });
+  askQ(query);
+}
+
+// ============================================
+// Chat
 // ============================================
 function getResponse(q) {
-  // Direct match
   if (responses[q]) return responses[q];
-  // Fuzzy match
   const ql = q.toLowerCase();
   for (const [key, val] of Object.entries(responses)) {
-    const kl = key.toLowerCase();
-    // Check if query contains key words
-    const words = kl.split(/\s+/).filter(w => w.length > 3);
-    const matches = words.filter(w => ql.includes(w));
-    if (matches.length >= 2) return val;
+    const words = key.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+    if (words.filter(w => ql.includes(w)).length >= 2) return val;
   }
-  // Keyword fallback
   if (ql.includes('scaffold') && (ql.includes('stand') || ql.includes('status'))) return responses['Show me all standing scaffolds with their status'];
   if (ql.includes('request') || ql.includes('pipeline') || ql.includes('approv')) return responses['Show me the request pipeline'];
   if (ql.includes('inspect') || ql.includes('fail')) return responses['Show me inspection results'];
@@ -717,16 +644,14 @@ function send() {
 
 function askQ(query) {
   const msgs = document.getElementById('messagesInner');
-  const welcomeMsg = document.getElementById('welcomeMsg');
-  if (welcomeMsg) welcomeMsg.style.display = 'none';
+  const welcome = document.getElementById('welcomeContent');
+  if (welcome) welcome.style.display = 'none';
 
-  // User message
   const userDiv = document.createElement('div');
   userDiv.className = 'msg msg-user';
   userDiv.innerHTML = `<div class="bubble">${esc(query)}</div>`;
   msgs.appendChild(userDiv);
 
-  // Typing indicator
   const typingDiv = document.createElement('div');
   typingDiv.className = 'msg msg-ai';
   typingDiv.innerHTML = `
@@ -739,84 +664,56 @@ function askQ(query) {
   msgs.appendChild(typingDiv);
   msgs.parentElement.scrollTop = msgs.parentElement.scrollHeight;
 
-  // Simulate response
-  const delay = 600 + Math.random() * 600;
   setTimeout(() => {
     typingDiv.remove();
     const data = getResponse(query);
-
     const aiDiv = document.createElement('div');
     aiDiv.className = 'msg msg-ai';
 
-    // Sources section
-    const sourcesId = 'src-' + Date.now();
-    let sourcesHtml = '';
-    if (data.actions && data.actions.length) {
-      sourcesHtml = `
-        <div class="sources">
-          <button class="sources-toggle" onclick="toggleSources('${sourcesId}', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-            ${data.actions.length} queries performed
-          </button>
-          <div class="sources-list" id="${sourcesId}">
-            ${data.actions.map(a => `<div class="source-item">${esc(a)}</div>`).join('')}
-          </div>
-        </div>
-      `;
+    const srcId = 'src-' + Date.now();
+    let srcHtml = '';
+    if (data.actions?.length) {
+      srcHtml = `<div class="sources"><button class="sources-toggle" onclick="toggleSrc('${srcId}',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>${data.actions.length} queries performed</button><div class="sources-list" id="${srcId}">${data.actions.map(a => `<div class="source-item">${esc(a)}</div>`).join('')}</div></div>`;
     }
-
-    // Follow-ups
     let followHtml = '';
-    if (data.followups && data.followups.length) {
-      followHtml = `<div class="followups">${data.followups.map(f =>
-        `<button class="followup-btn" onclick="askQ('${escAttr(f)}')">${esc(f)}</button>`
-      ).join('')}</div>`;
+    if (data.followups?.length) {
+      followHtml = `<div class="followups">${data.followups.map(f => `<button class="followup-btn" onclick="askQ('${escA(f)}')">${esc(f)}</button>`).join('')}</div>`;
     }
 
     aiDiv.innerHTML = `
-      <div class="msg-ai-header">
-        <div class="ai-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <span class="ai-label">ScaffoldIQ</span>
-      </div>
-      ${data.html}
-      ${sourcesHtml}
-      ${followHtml}
+      <div class="msg-ai-header"><div class="ai-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><span class="ai-label">ScaffoldIQ</span></div>
+      ${data.html}${srcHtml}${followHtml}
     `;
     msgs.appendChild(aiDiv);
     msgs.parentElement.scrollTop = msgs.parentElement.scrollHeight;
 
-    // Animate bars
     setTimeout(() => {
       aiDiv.querySelectorAll('.chart-bar-fill').forEach(bar => {
-        const w = bar.style.width;
-        bar.style.width = '0%';
+        const w = bar.style.width; bar.style.width = '0%';
         requestAnimationFrame(() => { bar.style.width = w; });
       });
     }, 50);
-
-  }, delay);
+  }, 600 + Math.random() * 500);
 }
 
-function toggleSources(id, btn) {
-  const el = document.getElementById(id);
-  el.classList.toggle('visible');
+function toggleSrc(id, btn) {
+  document.getElementById(id).classList.toggle('visible');
   btn.classList.toggle('open');
 }
 
 function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-function escAttr(s) { return s.replace(/'/g, "\\'"); }
+function escA(s) { return s.replace(/'/g, "\\'"); }
 
 document.getElementById('input').addEventListener('keydown', e => {
   if (e.key === 'Enter') { e.preventDefault(); send(); }
 });
 
-// Dynamic greeting
 (function() {
   const h = new Date().getHours();
   let g = 'Good morning';
   if (h >= 12 && h < 17) g = 'Good afternoon';
   if (h >= 17) g = 'Good evening';
-  document.getElementById('greetingText').innerHTML = g + ', Zaib. Here\u2019s your site at a glance.';
+  document.getElementById('greetingText').innerHTML = g + ', <strong>Zaib</strong>. Your site snapshot for Big Gore Refinery:';
 })();
 </script>
 
