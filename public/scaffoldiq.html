@@ -18,9 +18,7 @@ body{
 
 /* ── Vars ── */
 :root{
-  --sidebar-w:260px;
   --brand:#1a1a2e;
-  --brand-light:#16213e;
   --accent:#3b82f6;
   --accent-hover:#2563eb;
   --red:#ef4444;--red-bg:#fef2f2;
@@ -31,70 +29,33 @@ body{
 }
 
 /* ── Layout ── */
-.app{display:flex;height:100vh;overflow:hidden}
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
 
-/* ── Sidebar ── */
-.sidebar{
-  width:var(--sidebar-w);flex-shrink:0;
-  background:var(--brand);color:#fff;
-  display:flex;flex-direction:column;
-  border-right:1px solid rgba(255,255,255,0.06);
+/* ── Top Header ── */
+.top-header{
+  padding:12px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid #eee;flex-shrink:0;
+  background:#fff;
 }
-.sidebar-header{
-  padding:20px 20px 16px;
-  border-bottom:1px solid rgba(255,255,255,0.08);
-}
-.sidebar-brand{display:flex;align-items:center;gap:10px;margin-bottom:4px}
-.sidebar-logo{
-  width:28px;height:28px;background:var(--accent);border-radius:6px;
+.top-header-left{display:flex;align-items:center;gap:10px}
+.top-logo{
+  width:30px;height:30px;background:var(--brand);border-radius:8px;
   display:flex;align-items:center;justify-content:center;
-  font-weight:700;font-size:13px;color:#fff;
+  font-weight:700;font-size:14px;color:#fff;
 }
-.sidebar-name{font-weight:700;font-size:16px;letter-spacing:-0.02em}
-.sidebar-site{font-size:12px;color:rgba(255,255,255,0.45);margin-top:2px}
-
-.sidebar-nav{flex:1;padding:12px 10px;overflow-y:auto}
-.nav-label{
-  font-size:10px;font-weight:600;text-transform:uppercase;
-  letter-spacing:0.08em;color:rgba(255,255,255,0.3);
-  padding:8px 10px 6px;
-}
-.nav-item{
-  display:flex;align-items:center;gap:10px;
-  padding:9px 12px;border-radius:8px;
-  font-size:13px;color:rgba(255,255,255,0.6);
-  cursor:pointer;transition:all .12s ease;
-  margin-bottom:1px;
-}
-.nav-item:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.9)}
-.nav-item.active{background:rgba(255,255,255,0.1);color:#fff;font-weight:500}
-.nav-item svg{width:16px;height:16px;flex-shrink:0;opacity:.5}
-.nav-item.active svg{opacity:.8}
-
-.nav-stat{
-  margin-left:auto;
-  font-size:11px;font-weight:600;
-  font-family:var(--mono);
-  color:rgba(255,255,255,0.35);
-}
-.nav-item.active .nav-stat{color:rgba(255,255,255,0.6)}
-
-.sidebar-footer{
-  padding:14px 16px;
-  border-top:1px solid rgba(255,255,255,0.08);
-  display:flex;align-items:center;gap:10px;
-}
-.sidebar-avatar{
+.top-brand{font-weight:700;font-size:16px;letter-spacing:-0.02em}
+.top-sep{width:1px;height:18px;background:#e5e5e5;margin:0 4px}
+.top-site{font-size:13px;color:#999}
+.top-header-right{display:flex;align-items:center;gap:14px}
+.top-status{font-size:12px;color:#aaa;display:flex;align-items:center;gap:5px}
+.top-status::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.top-avatar{
   width:30px;height:30px;border-radius:50%;
-  background:var(--accent);color:#fff;
+  background:var(--brand);color:#fff;
   display:flex;align-items:center;justify-content:center;
-  font-weight:600;font-size:12px;
-}
-.sidebar-user{font-size:13px;color:rgba(255,255,255,0.7)}
-.sidebar-status{font-size:11px;color:rgba(255,255,255,0.35);display:flex;align-items:center;gap:4px}
-.sidebar-status::before{
-  content:'';width:5px;height:5px;border-radius:50%;
-  background:var(--green);
+  font-weight:600;font-size:12px;cursor:pointer;
 }
 
 /* ── Main Chat Area ── */
@@ -103,36 +64,17 @@ body{
   background:#fff;overflow:hidden;
 }
 
-/* Chat header */
-.chat-header{
-  padding:14px 24px;
-  border-bottom:1px solid #f0f0f0;
-  display:flex;align-items:center;justify-content:space-between;
-  flex-shrink:0;
-}
-.chat-header-left{display:flex;align-items:center;gap:8px}
-.chat-title{font-weight:600;font-size:14px}
-.chat-badge{
-  font-size:10px;font-weight:600;
-  background:var(--green-bg);color:var(--green);
-  padding:2px 8px;border-radius:100px;
-  display:flex;align-items:center;gap:4px;
-}
-.chat-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor}
-.chat-header-actions{display:flex;gap:4px}
-.header-btn{
-  width:32px;height:32px;border:none;background:transparent;
-  border-radius:6px;cursor:pointer;color:#999;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .12s ease;
-}
-.header-btn:hover{background:#f5f5f5;color:#555}
-.header-btn svg{width:16px;height:16px}
+/* Chat header - removed, using top-header instead */
 
 /* Messages */
 .messages{
-  flex:1;overflow-y:auto;padding:24px;
+  flex:1;overflow-y:auto;
+  padding:24px 24px;
   scroll-behavior:smooth;
+}
+.messages-inner{
+  max-width:760px;
+  margin:0 auto;
 }
 .messages::-webkit-scrollbar{width:4px}
 .messages::-webkit-scrollbar-thumb{background:#ddd;border-radius:4px}
@@ -367,11 +309,16 @@ body{
 
 /* ── Responsive ── */
 @media(max-width:768px){
-  .sidebar{display:none}
-  .chat-main{width:100%}
+  .top-sep,.top-site{display:none}
   .welcome-grid{grid-template-columns:1fr}
   .metrics-row{flex-direction:column}
   .chart-donut{flex-direction:column;align-items:flex-start}
+  .messages{padding:16px}
+  .input-area{padding:12px 16px 16px}
+}
+@media(max-width:480px){
+  .top-header{padding:10px 16px}
+  .chart-bar-label{width:80px;font-size:11px}
 }
 </style>
 </head>
@@ -379,82 +326,24 @@ body{
 
 <div class="app">
 
-<!-- ── Sidebar ── -->
-<nav class="sidebar">
-  <div class="sidebar-header">
-    <div class="sidebar-brand">
-      <div class="sidebar-logo">S</div>
-      <span class="sidebar-name">ScaffoldIQ</span>
-    </div>
-    <div class="sidebar-site">Big Gore Refinery</div>
+<!-- ── Header ── -->
+<header class="top-header">
+  <div class="top-header-left">
+    <div class="top-logo">S</div>
+    <span class="top-brand">ScaffoldIQ</span>
+    <span class="top-sep"></span>
+    <span class="top-site">Big Gore Refinery</span>
   </div>
-
-  <div class="sidebar-nav">
-    <div class="nav-label">Overview</div>
-    <div class="nav-item active" onclick="handleNav('chat')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      Chat Assistant
-    </div>
-    <div class="nav-item" onclick="handleNav('dashboard')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
-      Dashboard
-    </div>
-
-    <div class="nav-label">Data</div>
-    <div class="nav-item" onclick="askQ('Show me all standing scaffolds')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/></svg>
-      Scaffolds
-      <span class="nav-stat">1,645</span>
-    </div>
-    <div class="nav-item" onclick="askQ('Show me the request pipeline')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      Requests
-      <span class="nav-stat">3,024</span>
-    </div>
-    <div class="nav-item" onclick="askQ('Show me inspection results')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      Inspections
-      <span class="nav-stat">703</span>
-    </div>
-    <div class="nav-item" onclick="askQ('Show me the team workload')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      People
-      <span class="nav-stat">54</span>
-    </div>
-    <div class="nav-item" onclick="askQ('Show me scaffolds by area')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
-      Areas
-      <span class="nav-stat">10</span>
-    </div>
+  <div class="top-header-right">
+    <span class="top-status">Live data</span>
+    <div class="top-avatar" title="Zaib Wemyss">Z</div>
   </div>
+</header>
 
-  <div class="sidebar-footer">
-    <div class="sidebar-avatar">Z</div>
-    <div>
-      <div class="sidebar-user">Zaib Wemyss</div>
-      <div class="sidebar-status">Connected</div>
-    </div>
-  </div>
-</nav>
-
-<!-- ── Chat Main ── -->
+<!-- ── Chat ── -->
 <div class="chat-main">
-  <div class="chat-header">
-    <div class="chat-header-left">
-      <span class="chat-title">Chat Assistant</span>
-      <span class="chat-badge">Live data</span>
-    </div>
-    <div class="chat-header-actions">
-      <button class="header-btn" title="New chat">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </button>
-      <button class="header-btn" title="Export">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      </button>
-    </div>
-  </div>
-
   <div class="messages" id="messages">
+    <div class="messages-inner" id="messagesInner">
     <div class="welcome" id="welcome">
       <h2>What do you want to know?</h2>
       <p>I query your live scaffold data — inspections, requests, scaffolds, personnel, and areas. Ask anything or pick a topic.</p>
@@ -477,10 +366,11 @@ body{
         </div>
       </div>
     </div>
+    </div>
   </div>
 
   <div class="input-area">
-    <div class="input-wrap">
+    <div class="input-wrap" style="max-width:760px">
       <input type="text" id="input" placeholder="Ask about scaffolds, inspections, requests..." autocomplete="off" />
       <button class="send-btn" onclick="send()" title="Send">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -706,7 +596,7 @@ function send() {
 }
 
 function askQ(query) {
-  const msgs = document.getElementById('messages');
+  const msgs = document.getElementById('messagesInner');
   const welcome = document.getElementById('welcome');
   if (welcome) welcome.style.display = 'none';
 
@@ -727,7 +617,7 @@ function askQ(query) {
     <div class="typing-indicator"><span></span><span></span><span></span></div>
   `;
   msgs.appendChild(typingDiv);
-  msgs.scrollTop = msgs.scrollHeight;
+  msgs.parentElement.scrollTop = msgs.parentElement.scrollHeight;
 
   // Simulate response
   const delay = 600 + Math.random() * 600;
@@ -773,7 +663,7 @@ function askQ(query) {
       ${followHtml}
     `;
     msgs.appendChild(aiDiv);
-    msgs.scrollTop = msgs.scrollHeight;
+    msgs.parentElement.scrollTop = msgs.parentElement.scrollHeight;
 
     // Animate bars
     setTimeout(() => {
@@ -791,11 +681,6 @@ function toggleSources(id, btn) {
   const el = document.getElementById(id);
   el.classList.toggle('visible');
   btn.classList.toggle('open');
-}
-
-function handleNav(section) {
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  event.currentTarget.classList.add('active');
 }
 
 function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
