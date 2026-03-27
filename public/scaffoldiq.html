@@ -64,7 +64,10 @@ body{
   width:32px;height:32px;background:var(--blue-dark);color:#fff;
   display:flex;align-items:center;justify-content:center;
   font-weight:500;font-size:13px;cursor:pointer;
+  transition:transform .12s ease;
 }
+.avatar:hover{transform:scale(1.08)}
+.avatar:active{transform:scale(0.95)}
 
 /* ── Topic Chips (above input, always visible) ── */
 .topic-chips{
@@ -86,10 +89,33 @@ body{
   font-family:inherit;letter-spacing:-0.01em;
 }
 .topic-chip:hover{border-color:var(--blue);color:var(--blue);background:#f0f4ff}
+.topic-chip:active{transform:scale(0.96);background:var(--blue);color:#fff;border-color:var(--blue)}
 .topic-chip .chip-count{
   font-family:var(--mono);font-size:12px;font-weight:500;
   color:var(--gray-xdark);
 }
+
+/* Topic cards in welcome */
+.topic-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--gray-light);
+  margin-top:1px;
+}
+.topic-card{
+  background:var(--white);padding:20px;
+  cursor:pointer;transition:all .15s ease;
+}
+.topic-card:hover{background:var(--gray-xlight)}
+.topic-card:active{background:var(--gray-light);transform:scale(0.98)}
+.topic-card-icon{
+  width:40px;height:40px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:12px;
+}
+.topic-card-icon svg{width:20px;height:20px;transition:transform .2s ease}
+.topic-card:hover .topic-card-icon svg{transform:scale(1.1)}
+.topic-card-title{font-size:16px;font-weight:500;color:var(--black);margin-bottom:4px}
+.topic-card-desc{font-size:13px;color:var(--gray-xdark);line-height:1.4}
 
 /* ── Chat Area ── */
 .chat{flex:1;display:flex;flex-direction:column;overflow:hidden}
@@ -118,6 +144,8 @@ body{
   cursor:pointer;transition:background .12s ease;
 }
 .summary-cell:hover{background:var(--gray-xlight)}
+.summary-cell:active{background:var(--gray-light);transform:scale(0.97)}
+.summary-cell{transition:all .15s ease}
 .summary-cell .s-num{
   font-size:28px;font-weight:500;letter-spacing:-0.03em;
   line-height:1;margin-bottom:4px;
@@ -132,6 +160,17 @@ body{
 /* ── Messages ── */
 .msg{margin-bottom:24px;animation:fadeIn .3s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* Stagger welcome elements */
+#welcomeContent .welcome-text{animation:fadeIn .4s ease both}
+#welcomeContent .summary-row{animation:fadeIn .4s ease .1s both}
+#welcomeContent .topic-grid{animation:fadeIn .4s ease .2s both}
+#welcomeContent .topic-card:nth-child(1){animation:fadeIn .3s ease .25s both}
+#welcomeContent .topic-card:nth-child(2){animation:fadeIn .3s ease .3s both}
+#welcomeContent .topic-card:nth-child(3){animation:fadeIn .3s ease .35s both}
+#welcomeContent .topic-card:nth-child(4){animation:fadeIn .3s ease .4s both}
+#welcomeContent .topic-card:nth-child(5){animation:fadeIn .3s ease .45s both}
+#welcomeContent .topic-card:nth-child(6){animation:fadeIn .3s ease .5s both}
 
 .msg-user{display:flex;justify-content:flex-end}
 .msg-user .bubble{
@@ -195,6 +234,7 @@ body{
   font-size:12px;text-transform:uppercase;letter-spacing:0.03em;
 }
 .data-table td{padding:12px 12px;border-bottom:1px solid var(--gray-xlight);color:var(--black)}
+.data-table tr{transition:background .1s ease}
 .data-table tr:hover td{background:var(--gray-xlight)}
 .data-table .mono{font-family:var(--mono);font-size:12px;font-weight:500}
 .data-table strong{font-weight:500;color:var(--black)}
@@ -233,6 +273,7 @@ body{
   letter-spacing:-0.01em;
 }
 .followup-btn:hover{background:var(--blue);color:#fff}
+.followup-btn:active{transform:scale(0.96);background:var(--blue-dark);color:#fff}
 
 /* ── Typing ── */
 .typing-indicator{display:flex;gap:4px;padding:12px 0;width:fit-content}
@@ -268,6 +309,7 @@ body{
   cursor:pointer;transition:background .12s;flex-shrink:0;
 }
 .send-btn:hover{background:var(--blue-dark)}
+.send-btn:active{transform:scale(0.92)}
 .send-btn svg{width:16px;height:16px}
 
 /* ── Responsive / Mobile-First iOS Feel ── */
@@ -283,6 +325,7 @@ body{
   .metric{min-width:calc(50% - 1px)}
   .summary-row{flex-wrap:wrap}
   .summary-cell{min-width:calc(50% - 1px)}
+  .topic-grid{grid-template-columns:repeat(2,1fr)}
   .chart-donut{flex-direction:column;align-items:flex-start;gap:16px}
   .chart-bar-label{width:90px}
   .chart-bar-track{height:32px}
@@ -327,19 +370,65 @@ body{
 
       <!-- Welcome -->
       <div id="welcomeContent">
-        <div class="welcome-text" id="greetingText">Good afternoon, <strong>Zaib</strong>. Your site snapshot for Big Gore Refinery:</div>
+        <div class="welcome-text" id="greetingText">Good afternoon, <strong>Zaib</strong>. Here's Big Gore Refinery right now.</div>
+
         <div class="summary-row">
-          <div class="summary-cell" onclick="switchAndAsk('scaffolds','Show me all standing scaffolds with their status')">
-            <div class="s-num">1,645</div><div class="s-label">Standing scaffolds</div>
+          <div class="summary-cell" onclick="askQ('Show me all standing scaffolds with their status')">
+            <div class="s-num">1,645</div><div class="s-label">Standing</div>
           </div>
-          <div class="summary-cell" onclick="switchAndAsk('requests','Show me the request pipeline')">
+          <div class="summary-cell" onclick="askQ('Show me the request pipeline')">
             <div class="s-num amber">3,024</div><div class="s-label">Open requests</div>
           </div>
-          <div class="summary-cell" onclick="switchAndAsk('inspections','Show me inspection results')">
+          <div class="summary-cell" onclick="askQ('Show me inspection results')">
             <div class="s-num red">703</div><div class="s-label">Awaiting inspection</div>
           </div>
-          <div class="summary-cell" onclick="switchAndAsk('people','Show me the team workload')">
+          <div class="summary-cell" onclick="askQ('Show me the team workload')">
             <div class="s-num green">31</div><div class="s-label">Active this week</div>
+          </div>
+        </div>
+
+        <div class="topic-grid">
+          <div class="topic-card" onclick="askQ('Show me all standing scaffolds with their status')">
+            <div class="topic-card-icon" style="background:#EFF6FF;color:#0A3EFF">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/></svg>
+            </div>
+            <div class="topic-card-title">Scaffolds</div>
+            <div class="topic-card-desc">Status, locations, build dates</div>
+          </div>
+          <div class="topic-card" onclick="askQ('Show me the request pipeline')">
+            <div class="topic-card-icon" style="background:#F3E8FF;color:#7C3AED">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="topic-card-title">Requests</div>
+            <div class="topic-card-desc">Pipeline, approvals, bottlenecks</div>
+          </div>
+          <div class="topic-card" onclick="askQ('Show me inspection results')">
+            <div class="topic-card-icon" style="background:#FEF2F2;color:#E64059">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div class="topic-card-title">Inspections</div>
+            <div class="topic-card-desc">Pass/fail, compliance, handovers</div>
+          </div>
+          <div class="topic-card" onclick="askQ('Show me scaffolds by area')">
+            <div class="topic-card-icon" style="background:#F0FDF4;color:#16A34A">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+            </div>
+            <div class="topic-card-title">Areas</div>
+            <div class="topic-card-desc">Site hierarchy, distribution</div>
+          </div>
+          <div class="topic-card" onclick="askQ('Show me the team workload')">
+            <div class="topic-card-icon" style="background:#FFFBEB;color:#D97706">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+            </div>
+            <div class="topic-card-title">People</div>
+            <div class="topic-card-desc">Team workload, contacts</div>
+          </div>
+          <div class="topic-card" onclick="askQ('Give me a safety compliance summary')">
+            <div class="topic-card-icon" style="background:#FEF3C7;color:#B45309">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="topic-card-title">Safety</div>
+            <div class="topic-card-desc">Compliance, risks, overdue</div>
           </div>
         </div>
       </div>
