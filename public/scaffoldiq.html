@@ -55,9 +55,9 @@ body{
 }
 .brand{font-weight:500;font-size:20px;letter-spacing:-0.02em;color:var(--black)}
 .sep{width:1px;height:20px;background:var(--gray-light)}
-.site{font-size:13px;color:var(--gray-dark);letter-spacing:-0.01em}
+.site{font-size:14px;color:var(--gray-xdark);letter-spacing:-0.01em}
 .header-right{display:flex;align-items:center;gap:16px}
-.live{font-size:12px;color:var(--gray-dark);display:flex;align-items:center;gap:6px}
+.live{font-size:13px;color:var(--gray-xdark);display:flex;align-items:center;gap:6px}
 .live::before{content:'';width:6px;height:6px;background:var(--green);animation:blink 2s ease infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 .avatar{
@@ -66,33 +66,30 @@ body{
   font-weight:500;font-size:13px;cursor:pointer;
 }
 
-/* ── Topic Strip (always visible) ── */
-.topic-strip{
-  border-bottom:1px solid var(--gray-light);
-  background:var(--white);flex-shrink:0;
-  padding:0 24px;
-  display:flex;align-items:stretch;
+/* ── Topic Chips (above input, always visible) ── */
+.topic-chips{
+  display:flex;gap:6px;
   overflow-x:auto;-webkit-overflow-scrolling:touch;
   scrollbar-width:none;
+  padding:0 0 10px;
+  max-width:720px;margin:0 auto;width:100%;
 }
-.topic-strip::-webkit-scrollbar{display:none}
-
-.topic-tab{
-  display:flex;align-items:center;gap:8px;
-  padding:12px 16px;
-  font-size:13px;font-weight:400;color:var(--gray-dark);
+.topic-chips::-webkit-scrollbar{display:none}
+.topic-chip{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 14px;
+  font-size:14px;font-weight:500;color:var(--black);
+  background:var(--gray-xlight);
+  border:1px solid var(--gray-light);
   cursor:pointer;white-space:nowrap;
-  border-bottom:2px solid transparent;
   transition:all .12s ease;
-  letter-spacing:-0.01em;
+  font-family:inherit;letter-spacing:-0.01em;
 }
-.topic-tab:hover{color:var(--black);background:var(--gray-xlight)}
-.topic-tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:500}
-.topic-tab .tab-count{
-  font-family:var(--mono);font-size:11px;font-weight:500;
-  color:var(--gray-mid);
+.topic-chip:hover{border-color:var(--blue);color:var(--blue);background:#f0f4ff}
+.topic-chip .chip-count{
+  font-family:var(--mono);font-size:12px;font-weight:500;
+  color:var(--gray-xdark);
 }
-.topic-tab.active .tab-count{color:var(--blue-mid)}
 
 /* ── Chat Area ── */
 .chat{flex:1;display:flex;flex-direction:column;overflow:hidden}
@@ -107,7 +104,7 @@ body{
 /* Welcome message */
 .welcome-text{
   padding:24px 0 16px;
-  font-size:15px;color:var(--gray-xdark);line-height:1.5;
+  font-size:16px;color:var(--black);line-height:1.5;
 }
 .welcome-text strong{color:var(--black);font-weight:500}
 
@@ -126,7 +123,7 @@ body{
   line-height:1;margin-bottom:4px;
   font-variant-numeric:tabular-nums;
 }
-.summary-cell .s-label{font-size:11px;color:var(--gray-dark);letter-spacing:-0.01em}
+.summary-cell .s-label{font-size:13px;color:var(--gray-xdark);letter-spacing:-0.01em}
 .s-num.red{color:var(--red)}
 .s-num.amber{color:var(--amber)}
 .s-num.green{color:var(--green)}
@@ -139,7 +136,7 @@ body{
 .msg-user{display:flex;justify-content:flex-end}
 .msg-user .bubble{
   background:var(--blue-dark);color:#fff;
-  padding:10px 16px;font-size:14px;line-height:1.5;
+  padding:12px 18px;font-size:15px;line-height:1.5;
   max-width:480px;letter-spacing:-0.01em;
 }
 
@@ -152,11 +149,11 @@ body{
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
 .ai-icon svg{width:13px;height:13px;color:#fff}
-.ai-label{font-size:12px;font-weight:500;color:var(--gray-dark)}
+.ai-label{font-size:13px;font-weight:500;color:var(--gray-xdark)}
 
 .msg-ai .prose{
-  font-size:14px;line-height:1.6;color:var(--gray-xdark);
-  margin-bottom:12px;max-width:600px;
+  font-size:15px;line-height:1.6;color:var(--black);
+  margin-bottom:12px;max-width:640px;
 }
 .msg-ai .prose strong{color:var(--black);font-weight:500}
 
@@ -171,37 +168,37 @@ body{
 .metric-val.red{color:var(--red)}
 .metric-val.amber{color:var(--amber)}
 .metric-val.green{color:var(--green)}
-.metric-label{font-size:11px;color:var(--gray-dark)}
+.metric-label{font-size:13px;color:var(--gray-xdark)}
 
 /* ── Bar Charts ── */
 .chart-bars{margin:14px 0;max-width:520px}
 .chart-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:4px}
-.chart-bar-label{font-size:12px;color:var(--gray-xdark);width:120px;flex-shrink:0;text-align:right;font-weight:400}
+.chart-bar-label{font-size:14px;color:var(--black);width:120px;flex-shrink:0;text-align:right;font-weight:400}
 .chart-bar-track{flex:1;height:26px;background:var(--gray-xlight);overflow:hidden}
 .chart-bar-fill{height:100%;display:flex;align-items:center;padding:0 8px;transition:width .8s cubic-bezier(.22,1,.36,1)}
 .chart-bar-fill span{font-size:10px;font-weight:500;color:#fff;white-space:nowrap}
-.chart-bar-count{font-size:12px;font-weight:500;color:var(--black);width:44px;text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono)}
+.chart-bar-count{font-size:14px;font-weight:500;color:var(--black);width:50px;text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono)}
 
 /* ── Donut ── */
 .chart-donut{display:flex;align-items:center;gap:24px;margin:14px 0}
 .chart-donut svg{flex-shrink:0}
 .chart-legend{display:flex;flex-direction:column;gap:5px}
-.chart-legend-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gray-xdark)}
+.chart-legend-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--black)}
 .chart-legend-dot{width:10px;height:10px;flex-shrink:0}
-.chart-legend-val{font-weight:500;color:var(--black);margin-left:auto;font-family:var(--mono);font-size:11px}
+.chart-legend-val{font-weight:500;color:var(--black);margin-left:auto;font-family:var(--mono);font-size:13px}
 
 /* ── Data Tables ── */
-.data-table{width:100%;max-width:600px;border-collapse:collapse;margin:12px 0;font-size:13px}
+.data-table{width:100%;max-width:640px;border-collapse:collapse;margin:12px 0;font-size:14px}
 .data-table th{
-  text-align:left;font-weight:500;color:var(--gray-dark);
-  padding:8px 12px;border-bottom:2px solid var(--gray-light);
-  font-size:11px;text-transform:uppercase;letter-spacing:0.03em;
+  text-align:left;font-weight:500;color:var(--gray-xdark);
+  padding:10px 12px;border-bottom:2px solid var(--gray-light);
+  font-size:12px;text-transform:uppercase;letter-spacing:0.03em;
 }
-.data-table td{padding:10px 12px;border-bottom:1px solid var(--gray-xlight);color:var(--gray-xdark)}
+.data-table td{padding:12px 12px;border-bottom:1px solid var(--gray-xlight);color:var(--black)}
 .data-table tr:hover td{background:var(--gray-xlight)}
 .data-table .mono{font-family:var(--mono);font-size:12px;font-weight:500}
 .data-table strong{font-weight:500;color:var(--black)}
-.status{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:2px 8px}
+.status{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:500;padding:3px 10px}
 .status-pass{background:var(--green-bg);color:var(--green)}
 .status-fail{background:var(--red-bg);color:var(--red)}
 .status-pending{background:var(--amber-bg);color:var(--amber)}
@@ -214,7 +211,7 @@ body{
 .sources{margin-top:12px;padding-top:10px;border-top:1px solid var(--gray-xlight)}
 .sources-toggle{
   display:flex;align-items:center;gap:6px;
-  font-size:11px;color:var(--gray-mid);cursor:pointer;
+  font-size:12px;color:var(--gray-xdark);cursor:pointer;
   background:none;border:none;font-family:inherit;transition:color .12s;
 }
 .sources-toggle:hover{color:var(--gray-xdark)}
@@ -222,16 +219,16 @@ body{
 .sources-toggle.open svg{transform:rotate(90deg)}
 .sources-list{display:none;margin-top:8px}
 .sources-list.visible{display:block}
-.source-item{font-size:11px;color:var(--gray-mid);padding:3px 0;display:flex;align-items:center;gap:6px;font-family:var(--mono)}
-.source-item::before{content:'';width:4px;height:4px;background:var(--gray-light);flex-shrink:0}
+.source-item{font-size:12px;color:var(--gray-xdark);padding:4px 0;display:flex;align-items:center;gap:6px;font-family:var(--mono)}
+.source-item::before{content:'';width:4px;height:4px;background:var(--gray-xdark);flex-shrink:0}
 
 /* ── Followups ── */
 .followups{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
 .followup-btn{
-  font-size:12px;font-weight:500;
+  font-size:14px;font-weight:500;
   color:var(--blue);background:transparent;
   border:1px solid var(--blue);
-  padding:6px 14px;cursor:pointer;
+  padding:8px 16px;cursor:pointer;
   transition:all .12s;font-family:inherit;
   letter-spacing:-0.01em;
 }
@@ -276,74 +273,33 @@ body{
 /* ── Responsive / Mobile-First iOS Feel ── */
 @media(max-width:768px){
   body{background:var(--gray-xlight)}
-
-  .header{
-    height:auto;
-    padding:env(safe-area-inset-top,12px) 16px 10px;
-    background:var(--white);
-  }
+  .header{height:auto;padding:env(safe-area-inset-top,12px) 16px 10px}
   .sep,.site{display:none}
-
-  .topic-strip{
-    padding:0 16px;gap:0;
-    background:var(--white);
-    -webkit-overflow-scrolling:touch;
-  }
-  .topic-tab{padding:10px 14px;font-size:12px}
-  .topic-tab .tab-count{font-size:10px}
-
   .messages{padding:12px 16px}
   .messages-inner{max-width:100%}
-
-  .msg-user .bubble{font-size:15px;padding:10px 14px}
-  .msg-ai .prose{font-size:15px;line-height:1.6}
-
+  .msg-user .bubble{font-size:16px}
+  .msg-ai .prose{font-size:16px}
   .metrics-row{flex-wrap:wrap;gap:1px}
-  .metric{min-width:calc(50% - 1px);padding:12px 14px}
-  .metric-val{font-size:22px}
-
+  .metric{min-width:calc(50% - 1px)}
   .summary-row{flex-wrap:wrap}
-  .summary-cell{min-width:calc(50% - 1px);padding:14px 16px}
-
+  .summary-cell{min-width:calc(50% - 1px)}
   .chart-donut{flex-direction:column;align-items:flex-start;gap:16px}
-  .chart-bar-label{width:90px;font-size:12px}
+  .chart-bar-label{width:90px}
   .chart-bar-track{height:32px}
-
-  .data-table{font-size:13px}
   .data-table th,.data-table td{padding:10px 10px}
-
-  .followup-btn{font-size:13px;padding:8px 16px;min-height:36px}
-
-  /* iOS-style fixed bottom input */
-  .input-area{
-    padding:10px 16px calc(env(safe-area-inset-bottom,12px) + 10px);
-    background:var(--white);
-    border-top:1px solid var(--gray-light);
-  }
-  .input-wrap{
-    border:1px solid var(--gray-light);
-    background:var(--gray-xlight);
-  }
+  .followup-btn{min-height:44px;font-size:14px}
+  .topic-chips{padding:0 0 8px}
+  .topic-chip{padding:10px 16px;font-size:14px;min-height:44px}
+  .input-area{padding:10px 16px calc(env(safe-area-inset-bottom,12px) + 10px)}
   .input-wrap input{font-size:16px;padding:12px 0}
-  .send-btn{width:38px;height:38px}
+  .send-btn{width:44px;height:44px}
 }
-
 @media(max-width:480px){
   .summary-cell .s-num{font-size:24px}
   .brand{font-size:17px}
-  .topic-tab{padding:10px 10px;font-size:11px}
-  .metric-val{font-size:20px}
 }
-
-/* Standalone PWA - extra padding for notch */
-@media(display-mode:standalone){
-  .header{padding-top:env(safe-area-inset-top,44px)}
-}
-
-/* Prevent iOS zoom on input focus */
-@supports(-webkit-touch-callout:none){
-  .input-wrap input{font-size:16px}
-}
+@media(display-mode:standalone){.header{padding-top:env(safe-area-inset-top,44px)}}
+@supports(-webkit-touch-callout:none){.input-wrap input{font-size:16px}}
 </style>
 </head>
 <body>
@@ -363,17 +319,6 @@ body{
     <div class="avatar" title="Zaib Wemyss">Z</div>
   </div>
 </header>
-
-<!-- Topic Strip — ALWAYS VISIBLE -->
-<div class="topic-strip" id="topicStrip">
-  <div class="topic-tab active" data-topic="home" onclick="switchTopic(this)">Overview</div>
-  <div class="topic-tab" data-topic="scaffolds" onclick="switchTopic(this)">Scaffolds <span class="tab-count">1,645</span></div>
-  <div class="topic-tab" data-topic="requests" onclick="switchTopic(this)">Requests <span class="tab-count">3,024</span></div>
-  <div class="topic-tab" data-topic="inspections" onclick="switchTopic(this)">Inspections <span class="tab-count">703</span></div>
-  <div class="topic-tab" data-topic="areas" onclick="switchTopic(this)">Areas <span class="tab-count">10</span></div>
-  <div class="topic-tab" data-topic="people" onclick="switchTopic(this)">People <span class="tab-count">54</span></div>
-  <div class="topic-tab" data-topic="safety" onclick="switchTopic(this)">Safety</div>
-</div>
 
 <!-- Chat -->
 <div class="chat">
@@ -403,6 +348,14 @@ body{
   </div>
 
   <div class="input-area">
+    <div class="topic-chips">
+      <button class="topic-chip" onclick="askQ('Show me all standing scaffolds with their status')">Scaffolds <span class="chip-count">1,645</span></button>
+      <button class="topic-chip" onclick="askQ('Show me the request pipeline')">Requests <span class="chip-count">3,024</span></button>
+      <button class="topic-chip" onclick="askQ('Show me inspection results')">Inspections <span class="chip-count">703</span></button>
+      <button class="topic-chip" onclick="askQ('Show me scaffolds by area')">Areas <span class="chip-count">10</span></button>
+      <button class="topic-chip" onclick="askQ('Show me the team workload')">People <span class="chip-count">54</span></button>
+      <button class="topic-chip" onclick="askQ('Give me a safety compliance summary')">Safety</button>
+    </div>
     <div class="input-wrap" style="max-width:720px">
       <input type="text" id="input" placeholder="Ask about scaffolds, inspections, requests..." autocomplete="off" />
       <button class="send-btn" onclick="send()" title="Send">
@@ -599,18 +552,7 @@ const fallbackResponse = {
 // ============================================
 // Topic tabs
 // ============================================
-function switchTopic(tab) {
-  document.querySelectorAll('.topic-tab').forEach(t => t.classList.remove('active'));
-  tab.classList.add('active');
-  const topic = tab.dataset.topic;
-  const query = topicQueries[topic];
-  if (query) askQ(query);
-}
-
 function switchAndAsk(topic, query) {
-  document.querySelectorAll('.topic-tab').forEach(t => {
-    t.classList.toggle('active', t.dataset.topic === topic);
-  });
   askQ(query);
 }
 
