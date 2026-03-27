@@ -3,1717 +3,542 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ScaffoldIQ — Scaffold Operations Command Center</title>
+<title>ScaffoldIQ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
 <style>
-/* ============================================
-   DESIGN TOKENS
-   ============================================ */
-:root {
-  /* Colors - Semantic */
-  --color-bg: #F7F7F5;
-  --color-surface: #FFFFFF;
-  --color-surface-hover: #FAFAF9;
-  --color-surface-pressed: #F3F3F1;
-  --color-border: #E8E5E0;
-  --color-border-subtle: #F0EDE8;
-
-  /* Text */
-  --color-text-primary: #111827;
-  --color-text-secondary: #4B5563;
-  --color-text-muted: #6B7280;
-  --color-text-faint: #9CA3AF;
-
-  /* Semantic */
-  --color-urgent: #DC2626;
-  --color-urgent-bg: #FEF2F2;
-  --color-urgent-border: #FECACA;
-  --color-warning: #D97706;
-  --color-warning-bg: #FFFBEB;
-  --color-warning-border: #FDE68A;
-  --color-healthy: #059669;
-  --color-healthy-bg: #ECFDF5;
-  --color-healthy-border: #A7F3D0;
-  --color-info: #2563EB;
-  --color-info-bg: #EFF6FF;
-  --color-info-border: #BFDBFE;
-
-  /* Brand */
-  --color-brand: #1E3A5F;
-  --color-brand-light: #2563EB;
-
-  /* Spacing */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-16: 64px;
-
-  /* Radius */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --radius-full: 9999px;
-
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.03);
-  --shadow-md: 0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
-  --shadow-lg: 0 4px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-  --shadow-xl: 0 8px 32px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.05);
-
-  /* Typography */
-  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
-
-  /* Sizes */
-  --text-xs: 0.75rem;
-  --text-sm: 0.8125rem;
-  --text-base: 0.9375rem;
-  --text-lg: 1.0625rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
-  --text-4xl: 2.5rem;
-  --text-5xl: 3.5rem;
-}
-
-/* ============================================
-   RESET & BASE
-   ============================================ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html {
-  font-size: 100%;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  font-family: var(--font-sans);
-  background: var(--color-bg);
-  color: var(--color-text-primary);
-  line-height: 1.6;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* Subtle background texture */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 20% 0%, rgba(37, 99, 235, 0.03) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, rgba(5, 150, 105, 0.02) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ============================================
-   HEADER
-   ============================================ */
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: blur(16px) saturate(1.5);
-  -webkit-backdrop-filter: blur(16px) saturate(1.5);
-  border-bottom: 1px solid var(--color-border-subtle);
-  padding: var(--space-3) var(--space-6);
-}
-
-.header-inner {
-  max-width: 1320px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.logo-mark {
-  width: 36px;
-  height: 36px;
-  background: var(--color-brand);
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 700;
-  font-size: var(--text-lg);
-  letter-spacing: -0.02em;
-}
-
-.logo-text {
-  font-weight: 700;
-  font-size: var(--text-lg);
-  color: var(--color-text-primary);
-  letter-spacing: -0.02em;
-}
-
-.logo-divider {
-  width: 1px;
-  height: 20px;
-  background: var(--color-border);
-  margin: 0 var(--space-1);
-}
-
-.site-name {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  font-weight: 400;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-}
-
-.header-meta {
-  font-size: var(--text-xs);
-  color: var(--color-text-faint);
-  text-align: right;
-  line-height: 1.4;
-}
-
-.header-meta .live-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  background: var(--color-healthy);
-  border-radius: 50%;
-  margin-right: 4px;
-  animation: pulse-dot 2s ease-in-out infinite;
-}
-
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-.avatar {
-  width: 36px;
-  height: 36px;
-  background: var(--color-brand);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 600;
-  font-size: var(--text-sm);
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
-.avatar:hover { transform: scale(1.05); }
-
-.icon-btn {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  background: transparent;
-  color: var(--color-text-muted);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.15s ease;
-  position: relative;
-}
-.icon-btn:hover {
-  background: var(--color-surface-pressed);
-  color: var(--color-text-primary);
-}
-.icon-btn svg { width: 20px; height: 20px; }
-
-.notification-dot {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 8px;
-  height: 8px;
-  background: var(--color-urgent);
-  border-radius: 50%;
-  border: 2px solid white;
-}
-
-/* ============================================
-   MAIN LAYOUT
-   ============================================ */
-.main {
-  position: relative;
-  z-index: 1;
-  max-width: 1320px;
-  margin: 0 auto;
-  padding: var(--space-8) var(--space-6) 120px;
-}
-
-/* ============================================
-   MORNING BRIEF — HERO
-   ============================================ */
-.morning-brief {
-  margin-bottom: var(--space-8);
-}
-
-.greeting {
-  font-size: var(--text-base);
-  color: var(--color-text-muted);
-  font-weight: 400;
-  margin-bottom: var(--space-2);
-}
-
-.greeting strong {
-  color: var(--color-text-primary);
-  font-weight: 600;
-}
-
-.hero-metric {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-4);
-  margin-bottom: var(--space-2);
-  flex-wrap: wrap;
-}
-
-.hero-number {
-  font-size: var(--text-5xl);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  color: var(--color-text-primary);
-  font-variant-numeric: tabular-nums;
-}
-
-.hero-label {
-  font-size: var(--text-xl);
-  color: var(--color-text-secondary);
-  font-weight: 400;
-  line-height: 1.3;
-}
-
-.hero-context {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  flex-wrap: wrap;
-}
-
-.trend {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  padding: 2px 10px;
-  border-radius: var(--radius-full);
-}
-.trend--up {
-  color: var(--color-urgent);
-  background: var(--color-urgent-bg);
-}
-.trend--down {
-  color: var(--color-healthy);
-  background: var(--color-healthy-bg);
-}
-.trend--neutral {
-  color: var(--color-text-muted);
-  background: var(--color-surface-pressed);
-}
-
-.hero-sub {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-}
-
-.hero-sub span {
-  color: var(--color-text-secondary);
-  font-weight: 500;
-}
-
-/* ============================================
-   PRIORITY CARDS
-   ============================================ */
-.section-label {
-  font-size: var(--text-xs);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-text-faint);
-  margin-bottom: var(--space-3);
-}
-
-.priority-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--space-4);
-  margin-bottom: var(--space-8);
-}
-
-.priority-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-md);
-  padding: var(--space-5);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
-  overflow: hidden;
-  text-decoration: none;
-  color: inherit;
-  display: block;
-}
-
-.priority-card::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  border-radius: 4px 0 0 4px;
-}
-.priority-card--urgent::before { background: var(--color-urgent); }
-.priority-card--warning::before { background: var(--color-warning); }
-.priority-card--healthy::before { background: var(--color-healthy); }
-.priority-card--info::before { background: var(--color-info); }
-
-.priority-card:hover {
-  border-color: var(--color-border);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-1px);
-}
-
-.priority-card__header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: var(--space-3);
-}
-
-.priority-card__icon {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.priority-card--urgent .priority-card__icon {
-  background: var(--color-urgent-bg);
-  color: var(--color-urgent);
-}
-.priority-card--warning .priority-card__icon {
-  background: var(--color-warning-bg);
-  color: var(--color-warning);
-}
-.priority-card--healthy .priority-card__icon {
-  background: var(--color-healthy-bg);
-  color: var(--color-healthy);
-}
-.priority-card--info .priority-card__icon {
-  background: var(--color-info-bg);
-  color: var(--color-info);
-}
-
-.priority-card__icon svg { width: 20px; height: 20px; }
-
-.priority-card__badge {
-  font-size: var(--text-xs);
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-}
-.priority-card--urgent .priority-card__badge {
-  background: var(--color-urgent-bg);
-  color: var(--color-urgent);
-}
-.priority-card--warning .priority-card__badge {
-  background: var(--color-warning-bg);
-  color: var(--color-warning);
-}
-.priority-card--healthy .priority-card__badge {
-  background: var(--color-healthy-bg);
-  color: var(--color-healthy);
-}
-.priority-card--info .priority-card__badge {
-  background: var(--color-info-bg);
-  color: var(--color-info);
-}
-
-.priority-card__number {
-  font-size: var(--text-3xl);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  font-variant-numeric: tabular-nums;
-  margin-bottom: var(--space-1);
-}
-
-.priority-card__title {
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-  font-weight: 500;
-  margin-bottom: var(--space-3);
-}
-
-.priority-card__footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.priority-card__trend {
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.priority-card__action {
-  font-size: var(--text-xs);
-  font-weight: 600;
-  color: var(--color-brand-light);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-/* Sparkline */
-.sparkline {
-  display: flex;
-  align-items: flex-end;
-  gap: 2px;
-  height: 24px;
-}
-.sparkline__bar {
-  width: 4px;
-  border-radius: 2px;
-  transition: height 0.3s ease;
-}
-
-/* ============================================
-   OPERATIONS OVERVIEW
-   ============================================ */
-.ops-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-4);
-  margin-bottom: var(--space-8);
-}
-
-.ops-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-md);
-  padding: var(--space-6);
-}
-
-.ops-card__title {
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--color-text-primary);
-  margin-bottom: var(--space-5);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.ops-card__title-action {
-  font-size: var(--text-xs);
-  color: var(--color-brand-light);
-  font-weight: 500;
-  cursor: pointer;
-  text-decoration: none;
-}
-.ops-card__title-action:hover { text-decoration: underline; }
-
-/* Pipeline funnel */
-.pipeline {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.pipeline-stage {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.pipeline-stage__label {
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-  width: 140px;
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
-.pipeline-stage__bar-wrap {
-  flex: 1;
-  height: 28px;
-  background: var(--color-bg);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  position: relative;
-}
-
-.pipeline-stage__bar {
-  height: 100%;
-  border-radius: var(--radius-sm);
-  transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
-  display: flex;
-  align-items: center;
-  padding: 0 var(--space-3);
-}
-
-.pipeline-stage__bar span {
-  font-size: var(--text-xs);
-  font-weight: 600;
-  color: white;
-  white-space: nowrap;
-}
-
-.pipeline-stage__count {
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--color-text-primary);
-  width: 50px;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-/* Area breakdown */
-.area-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.area-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-.area-row:hover { background: var(--color-surface-hover); }
-
-.area-row__name {
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--color-text-primary);
-  width: 60px;
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-}
-
-.area-row__bar-wrap {
-  flex: 1;
-  height: 8px;
-  background: var(--color-bg);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.area-row__bar {
-  height: 100%;
-  background: var(--color-brand);
-  border-radius: 4px;
-  transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
-  opacity: 0.7;
-}
-
-.area-row__count {
-  font-size: var(--text-xs);
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  width: 36px;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-/* ============================================
-   QUICK ACTIONS
-   ============================================ */
-.quick-actions {
-  margin-bottom: var(--space-8);
-}
-
-.quick-actions__row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.quick-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-full);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--color-text-secondary);
-  background: var(--color-surface);
-  cursor: pointer;
-  transition: all 0.15s ease;
-  text-decoration: none;
-  white-space: nowrap;
-}
-.quick-chip:hover {
-  border-color: var(--color-brand-light);
-  color: var(--color-brand-light);
-  background: var(--color-info-bg);
-  box-shadow: var(--shadow-sm);
-}
-.quick-chip svg { width: 16px; height: 16px; }
-
-/* ============================================
-   RECENT ACTIVITY
-   ============================================ */
-.activity-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-md);
-  padding: var(--space-6);
-  margin-bottom: var(--space-8);
-}
-
-.activity-card__title {
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--color-text-primary);
-  margin-bottom: var(--space-5);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.activity-list { list-style: none; }
-
-.activity-item {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
-  padding: var(--space-3) 0;
-  border-bottom: 1px solid var(--color-border-subtle);
-}
-.activity-item:last-child { border-bottom: none; }
-
-.activity-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-top: 6px;
-  flex-shrink: 0;
-}
-.activity-dot--fail { background: var(--color-urgent); }
-.activity-dot--pass { background: var(--color-healthy); }
-.activity-dot--pending { background: var(--color-warning); }
-.activity-dot--info { background: var(--color-info); }
-
-.activity-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.activity-text {
-  font-size: var(--text-sm);
-  color: var(--color-text-primary);
-  line-height: 1.5;
-}
-.activity-text strong { font-weight: 600; }
-
-.activity-meta {
-  font-size: var(--text-xs);
-  color: var(--color-text-faint);
-  margin-top: 2px;
-}
-
-/* ============================================
-   AI BAR — PERSISTENT BOTTOM
-   ============================================ */
-.ai-bar-spacer { height: 100px; }
-
-.ai-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 200;
-  padding: var(--space-3) var(--space-6) var(--space-4);
-  background: linear-gradient(to top, rgba(247,247,245,1) 60%, rgba(247,247,245,0));
-  pointer-events: none;
-}
-
-.ai-bar-inner {
-  max-width: 720px;
-  margin: 0 auto;
-  pointer-events: auto;
-}
-
-.ai-input-wrap {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  transition: all 0.2s ease;
-}
-.ai-input-wrap:focus-within {
-  border-color: var(--color-brand-light);
-  box-shadow: var(--shadow-xl), 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.ai-sparkle {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-brand-light);
-  flex-shrink: 0;
-}
-.ai-sparkle svg { width: 20px; height: 20px; }
-
-.ai-input {
-  flex: 1;
-  border: none;
-  outline: none;
-  font-family: var(--font-sans);
-  font-size: var(--text-base);
-  color: var(--color-text-primary);
-  background: transparent;
-  padding: var(--space-2) 0;
-  min-width: 0;
-}
-.ai-input::placeholder { color: var(--color-text-faint); }
-
-.ai-submit {
-  width: 36px;
-  height: 36px;
-  border: none;
-  background: var(--color-brand);
-  color: white;
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  flex-shrink: 0;
-}
-.ai-submit:hover { background: var(--color-brand-light); transform: scale(1.05); }
-.ai-submit svg { width: 18px; height: 18px; }
-
-.ai-suggestions {
-  display: flex;
-  gap: var(--space-2);
-  margin-top: var(--space-2);
-  padding: 0 var(--space-1);
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-.ai-suggestions::-webkit-scrollbar { display: none; }
-
-.ai-suggestion {
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-  background: rgba(255,255,255,0.8);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-full);
-  padding: 4px 12px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.15s ease;
-  backdrop-filter: blur(8px);
-}
-.ai-suggestion:hover {
-  color: var(--color-brand-light);
-  border-color: var(--color-brand-light);
-  background: white;
-}
-
-/* ============================================
-   AI RESPONSE PANEL (slide-up)
-   ============================================ */
-.ai-response-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.2);
-  z-index: 300;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-.ai-response-overlay.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.ai-response-panel {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 310;
-  background: var(--color-surface);
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-  box-shadow: var(--shadow-xl);
-  max-height: 70vh;
-  overflow-y: auto;
-  transform: translateY(100%);
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-  padding: var(--space-6) var(--space-6) var(--space-8);
-}
-.ai-response-panel.active {
-  transform: translateY(0);
-}
-
-.ai-response-handle {
-  width: 36px;
-  height: 4px;
-  background: var(--color-border);
-  border-radius: 2px;
-  margin: 0 auto var(--space-5);
-}
-
-.ai-response-question {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  margin-bottom: var(--space-4);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-.ai-response-question strong {
-  color: var(--color-text-primary);
-  font-weight: 500;
-}
-
-.ai-response-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--space-3);
-  margin-bottom: var(--space-4);
-}
-
-.ai-data-card {
-  background: var(--color-bg);
-  border-radius: var(--radius-sm);
-  padding: var(--space-4);
-}
-
-.ai-data-card__label {
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: var(--space-2);
-}
-
-.ai-data-card__value {
-  font-size: var(--text-2xl);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-}
-
-.ai-data-card__sub {
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-  margin-top: var(--space-1);
-}
-
-.ai-response-text {
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-  line-height: 1.7;
-  max-width: 65ch;
-  margin-bottom: var(--space-4);
-}
-
-.ai-response-actions {
-  display: flex;
-  gap: var(--space-2);
-  flex-wrap: wrap;
-}
-
-.ai-followup {
-  font-size: var(--text-xs);
-  font-weight: 500;
-  color: var(--color-brand-light);
-  background: var(--color-info-bg);
-  border: 1px solid var(--color-info-border);
-  border-radius: var(--radius-full);
-  padding: 6px 14px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.ai-followup:hover {
-  background: var(--color-brand-light);
-  color: white;
-  border-color: var(--color-brand-light);
-}
-
-.ai-close-btn {
-  position: absolute;
-  top: var(--space-4);
-  right: var(--space-4);
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  background: var(--color-bg);
-  color: var(--color-text-muted);
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.ai-close-btn:hover {
-  background: var(--color-surface-pressed);
-  color: var(--color-text-primary);
-}
-
-/* ============================================
-   ANIMATIONS
-   ============================================ */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-in {
-  animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.delay-1 { animation-delay: 0.05s; }
-.delay-2 { animation-delay: 0.1s; }
-.delay-3 { animation-delay: 0.15s; }
-.delay-4 { animation-delay: 0.2s; }
-.delay-5 { animation-delay: 0.25s; }
-.delay-6 { animation-delay: 0.3s; }
-.delay-7 { animation-delay: 0.35s; }
-
-/* Stagger children */
-.stagger > * {
-  animation: fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-.stagger > *:nth-child(1) { animation-delay: 0.05s; }
-.stagger > *:nth-child(2) { animation-delay: 0.1s; }
-.stagger > *:nth-child(3) { animation-delay: 0.12s; }
-.stagger > *:nth-child(4) { animation-delay: 0.14s; }
-.stagger > *:nth-child(5) { animation-delay: 0.16s; }
-.stagger > *:nth-child(6) { animation-delay: 0.18s; }
-.stagger > *:nth-child(7) { animation-delay: 0.2s; }
-.stagger > *:nth-child(8) { animation-delay: 0.22s; }
-.stagger > *:nth-child(9) { animation-delay: 0.24s; }
-.stagger > *:nth-child(10) { animation-delay: 0.26s; }
-
-/* Number count-up */
-@keyframes countUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ============================================
-   RESPONSIVE
-   ============================================ */
-@media (max-width: 1024px) {
-  .ops-grid { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 768px) {
-  .main {
-    padding: var(--space-5) var(--space-4) 120px;
-  }
-
-  .header { padding: var(--space-3) var(--space-4); }
-
-  .hero-number { font-size: var(--text-4xl); }
-  .hero-label { font-size: var(--text-lg); }
-
-  .priority-grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-3);
-  }
-
-  .ops-grid { grid-template-columns: 1fr; }
-
-  .header-meta { display: none; }
-  .logo-divider, .site-name { display: none; }
-
-  .pipeline-stage__label { width: 100px; font-size: var(--text-xs); }
-
-  .ai-bar { padding: var(--space-2) var(--space-4) var(--space-3); }
-  .ai-bar-inner { max-width: 100%; }
-
-  .greeting { font-size: var(--text-sm); }
-}
-
-@media (max-width: 480px) {
-  .hero-number { font-size: var(--text-3xl); }
-  .hero-metric { gap: var(--space-2); }
-  .quick-actions__row { gap: var(--space-2); }
-  .priority-card { padding: var(--space-4); }
-  .ops-card { padding: var(--space-4); }
-}
-
-/* ============================================
-   LOADING SKELETON
-   ============================================ */
-.skeleton {
-  background: linear-gradient(90deg, var(--color-bg) 25%, var(--color-border-subtle) 50%, var(--color-bg) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
-  border-radius: var(--radius-sm);
-}
-
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* ============================================
-   COMPLIANCE GAUGE
-   ============================================ */
-.compliance-ring {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  margin: 0 auto var(--space-4);
-}
-
-.compliance-ring svg { transform: rotate(-90deg); }
-
-.compliance-ring__value {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.compliance-ring__number {
-  font-size: var(--text-2xl);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-
-.compliance-ring__label {
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-  margin-top: 2px;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:100%;-webkit-font-smoothing:antialiased}
+
+body{
+  font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:#fff;
+  color:#111;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ── Header ── */
+.header{
+  padding:16px 32px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid #f0f0f0;
+  position:sticky;top:0;z-index:50;
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+.header-left{display:flex;align-items:center;gap:12px}
+.logo{
+  width:32px;height:32px;
+  background:#1a1a1a;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:700;font-size:14px;
+}
+.brand{font-weight:700;font-size:17px;letter-spacing:-0.02em}
+.header-right{display:flex;align-items:center;gap:16px}
+.status{font-size:12px;color:#999;display:flex;align-items:center;gap:6px}
+.status-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:#1a1a1a;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:600;font-size:13px;cursor:pointer;
+}
+
+/* ── Main ── */
+.main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:40px 24px 140px;
+  max-width:640px;
+  margin:0 auto;
+  width:100%;
+}
+
+/* ── Greeting ── */
+.greeting{
+  text-align:center;
+  margin-bottom:48px;
+  animation:fadeIn .6s ease both;
+}
+.greeting h1{
+  font-size:28px;
+  font-weight:700;
+  letter-spacing:-0.03em;
+  line-height:1.2;
+  margin-bottom:8px;
+}
+.greeting p{
+  font-size:15px;
+  color:#666;
+  line-height:1.5;
+}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Snapshot Cards ── */
+.snapshot{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  width:100%;
+  margin-bottom:48px;
+  animation:fadeIn .6s ease .1s both;
+}
+.snap-card{
+  background:#fafafa;
+  border-radius:12px;
+  padding:20px;
+  text-align:center;
+  cursor:pointer;
+  transition:all .15s ease;
+  border:1px solid transparent;
+}
+.snap-card:hover{background:#f5f5f5;border-color:#e5e5e5}
+.snap-card .num{
+  font-size:32px;
+  font-weight:700;
+  letter-spacing:-0.03em;
+  line-height:1;
+  margin-bottom:6px;
+  font-variant-numeric:tabular-nums;
+}
+.snap-card .label{font-size:13px;color:#666;line-height:1.3}
+.snap-card.alert .num{color:#dc2626}
+.snap-card.warn .num{color:#d97706}
+
+/* ── Chat Container ── */
+.chat-area{
+  width:100%;
+  animation:fadeIn .6s ease .2s both;
+}
+
+/* ── Input ── */
+.input-wrap{
+  background:#fafafa;
+  border:1px solid #e8e8e8;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  padding:6px 8px 6px 20px;
+  transition:all .2s ease;
+  margin-bottom:16px;
+}
+.input-wrap:focus-within{
+  background:#fff;
+  border-color:#111;
+  box-shadow:0 0 0 3px rgba(0,0,0,0.04);
+}
+.input-wrap input{
+  flex:1;border:none;outline:none;
+  font-family:inherit;font-size:15px;
+  background:transparent;color:#111;
+  padding:10px 0;
+}
+.input-wrap input::placeholder{color:#aaa}
+.send-btn{
+  width:40px;height:40px;
+  border:none;background:#111;color:#fff;
+  border-radius:10px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s ease;flex-shrink:0;
+}
+.send-btn:hover{background:#333;transform:scale(1.04)}
+.send-btn svg{width:18px;height:18px}
+
+/* ── Quick Prompts ── */
+.prompts{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:center;
+}
+.prompt-chip{
+  font-size:13px;
+  color:#555;
+  background:#fff;
+  border:1px solid #e8e8e8;
+  border-radius:100px;
+  padding:8px 16px;
+  cursor:pointer;
+  transition:all .15s ease;
+  white-space:nowrap;
+}
+.prompt-chip:hover{
+  border-color:#111;
+  color:#111;
+  background:#fafafa;
+}
+
+/* ── Chat Messages ── */
+.messages{
+  width:100%;
+  margin-bottom:24px;
+  display:none;
+}
+.messages.visible{display:block}
+
+.msg{
+  margin-bottom:20px;
+  animation:fadeIn .3s ease both;
+}
+.msg-user{
+  display:flex;justify-content:flex-end;
+}
+.msg-user .bubble{
+  background:#111;color:#fff;
+  border-radius:16px 16px 4px 16px;
+  padding:12px 18px;
+  font-size:14px;line-height:1.5;
+  max-width:80%;
+}
+.msg-ai{
+  display:flex;flex-direction:column;gap:12px;
+}
+.msg-ai .bubble{
+  background:#fafafa;
+  border-radius:4px 16px 16px 16px;
+  padding:16px 20px;
+  font-size:14px;line-height:1.6;
+  color:#333;
+  max-width:100%;
+}
+
+/* ── AI Data Cards (in response) ── */
+.data-row{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:8px;
+}
+.data-item{
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:10px;
+  padding:14px 16px;
+}
+.data-item .d-num{
+  font-size:24px;font-weight:700;
+  letter-spacing:-0.02em;line-height:1;
+  margin-bottom:4px;
+  font-variant-numeric:tabular-nums;
+}
+.data-item .d-label{font-size:12px;color:#888}
+
+.followups{display:flex;flex-wrap:wrap;gap:6px}
+.followup{
+  font-size:12px;color:#2563eb;
+  background:#eff6ff;
+  border:1px solid #dbeafe;
+  border-radius:100px;
+  padding:6px 12px;
+  cursor:pointer;transition:all .15s ease;
+}
+.followup:hover{background:#2563eb;color:#fff;border-color:#2563eb}
+
+/* ── Typing Indicator ── */
+.typing{
+  display:flex;gap:4px;
+  padding:16px 20px;
+  background:#fafafa;
+  border-radius:4px 16px 16px 16px;
+  width:fit-content;
+}
+.typing span{
+  width:6px;height:6px;border-radius:50%;
+  background:#bbb;
+  animation:bounce .6s ease infinite;
+}
+.typing span:nth-child(2){animation-delay:.1s}
+.typing span:nth-child(3){animation-delay:.2s}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+/* ── Responsive ── */
+@media(max-width:600px){
+  .header{padding:12px 16px}
+  .main{padding:24px 16px 140px}
+  .greeting h1{font-size:22px}
+  .snapshot{grid-template-columns:repeat(3,1fr);gap:8px}
+  .snap-card{padding:14px 10px}
+  .snap-card .num{font-size:24px}
+  .snap-card .label{font-size:11px}
+  .prompts{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+  .data-row{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
 <body>
 
-<!-- ==========================================
-     HEADER
-     ========================================== -->
 <header class="header">
-  <div class="header-inner">
-    <div class="header-left">
-      <div class="logo-mark">S</div>
-      <span class="logo-text">ScaffoldIQ</span>
-      <span class="logo-divider"></span>
-      <span class="site-name">Big Gore Refinery</span>
-    </div>
-    <div class="header-right">
-      <span class="header-meta">
-        <span class="live-dot"></span>Live data &middot; Updated 5 min ago
-      </span>
-      <button class="icon-btn" title="Notifications" onclick="toggleNotifications()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        <span class="notification-dot"></span>
-      </button>
-      <button class="icon-btn" title="Settings">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      </button>
-      <div class="avatar" title="Zaib Wemyss">Z</div>
-    </div>
+  <div class="header-left">
+    <div class="logo">S</div>
+    <span class="brand">ScaffoldIQ</span>
+  </div>
+  <div class="header-right">
+    <span class="status"><span class="status-dot"></span>Connected</span>
+    <div class="avatar" title="Zaib Wemyss">Z</div>
   </div>
 </header>
 
-<!-- ==========================================
-     MAIN CONTENT
-     ========================================== -->
 <main class="main">
 
-  <!-- Morning Brief -->
-  <section class="morning-brief animate-in">
-    <p class="greeting">Good afternoon, <strong>Zaib</strong>. Here's your operations brief.</p>
-    <div class="hero-metric">
-      <span class="hero-number" id="heroNumber">16</span>
-      <span class="hero-label">scaffolds ready for build</span>
+  <div class="greeting" id="greeting">
+    <h1 id="greetingText">Good afternoon, Zaib</h1>
+    <p>Your scaffold operations at Big Gore Refinery</p>
+  </div>
+
+  <div class="snapshot" id="snapshot">
+    <div class="snap-card" onclick="askAbout('standing scaffolds')">
+      <div class="num">1,645</div>
+      <div class="label">Standing</div>
     </div>
-    <div class="hero-context">
-      <span class="trend trend--up">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-        +4 from yesterday
-      </span>
-      <span class="hero-sub"><span>703</span> awaiting inspection &middot; <span>3,024</span> requests in pipeline</span>
+    <div class="snap-card warn" onclick="askAbout('open requests')">
+      <div class="num">3,024</div>
+      <div class="label">Open requests</div>
     </div>
-  </section>
-
-  <!-- Priority Cards -->
-  <section class="animate-in delay-2">
-    <p class="section-label">Needs your attention</p>
-    <div class="priority-grid stagger">
-
-      <!-- Failed Inspections -->
-      <a class="priority-card priority-card--urgent" href="#" onclick="showAIResponse('inspections'); return false;">
-        <div class="priority-card__header">
-          <div class="priority-card__icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          </div>
-          <span class="priority-card__badge">5 new today</span>
-        </div>
-        <div class="priority-card__number">561</div>
-        <div class="priority-card__title">Failed inspections</div>
-        <div class="priority-card__footer">
-          <span class="priority-card__trend">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
-            +12% this week
-          </span>
-          <span class="priority-card__action">
-            Review
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </span>
-        </div>
-      </a>
-
-      <!-- Stuck Approvals -->
-      <a class="priority-card priority-card--warning" href="#" onclick="showAIResponse('approvals'); return false;">
-        <div class="priority-card__header">
-          <div class="priority-card__icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          </div>
-          <span class="priority-card__badge">Bottleneck</span>
-        </div>
-        <div class="priority-card__number">302</div>
-        <div class="priority-card__title">Awaiting estimate approval</div>
-        <div class="priority-card__footer">
-          <span class="priority-card__trend">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/></svg>
-            Stable vs last week
-          </span>
-          <span class="priority-card__action">
-            View queue
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </span>
-        </div>
-      </a>
-
-      <!-- Past Dismantle -->
-      <a class="priority-card priority-card--urgent" href="#" onclick="showAIResponse('dismantle'); return false;">
-        <div class="priority-card__header">
-          <div class="priority-card__icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          </div>
-          <span class="priority-card__badge">98.6% overdue</span>
-        </div>
-        <div class="priority-card__number">1,622</div>
-        <div class="priority-card__title">Past planned dismantle date</div>
-        <div class="priority-card__footer">
-          <span class="priority-card__trend">
-            of 1,645 standing scaffolds
-          </span>
-          <span class="priority-card__action">
-            Investigate
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </span>
-        </div>
-      </a>
-
-      <!-- Failed Handovers -->
-      <a class="priority-card priority-card--info" href="#" onclick="showAIResponse('handovers'); return false;">
-        <div class="priority-card__header">
-          <div class="priority-card__icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
-          </div>
-          <span class="priority-card__badge">Action needed</span>
-        </div>
-        <div class="priority-card__number">4</div>
-        <div class="priority-card__title">Failed handovers</div>
-        <div class="priority-card__footer">
-          <span class="priority-card__trend">
-            Recipient rejected or location mismatch
-          </span>
-          <span class="priority-card__action">
-            Resolve
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </span>
-        </div>
-      </a>
-
+    <div class="snap-card alert" onclick="askAbout('failed inspections')">
+      <div class="num">703</div>
+      <div class="label">Awaiting inspection</div>
     </div>
-  </section>
+  </div>
 
-  <!-- Operations Overview -->
-  <section class="animate-in delay-4">
-    <p class="section-label">Operations overview</p>
-    <div class="ops-grid">
+  <div class="chat-area">
+    <div class="messages" id="messages"></div>
 
-      <!-- Request Pipeline -->
-      <div class="ops-card">
-        <div class="ops-card__title">
-          Request Pipeline
-          <a href="#" class="ops-card__title-action">View all 3,024</a>
-        </div>
-        <div class="pipeline stagger">
-          <div class="pipeline-stage">
-            <span class="pipeline-stage__label">Initial Approval</span>
-            <div class="pipeline-stage__bar-wrap">
-              <div class="pipeline-stage__bar" style="width: 85%; background: #6366F1;">
-                <span>35.0%</span>
-              </div>
-            </div>
-            <span class="pipeline-stage__count">1,059</span>
-          </div>
-          <div class="pipeline-stage">
-            <span class="pipeline-stage__label">Final Approval</span>
-            <div class="pipeline-stage__bar-wrap">
-              <div class="pipeline-stage__bar" style="width: 83%; background: #8B5CF6;">
-                <span>34.1%</span>
-              </div>
-            </div>
-            <span class="pipeline-stage__count">1,031</span>
-          </div>
-          <div class="pipeline-stage">
-            <span class="pipeline-stage__label">Secondary</span>
-            <div class="pipeline-stage__bar-wrap">
-              <div class="pipeline-stage__bar" style="width: 50%; background: #A78BFA;">
-                <span>20.3%</span>
-              </div>
-            </div>
-            <span class="pipeline-stage__count">613</span>
-          </div>
-          <div class="pipeline-stage">
-            <span class="pipeline-stage__label">Estimate</span>
-            <div class="pipeline-stage__bar-wrap">
-              <div class="pipeline-stage__bar" style="width: 25%; background: #C4B5FD;">
-                <span>10.0%</span>
-              </div>
-            </div>
-            <span class="pipeline-stage__count">302</span>
-          </div>
-          <div class="pipeline-stage">
-            <span class="pipeline-stage__label">Awaiting Build</span>
-            <div class="pipeline-stage__bar-wrap">
-              <div class="pipeline-stage__bar" style="width: 3%; background: var(--color-healthy);">
-              </div>
-            </div>
-            <span class="pipeline-stage__count">16</span>
-          </div>
-          <div class="pipeline-stage">
-            <span class="pipeline-stage__label">Modification</span>
-            <div class="pipeline-stage__bar-wrap">
-              <div class="pipeline-stage__bar" style="width: 1%; background: var(--color-text-faint);">
-              </div>
-            </div>
-            <span class="pipeline-stage__count">2</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Scaffolds by Area -->
-      <div class="ops-card">
-        <div class="ops-card__title">
-          Scaffolds by Area
-          <a href="#" class="ops-card__title-action">All 10 areas</a>
-        </div>
-        <div class="area-list stagger">
-          <div class="area-row">
-            <span class="area-row__name">AMRU</span>
-            <div class="area-row__bar-wrap"><div class="area-row__bar" style="width: 100%;"></div></div>
-            <span class="area-row__count">350</span>
-          </div>
-          <div class="area-row">
-            <span class="area-row__name">ALKY</span>
-            <div class="area-row__bar-wrap"><div class="area-row__bar" style="width: 82%;"></div></div>
-            <span class="area-row__count">288</span>
-          </div>
-          <div class="area-row">
-            <span class="area-row__name">LFSP</span>
-            <div class="area-row__bar-wrap"><div class="area-row__bar" style="width: 79%;"></div></div>
-            <span class="area-row__count">277</span>
-          </div>
-          <div class="area-row">
-            <span class="area-row__name">STFA</span>
-            <div class="area-row__bar-wrap"><div class="area-row__bar" style="width: 59%;"></div></div>
-            <span class="area-row__count">207</span>
-          </div>
-          <div class="area-row">
-            <span class="area-row__name">VRU3</span>
-            <div class="area-row__bar-wrap"><div class="area-row__bar" style="width: 40%;"></div></div>
-            <span class="area-row__count">141</span>
-          </div>
-          <div class="area-row">
-            <span class="area-row__name">12PS</span>
-            <div class="area-row__bar-wrap"><div class="area-row__bar" style="width: 40%;"></div></div>
-            <span class="area-row__count">141</span>
-          </div>
-          <div class="area-row">
-            <span class="area-row__name">TANK</span>
-            <div class="area-row__bar-wrap"><div class="area-row__bar" style="width: 20%;"></div></div>
-            <span class="area-row__count">71</span>
-          </div>
-          <div class="area-row">
-            <span class="area-row__name">UTIL</span>
-            <div class="area-row__bar-wrap"><div class="area-row__bar" style="width: 14%;"></div></div>
-            <span class="area-row__count">48</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Quick Actions -->
-  <section class="quick-actions animate-in delay-5">
-    <p class="section-label">Explore</p>
-    <div class="quick-actions__row">
-      <a class="quick-chip" href="#" onclick="showAIResponse('standing'); return false;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
-        All standing scaffolds
-      </a>
-      <a class="quick-chip" href="#" onclick="showAIResponse('activities'); return false;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        Today's activities
-      </a>
-      <a class="quick-chip" href="#" onclick="showAIResponse('team'); return false;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Team workload
-      </a>
-      <a class="quick-chip" href="#" onclick="showAIResponse('compliance'); return false;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Safety compliance
-      </a>
-      <a class="quick-chip" href="#" onclick="showAIResponse('weekly'); return false;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        Weekly summary
-      </a>
-    </div>
-  </section>
-
-  <!-- Recent Activity -->
-  <section class="animate-in delay-6">
-    <div class="activity-card">
-      <div class="activity-card__title">
-        Recent activity
-        <a href="#" class="ops-card__title-action">View all</a>
-      </div>
-      <ul class="activity-list stagger">
-        <li class="activity-item">
-          <span class="activity-dot activity-dot--fail"></span>
-          <div class="activity-content">
-            <p class="activity-text"><strong>Inspection I-0000648</strong> failed — distance warning, inspector GPS too far from scaffold tag</p>
-            <p class="activity-meta">ALKY area &middot; 12 min ago</p>
-          </div>
-        </li>
-        <li class="activity-item">
-          <span class="activity-dot activity-dot--pass"></span>
-          <div class="activity-content">
-            <p class="activity-text"><strong>Scaffold S-0000891</strong> passed inspection and handed over successfully</p>
-            <p class="activity-meta">AMRU area &middot; 34 min ago</p>
-          </div>
-        </li>
-        <li class="activity-item">
-          <span class="activity-dot activity-dot--pending"></span>
-          <div class="activity-content">
-            <p class="activity-text"><strong>Activity A-0002595</strong> — Winterization Lear dismantle is in progress</p>
-            <p class="activity-meta">STFA area &middot; 1 hr ago</p>
-          </div>
-        </li>
-        <li class="activity-item">
-          <span class="activity-dot activity-dot--info"></span>
-          <div class="activity-content">
-            <p class="activity-text"><strong>Request R-0003201</strong> moved to Final Approval by Cameron Wilson</p>
-            <p class="activity-meta">VRU3 area &middot; 1 hr ago</p>
-          </div>
-        </li>
-        <li class="activity-item">
-          <span class="activity-dot activity-dot--pass"></span>
-          <div class="activity-content">
-            <p class="activity-text"><strong>3 scaffolds</strong> completed build in 12PS area — all passed inspection</p>
-            <p class="activity-meta">12PS area &middot; 2 hr ago</p>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </section>
-
-</main>
-
-<!-- ==========================================
-     AI BAR
-     ========================================== -->
-<div class="ai-bar animate-in delay-7">
-  <div class="ai-bar-inner">
-    <div class="ai-input-wrap">
-      <div class="ai-sparkle">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      </div>
-      <input class="ai-input" type="text" placeholder="Ask about scaffolds, inspections, requests..." id="aiInput" autocomplete="off" />
-      <button class="ai-submit" onclick="handleAISubmit()" title="Send">
+    <div class="input-wrap">
+      <input type="text" id="input" placeholder="Ask about your scaffolds..." autocomplete="off" />
+      <button class="send-btn" onclick="send()" title="Send">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       </button>
     </div>
-    <div class="ai-suggestions">
-      <span class="ai-suggestion" onclick="quickQuery('How many scaffolds are standing in AMRU?')">Scaffolds in AMRU</span>
-      <span class="ai-suggestion" onclick="quickQuery('Show me all failed inspections this week')">Failed inspections this week</span>
-      <span class="ai-suggestion" onclick="quickQuery('Which requests have been stuck in approval the longest?')">Stuck approvals</span>
-      <span class="ai-suggestion" onclick="quickQuery('Give me a weekly operations summary')">Weekly summary</span>
+
+    <div class="prompts" id="prompts">
+      <span class="prompt-chip" onclick="askAbout('How many scaffolds are in AMRU?')">Scaffolds in AMRU</span>
+      <span class="prompt-chip" onclick="askAbout('Show failed inspections this week')">Failed inspections</span>
+      <span class="prompt-chip" onclick="askAbout('Which requests are stuck in approval?')">Stuck approvals</span>
+      <span class="prompt-chip" onclick="askAbout('Give me a safety compliance summary')">Safety compliance</span>
+      <span class="prompt-chip" onclick="askAbout('Who are the most active team members?')">Team activity</span>
     </div>
   </div>
-</div>
 
-<!-- ==========================================
-     AI RESPONSE PANEL
-     ========================================== -->
-<div class="ai-response-overlay" id="aiOverlay" onclick="closeAIResponse()"></div>
-<div class="ai-response-panel" id="aiPanel">
-  <button class="ai-close-btn" onclick="closeAIResponse()" title="Close">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  </button>
-  <div class="ai-response-handle"></div>
-  <div id="aiResponseContent"></div>
-</div>
+</main>
 
 <script>
-// ============================================
-// AI Response Templates
-// ============================================
 const responses = {
-  inspections: {
-    question: 'Failed inspections overview',
+  'standing scaffolds': {
+    text: '1,645 scaffolds are currently standing across 10 areas. The highest concentration is in AMRU with 350, followed by ALKY with 288.',
     cards: [
-      { label: 'Total Failed', value: '561', sub: 'All time' },
-      { label: 'Failed This Week', value: '23', sub: '↑ 12% from last week' },
-      { label: 'Awaiting Re-Inspection', value: '89', sub: 'After repair' },
-      { label: 'Distance Warnings', value: '12', sub: 'GPS mismatch' },
+      {num:'350',label:'AMRU'},
+      {num:'288',label:'ALKY'},
+      {num:'277',label:'LFSP'},
+      {num:'207',label:'STFA'},
     ],
-    text: 'Most failures this week are concentrated in ALKY and AMRU areas. The top failure reason is GPS distance warnings — inspectors are scanning from too far away. Consider reviewing the distance threshold setting.',
-    followups: ['Show failure reasons breakdown', 'List inspectors with most failures', 'ALKY area details', 'Adjust distance threshold']
+    followups: ['Show all areas', 'Which are past dismantle date?', 'Tag status breakdown']
   },
-  approvals: {
-    question: 'Approval queue status',
+  'open requests': {
+    text: '3,024 requests are currently in the pipeline. The majority are in the approval stages — 1,059 awaiting initial approval and 1,031 in final approval.',
     cards: [
-      { label: 'Estimate Approval', value: '302', sub: '10.0% of pipeline' },
-      { label: 'Oldest Pending', value: '14 days', sub: 'R-0002847 in STFA' },
-      { label: 'Avg. Approval Time', value: '3.2 days', sub: 'Last 30 days' },
-      { label: 'Approvers Active', value: '8', sub: 'of 12 total' },
+      {num:'1,059',label:'Initial approval'},
+      {num:'1,031',label:'Final approval'},
+      {num:'613',label:'Secondary'},
+      {num:'16',label:'Ready to build'},
     ],
-    text: 'The estimate approval queue is the primary bottleneck. 47 requests have been waiting longer than 7 days. 4 approvers haven\'t logged in this week — their queues account for 38% of pending items.',
-    followups: ['Show requests older than 7 days', 'Which approvers are inactive?', 'Reassign stale requests', 'Approval time trends']
+    followups: ['Requests stuck over 7 days', 'Who needs to approve?', 'This week\'s throughput']
   },
-  dismantle: {
-    question: 'Overdue dismantles',
+  'failed inspections': {
+    text: '703 scaffolds are awaiting inspection. There have been 561 failed inspections total, with 23 this week — mostly GPS distance warnings in ALKY and AMRU areas.',
     cards: [
-      { label: 'Past Dismantle Date', value: '1,622', sub: '98.6% of standing' },
-      { label: 'Over 30 Days Late', value: '1,340', sub: 'Oldest: 847 days' },
-      { label: 'Standing Total', value: '1,645', sub: 'Across all areas' },
-      { label: 'Tag Status', value: 'All Red', sub: '100% red tags' },
+      {num:'703',label:'Awaiting inspection'},
+      {num:'561',label:'Total failed'},
+      {num:'23',label:'Failed this week'},
+      {num:'87%',label:'Pass rate (30d)'},
     ],
-    text: 'Nearly all standing scaffolds have passed their planned dismantle date. This suggests planned dates may not reflect actual operational needs. Consider a bulk review of dismantle schedules with area foremen.',
-    followups: ['Scaffolds overdue > 90 days', 'By area breakdown', 'Contact area foremen', 'Bulk update dismantle dates']
+    followups: ['Show failure reasons', 'ALKY area details', 'List inspectors']
   },
-  handovers: {
-    question: 'Failed handovers',
+  'How many scaffolds are in AMRU?': {
+    text: 'AMRU has 350 standing scaffolds — the most of any area on site. 312 are past their planned dismantle date.',
     cards: [
-      { label: 'Failed Handovers', value: '4', sub: 'Need resolution' },
-      { label: 'Successful', value: '1,641', sub: '99.8% success rate' },
-      { label: 'Most Recent Fail', value: 'H-0000154', sub: '2 days ago' },
+      {num:'350',label:'Standing'},
+      {num:'312',label:'Past dismantle'},
+      {num:'38',label:'On schedule'},
     ],
-    text: 'Four handovers were rejected by recipients — two due to location discrepancy, one for incomplete build, and one with no comment provided. All are in ALKY and AMRU areas.',
-    followups: ['Show handover H-0000154 details', 'Contact recipients', 'ALKY area handover history']
+    followups: ['Show sub-areas', 'Inspection status', 'Recent activity in AMRU']
   },
-  standing: {
-    question: 'All standing scaffolds',
+  'Show failed inspections this week': {
+    text: '23 inspections failed this week, up 12% from last week. The top failure reason is GPS distance warnings — inspectors scanning from too far away.',
     cards: [
-      { label: 'Standing', value: '1,645', sub: 'Currently built' },
-      { label: 'Awaiting Build', value: '16', sub: 'Ready to go' },
-      { label: 'In Progress', value: '406', sub: 'Active work items' },
-      { label: 'Dismantled', value: '2,891', sub: 'Historical' },
+      {num:'23',label:'Failed this week'},
+      {num:'12',label:'GPS warnings'},
+      {num:'6',label:'In ALKY area'},
+      {num:'5',label:'In AMRU area'},
     ],
-    text: '1,645 scaffolds are currently standing across 10 areas. AMRU has the highest density with 350 scaffolds. All are tagged red — consider reviewing tag status criteria.',
-    followups: ['Filter by area', 'Show scaffold map', 'Tag status breakdown', 'Recently built']
+    followups: ['Show all failure reasons', 'Contact area inspectors', 'Adjust distance threshold']
   },
-  activities: {
-    question: 'Today\'s activities',
+  'Which requests are stuck in approval?': {
+    text: '47 requests have been waiting more than 7 days for approval. The oldest is R-0002847 in STFA, pending for 14 days. 4 approvers haven\'t logged in this week.',
     cards: [
-      { label: 'In Progress', value: '406', sub: 'Active work items' },
-      { label: 'Completed Today', value: '12', sub: 'Builds + dismantles' },
-      { label: 'Started Today', value: '8', sub: 'New activities' },
+      {num:'47',label:'Stuck over 7 days'},
+      {num:'14d',label:'Oldest pending'},
+      {num:'3.2d',label:'Avg approval time'},
+      {num:'4',label:'Inactive approvers'},
     ],
-    text: 'Most active area today is STFA with the Winterization Lear dismantle (A-0002595) in progress. 12 activities completed across all areas including 3 successful builds in 12PS.',
-    followups: ['Show in-progress activities', 'STFA area details', 'Completed today list']
+    followups: ['Show the 47 stuck requests', 'Who are the inactive approvers?', 'Reassignment options']
   },
-  team: {
-    question: 'Team & personnel',
+  'Give me a safety compliance summary': {
+    text: 'Overall pass rate is 87.3% over the last 30 days. 703 scaffolds are awaiting inspection — 42.7% of standing stock. 4 handovers were rejected. Nearly all standing scaffolds are past dismantle date.',
     cards: [
-      { label: 'Total Personnel', value: '54', sub: 'Registered in system' },
-      { label: 'Administrators', value: '2', sub: 'System + Zaib Wemyss' },
-      { label: 'Active This Week', value: '31', sub: '57% of total' },
-      { label: 'Contractors', value: '3', sub: 'AAA, Acme, BigGore' },
+      {num:'87.3%',label:'Pass rate (30d)'},
+      {num:'703',label:'Awaiting inspection'},
+      {num:'4',label:'Failed handovers'},
+      {num:'98.6%',label:'Past dismantle date'},
     ],
-    text: '31 of 54 registered personnel have been active this week. Busiest users: Abigail MacDonald (47 activities), Brandon Kelly (38 activities), Cameron Wilson (31 activities).',
-    followups: ['Show inactive users', 'Workload by person', 'Contractor breakdown', 'Contact directory']
+    followups: ['Inspection schedule', 'Failed handover details', 'Export compliance report']
   },
-  compliance: {
-    question: 'Safety compliance overview',
+  'Who are the most active team members?': {
+    text: '31 of 54 registered personnel have been active this week. The busiest are Abigail MacDonald, Brandon Kelly, and Cameron Wilson.',
     cards: [
-      { label: 'Awaiting Inspection', value: '703', sub: '42.7% of standing' },
-      { label: 'Inspection Pass Rate', value: '87.3%', sub: 'Last 30 days' },
-      { label: 'Failed Handovers', value: '4', sub: '0.2% failure rate' },
-      { label: 'Overdue Dismantles', value: '1,622', sub: '98.6% overdue' },
+      {num:'47',label:'Abigail MacDonald'},
+      {num:'38',label:'Brandon Kelly'},
+      {num:'31',label:'Cameron Wilson'},
+      {num:'23',label:'Inactive this week'},
     ],
-    text: 'Primary compliance concern: 703 scaffolds are awaiting inspection. The overdue dismantle rate of 98.6% is unusually high and should be reviewed. Inspection pass rate of 87.3% is within normal range.',
-    followups: ['Show uninspected scaffolds', 'Inspection schedule', 'Compliance report (PDF)', 'Area-by-area breakdown']
+    followups: ['Show full team list', 'Workload distribution', 'Contractor breakdown']
   },
-  weekly: {
-    question: 'Weekly operations summary',
-    cards: [
-      { label: 'Inspections Performed', value: '142', sub: 'This week' },
-      { label: 'Requests Processed', value: '67', sub: 'Approved or rejected' },
-      { label: 'Builds Completed', value: '23', sub: '+8 vs last week' },
-      { label: 'Dismantles Completed', value: '15', sub: '-3 vs last week' },
-    ],
-    text: 'Productive week overall — build completions up 53% from last week. Inspection volume is steady. The approval queue grew by 34 requests net (101 new, 67 processed). Recommend increasing approver capacity.',
-    followups: ['Compare to last month', 'Export as PDF', 'Share with team', 'Set up weekly email']
-  }
 };
 
-// ============================================
-// Interaction Logic
-// ============================================
-function showAIResponse(type) {
-  const data = responses[type];
-  if (!data) return;
+// Default fallback
+const fallback = {
+  text: 'I can help you with scaffold status, inspections, requests, safety compliance, and team workload. Try one of the suggested questions below.',
+  cards: [],
+  followups: ['Standing scaffolds', 'Failed inspections', 'Open requests', 'Safety compliance']
+};
 
-  let html = `
-    <div class="ai-response-question">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand-light)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      <strong>${data.question}</strong>
-    </div>
-    <div class="ai-response-cards">
-      ${data.cards.map(c => `
-        <div class="ai-data-card">
-          <div class="ai-data-card__label">${c.label}</div>
-          <div class="ai-data-card__value">${c.value}</div>
-          <div class="ai-data-card__sub">${c.sub}</div>
-        </div>
-      `).join('')}
-    </div>
-    <p class="ai-response-text">${data.text}</p>
-    <div class="ai-response-actions">
-      ${data.followups.map(f => `<span class="ai-followup" onclick="quickQuery('${f}')">${f}</span>`).join('')}
-    </div>
-  `;
-
-  document.getElementById('aiResponseContent').innerHTML = html;
-  document.getElementById('aiOverlay').classList.add('active');
-  document.getElementById('aiPanel').classList.add('active');
+function getResponse(query) {
+  const q = query.toLowerCase();
+  for (const [key, val] of Object.entries(responses)) {
+    if (q.includes(key.toLowerCase().substring(0, 10)) || key.toLowerCase().includes(q.substring(0, 10))) {
+      return val;
+    }
+  }
+  // Try partial match
+  if (q.includes('scaffold')) return responses['standing scaffolds'];
+  if (q.includes('inspect') || q.includes('fail')) return responses['failed inspections'];
+  if (q.includes('request') || q.includes('approv')) return responses['open requests'];
+  if (q.includes('safe') || q.includes('compli')) return responses['Give me a safety compliance summary'];
+  if (q.includes('team') || q.includes('people') || q.includes('active')) return responses['Who are the most active team members?'];
+  if (q.includes('amru')) return responses['How many scaffolds are in AMRU?'];
+  if (q.includes('stuck')) return responses['Which requests are stuck in approval?'];
+  return fallback;
 }
 
-function closeAIResponse() {
-  document.getElementById('aiOverlay').classList.remove('active');
-  document.getElementById('aiPanel').classList.remove('active');
-}
-
-function quickQuery(text) {
-  document.getElementById('aiInput').value = text;
-  closeAIResponse();
-  // Simulate a brief delay then show response
-  setTimeout(() => {
-    // Map text to response type
-    const map = {
-      'standing': 'standing', 'activities': 'activities', 'team': 'team',
-      'compliance': 'compliance', 'weekly': 'weekly', 'inspections': 'inspections'
-    };
-    // Try to find a matching response
-    const key = Object.keys(responses).find(k =>
-      text.toLowerCase().includes(k.substring(0, 5))
-    );
-    if (key) showAIResponse(key);
-    else showAIResponse('standing'); // fallback
-  }, 300);
-}
-
-function handleAISubmit() {
-  const input = document.getElementById('aiInput');
+function send() {
+  const input = document.getElementById('input');
   const text = input.value.trim();
   if (!text) return;
-  quickQuery(text);
+  input.value = '';
+  askAbout(text);
 }
 
-// Enter key handler
-document.getElementById('aiInput').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    handleAISubmit();
-  }
+function askAbout(query) {
+  const msgs = document.getElementById('messages');
+  const prompts = document.getElementById('prompts');
+  const snapshot = document.getElementById('snapshot');
+
+  msgs.classList.add('visible');
+
+  // After first message, shrink snapshot and hide prompts
+  snapshot.style.display = 'none';
+  prompts.style.display = 'none';
+
+  // Shrink greeting
+  const greeting = document.getElementById('greeting');
+  greeting.style.marginBottom = '24px';
+  greeting.querySelector('h1').style.fontSize = '20px';
+  greeting.querySelector('p').style.fontSize = '13px';
+
+  // Add user message
+  const userMsg = document.createElement('div');
+  userMsg.className = 'msg msg-user';
+  userMsg.innerHTML = `<div class="bubble">${escHtml(query)}</div>`;
+  msgs.appendChild(userMsg);
+
+  // Add typing indicator
+  const typingMsg = document.createElement('div');
+  typingMsg.className = 'msg msg-ai';
+  typingMsg.innerHTML = `<div class="typing"><span></span><span></span><span></span></div>`;
+  msgs.appendChild(typingMsg);
+
+  scrollToBottom();
+
+  // Simulate AI delay
+  setTimeout(() => {
+    typingMsg.remove();
+
+    const data = getResponse(query);
+    const aiMsg = document.createElement('div');
+    aiMsg.className = 'msg msg-ai';
+
+    let cardsHtml = '';
+    if (data.cards.length) {
+      cardsHtml = `<div class="data-row">${data.cards.map(c =>
+        `<div class="data-item"><div class="d-num">${c.num}</div><div class="d-label">${c.label}</div></div>`
+      ).join('')}</div>`;
+    }
+
+    let followHtml = '';
+    if (data.followups.length) {
+      followHtml = `<div class="followups">${data.followups.map(f =>
+        `<span class="followup" onclick="askAbout('${escAttr(f)}')">${escHtml(f)}</span>`
+      ).join('')}</div>`;
+    }
+
+    aiMsg.innerHTML = `
+      <div class="bubble">${escHtml(data.text)}</div>
+      ${cardsHtml}
+      ${followHtml}
+    `;
+    msgs.appendChild(aiMsg);
+    scrollToBottom();
+
+    // Show prompts again after response
+    prompts.style.display = 'flex';
+  }, 800 + Math.random() * 400);
+}
+
+function scrollToBottom() {
+  window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+}
+
+function escHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+function escAttr(s) {
+  return s.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+// Enter to send
+document.getElementById('input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); send(); }
 });
 
-// Escape key to close panel
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closeAIResponse();
-});
-
-// ============================================
-// Animate pipeline bars on load
-// ============================================
-document.addEventListener('DOMContentLoaded', function() {
-  // Animate bars after a brief delay
-  const bars = document.querySelectorAll('.pipeline-stage__bar, .area-row__bar');
-  bars.forEach(bar => {
-    const targetWidth = bar.style.width;
-    bar.style.width = '0%';
-    setTimeout(() => {
-      bar.style.width = targetWidth;
-    }, 400);
-  });
-
-  // Dynamic greeting based on time
-  const hour = new Date().getHours();
-  let greeting = 'Good morning';
-  if (hour >= 12 && hour < 17) greeting = 'Good afternoon';
-  if (hour >= 17) greeting = 'Good evening';
-  document.querySelector('.greeting').innerHTML = `${greeting}, <strong>Zaib</strong>. Here's your operations brief.`;
-});
+// Dynamic greeting
+(function() {
+  const h = new Date().getHours();
+  let g = 'Good morning';
+  if (h >= 12 && h < 17) g = 'Good afternoon';
+  if (h >= 17) g = 'Good evening';
+  document.getElementById('greetingText').textContent = g + ', Zaib';
+})();
 </script>
 
 </body>
