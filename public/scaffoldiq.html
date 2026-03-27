@@ -6,437 +6,695 @@
 <title>ScaffoldIQ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:100%;-webkit-font-smoothing:antialiased}
-
+html{font-size:100%;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 body{
   font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
-  background:#fff;
-  color:#111;
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
+  background:#f8f8f7;color:#111;
+  height:100vh;display:flex;flex-direction:column;overflow:hidden;
 }
 
-/* ── Header ── */
-.header{
-  padding:16px 32px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+/* ── Vars ── */
+:root{
+  --sidebar-w:260px;
+  --brand:#1a1a2e;
+  --brand-light:#16213e;
+  --accent:#3b82f6;
+  --accent-hover:#2563eb;
+  --red:#ef4444;--red-bg:#fef2f2;
+  --amber:#f59e0b;--amber-bg:#fffbeb;
+  --green:#10b981;--green-bg:#ecfdf5;
+  --blue:#3b82f6;--blue-bg:#eff6ff;
+  --mono:'JetBrains Mono',monospace;
+}
+
+/* ── Layout ── */
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* ── Sidebar ── */
+.sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  background:var(--brand);color:#fff;
+  display:flex;flex-direction:column;
+  border-right:1px solid rgba(255,255,255,0.06);
+}
+.sidebar-header{
+  padding:20px 20px 16px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.sidebar-brand{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.sidebar-logo{
+  width:28px;height:28px;background:var(--accent);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:13px;color:#fff;
+}
+.sidebar-name{font-weight:700;font-size:16px;letter-spacing:-0.02em}
+.sidebar-site{font-size:12px;color:rgba(255,255,255,0.45);margin-top:2px}
+
+.sidebar-nav{flex:1;padding:12px 10px;overflow-y:auto}
+.nav-label{
+  font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:0.08em;color:rgba(255,255,255,0.3);
+  padding:8px 10px 6px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:8px;
+  font-size:13px;color:rgba(255,255,255,0.6);
+  cursor:pointer;transition:all .12s ease;
+  margin-bottom:1px;
+}
+.nav-item:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.9)}
+.nav-item.active{background:rgba(255,255,255,0.1);color:#fff;font-weight:500}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;opacity:.5}
+.nav-item.active svg{opacity:.8}
+
+.nav-stat{
+  margin-left:auto;
+  font-size:11px;font-weight:600;
+  font-family:var(--mono);
+  color:rgba(255,255,255,0.35);
+}
+.nav-item.active .nav-stat{color:rgba(255,255,255,0.6)}
+
+.sidebar-footer{
+  padding:14px 16px;
+  border-top:1px solid rgba(255,255,255,0.08);
+  display:flex;align-items:center;gap:10px;
+}
+.sidebar-avatar{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--accent);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:600;font-size:12px;
+}
+.sidebar-user{font-size:13px;color:rgba(255,255,255,0.7)}
+.sidebar-status{font-size:11px;color:rgba(255,255,255,0.35);display:flex;align-items:center;gap:4px}
+.sidebar-status::before{
+  content:'';width:5px;height:5px;border-radius:50%;
+  background:var(--green);
+}
+
+/* ── Main Chat Area ── */
+.chat-main{
+  flex:1;display:flex;flex-direction:column;
+  background:#fff;overflow:hidden;
+}
+
+/* Chat header */
+.chat-header{
+  padding:14px 24px;
   border-bottom:1px solid #f0f0f0;
-  position:sticky;top:0;z-index:50;
-  background:rgba(255,255,255,0.92);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
 }
-.header-left{display:flex;align-items:center;gap:12px}
-.logo{
-  width:32px;height:32px;
-  background:#1a1a1a;border-radius:8px;
+.chat-header-left{display:flex;align-items:center;gap:8px}
+.chat-title{font-weight:600;font-size:14px}
+.chat-badge{
+  font-size:10px;font-weight:600;
+  background:var(--green-bg);color:var(--green);
+  padding:2px 8px;border-radius:100px;
+  display:flex;align-items:center;gap:4px;
+}
+.chat-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor}
+.chat-header-actions{display:flex;gap:4px}
+.header-btn{
+  width:32px;height:32px;border:none;background:transparent;
+  border-radius:6px;cursor:pointer;color:#999;
   display:flex;align-items:center;justify-content:center;
-  color:#fff;font-weight:700;font-size:14px;
+  transition:all .12s ease;
 }
-.brand{font-weight:700;font-size:17px;letter-spacing:-0.02em}
-.header-right{display:flex;align-items:center;gap:16px}
-.status{font-size:12px;color:#999;display:flex;align-items:center;gap:6px}
-.status-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:blink 2s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.avatar{
-  width:32px;height:32px;border-radius:50%;
-  background:#1a1a1a;color:#fff;
+.header-btn:hover{background:#f5f5f5;color:#555}
+.header-btn svg{width:16px;height:16px}
+
+/* Messages */
+.messages{
+  flex:1;overflow-y:auto;padding:24px;
+  scroll-behavior:smooth;
+}
+.messages::-webkit-scrollbar{width:4px}
+.messages::-webkit-scrollbar-thumb{background:#ddd;border-radius:4px}
+
+/* Welcome */
+.welcome{
+  max-width:540px;margin:80px auto 0;text-align:center;
+  animation:fadeIn .5s ease;
+}
+.welcome h2{font-size:22px;font-weight:700;letter-spacing:-0.02em;margin-bottom:8px}
+.welcome p{font-size:14px;color:#888;line-height:1.6;margin-bottom:28px}
+
+.welcome-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  text-align:left;margin-bottom:20px;
+}
+.welcome-card{
+  padding:14px 16px;border:1px solid #eee;border-radius:10px;
+  cursor:pointer;transition:all .15s ease;
+}
+.welcome-card:hover{border-color:#ccc;background:#fafafa}
+.welcome-card-title{font-size:13px;font-weight:600;margin-bottom:3px}
+.welcome-card-desc{font-size:12px;color:#999;line-height:1.4}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Message bubbles */
+.msg{margin-bottom:24px;animation:fadeIn .3s ease}
+
+.msg-user{display:flex;justify-content:flex-end}
+.msg-user .bubble{
+  background:#111;color:#fff;
+  border-radius:18px 18px 4px 18px;
+  padding:10px 16px;font-size:14px;line-height:1.5;
+  max-width:480px;
+}
+
+.msg-ai{max-width:100%}
+.msg-ai-header{
+  display:flex;align-items:center;gap:8px;margin-bottom:8px;
+}
+.ai-icon{
+  width:24px;height:24px;border-radius:6px;
+  background:linear-gradient(135deg,#3b82f6,#8b5cf6);
   display:flex;align-items:center;justify-content:center;
-  font-weight:600;font-size:13px;cursor:pointer;
+  flex-shrink:0;
 }
+.ai-icon svg{width:14px;height:14px;color:#fff}
+.ai-label{font-size:12px;font-weight:600;color:#888}
 
-/* ── Main ── */
-.main{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:40px 24px 140px;
-  max-width:640px;
-  margin:0 auto;
-  width:100%;
+.msg-ai .prose{
+  font-size:14px;line-height:1.7;color:#333;
+  margin-bottom:12px;max-width:640px;
 }
+.msg-ai .prose strong{color:#111;font-weight:600}
 
-/* ── Greeting ── */
-.greeting{
-  text-align:center;
-  margin-bottom:48px;
-  animation:fadeIn .6s ease both;
-}
-.greeting h1{
-  font-size:28px;
-  font-weight:700;
-  letter-spacing:-0.03em;
-  line-height:1.2;
-  margin-bottom:8px;
-}
-.greeting p{
-  font-size:15px;
-  color:#666;
-  line-height:1.5;
-}
+/* ── Rich Response Components ── */
 
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-/* ── Snapshot Cards ── */
-.snapshot{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  width:100%;
-  margin-bottom:48px;
-  animation:fadeIn .6s ease .1s both;
+/* Metric row */
+.metrics-row{
+  display:flex;gap:8px;margin:12px 0;flex-wrap:wrap;
 }
-.snap-card{
-  background:#fafafa;
-  border-radius:12px;
-  padding:20px;
-  text-align:center;
-  cursor:pointer;
-  transition:all .15s ease;
-  border:1px solid transparent;
+.metric{
+  background:#fafafa;border:1px solid #f0f0f0;border-radius:10px;
+  padding:12px 16px;min-width:110px;flex:1;
 }
-.snap-card:hover{background:#f5f5f5;border-color:#e5e5e5}
-.snap-card .num{
-  font-size:32px;
-  font-weight:700;
-  letter-spacing:-0.03em;
-  line-height:1;
-  margin-bottom:6px;
+.metric-val{
+  font-size:22px;font-weight:700;letter-spacing:-0.02em;
+  line-height:1;margin-bottom:3px;
   font-variant-numeric:tabular-nums;
 }
-.snap-card .label{font-size:13px;color:#666;line-height:1.3}
-.snap-card.alert .num{color:#dc2626}
-.snap-card.warn .num{color:#d97706}
+.metric-val.red{color:var(--red)}
+.metric-val.amber{color:var(--amber)}
+.metric-val.green{color:var(--green)}
+.metric-label{font-size:11px;color:#999;font-weight:500}
 
-/* ── Chat Container ── */
-.chat-area{
-  width:100%;
-  animation:fadeIn .6s ease .2s both;
+/* Inline chart - horizontal bars */
+.chart-bars{margin:14px 0;max-width:520px}
+.chart-bar-row{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:6px;
+}
+.chart-bar-label{
+  font-size:12px;color:#666;width:130px;flex-shrink:0;
+  text-align:right;font-weight:500;
+}
+.chart-bar-track{
+  flex:1;height:24px;background:#f5f5f5;border-radius:6px;
+  overflow:hidden;position:relative;
+}
+.chart-bar-fill{
+  height:100%;border-radius:6px;
+  display:flex;align-items:center;padding:0 8px;
+  transition:width .8s cubic-bezier(.22,1,.36,1);
+}
+.chart-bar-fill span{
+  font-size:10px;font-weight:600;color:#fff;white-space:nowrap;
+}
+.chart-bar-count{
+  font-size:12px;font-weight:600;color:#333;
+  width:44px;text-align:right;font-variant-numeric:tabular-nums;
+  font-family:var(--mono);
 }
 
-/* ── Input ── */
+/* Data table */
+.data-table{
+  width:100%;max-width:600px;
+  border-collapse:collapse;margin:12px 0;
+  font-size:13px;
+}
+.data-table th{
+  text-align:left;font-weight:600;color:#888;
+  padding:8px 12px;border-bottom:2px solid #f0f0f0;
+  font-size:11px;text-transform:uppercase;letter-spacing:0.05em;
+}
+.data-table td{
+  padding:10px 12px;border-bottom:1px solid #f5f5f5;
+  color:#333;
+}
+.data-table tr:hover td{background:#fafafa}
+.data-table .mono{font-family:var(--mono);font-size:12px;font-weight:500}
+.data-table .status{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:12px;font-weight:500;
+  padding:2px 8px;border-radius:100px;
+}
+.status-pass{background:var(--green-bg);color:var(--green)}
+.status-fail{background:var(--red-bg);color:var(--red)}
+.status-pending{background:var(--amber-bg);color:var(--amber)}
+.status-info{background:var(--blue-bg);color:var(--blue)}
+
+/* Status dot */
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.dot-red{background:var(--red)}.dot-green{background:var(--green)}
+.dot-amber{background:var(--amber)}.dot-blue{background:var(--blue)}
+
+/* Pie/donut chart (SVG) */
+.chart-donut{
+  display:flex;align-items:center;gap:24px;
+  margin:14px 0;
+}
+.chart-donut svg{flex-shrink:0}
+.chart-legend{display:flex;flex-direction:column;gap:6px}
+.chart-legend-item{
+  display:flex;align-items:center;gap:8px;font-size:12px;color:#555;
+}
+.chart-legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.chart-legend-val{font-weight:600;color:#111;margin-left:auto;font-family:var(--mono);font-size:11px}
+
+/* Source/Actions section */
+.sources{
+  margin-top:12px;padding-top:10px;
+  border-top:1px solid #f0f0f0;
+}
+.sources-toggle{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;color:#aaa;cursor:pointer;
+  background:none;border:none;font-family:inherit;
+  transition:color .12s ease;
+}
+.sources-toggle:hover{color:#666}
+.sources-toggle svg{width:12px;height:12px;transition:transform .2s ease}
+.sources-toggle.open svg{transform:rotate(90deg)}
+.sources-list{
+  display:none;margin-top:8px;padding-left:2px;
+}
+.sources-list.visible{display:block}
+.source-item{
+  font-size:11px;color:#bbb;padding:3px 0;
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--mono);
+}
+.source-item::before{
+  content:'';width:4px;height:4px;border-radius:50%;
+  background:#ddd;flex-shrink:0;
+}
+
+/* Follow-up suggestions */
+.followups{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.followup-btn{
+  font-size:12px;font-weight:500;
+  color:var(--accent);background:var(--blue-bg);
+  border:1px solid #dbeafe;border-radius:100px;
+  padding:6px 14px;cursor:pointer;
+  transition:all .12s ease;font-family:inherit;
+}
+.followup-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* ── Input Area ── */
+.input-area{
+  padding:16px 24px 20px;
+  border-top:1px solid #f0f0f0;
+  flex-shrink:0;background:#fff;
+}
 .input-wrap{
-  background:#fafafa;
-  border:1px solid #e8e8e8;
-  border-radius:16px;
-  display:flex;
-  align-items:center;
-  padding:6px 8px 6px 20px;
+  max-width:640px;margin:0 auto;
+  background:#f8f8f7;border:1px solid #e8e8e8;
+  border-radius:14px;display:flex;align-items:center;
+  padding:4px 6px 4px 18px;
   transition:all .2s ease;
-  margin-bottom:16px;
 }
 .input-wrap:focus-within{
-  background:#fff;
-  border-color:#111;
-  box-shadow:0 0 0 3px rgba(0,0,0,0.04);
+  background:#fff;border-color:#111;
+  box-shadow:0 0 0 3px rgba(0,0,0,0.03);
 }
 .input-wrap input{
   flex:1;border:none;outline:none;
-  font-family:inherit;font-size:15px;
-  background:transparent;color:#111;
-  padding:10px 0;
+  font-family:inherit;font-size:14px;
+  background:transparent;color:#111;padding:10px 0;
 }
-.input-wrap input::placeholder{color:#aaa}
+.input-wrap input::placeholder{color:#bbb}
 .send-btn{
-  width:40px;height:40px;
-  border:none;background:#111;color:#fff;
-  border-radius:10px;cursor:pointer;
+  width:36px;height:36px;border:none;
+  background:#111;color:#fff;border-radius:8px;
   display:flex;align-items:center;justify-content:center;
-  transition:all .15s ease;flex-shrink:0;
+  cursor:pointer;transition:all .12s ease;flex-shrink:0;
 }
-.send-btn:hover{background:#333;transform:scale(1.04)}
-.send-btn svg{width:18px;height:18px}
+.send-btn:hover{background:#333;transform:scale(1.03)}
+.send-btn svg{width:16px;height:16px}
 
-/* ── Quick Prompts ── */
-.prompts{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  justify-content:center;
+/* Typing */
+.typing-indicator{
+  display:flex;gap:4px;padding:12px;width:fit-content;
 }
-.prompt-chip{
-  font-size:13px;
-  color:#555;
-  background:#fff;
-  border:1px solid #e8e8e8;
-  border-radius:100px;
-  padding:8px 16px;
-  cursor:pointer;
-  transition:all .15s ease;
-  white-space:nowrap;
+.typing-indicator span{
+  width:6px;height:6px;border-radius:50%;background:#ccc;
+  animation:typeBounce .6s ease infinite;
 }
-.prompt-chip:hover{
-  border-color:#111;
-  color:#111;
-  background:#fafafa;
-}
-
-/* ── Chat Messages ── */
-.messages{
-  width:100%;
-  margin-bottom:24px;
-  display:none;
-}
-.messages.visible{display:block}
-
-.msg{
-  margin-bottom:20px;
-  animation:fadeIn .3s ease both;
-}
-.msg-user{
-  display:flex;justify-content:flex-end;
-}
-.msg-user .bubble{
-  background:#111;color:#fff;
-  border-radius:16px 16px 4px 16px;
-  padding:12px 18px;
-  font-size:14px;line-height:1.5;
-  max-width:80%;
-}
-.msg-ai{
-  display:flex;flex-direction:column;gap:12px;
-}
-.msg-ai .bubble{
-  background:#fafafa;
-  border-radius:4px 16px 16px 16px;
-  padding:16px 20px;
-  font-size:14px;line-height:1.6;
-  color:#333;
-  max-width:100%;
-}
-
-/* ── AI Data Cards (in response) ── */
-.data-row{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:8px;
-}
-.data-item{
-  background:#fff;
-  border:1px solid #eee;
-  border-radius:10px;
-  padding:14px 16px;
-}
-.data-item .d-num{
-  font-size:24px;font-weight:700;
-  letter-spacing:-0.02em;line-height:1;
-  margin-bottom:4px;
-  font-variant-numeric:tabular-nums;
-}
-.data-item .d-label{font-size:12px;color:#888}
-
-.followups{display:flex;flex-wrap:wrap;gap:6px}
-.followup{
-  font-size:12px;color:#2563eb;
-  background:#eff6ff;
-  border:1px solid #dbeafe;
-  border-radius:100px;
-  padding:6px 12px;
-  cursor:pointer;transition:all .15s ease;
-}
-.followup:hover{background:#2563eb;color:#fff;border-color:#2563eb}
-
-/* ── Typing Indicator ── */
-.typing{
-  display:flex;gap:4px;
-  padding:16px 20px;
-  background:#fafafa;
-  border-radius:4px 16px 16px 16px;
-  width:fit-content;
-}
-.typing span{
-  width:6px;height:6px;border-radius:50%;
-  background:#bbb;
-  animation:bounce .6s ease infinite;
-}
-.typing span:nth-child(2){animation-delay:.1s}
-.typing span:nth-child(3){animation-delay:.2s}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.typing-indicator span:nth-child(2){animation-delay:.1s}
+.typing-indicator span:nth-child(3){animation-delay:.2s}
+@keyframes typeBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 
 /* ── Responsive ── */
-@media(max-width:600px){
-  .header{padding:12px 16px}
-  .main{padding:24px 16px 140px}
-  .greeting h1{font-size:22px}
-  .snapshot{grid-template-columns:repeat(3,1fr);gap:8px}
-  .snap-card{padding:14px 10px}
-  .snap-card .num{font-size:24px}
-  .snap-card .label{font-size:11px}
-  .prompts{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
-  .data-row{grid-template-columns:1fr 1fr}
+@media(max-width:768px){
+  .sidebar{display:none}
+  .chat-main{width:100%}
+  .welcome-grid{grid-template-columns:1fr}
+  .metrics-row{flex-direction:column}
+  .chart-donut{flex-direction:column;align-items:flex-start}
 }
 </style>
 </head>
 <body>
 
-<header class="header">
-  <div class="header-left">
-    <div class="logo">S</div>
-    <span class="brand">ScaffoldIQ</span>
-  </div>
-  <div class="header-right">
-    <span class="status"><span class="status-dot"></span>Connected</span>
-    <div class="avatar" title="Zaib Wemyss">Z</div>
-  </div>
-</header>
+<div class="app">
 
-<main class="main">
-
-  <div class="greeting" id="greeting">
-    <h1 id="greetingText">Good afternoon, Zaib</h1>
-    <p>Your scaffold operations at Big Gore Refinery</p>
-  </div>
-
-  <div class="snapshot" id="snapshot">
-    <div class="snap-card" onclick="askAbout('standing scaffolds')">
-      <div class="num">1,645</div>
-      <div class="label">Standing</div>
+<!-- ── Sidebar ── -->
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo">S</div>
+      <span class="sidebar-name">ScaffoldIQ</span>
     </div>
-    <div class="snap-card warn" onclick="askAbout('open requests')">
-      <div class="num">3,024</div>
-      <div class="label">Open requests</div>
+    <div class="sidebar-site">Big Gore Refinery</div>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="nav-label">Overview</div>
+    <div class="nav-item active" onclick="handleNav('chat')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Chat Assistant
     </div>
-    <div class="snap-card alert" onclick="askAbout('failed inspections')">
-      <div class="num">703</div>
-      <div class="label">Awaiting inspection</div>
+    <div class="nav-item" onclick="handleNav('dashboard')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+      Dashboard
+    </div>
+
+    <div class="nav-label">Data</div>
+    <div class="nav-item" onclick="askQ('Show me all standing scaffolds')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/></svg>
+      Scaffolds
+      <span class="nav-stat">1,645</span>
+    </div>
+    <div class="nav-item" onclick="askQ('Show me the request pipeline')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Requests
+      <span class="nav-stat">3,024</span>
+    </div>
+    <div class="nav-item" onclick="askQ('Show me inspection results')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Inspections
+      <span class="nav-stat">703</span>
+    </div>
+    <div class="nav-item" onclick="askQ('Show me the team workload')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      People
+      <span class="nav-stat">54</span>
+    </div>
+    <div class="nav-item" onclick="askQ('Show me scaffolds by area')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+      Areas
+      <span class="nav-stat">10</span>
     </div>
   </div>
 
-  <div class="chat-area">
-    <div class="messages" id="messages"></div>
+  <div class="sidebar-footer">
+    <div class="sidebar-avatar">Z</div>
+    <div>
+      <div class="sidebar-user">Zaib Wemyss</div>
+      <div class="sidebar-status">Connected</div>
+    </div>
+  </div>
+</nav>
 
-    <div class="input-wrap">
-      <input type="text" id="input" placeholder="Ask about your scaffolds..." autocomplete="off" />
-      <button class="send-btn" onclick="send()" title="Send">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+<!-- ── Chat Main ── -->
+<div class="chat-main">
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <span class="chat-title">Chat Assistant</span>
+      <span class="chat-badge">Live data</span>
+    </div>
+    <div class="chat-header-actions">
+      <button class="header-btn" title="New chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <button class="header-btn" title="Export">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       </button>
     </div>
+  </div>
 
-    <div class="prompts" id="prompts">
-      <span class="prompt-chip" onclick="askAbout('How many scaffolds are in AMRU?')">Scaffolds in AMRU</span>
-      <span class="prompt-chip" onclick="askAbout('Show failed inspections this week')">Failed inspections</span>
-      <span class="prompt-chip" onclick="askAbout('Which requests are stuck in approval?')">Stuck approvals</span>
-      <span class="prompt-chip" onclick="askAbout('Give me a safety compliance summary')">Safety compliance</span>
-      <span class="prompt-chip" onclick="askAbout('Who are the most active team members?')">Team activity</span>
+  <div class="messages" id="messages">
+    <div class="welcome" id="welcome">
+      <h2>What do you want to know?</h2>
+      <p>I query your live scaffold data — inspections, requests, scaffolds, personnel, and areas. Ask anything or pick a topic.</p>
+      <div class="welcome-grid">
+        <div class="welcome-card" onclick="askQ('Show me all standing scaffolds with their status')">
+          <div class="welcome-card-title">Scaffold status</div>
+          <div class="welcome-card-desc">See what's standing, awaiting build, or dismantled</div>
+        </div>
+        <div class="welcome-card" onclick="askQ('Show me the request pipeline')">
+          <div class="welcome-card-title">Request pipeline</div>
+          <div class="welcome-card-desc">Track requests through the approval workflow</div>
+        </div>
+        <div class="welcome-card" onclick="askQ('Show me inspection results')">
+          <div class="welcome-card-title">Inspection results</div>
+          <div class="welcome-card-desc">Pass/fail rates, recent inspections, distance warnings</div>
+        </div>
+        <div class="welcome-card" onclick="askQ('Show me scaffolds by area')">
+          <div class="welcome-card-title">Area breakdown</div>
+          <div class="welcome-card-desc">Scaffold counts and activity by site area</div>
+        </div>
+      </div>
     </div>
   </div>
 
-</main>
+  <div class="input-area">
+    <div class="input-wrap">
+      <input type="text" id="input" placeholder="Ask about scaffolds, inspections, requests..." autocomplete="off" />
+      <button class="send-btn" onclick="send()" title="Send">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+</div>
 
 <script>
+// ============================================
+// Response templates — each type looks DIFFERENT
+// ============================================
 const responses = {
-  'standing scaffolds': {
-    text: '1,645 scaffolds are currently standing across 10 areas. The highest concentration is in AMRU with 350, followed by ALKY with 288.',
-    cards: [
-      {num:'350',label:'AMRU'},
-      {num:'288',label:'ALKY'},
-      {num:'277',label:'LFSP'},
-      {num:'207',label:'STFA'},
-    ],
-    followups: ['Show all areas', 'Which are past dismantle date?', 'Tag status breakdown']
-  },
-  'open requests': {
-    text: '3,024 requests are currently in the pipeline. The majority are in the approval stages — 1,059 awaiting initial approval and 1,031 in final approval.',
-    cards: [
-      {num:'1,059',label:'Initial approval'},
-      {num:'1,031',label:'Final approval'},
-      {num:'613',label:'Secondary'},
-      {num:'16',label:'Ready to build'},
-    ],
-    followups: ['Requests stuck over 7 days', 'Who needs to approve?', 'This week\'s throughput']
-  },
-  'failed inspections': {
-    text: '703 scaffolds are awaiting inspection. There have been 561 failed inspections total, with 23 this week — mostly GPS distance warnings in ALKY and AMRU areas.',
-    cards: [
-      {num:'703',label:'Awaiting inspection'},
-      {num:'561',label:'Total failed'},
-      {num:'23',label:'Failed this week'},
-      {num:'87%',label:'Pass rate (30d)'},
-    ],
-    followups: ['Show failure reasons', 'ALKY area details', 'List inspectors']
-  },
-  'How many scaffolds are in AMRU?': {
-    text: 'AMRU has 350 standing scaffolds — the most of any area on site. 312 are past their planned dismantle date.',
-    cards: [
-      {num:'350',label:'Standing'},
-      {num:'312',label:'Past dismantle'},
-      {num:'38',label:'On schedule'},
-    ],
-    followups: ['Show sub-areas', 'Inspection status', 'Recent activity in AMRU']
-  },
-  'Show failed inspections this week': {
-    text: '23 inspections failed this week, up 12% from last week. The top failure reason is GPS distance warnings — inspectors scanning from too far away.',
-    cards: [
-      {num:'23',label:'Failed this week'},
-      {num:'12',label:'GPS warnings'},
-      {num:'6',label:'In ALKY area'},
-      {num:'5',label:'In AMRU area'},
-    ],
-    followups: ['Show all failure reasons', 'Contact area inspectors', 'Adjust distance threshold']
-  },
-  'Which requests are stuck in approval?': {
-    text: '47 requests have been waiting more than 7 days for approval. The oldest is R-0002847 in STFA, pending for 14 days. 4 approvers haven\'t logged in this week.',
-    cards: [
-      {num:'47',label:'Stuck over 7 days'},
-      {num:'14d',label:'Oldest pending'},
-      {num:'3.2d',label:'Avg approval time'},
-      {num:'4',label:'Inactive approvers'},
-    ],
-    followups: ['Show the 47 stuck requests', 'Who are the inactive approvers?', 'Reassignment options']
-  },
-  'Give me a safety compliance summary': {
-    text: 'Overall pass rate is 87.3% over the last 30 days. 703 scaffolds are awaiting inspection — 42.7% of standing stock. 4 handovers were rejected. Nearly all standing scaffolds are past dismantle date.',
-    cards: [
-      {num:'87.3%',label:'Pass rate (30d)'},
-      {num:'703',label:'Awaiting inspection'},
-      {num:'4',label:'Failed handovers'},
-      {num:'98.6%',label:'Past dismantle date'},
-    ],
-    followups: ['Inspection schedule', 'Failed handover details', 'Export compliance report']
-  },
-  'Who are the most active team members?': {
-    text: '31 of 54 registered personnel have been active this week. The busiest are Abigail MacDonald, Brandon Kelly, and Cameron Wilson.',
-    cards: [
-      {num:'47',label:'Abigail MacDonald'},
-      {num:'38',label:'Brandon Kelly'},
-      {num:'31',label:'Cameron Wilson'},
-      {num:'23',label:'Inactive this week'},
-    ],
-    followups: ['Show full team list', 'Workload distribution', 'Contractor breakdown']
-  },
+
+'Show me all standing scaffolds with their status': {
+  actions: ['Search Scaffolds (all)', 'Search Scaffolds (StatusName Eq AwaitingBuild)', 'Search Scaffolds (StatusName Eq Dismantled)'],
+  html: `
+    <div class="prose">Here's the current scaffold inventory across all areas. <strong>1,645 scaffolds</strong> are standing, with the majority awaiting repair or inspection.</div>
+
+    <div class="metrics-row">
+      <div class="metric"><div class="metric-val">1,645</div><div class="metric-label">Standing</div></div>
+      <div class="metric"><div class="metric-val amber">703</div><div class="metric-label">Awaiting Inspection</div></div>
+      <div class="metric"><div class="metric-val">467</div><div class="metric-label">Awaiting Repair</div></div>
+      <div class="metric"><div class="metric-val green">16</div><div class="metric-label">Awaiting Build</div></div>
+    </div>
+
+    <div class="chart-donut">
+      <svg width="140" height="140" viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="54" fill="none" stroke="#f0f0f0" stroke-width="14"/>
+        <circle cx="70" cy="70" r="54" fill="none" stroke="#f59e0b" stroke-width="14" stroke-dasharray="145 194" stroke-dashoffset="0" transform="rotate(-90 70 70)"/>
+        <circle cx="70" cy="70" r="54" fill="none" stroke="#ef4444" stroke-width="14" stroke-dasharray="96 243" stroke-dashoffset="-145" transform="rotate(-90 70 70)"/>
+        <circle cx="70" cy="70" r="54" fill="none" stroke="#8b5cf6" stroke-width="14" stroke-dasharray="47 292" stroke-dashoffset="-241" transform="rotate(-90 70 70)"/>
+        <circle cx="70" cy="70" r="54" fill="none" stroke="#3b82f6" stroke-width="14" stroke-dasharray="29 310" stroke-dashoffset="-288" transform="rotate(-90 70 70)"/>
+        <circle cx="70" cy="70" r="54" fill="none" stroke="#10b981" stroke-width="14" stroke-dasharray="5 334" stroke-dashoffset="-317" transform="rotate(-90 70 70)"/>
+        <text x="70" y="66" text-anchor="middle" font-size="22" font-weight="700" fill="#111" font-family="DM Sans">1,645</text>
+        <text x="70" y="82" text-anchor="middle" font-size="10" fill="#999" font-family="DM Sans">standing</text>
+      </svg>
+      <div class="chart-legend">
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#f59e0b"></div> Awaiting Inspection <span class="chart-legend-val">703</span></div>
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#ef4444"></div> Awaiting Repair <span class="chart-legend-val">467</span></div>
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#8b5cf6"></div> Build In Progress <span class="chart-legend-val">140</span></div>
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#3b82f6"></div> Dismantle In Progress <span class="chart-legend-val">139</span></div>
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#10b981"></div> Do Not Use <span class="chart-legend-val">65</span></div>
+      </div>
+    </div>
+
+    <div class="prose">All <strong>1,645 tags are red</strong>. <strong>1,622</strong> (98.6%) are past their planned dismantle date.</div>
+  `,
+  followups: ['Show scaffolds in AMRU', 'Which are past dismantle date?', 'Recent builds this week']
+},
+
+'Show me the request pipeline': {
+  actions: ['Search Requests (all statuses)', 'Search Requests (Status Lt: 6)', 'Search Requests (Status Eq: 6)'],
+  html: `
+    <div class="prose">There are <strong>3,024 open requests</strong> in the pipeline. The majority are in the approval stages. Here's the breakdown by status:</div>
+
+    <div class="chart-bars">
+      <div class="chart-bar-row">
+        <div class="chart-bar-label">Initial Approval</div>
+        <div class="chart-bar-track"><div class="chart-bar-fill" style="width:85%;background:#6366f1"><span>35.0%</span></div></div>
+        <div class="chart-bar-count">1,059</div>
+      </div>
+      <div class="chart-bar-row">
+        <div class="chart-bar-label">Final Approval</div>
+        <div class="chart-bar-track"><div class="chart-bar-fill" style="width:83%;background:#8b5cf6"><span>34.1%</span></div></div>
+        <div class="chart-bar-count">1,031</div>
+      </div>
+      <div class="chart-bar-row">
+        <div class="chart-bar-label">Secondary</div>
+        <div class="chart-bar-track"><div class="chart-bar-fill" style="width:50%;background:#a78bfa"><span>20.3%</span></div></div>
+        <div class="chart-bar-count">613</div>
+      </div>
+      <div class="chart-bar-row">
+        <div class="chart-bar-label">Estimate</div>
+        <div class="chart-bar-track"><div class="chart-bar-fill" style="width:25%;background:#c4b5fd"><span>10.0%</span></div></div>
+        <div class="chart-bar-count">302</div>
+      </div>
+      <div class="chart-bar-row">
+        <div class="chart-bar-label">Awaiting Build</div>
+        <div class="chart-bar-track"><div class="chart-bar-fill" style="width:3%;background:#10b981"></div></div>
+        <div class="chart-bar-count">16</div>
+      </div>
+      <div class="chart-bar-row">
+        <div class="chart-bar-label">Modification</div>
+        <div class="chart-bar-track"><div class="chart-bar-fill" style="width:1%;background:#94a3b8"></div></div>
+        <div class="chart-bar-count">2</div>
+      </div>
+    </div>
+
+    <div class="prose"><strong>16 requests</strong> are fully approved and ready for build. <strong>47 requests</strong> have been stuck in approval for more than 7 days — the oldest is R-0002847 in STFA (14 days).</div>
+  `,
+  followups: ['Show stuck requests over 7 days', 'Who are the approvers?', 'Request throughput this week']
+},
+
+'Show me inspection results': {
+  actions: ['Search Inspections (Status Eq: 3)', 'List All Inspections', 'Search Scaffolds (Status Eq 211)', 'Search Handovers (Status Eq: 3)'],
+  html: `
+    <div class="prose">Here's the safety and inspection overview. <strong>703 scaffolds</strong> are awaiting inspection. The pass rate over the last 30 days is <strong>87.3%</strong>.</div>
+
+    <div class="metrics-row">
+      <div class="metric"><div class="metric-val amber">703</div><div class="metric-label">Awaiting Inspection</div></div>
+      <div class="metric"><div class="metric-val red">561</div><div class="metric-label">Total Failed</div></div>
+      <div class="metric"><div class="metric-val">23</div><div class="metric-label">Failed This Week</div></div>
+      <div class="metric"><div class="metric-val green">87.3%</div><div class="metric-label">Pass Rate (30d)</div></div>
+    </div>
+
+    <div class="prose" style="margin-top:4px"><strong>Recent inspections:</strong></div>
+
+    <table class="data-table">
+      <thead><tr><th>Inspection</th><th>Scaffold</th><th>Result</th><th>Area</th><th>Inspector</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">I-0000648</td><td class="mono">S-0001203</td><td><span class="status status-fail"><span class="dot dot-red"></span> Fail</span></td><td>ALKY</td><td>Distance warning</td></tr>
+        <tr><td class="mono">I-0000647</td><td class="mono">S-0000891</td><td><span class="status status-pass"><span class="dot dot-green"></span> Pass</span></td><td>AMRU</td><td>A. MacDonald</td></tr>
+        <tr><td class="mono">I-0000646</td><td class="mono">S-0001189</td><td><span class="status status-pass"><span class="dot dot-green"></span> Pass</span></td><td>12PS</td><td>B. Kelly</td></tr>
+        <tr><td class="mono">I-0000645</td><td class="mono">S-0000734</td><td><span class="status status-fail"><span class="dot dot-red"></span> Fail</span></td><td>AMRU</td><td>Distance warning</td></tr>
+        <tr><td class="mono">I-0000644</td><td class="mono">S-0001056</td><td><span class="status status-pass"><span class="dot dot-green"></span> Pass</span></td><td>STFA</td><td>C. Wilson</td></tr>
+      </tbody>
+    </table>
+
+    <div class="prose">Most failures are <strong>GPS distance warnings</strong> — inspectors scanning tags from too far away. This is concentrated in ALKY and AMRU areas. There are also <strong>4 failed handovers</strong> pending resolution.</div>
+  `,
+  followups: ['Show failure reasons breakdown', 'Inspections in ALKY', 'Failed handover details', 'Inspector workload']
+},
+
+'Show me scaffolds by area': {
+  actions: ['List All Areas', 'Areas by Scaffold Count'],
+  html: `
+    <div class="prose">Your site has <strong>10 areas</strong>. Here's the scaffold distribution — AMRU has the highest concentration with 350 scaffolds.</div>
+
+    <div class="chart-bars">
+      <div class="chart-bar-row"><div class="chart-bar-label">AMRU</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:100%;background:#1a1a2e"><span>350</span></div></div><div class="chart-bar-count">350</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">ALKY</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:82%;background:#2d2d4a"></div></div><div class="chart-bar-count">288</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">LFSP</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:79%;background:#3d3d5c"></div></div><div class="chart-bar-count">277</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">STFA</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:59%;background:#4d4d6e"></div></div><div class="chart-bar-count">207</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">VRU3</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:40%;background:#5d5d80"></div></div><div class="chart-bar-count">141</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">12PS</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:40%;background:#5d5d80"></div></div><div class="chart-bar-count">141</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">TANK</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:20%;background:#7d7d98"></div></div><div class="chart-bar-count">71</div></div>
+      <div class="chart-bar-row"><div class="chart-bar-label">UTIL</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:14%;background:#9d9daa"></div></div><div class="chart-bar-count">48</div></div>
+    </div>
+
+    <div class="prose">AMRU, ALKY, and LFSP together account for <strong>55.6%</strong> of all standing scaffolds. Most failed inspections are also concentrated in these three areas.</div>
+  `,
+  followups: ['Drill into AMRU', 'Show sub-areas for ALKY', 'Which areas have the most failures?']
+},
+
+'Show me the team workload': {
+  actions: ['Search People', 'List Administrators', 'Search Activities (all)'],
+  html: `
+    <div class="prose">There are <strong>54 people</strong> registered in the system. <strong>31 have been active this week</strong>. Here are the busiest team members by activity count:</div>
+
+    <table class="data-table">
+      <thead><tr><th>Name</th><th>Company</th><th>Activities</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Abigail MacDonald</strong></td><td>Big Gore Refinery</td><td class="mono">47</td><td><span class="status status-pass"><span class="dot dot-green"></span> Active</span></td></tr>
+        <tr><td><strong>Brandon Kelly</strong></td><td>AAA Scaffolding</td><td class="mono">38</td><td><span class="status status-pass"><span class="dot dot-green"></span> Active</span></td></tr>
+        <tr><td><strong>Cameron Wilson</strong></td><td>Acme Coast Builders</td><td class="mono">31</td><td><span class="status status-pass"><span class="dot dot-green"></span> Active</span></td></tr>
+        <tr><td><strong>Ali Bobross</strong></td><td>Avontus</td><td class="mono">18</td><td><span class="status status-pass"><span class="dot dot-green"></span> Active</span></td></tr>
+        <tr><td><strong>Austin Gibson</strong></td><td>AAA Scaffolding</td><td class="mono">0</td><td><span class="status status-pending"><span class="dot dot-amber"></span> Inactive</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="metrics-row">
+      <div class="metric"><div class="metric-val green">31</div><div class="metric-label">Active This Week</div></div>
+      <div class="metric"><div class="metric-val amber">23</div><div class="metric-label">Inactive</div></div>
+      <div class="metric"><div class="metric-val">2</div><div class="metric-label">Administrators</div></div>
+      <div class="metric"><div class="metric-val">3</div><div class="metric-label">Contractors</div></div>
+    </div>
+  `,
+  followups: ['Show all inactive users', 'Contractor breakdown', 'Contact directory', 'Workload by area']
+},
+
 };
 
-// Default fallback
-const fallback = {
-  text: 'I can help you with scaffold status, inspections, requests, safety compliance, and team workload. Try one of the suggested questions below.',
-  cards: [],
-  followups: ['Standing scaffolds', 'Failed inspections', 'Open requests', 'Safety compliance']
+// Fallback for unrecognized queries
+const fallbackResponse = {
+  actions: ['Search Scaffolds', 'Search Requests'],
+  html: `
+    <div class="prose">I can provide detailed information across several key areas of the ScaffoldIQ system:</div>
+    <div class="prose">
+      <strong>Scaffolds</strong> — Status tracking, location, build/dismantle dates, assigned personnel<br>
+      <strong>Requests</strong> — Approval pipeline, bottlenecks, work history<br>
+      <strong>Inspections</strong> — Pass/fail results, compliance status, handovers<br>
+      <strong>Areas</strong> — Site hierarchy, scaffold counts, activity by location<br>
+      <strong>People</strong> — Team workload, contact info, contractor assignments
+    </div>
+  `,
+  followups: ['Standing scaffolds', 'Request pipeline', 'Inspection results', 'Area breakdown', 'Team workload']
 };
 
-function getResponse(query) {
-  const q = query.toLowerCase();
+// ============================================
+// Chat logic
+// ============================================
+function getResponse(q) {
+  // Direct match
+  if (responses[q]) return responses[q];
+  // Fuzzy match
+  const ql = q.toLowerCase();
   for (const [key, val] of Object.entries(responses)) {
-    if (q.includes(key.toLowerCase().substring(0, 10)) || key.toLowerCase().includes(q.substring(0, 10))) {
-      return val;
-    }
+    const kl = key.toLowerCase();
+    // Check if query contains key words
+    const words = kl.split(/\s+/).filter(w => w.length > 3);
+    const matches = words.filter(w => ql.includes(w));
+    if (matches.length >= 2) return val;
   }
-  // Try partial match
-  if (q.includes('scaffold')) return responses['standing scaffolds'];
-  if (q.includes('inspect') || q.includes('fail')) return responses['failed inspections'];
-  if (q.includes('request') || q.includes('approv')) return responses['open requests'];
-  if (q.includes('safe') || q.includes('compli')) return responses['Give me a safety compliance summary'];
-  if (q.includes('team') || q.includes('people') || q.includes('active')) return responses['Who are the most active team members?'];
-  if (q.includes('amru')) return responses['How many scaffolds are in AMRU?'];
-  if (q.includes('stuck')) return responses['Which requests are stuck in approval?'];
-  return fallback;
+  // Keyword fallback
+  if (ql.includes('scaffold') && (ql.includes('stand') || ql.includes('status'))) return responses['Show me all standing scaffolds with their status'];
+  if (ql.includes('request') || ql.includes('pipeline') || ql.includes('approv')) return responses['Show me the request pipeline'];
+  if (ql.includes('inspect') || ql.includes('fail') || ql.includes('safe') || ql.includes('compli')) return responses['Show me inspection results'];
+  if (ql.includes('area') || ql.includes('amru') || ql.includes('alky')) return responses['Show me scaffolds by area'];
+  if (ql.includes('team') || ql.includes('people') || ql.includes('person') || ql.includes('work')) return responses['Show me the team workload'];
+  if (ql.includes('scaffold')) return responses['Show me all standing scaffolds with their status'];
+  return fallbackResponse;
 }
 
 function send() {
@@ -444,101 +702,108 @@ function send() {
   const text = input.value.trim();
   if (!text) return;
   input.value = '';
-  askAbout(text);
+  askQ(text);
 }
 
-function askAbout(query) {
+function askQ(query) {
   const msgs = document.getElementById('messages');
-  const prompts = document.getElementById('prompts');
-  const snapshot = document.getElementById('snapshot');
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.style.display = 'none';
 
-  msgs.classList.add('visible');
+  // User message
+  const userDiv = document.createElement('div');
+  userDiv.className = 'msg msg-user';
+  userDiv.innerHTML = `<div class="bubble">${esc(query)}</div>`;
+  msgs.appendChild(userDiv);
 
-  // After first message, shrink snapshot and hide prompts
-  snapshot.style.display = 'none';
-  prompts.style.display = 'none';
+  // Typing indicator
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'msg msg-ai';
+  typingDiv.innerHTML = `
+    <div class="msg-ai-header">
+      <div class="ai-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+      <span class="ai-label">ScaffoldIQ</span>
+    </div>
+    <div class="typing-indicator"><span></span><span></span><span></span></div>
+  `;
+  msgs.appendChild(typingDiv);
+  msgs.scrollTop = msgs.scrollHeight;
 
-  // Shrink greeting
-  const greeting = document.getElementById('greeting');
-  greeting.style.marginBottom = '24px';
-  greeting.querySelector('h1').style.fontSize = '20px';
-  greeting.querySelector('p').style.fontSize = '13px';
-
-  // Add user message
-  const userMsg = document.createElement('div');
-  userMsg.className = 'msg msg-user';
-  userMsg.innerHTML = `<div class="bubble">${escHtml(query)}</div>`;
-  msgs.appendChild(userMsg);
-
-  // Add typing indicator
-  const typingMsg = document.createElement('div');
-  typingMsg.className = 'msg msg-ai';
-  typingMsg.innerHTML = `<div class="typing"><span></span><span></span><span></span></div>`;
-  msgs.appendChild(typingMsg);
-
-  scrollToBottom();
-
-  // Simulate AI delay
+  // Simulate response
+  const delay = 600 + Math.random() * 600;
   setTimeout(() => {
-    typingMsg.remove();
-
+    typingDiv.remove();
     const data = getResponse(query);
-    const aiMsg = document.createElement('div');
-    aiMsg.className = 'msg msg-ai';
 
-    let cardsHtml = '';
-    if (data.cards.length) {
-      cardsHtml = `<div class="data-row">${data.cards.map(c =>
-        `<div class="data-item"><div class="d-num">${c.num}</div><div class="d-label">${c.label}</div></div>`
-      ).join('')}</div>`;
+    const aiDiv = document.createElement('div');
+    aiDiv.className = 'msg msg-ai';
+
+    // Sources section
+    const sourcesId = 'src-' + Date.now();
+    let sourcesHtml = '';
+    if (data.actions && data.actions.length) {
+      sourcesHtml = `
+        <div class="sources">
+          <button class="sources-toggle" onclick="toggleSources('${sourcesId}', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            ${data.actions.length} queries performed
+          </button>
+          <div class="sources-list" id="${sourcesId}">
+            ${data.actions.map(a => `<div class="source-item">${esc(a)}</div>`).join('')}
+          </div>
+        </div>
+      `;
     }
 
+    // Follow-ups
     let followHtml = '';
-    if (data.followups.length) {
+    if (data.followups && data.followups.length) {
       followHtml = `<div class="followups">${data.followups.map(f =>
-        `<span class="followup" onclick="askAbout('${escAttr(f)}')">${escHtml(f)}</span>`
+        `<button class="followup-btn" onclick="askQ('${escAttr(f)}')">${esc(f)}</button>`
       ).join('')}</div>`;
     }
 
-    aiMsg.innerHTML = `
-      <div class="bubble">${escHtml(data.text)}</div>
-      ${cardsHtml}
+    aiDiv.innerHTML = `
+      <div class="msg-ai-header">
+        <div class="ai-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <span class="ai-label">ScaffoldIQ</span>
+      </div>
+      ${data.html}
+      ${sourcesHtml}
       ${followHtml}
     `;
-    msgs.appendChild(aiMsg);
-    scrollToBottom();
+    msgs.appendChild(aiDiv);
+    msgs.scrollTop = msgs.scrollHeight;
 
-    // Show prompts again after response
-    prompts.style.display = 'flex';
-  }, 800 + Math.random() * 400);
+    // Animate bars
+    setTimeout(() => {
+      aiDiv.querySelectorAll('.chart-bar-fill').forEach(bar => {
+        const w = bar.style.width;
+        bar.style.width = '0%';
+        requestAnimationFrame(() => { bar.style.width = w; });
+      });
+    }, 50);
+
+  }, delay);
 }
 
-function scrollToBottom() {
-  window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+function toggleSources(id, btn) {
+  const el = document.getElementById(id);
+  el.classList.toggle('visible');
+  btn.classList.toggle('open');
 }
 
-function escHtml(s) {
-  const d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
-}
-function escAttr(s) {
-  return s.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+function handleNav(section) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  event.currentTarget.classList.add('active');
 }
 
-// Enter to send
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function escAttr(s) { return s.replace(/'/g, "\\'"); }
+
 document.getElementById('input').addEventListener('keydown', e => {
   if (e.key === 'Enter') { e.preventDefault(); send(); }
 });
-
-// Dynamic greeting
-(function() {
-  const h = new Date().getHours();
-  let g = 'Good morning';
-  if (h >= 12 && h < 17) g = 'Good afternoon';
-  if (h >= 17) g = 'Good evening';
-  document.getElementById('greetingText').textContent = g + ', Zaib';
-})();
 </script>
 
 </body>
