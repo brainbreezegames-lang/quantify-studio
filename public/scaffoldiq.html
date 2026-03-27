@@ -79,25 +79,7 @@ body{
 .messages::-webkit-scrollbar{width:4px}
 .messages::-webkit-scrollbar-thumb{background:#ddd;border-radius:4px}
 
-/* Welcome */
-.welcome{
-  max-width:540px;margin:80px auto 0;text-align:center;
-  animation:fadeIn .5s ease;
-}
-.welcome h2{font-size:22px;font-weight:700;letter-spacing:-0.02em;margin-bottom:8px}
-.welcome p{font-size:14px;color:#888;line-height:1.6;margin-bottom:28px}
-
-.welcome-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:8px;
-  text-align:left;margin-bottom:20px;
-}
-.welcome-card{
-  padding:14px 16px;border:1px solid #eee;border-radius:10px;
-  cursor:pointer;transition:all .15s ease;
-}
-.welcome-card:hover{border-color:#ccc;background:#fafafa}
-.welcome-card-title{font-size:13px;font-weight:600;margin-bottom:3px}
-.welcome-card-desc{font-size:12px;color:#999;line-height:1.4}
+/* Welcome - removed, using proactive first message instead */
 
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
@@ -263,6 +245,50 @@ body{
 }
 .followup-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
 
+/* Topic cards in welcome message */
+.topic-grid{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:8px;margin:16px 0 4px;
+}
+.topic-card{
+  border:1px solid #eee;border-radius:10px;
+  padding:14px 16px;cursor:pointer;
+  transition:all .15s ease;background:#fff;
+}
+.topic-card:hover{border-color:#ccc;background:#fafafa;transform:translateY(-1px)}
+.topic-card-icon{
+  width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:10px;
+}
+.topic-card-icon svg{width:16px;height:16px}
+.topic-card-title{font-size:13px;font-weight:600;margin-bottom:3px;color:#111}
+.topic-card-desc{font-size:11px;color:#999;line-height:1.4}
+.topic-card-preview{
+  margin-top:8px;font-size:11px;color:#bbb;
+  font-style:italic;
+}
+
+/* Compact summary bar in welcome */
+.summary-bar{
+  display:flex;gap:1px;margin:14px 0;
+  background:#f0f0f0;border-radius:8px;overflow:hidden;
+}
+.summary-item{
+  flex:1;background:#fafafa;
+  padding:12px 14px;text-align:center;
+  cursor:pointer;transition:background .12s ease;
+}
+.summary-item:hover{background:#f0f0f0}
+.summary-item .s-val{
+  font-size:18px;font-weight:700;line-height:1;
+  margin-bottom:3px;font-variant-numeric:tabular-nums;
+}
+.summary-item .s-label{font-size:10px;color:#999;font-weight:500}
+.summary-item .s-val.red{color:var(--red)}
+.summary-item .s-val.amber{color:var(--amber)}
+.summary-item .s-val.green{color:var(--green)}
+
 /* ── Input Area ── */
 .input-area{
   padding:16px 24px 20px;
@@ -310,11 +336,13 @@ body{
 /* ── Responsive ── */
 @media(max-width:768px){
   .top-sep,.top-site{display:none}
-  .welcome-grid{grid-template-columns:1fr}
+  .topic-grid{grid-template-columns:1fr 1fr}
   .metrics-row{flex-direction:column}
   .chart-donut{flex-direction:column;align-items:flex-start}
   .messages{padding:16px}
   .input-area{padding:12px 16px 16px}
+  .summary-bar{flex-wrap:wrap}
+  .summary-item{min-width:45%}
 }
 @media(max-width:480px){
   .top-header{padding:10px 16px}
@@ -344,28 +372,89 @@ body{
 <div class="chat-main">
   <div class="messages" id="messages">
     <div class="messages-inner" id="messagesInner">
-    <div class="welcome" id="welcome">
-      <h2>What do you want to know?</h2>
-      <p>I query your live scaffold data — inspections, requests, scaffolds, personnel, and areas. Ask anything or pick a topic.</p>
-      <div class="welcome-grid">
-        <div class="welcome-card" onclick="askQ('Show me all standing scaffolds with their status')">
-          <div class="welcome-card-title">Scaffold status</div>
-          <div class="welcome-card-desc">See what's standing, awaiting build, or dismantled</div>
+
+    <!-- Proactive first message — teaches by showing -->
+    <div class="msg msg-ai" id="welcomeMsg" style="animation:fadeIn .5s ease">
+      <div class="msg-ai-header">
+        <div class="ai-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <span class="ai-label">ScaffoldIQ</span>
+      </div>
+
+      <div class="prose" id="greetingText">Good afternoon, Zaib. Here's your site at a glance.</div>
+
+      <div class="summary-bar">
+        <div class="summary-item" onclick="askQ('Show me all standing scaffolds with their status')">
+          <div class="s-val">1,645</div>
+          <div class="s-label">Standing</div>
         </div>
-        <div class="welcome-card" onclick="askQ('Show me the request pipeline')">
-          <div class="welcome-card-title">Request pipeline</div>
-          <div class="welcome-card-desc">Track requests through the approval workflow</div>
+        <div class="summary-item" onclick="askQ('Show me the request pipeline')">
+          <div class="s-val amber">3,024</div>
+          <div class="s-label">Open Requests</div>
         </div>
-        <div class="welcome-card" onclick="askQ('Show me inspection results')">
-          <div class="welcome-card-title">Inspection results</div>
-          <div class="welcome-card-desc">Pass/fail rates, recent inspections, distance warnings</div>
+        <div class="summary-item" onclick="askQ('Show me inspection results')">
+          <div class="s-val red">703</div>
+          <div class="s-label">Awaiting Inspection</div>
         </div>
-        <div class="welcome-card" onclick="askQ('Show me scaffolds by area')">
-          <div class="welcome-card-title">Area breakdown</div>
-          <div class="welcome-card-desc">Scaffold counts and activity by site area</div>
+        <div class="summary-item" onclick="askQ('Show me the team workload')">
+          <div class="s-val green">31</div>
+          <div class="s-label">Active This Week</div>
+        </div>
+      </div>
+
+      <div class="prose">I can query your live data and generate reports. Pick a topic to explore:</div>
+
+      <div class="topic-grid">
+        <div class="topic-card" onclick="askQ('Show me all standing scaffolds with their status')">
+          <div class="topic-card-icon" style="background:var(--blue-bg);color:var(--blue)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/></svg>
+          </div>
+          <div class="topic-card-title">Scaffolds</div>
+          <div class="topic-card-desc">Status, tags, locations, build &amp; dismantle dates</div>
+          <div class="topic-card-preview">Charts &amp; breakdowns</div>
+        </div>
+        <div class="topic-card" onclick="askQ('Show me the request pipeline')">
+          <div class="topic-card-icon" style="background:#f3e8ff;color:#8b5cf6">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <div class="topic-card-title">Requests</div>
+          <div class="topic-card-desc">Approval pipeline, bottlenecks, throughput</div>
+          <div class="topic-card-preview">Pipeline visualization</div>
+        </div>
+        <div class="topic-card" onclick="askQ('Show me inspection results')">
+          <div class="topic-card-icon" style="background:var(--red-bg);color:var(--red)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="topic-card-title">Inspections</div>
+          <div class="topic-card-desc">Pass/fail results, compliance, handovers</div>
+          <div class="topic-card-preview">Tables &amp; status tracking</div>
+        </div>
+        <div class="topic-card" onclick="askQ('Show me scaffolds by area')">
+          <div class="topic-card-icon" style="background:var(--green-bg);color:var(--green)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+          </div>
+          <div class="topic-card-title">Areas</div>
+          <div class="topic-card-desc">Site hierarchy, scaffold distribution</div>
+          <div class="topic-card-preview">Area comparison charts</div>
+        </div>
+        <div class="topic-card" onclick="askQ('Show me the team workload')">
+          <div class="topic-card-icon" style="background:var(--amber-bg);color:var(--amber)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+          </div>
+          <div class="topic-card-title">People</div>
+          <div class="topic-card-desc">Team workload, contractors, contacts</div>
+          <div class="topic-card-preview">Activity tables</div>
+        </div>
+        <div class="topic-card" onclick="askQ('Give me a safety compliance summary')">
+          <div class="topic-card-icon" style="background:#fef3c7;color:#b45309">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="topic-card-title">Safety</div>
+          <div class="topic-card-desc">Compliance score, overdue items, risks</div>
+          <div class="topic-card-preview">Compliance overview</div>
         </div>
       </div>
     </div>
+
     </div>
   </div>
 
@@ -544,6 +633,36 @@ const responses = {
   followups: ['Show all inactive users', 'Contractor breakdown', 'Contact directory', 'Workload by area']
 },
 
+'Give me a safety compliance summary': {
+  actions: ['Search Scaffolds (Status Eq 211)', 'Search Inspections (Status Eq: 3)', 'Search Handovers (Status Eq: 3)', 'Search Scaffolds (all standing)'],
+  html: `
+    <div class="prose">Here's the safety and compliance overview for Big Gore Refinery:</div>
+
+    <div class="metrics-row">
+      <div class="metric"><div class="metric-val green">87.3%</div><div class="metric-label">Inspection Pass Rate (30d)</div></div>
+      <div class="metric"><div class="metric-val amber">703</div><div class="metric-label">Awaiting Inspection</div></div>
+      <div class="metric"><div class="metric-val red">561</div><div class="metric-label">Total Failed Inspections</div></div>
+      <div class="metric"><div class="metric-val">4</div><div class="metric-label">Failed Handovers</div></div>
+    </div>
+
+    <div class="prose" style="margin-top:4px"><strong>Key risks:</strong></div>
+
+    <table class="data-table">
+      <thead><tr><th>Risk</th><th>Count</th><th>Severity</th><th>Trend</th></tr></thead>
+      <tbody>
+        <tr><td>Scaffolds past dismantle date</td><td class="mono">1,622</td><td><span class="status status-fail"><span class="dot dot-red"></span> High</span></td><td>98.6% of standing</td></tr>
+        <tr><td>Awaiting inspection</td><td class="mono">703</td><td><span class="status status-pending"><span class="dot dot-amber"></span> Medium</span></td><td>42.7% of standing</td></tr>
+        <tr><td>Failed inspections (this week)</td><td class="mono">23</td><td><span class="status status-pending"><span class="dot dot-amber"></span> Medium</span></td><td>+12% vs last week</td></tr>
+        <tr><td>Failed handovers</td><td class="mono">4</td><td><span class="status status-info"><span class="dot dot-blue"></span> Low</span></td><td>0.2% failure rate</td></tr>
+        <tr><td>All tags red</td><td class="mono">1,645</td><td><span class="status status-fail"><span class="dot dot-red"></span> High</span></td><td>100% red status</td></tr>
+      </tbody>
+    </table>
+
+    <div class="prose">The primary concern is that <strong>98.6% of standing scaffolds</strong> are past their planned dismantle date, and all tags are red. The inspection pass rate of 87.3% is within normal range but the volume awaiting inspection is high.</div>
+  `,
+  followups: ['Show uninspected scaffolds', 'Export compliance report', 'Failed handover details', 'Inspection schedule']
+},
+
 };
 
 // Fallback for unrecognized queries
@@ -580,7 +699,8 @@ function getResponse(q) {
   // Keyword fallback
   if (ql.includes('scaffold') && (ql.includes('stand') || ql.includes('status'))) return responses['Show me all standing scaffolds with their status'];
   if (ql.includes('request') || ql.includes('pipeline') || ql.includes('approv')) return responses['Show me the request pipeline'];
-  if (ql.includes('inspect') || ql.includes('fail') || ql.includes('safe') || ql.includes('compli')) return responses['Show me inspection results'];
+  if (ql.includes('inspect') || ql.includes('fail')) return responses['Show me inspection results'];
+  if (ql.includes('safe') || ql.includes('compli') || ql.includes('risk')) return responses['Give me a safety compliance summary'];
   if (ql.includes('area') || ql.includes('amru') || ql.includes('alky')) return responses['Show me scaffolds by area'];
   if (ql.includes('team') || ql.includes('people') || ql.includes('person') || ql.includes('work')) return responses['Show me the team workload'];
   if (ql.includes('scaffold')) return responses['Show me all standing scaffolds with their status'];
@@ -597,8 +717,8 @@ function send() {
 
 function askQ(query) {
   const msgs = document.getElementById('messagesInner');
-  const welcome = document.getElementById('welcome');
-  if (welcome) welcome.style.display = 'none';
+  const welcomeMsg = document.getElementById('welcomeMsg');
+  if (welcomeMsg) welcomeMsg.style.display = 'none';
 
   // User message
   const userDiv = document.createElement('div');
@@ -689,6 +809,15 @@ function escAttr(s) { return s.replace(/'/g, "\\'"); }
 document.getElementById('input').addEventListener('keydown', e => {
   if (e.key === 'Enter') { e.preventDefault(); send(); }
 });
+
+// Dynamic greeting
+(function() {
+  const h = new Date().getHours();
+  let g = 'Good morning';
+  if (h >= 12 && h < 17) g = 'Good afternoon';
+  if (h >= 17) g = 'Good evening';
+  document.getElementById('greetingText').innerHTML = g + ', Zaib. Here\u2019s your site at a glance.';
+})();
 </script>
 
 </body>
