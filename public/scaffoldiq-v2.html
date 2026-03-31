@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a1628">
+<title>ScaffoldIQ</title>
+<link href="https://api.fontshare.com/v2/css?f[]=switzer@300,400,500,600,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:100%;-webkit-font-smoothing:antialiased}
+:root{
+  --blue:#0A3EFF;--blue-mid:#6F9DFF;--blue-dark:#10296E;--blue-glow:rgba(10,62,255,0.15);
+  --bg:#0a1628;--bg-card:rgba(255,255,255,0.04);--bg-card-hover:rgba(255,255,255,0.07);
+  --glass-border:rgba(255,255,255,0.08);--glass-strong:rgba(255,255,255,0.12);
+  --text:#fff;--text-secondary:rgba(255,255,255,0.55);--text-muted:rgba(255,255,255,0.3);
+  --green:#22C55E;--green-bg:rgba(34,197,94,0.12);
+  --red:#E64059;--red-bg:rgba(230,64,89,0.12);
+  --amber:#F9A825;--amber-bg:rgba(249,168,37,0.12);
+  --mono:'JetBrains Mono',monospace;
+  --font:'Switzer',-apple-system,BlinkMacSystemFont,sans-serif;
+  --sidebar-w:220px;
+}
+body{
+  font-family:var(--font);background:var(--bg);color:var(--text);
+  height:100vh;overflow:hidden;letter-spacing:-0.02em;
+  /* Atmospheric background */
+  background-image:
+    radial-gradient(ellipse at 15% 80%,rgba(10,62,255,0.08) 0%,transparent 50%),
+    radial-gradient(ellipse at 85% 20%,rgba(34,197,94,0.04) 0%,transparent 40%),
+    radial-gradient(ellipse at 50% 0%,rgba(16,41,110,0.3) 0%,transparent 60%);
+}
+
+/* ══ DASHBOARD LAYOUT ══ */
+.dash{display:flex;height:100vh}
+
+/* ── Sidebar ── */
+.sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  background:rgba(255,255,255,0.02);
+  border-right:1px solid var(--glass-border);
+  display:flex;flex-direction:column;
+  padding:20px 0;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
+.sb-logo{
+  display:flex;align-items:center;gap:10px;
+  padding:0 20px 24px;
+}
+.sb-logo-icon{
+  width:32px;height:32px;background:var(--blue);
+  display:flex;align-items:center;justify-content:center;
+  border-radius:8px;font-weight:700;font-size:14px;color:#fff;
+}
+.sb-logo-text{font-weight:600;font-size:16px;letter-spacing:-0.02em}
+.sb-nav{flex:1;display:flex;flex-direction:column;gap:2px;padding:0 10px}
+.sb-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:8px;
+  font-size:13px;font-weight:400;color:var(--text-secondary);
+  cursor:pointer;transition:all .15s;
+}
+.sb-item:hover{background:var(--bg-card-hover);color:var(--text)}
+.sb-item.active{background:var(--blue-glow);color:var(--blue-mid);font-weight:500}
+.sb-item svg{width:18px;height:18px;flex-shrink:0;opacity:.5}
+.sb-item.active svg{opacity:.9}
+.sb-badge{
+  margin-left:auto;font-family:var(--mono);font-size:11px;
+  color:var(--text-muted);font-weight:500;
+}
+.sb-item.active .sb-badge{color:var(--blue-mid)}
+.sb-footer{
+  padding:16px 20px 0;border-top:1px solid var(--glass-border);
+  margin-top:auto;
+}
+.sb-user{display:flex;align-items:center;gap:10px}
+.sb-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,var(--blue),var(--blue-mid));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:600;font-size:12px;color:#fff;
+}
+.sb-username{font-size:13px;color:var(--text-secondary)}
+.sb-site{font-size:11px;color:var(--text-muted)}
+
+/* ── Main Content ── */
+.main{flex:1;overflow-y:auto;padding:24px 28px;display:flex;flex-direction:column;gap:24px}
+.main::-webkit-scrollbar{width:4px}
+.main::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:4px}
+
+/* Dashboard header */
+.dash-header{display:flex;align-items:center;justify-content:space-between}
+.dash-title{font-size:22px;font-weight:600;letter-spacing:-0.03em}
+.dash-subtitle{font-size:13px;color:var(--text-muted);margin-top:2px}
+.dash-actions{display:flex;gap:8px;align-items:center}
+.dash-search{
+  background:var(--bg-card);border:1px solid var(--glass-border);
+  border-radius:8px;padding:8px 14px;color:var(--text-secondary);
+  font-family:var(--font);font-size:13px;width:200px;
+  outline:none;transition:border-color .15s;
+}
+.dash-search:focus{border-color:var(--blue)}
+.dash-search::placeholder{color:var(--text-muted)}
+.dash-live{
+  font-size:12px;color:var(--green);display:flex;align-items:center;gap:6px;
+  background:var(--green-bg);padding:6px 12px;border-radius:6px;
+}
+.dash-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── Glass Metric Cards ── */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.glass-card{
+  background:var(--bg-card);
+  border:1px solid var(--glass-border);
+  border-radius:14px;padding:22px;
+  cursor:pointer;transition:all .2s ease;
+  position:relative;overflow:hidden;
+}
+.glass-card::before{
+  content:'';position:absolute;top:0;right:0;
+  width:80px;height:80px;
+  border-radius:50%;filter:blur(40px);opacity:.3;
+  pointer-events:none;
+}
+.glass-card:nth-child(1)::before{background:var(--green)}
+.glass-card:nth-child(2)::before{background:var(--red)}
+.glass-card:nth-child(3)::before{background:var(--amber)}
+.glass-card:nth-child(4)::before{background:var(--blue)}
+.glass-card:hover{
+  background:var(--bg-card-hover);
+  border-color:var(--glass-strong);
+  transform:translateY(-2px);
+}
+.gc-value{
+  font-size:36px;font-weight:700;letter-spacing:-0.04em;
+  line-height:1;margin-bottom:6px;font-variant-numeric:tabular-nums;
+}
+.gc-value.green{color:var(--green)}.gc-value.red{color:var(--red)}
+.gc-value.amber{color:var(--amber)}.gc-value.blue{color:var(--blue-mid)}
+.gc-label{font-size:13px;color:var(--text-secondary);font-weight:500}
+.gc-tag{
+  margin-top:12px;display:inline-flex;align-items:center;gap:4px;
+  font-size:11px;padding:3px 8px;border-radius:4px;font-weight:500;
+}
+.gc-tag.green{background:var(--green-bg);color:var(--green)}
+.gc-tag.red{background:var(--red-bg);color:var(--red)}
+.gc-tag.amber{background:var(--amber-bg);color:var(--amber)}
+.gc-tag.blue{background:rgba(10,62,255,0.12);color:var(--blue-mid)}
+
+/* ── Dashboard Panels ── */
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.panel{
+  background:var(--bg-card);border:1px solid var(--glass-border);
+  border-radius:14px;padding:22px;
+}
+.panel-title{
+  font-size:14px;font-weight:600;margin-bottom:16px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.panel-link{font-size:12px;color:var(--blue-mid);cursor:pointer;font-weight:400}
+.panel-link:hover{text-decoration:underline}
+
+/* Area bars */
+.area-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.area-name{width:48px;font-family:var(--mono);font-size:11px;color:var(--text-secondary);text-align:right}
+.area-track{flex:1;height:6px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden}
+.area-fill{height:100%;border-radius:3px;background:var(--blue-mid);transition:width 1s cubic-bezier(.22,1,.36,1)}
+.area-count{width:32px;font-family:var(--mono);font-size:11px;color:var(--text-muted);text-align:right}
+
+/* Activity feed */
+.feed-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.feed-item:last-child{border:none}
+.feed-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.feed-dot.pass{background:var(--green)}.feed-dot.fail{background:var(--red)}
+.feed-dot.pending{background:var(--amber)}.feed-dot.info{background:var(--blue-mid)}
+.feed-text{font-size:13px;color:var(--text-secondary);line-height:1.5}
+.feed-text strong{color:var(--text);font-weight:500}
+.feed-time{font-size:11px;color:var(--text-muted);margin-top:2px}
+
+/* ══ AI FLOATING BUTTON ══ */
+.ai-fab{
+  position:fixed;bottom:24px;left:24px;z-index:1001;
+  display:flex;align-items:center;gap:10px;
+  padding:12px 20px 12px 14px;
+  background:rgba(10,22,40,0.85);
+  border:1px solid var(--glass-strong);
+  border-radius:16px;cursor:pointer;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  transition:all .25s cubic-bezier(.22,1,.36,1);
+  box-shadow:0 8px 32px rgba(0,0,0,0.3),0 0 0 1px rgba(255,255,255,0.05) inset;
+}
+.ai-fab:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 40px rgba(0,0,0,0.4),0 0 20px var(--blue-glow);
+  border-color:rgba(111,157,255,0.3);
+}
+.ai-fab:active{transform:scale(0.96)}
+.ai-fab.open{opacity:0;pointer-events:none;transform:scale(0.8)}
+
+/* AI Orb */
+.orb{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  background:conic-gradient(from 0deg,#0A3EFF,#6F9DFF,#22C55E,#6F9DFF,#0A3EFF);
+  animation:orbSpin 4s linear infinite;
+  position:relative;
+}
+.orb::after{
+  content:'';position:absolute;inset:3px;border-radius:50%;
+  background:radial-gradient(ellipse at 30% 30%,rgba(255,255,255,0.3),transparent 60%),
+             var(--bg);
+}
+@keyframes orbSpin{to{filter:hue-rotate(360deg)}}
+.orb-lg{width:56px;height:56px}
+.orb-lg::after{inset:4px}
+
+.ai-fab-label{font-size:14px;font-weight:600;color:#fff;letter-spacing:-0.01em}
+
+/* ══ CHAT OVERLAY ══ */
+.chat-overlay{
+  position:fixed;inset:0;z-index:1000;
+  pointer-events:none;opacity:0;
+  transition:opacity .3s ease;
+}
+.chat-overlay.open{pointer-events:auto;opacity:1}
+.chat-backdrop{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+}
+.chat-panel{
+  position:absolute;bottom:24px;left:24px;
+  width:460px;max-height:calc(100vh - 48px);
+  background:rgba(12,20,35,0.92);
+  border:1px solid var(--glass-strong);
+  border-radius:20px;
+  backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  box-shadow:0 24px 80px rgba(0,0,0,0.5),0 0 40px rgba(10,62,255,0.08);
+  display:flex;flex-direction:column;overflow:hidden;
+  transform:translateY(20px) scale(0.95);opacity:0;
+  transition:all .35s cubic-bezier(.22,1,.36,1);
+}
+.chat-overlay.open .chat-panel{transform:translateY(0) scale(1);opacity:1}
+
+/* Chat welcome */
+.chat-welcome{padding:32px 24px 16px;text-align:center}
+.chat-welcome .orb-lg{margin:0 auto 20px}
+.chat-greeting{font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:6px}
+.chat-sub{font-size:14px;color:var(--text-secondary);margin-bottom:24px}
+
+/* Quick action cards */
+.qactions{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  padding:0 24px 16px;
+}
+.qaction{
+  padding:14px;border-radius:12px;cursor:pointer;
+  transition:all .15s;text-align:left;
+  border:1px solid var(--glass-border);
+  background:var(--bg-card);
+}
+.qaction:hover{background:var(--bg-card-hover);border-color:var(--glass-strong);transform:translateY(-1px)}
+.qaction:active{transform:scale(0.97)}
+.qaction-icon{font-size:18px;margin-bottom:8px}
+.qaction-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.qaction-desc{font-size:11px;color:var(--text-muted);line-height:1.4}
+
+/* Chat messages */
+.chat-msgs{
+  flex:1;overflow-y:auto;padding:16px 24px;
+  display:none;
+}
+.chat-msgs.active{display:block}
+.chat-msgs::-webkit-scrollbar{width:3px}
+.chat-msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
+
+.msg{margin-bottom:20px;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.msg-user{display:flex;justify-content:flex-end}
+.msg-user .bubble{
+  background:var(--blue);color:#fff;
+  padding:10px 16px;border-radius:16px 16px 4px 16px;
+  font-size:14px;line-height:1.5;max-width:85%;font-weight:500;
+}
+
+.msg-ai{max-width:100%}
+.ai-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ai-head .orb{width:24px;height:24px}
+.ai-head .orb::after{inset:2px}
+.ai-head span{font-size:13px;font-weight:600;color:var(--text-secondary)}
+
+.prose{font-size:14px;line-height:1.65;color:var(--text-secondary);margin-bottom:10px;max-width:100%}
+.prose strong{color:var(--text);font-weight:500}
+
+/* Response components — dark theme */
+.metrics-row{display:flex;gap:1px;margin:12px 0;background:rgba(255,255,255,0.06);border-radius:10px;overflow:hidden}
+.metric{background:rgba(255,255,255,0.03);padding:12px 14px;flex:1}
+.metric-val{font-size:22px;font-weight:700;letter-spacing:-0.03em;line-height:1;margin-bottom:3px;font-variant-numeric:tabular-nums;color:var(--text)}
+.metric-val.red{color:var(--red)}.metric-val.amber{color:var(--amber)}.metric-val.green{color:var(--green)}
+.metric-label{font-size:11px;color:var(--text-muted)}
+
+.chart-bars{margin:12px 0}
+.chart-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.chart-bar-label{font-size:12px;color:var(--text-secondary);width:110px;flex-shrink:0;text-align:right}
+.chart-bar-track{flex:1;height:22px;background:rgba(255,255,255,0.04);border-radius:4px;overflow:hidden}
+.chart-bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 8px;transition:width .8s cubic-bezier(.22,1,.36,1)}
+.chart-bar-fill span{font-size:10px;font-weight:600;color:#fff;white-space:nowrap}
+.chart-bar-count{font-size:12px;font-weight:500;color:var(--text);width:44px;text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono)}
+
+.chart-donut{display:flex;align-items:center;gap:16px;margin:12px 0}
+.chart-donut svg{flex-shrink:0}
+.chart-donut svg text{fill:var(--text) !important}
+.chart-donut svg circle[stroke="var(--gray-xlight)"]{stroke:rgba(255,255,255,0.06)}
+.chart-legend{display:flex;flex-direction:column;gap:4px}
+.chart-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)}
+.chart-legend-dot{width:8px;height:8px;flex-shrink:0;border-radius:2px}
+.chart-legend-val{font-weight:500;color:var(--text);margin-left:auto;font-family:var(--mono);font-size:11px}
+
+.data-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px}
+.data-table th{text-align:left;font-weight:500;color:var(--text-muted);padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.08);font-size:11px;text-transform:uppercase;letter-spacing:0.04em}
+.data-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--text-secondary)}
+.data-table tr:hover td{background:rgba(255,255,255,0.03)}
+.data-table .mono{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--text-muted)}
+.data-table strong{font-weight:500;color:var(--text)}
+.status{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px}
+.status-pass{background:var(--green-bg);color:var(--green)}
+.status-fail{background:var(--red-bg);color:var(--red)}
+.status-pending{background:var(--amber-bg);color:var(--amber)}
+.status-info{background:rgba(10,62,255,0.12);color:var(--blue-mid)}
+.dot{width:5px;height:5px;display:inline-block;border-radius:50%}
+.dot-red{background:var(--red)}.dot-green{background:var(--green)}.dot-amber{background:var(--amber)}.dot-blue{background:var(--blue-mid)}
+
+.sources{margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06)}
+.sources-toggle{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-muted);cursor:pointer;background:none;border:none;font-family:var(--font);transition:color .12s}
+.sources-toggle:hover{color:var(--text-secondary)}
+.sources-toggle svg{width:10px;height:10px;transition:transform .2s;color:currentColor}
+.sources-toggle.open svg{transform:rotate(90deg)}
+.sources-list{display:none;margin-top:6px}.sources-list.visible{display:block}
+.source-item{font-size:11px;color:var(--text-muted);padding:2px 0;display:flex;align-items:center;gap:5px;font-family:var(--mono)}
+.source-item::before{content:'';width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,0.2);flex-shrink:0}
+
+.followups{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
+.followup-btn{
+  font-size:12px;font-weight:500;color:var(--blue-mid);
+  background:rgba(10,62,255,0.08);border:1px solid rgba(10,62,255,0.2);
+  border-radius:8px;padding:6px 12px;cursor:pointer;
+  transition:all .12s;font-family:var(--font);
+}
+.followup-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+.typing-indicator{display:flex;gap:4px;padding:10px 0}
+.typing-indicator span{width:5px;height:5px;border-radius:50%;background:var(--text-muted);animation:tb .6s ease infinite}
+.typing-indicator span:nth-child(2){animation-delay:.1s}
+.typing-indicator span:nth-child(3){animation-delay:.2s}
+@keyframes tb{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+/* Chat input */
+.chat-input{
+  padding:12px 16px 16px;border-top:1px solid rgba(255,255,255,0.06);
+  flex-shrink:0;
+}
+.chat-input-row{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:12px;padding:4px 6px 4px 16px;
+  transition:all .2s;
+}
+.chat-input-row:focus-within{border-color:rgba(111,157,255,0.4);box-shadow:0 0 0 3px rgba(10,62,255,0.12)}
+.chat-input-row input{
+  flex:1;border:none;outline:none;
+  font-family:var(--font);font-size:14px;
+  background:transparent;color:var(--text);padding:10px 0;
+}
+.chat-input-row input::placeholder{color:var(--text-muted)}
+.chat-send{
+  width:38px;height:38px;border:none;border-radius:10px;
+  background:var(--blue);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .15s;flex-shrink:0;
+}
+.chat-send:hover{background:var(--blue-mid)}
+.chat-send:active{transform:scale(0.9)}
+.chat-send svg{width:16px;height:16px}
+
+/* ── Responsive ── */
+@media(max-width:1024px){
+  .sidebar{width:60px}.sb-logo-text,.sb-item span:not(.sb-badge),.sb-badge,.sb-username,.sb-site{display:none}
+  .sb-item{justify-content:center;padding:10px}
+  .sb-logo{padding:0 14px 24px;justify-content:center}
+  .metrics{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .sidebar{display:none}.main{padding:16px}
+  .metrics{grid-template-columns:1fr 1fr}
+  .panels{grid-template-columns:1fr}
+  .chat-panel{width:calc(100vw - 16px);left:8px;bottom:8px;max-height:calc(100vh - 16px)}
+  .ai-fab{bottom:16px;left:16px}
+  .dash-search{display:none}
+  .gc-value{font-size:28px}
+  .qactions{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .chat-panel{width:100vw;left:0;bottom:0;border-radius:20px 20px 0 0;max-height:90vh}
+  .ai-fab{bottom:12px;left:12px;padding:10px 16px 10px 12px}
+  .ai-fab-label{font-size:13px}
+}
+</style>
+</head>
+<body>
+
+<div class="dash">
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+  <div class="sb-logo"><div class="sb-logo-icon">S</div><span class="sb-logo-text">ScaffoldIQ</span></div>
+  <nav class="sb-nav">
+    <div class="sb-item active" onclick="askQ('Show me scaffolds by area')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+      <span>Map</span>
+    </div>
+    <div class="sb-item" onclick="askQ('Show me the request pipeline')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span>Requests</span><span class="sb-badge">3,024</span>
+    </div>
+    <div class="sb-item" onclick="askQ('Show me all standing scaffolds with their status')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/></svg>
+      <span>Scaffolds</span><span class="sb-badge">1,645</span>
+    </div>
+    <div class="sb-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span>Activities</span><span class="sb-badge">406</span>
+    </div>
+    <div class="sb-item" onclick="askQ('Show me inspection results')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Inspections</span>
+    </div>
+    <div class="sb-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+      <span>Handovers</span>
+    </div>
+    <div class="sb-item" onclick="askQ('Show me the team workload')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>People</span><span class="sb-badge">54</span>
+    </div>
+  </nav>
+  <div class="sb-footer">
+    <div class="sb-user">
+      <div class="sb-avatar">Z</div>
+      <div><div class="sb-username">Zaib Wemyss</div><div class="sb-site">Big Gore Refinery</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══ MAIN CONTENT ══ -->
+<main class="main">
+  <div class="dash-header">
+    <div>
+      <div class="dash-title" id="dashGreeting">Good afternoon, Zaib</div>
+      <div class="dash-subtitle">Big Gore Refinery &middot; Overview</div>
+    </div>
+    <div class="dash-actions">
+      <input class="dash-search" placeholder="Search scaffolds..." />
+      <div class="dash-live">Live data</div>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="glass-card" onclick="askQ('Show me all standing scaffolds with their status')">
+      <div class="gc-value green">467</div>
+      <div class="gc-label">Standing scaffolds</div>
+      <div class="gc-tag green">Green tag &middot; safe</div>
+    </div>
+    <div class="glass-card" onclick="askQ('Show me inspection results')">
+      <div class="gc-value red">703</div>
+      <div class="gc-label">Awaiting inspection</div>
+      <div class="gc-tag red">Red tag &middot; cannot use</div>
+    </div>
+    <div class="glass-card" onclick="askQ('Show me the request pipeline')">
+      <div class="gc-value amber">3,024</div>
+      <div class="gc-label">Open requests</div>
+      <div class="gc-tag amber">In approval pipeline</div>
+    </div>
+    <div class="glass-card" onclick="askQ('Give me a safety compliance summary')">
+      <div class="gc-value blue">87.3%</div>
+      <div class="gc-label">Inspection pass rate</div>
+      <div class="gc-tag blue">Last 30 days</div>
+    </div>
+  </div>
+
+  <div class="panels">
+    <div class="panel">
+      <div class="panel-title">Scaffolds by Area <span class="panel-link" onclick="askQ('Show me scaffolds by area')">View all</span></div>
+      <div class="area-row"><div class="area-name">AMRU</div><div class="area-track"><div class="area-fill" style="width:100%"></div></div><div class="area-count">350</div></div>
+      <div class="area-row"><div class="area-name">ALKY</div><div class="area-track"><div class="area-fill" style="width:82%"></div></div><div class="area-count">288</div></div>
+      <div class="area-row"><div class="area-name">LFSP</div><div class="area-track"><div class="area-fill" style="width:79%"></div></div><div class="area-count">277</div></div>
+      <div class="area-row"><div class="area-name">STFA</div><div class="area-track"><div class="area-fill" style="width:59%"></div></div><div class="area-count">207</div></div>
+      <div class="area-row"><div class="area-name">VRU3</div><div class="area-track"><div class="area-fill" style="width:40%"></div></div><div class="area-count">141</div></div>
+      <div class="area-row"><div class="area-name">12PS</div><div class="area-track"><div class="area-fill" style="width:40%"></div></div><div class="area-count">141</div></div>
+      <div class="area-row"><div class="area-name">TANK</div><div class="area-track"><div class="area-fill" style="width:20%"></div></div><div class="area-count">71</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Recent Activity <span class="panel-link">View all</span></div>
+      <div class="feed-item"><div class="feed-dot fail"></div><div><div class="feed-text"><strong>I-0000648</strong> failed inspection — GPS distance warning</div><div class="feed-time">ALKY &middot; 12 min ago</div></div></div>
+      <div class="feed-item"><div class="feed-dot pass"></div><div><div class="feed-text"><strong>S-0000891</strong> passed inspection → green tag</div><div class="feed-time">AMRU &middot; 34 min ago</div></div></div>
+      <div class="feed-item"><div class="feed-dot pending"></div><div><div class="feed-text"><strong>A-0002595</strong> dismantle in progress</div><div class="feed-time">STFA &middot; 1 hr ago</div></div></div>
+      <div class="feed-item"><div class="feed-dot info"></div><div><div class="feed-text"><strong>R-0003201</strong> moved to Final Approval</div><div class="feed-time">VRU3 &middot; 1 hr ago</div></div></div>
+      <div class="feed-item"><div class="feed-dot pass"></div><div><div class="feed-text"><strong>3 scaffolds</strong> completed build in 12PS</div><div class="feed-time">12PS &middot; 2 hr ago</div></div></div>
+    </div>
+  </div>
+</main>
+</div>
+
+<!-- ══ AI FLOATING BUTTON ══ -->
+<button class="ai-fab" id="aiFab" onclick="toggleChat()">
+  <div class="orb"></div>
+  <span class="ai-fab-label">Ask ScaffoldIQ</span>
+</button>
+
+<!-- ══ CHAT OVERLAY ══ -->
+<div class="chat-overlay" id="chatOverlay">
+  <div class="chat-backdrop" onclick="toggleChat()"></div>
+  <div class="chat-panel">
+    <div class="chat-welcome" id="chatWelcome">
+      <div class="orb orb-lg"></div>
+      <h2 class="chat-greeting" id="chatGreeting">Good afternoon, Zaib</h2>
+      <p class="chat-sub">How can I help with Big Gore Refinery?</p>
+    </div>
+    <div class="qactions" id="qactions">
+      <div class="qaction" onclick="askQ('Show me all standing scaffolds with their status')"><div class="qaction-icon">🏗</div><div class="qaction-title">Scaffold Status</div><div class="qaction-desc">Lifecycle, tags, activities</div></div>
+      <div class="qaction" onclick="askQ('Show me the request pipeline')"><div class="qaction-icon">📋</div><div class="qaction-title">Request Pipeline</div><div class="qaction-desc">Build, modify, dismantle</div></div>
+      <div class="qaction" onclick="askQ('Show me inspection results')"><div class="qaction-icon">🔍</div><div class="qaction-title">Inspections</div><div class="qaction-desc">Pass/fail, handovers</div></div>
+      <div class="qaction" onclick="askQ('Show me scaffolds by area')"><div class="qaction-icon">📍</div><div class="qaction-title">Areas</div><div class="qaction-desc">Site hierarchy</div></div>
+      <div class="qaction" onclick="askQ('Show me the team workload')"><div class="qaction-icon">👷</div><div class="qaction-title">People</div><div class="qaction-desc">Builders, inspectors</div></div>
+      <div class="qaction" onclick="askQ('Give me a safety compliance summary')"><div class="qaction-icon">⚠️</div><div class="qaction-title">Safety</div><div class="qaction-desc">Compliance, risks</div></div>
+    </div>
+    <div class="chat-msgs" id="chatMsgs"></div>
+    <div class="chat-input">
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="Ask ScaffoldIQ anything..." autocomplete="off" />
+        <button class="chat-send" onclick="sendMsg()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Response data (from option 1 — accurate to status machine spec)
+const R={
+'Show me all standing scaffolds with their status':{actions:['Search Scaffolds (all statuses)','Search Scaffolds (StatusName Eq Standing)','Search Scaffolds (StatusName Eq AwaitingBuild)'],html:`<div class="prose">Here's the full scaffold lifecycle breakdown. <strong>1,645 scaffolds</strong> are currently in the system with a physical presence on site (red or green tagged).</div><div class="metrics-row"><div class="metric"><div class="metric-val green">467</div><div class="metric-label">Standing (green tag)</div></div><div class="metric"><div class="metric-val red">703</div><div class="metric-label">Awaiting Inspection</div></div><div class="metric"><div class="metric-val amber">140</div><div class="metric-label">Build In Progress</div></div><div class="metric"><div class="metric-val">16</div><div class="metric-label">Awaiting Build</div></div></div><div class="prose">Only <strong>467 scaffolds (28.4%) are green-tagged</strong> and safe for end-users. The remaining <strong>1,178 are red-tagged</strong> \u2014 awaiting inspection, repair, or with active work in progress.</div>`,followups:['Green-tagged scaffolds only','Red-tagged by reason','Scaffolds awaiting handover']},
+'Show me the request pipeline':{actions:['Search Requests (all statuses)','Search Requests (Status Lt: 6)'],html:`<div class="prose">There are <strong>3,024 open requests</strong> in the approval pipeline. Requests can be for <strong>Build</strong>, <strong>Modify</strong>, or <strong>Dismantle</strong> only \u2014 repairs are created internally from failed inspections.</div><div class="chart-bars"><div class="chart-bar-row"><div class="chart-bar-label">Initial Approval</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:85%;background:var(--blue)"><span>35.0%</span></div></div><div class="chart-bar-count">1,059</div></div><div class="chart-bar-row"><div class="chart-bar-label">Final Approval</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:83%;background:var(--blue-mid)"><span>34.1%</span></div></div><div class="chart-bar-count">1,031</div></div><div class="chart-bar-row"><div class="chart-bar-label">Secondary</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:50%;background:#93b4ff"><span>20.3%</span></div></div><div class="chart-bar-count">613</div></div><div class="chart-bar-row"><div class="chart-bar-label">Estimate</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:25%;background:#b8ceff"><span>10.0%</span></div></div><div class="chart-bar-count">302</div></div></div><div class="prose"><strong>16 build requests</strong> are fully approved. <strong>47 requests</strong> stuck in approval over 7 days.</div>`,followups:['Stuck requests over 7 days','Build requests only','Dismantle requests']},
+'Show me inspection results':{actions:['Search Inspections (all)','Search Inspections (Result Eq: Fail)','Search Scaffolds (StatusName Eq AwaitingInspection)'],html:`<div class="prose">Inspections are recurring pass/fail safety checks. A <strong>failed inspection auto-creates a Repair activity</strong> and red-tags the scaffold.</div><div class="metrics-row"><div class="metric"><div class="metric-val red">703</div><div class="metric-label">Awaiting Inspection</div></div><div class="metric"><div class="metric-val">561</div><div class="metric-label">Total Failed</div></div><div class="metric"><div class="metric-val amber">23</div><div class="metric-label">Failed This Week</div></div><div class="metric"><div class="metric-val green">87.3%</div><div class="metric-label">Pass Rate (30d)</div></div></div><div class="prose"><strong>Recent inspections:</strong></div><table class="data-table"><thead><tr><th>ID</th><th>Scaffold</th><th>Result</th><th>Area</th></tr></thead><tbody><tr><td class="mono">I-0000648</td><td class="mono">S-0001203</td><td><span class="status status-fail"><span class="dot dot-red"></span> Fail</span></td><td>ALKY</td></tr><tr><td class="mono">I-0000647</td><td class="mono">S-0000891</td><td><span class="status status-pass"><span class="dot dot-green"></span> Pass</span></td><td>AMRU</td></tr><tr><td class="mono">I-0000646</td><td class="mono">S-0001189</td><td><span class="status status-pass"><span class="dot dot-green"></span> Pass</span></td><td>12PS</td></tr><tr><td class="mono">I-0000645</td><td class="mono">S-0000734</td><td><span class="status status-fail"><span class="dot dot-red"></span> Fail</span></td><td>AMRU</td></tr></tbody></table>`,followups:['Failed inspections by area','Handover results','Inspector workload']},
+'Show me scaffolds by area':{actions:['List All Areas','Areas by Scaffold Count'],html:`<div class="prose">Your site has <strong>10 areas</strong>. AMRU has the highest concentration with 350 scaffolds.</div><div class="chart-bars"><div class="chart-bar-row"><div class="chart-bar-label">AMRU</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:100%;background:var(--blue-mid)"><span>350</span></div></div><div class="chart-bar-count">350</div></div><div class="chart-bar-row"><div class="chart-bar-label">ALKY</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:82%;background:var(--blue)"></div></div><div class="chart-bar-count">288</div></div><div class="chart-bar-row"><div class="chart-bar-label">LFSP</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:79%;background:var(--blue)"></div></div><div class="chart-bar-count">277</div></div><div class="chart-bar-row"><div class="chart-bar-label">STFA</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:59%;background:#93b4ff"></div></div><div class="chart-bar-count">207</div></div><div class="chart-bar-row"><div class="chart-bar-label">VRU3</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:40%;background:#b8ceff"></div></div><div class="chart-bar-count">141</div></div></div>`,followups:['Sub-areas in AMRU','Green vs red tags by area','Failed inspections by area']},
+'Show me the team workload':{actions:['Search People','List Administrators'],html:`<div class="prose"><strong>54 people</strong> registered. <strong>31 active this week</strong>.</div><table class="data-table"><thead><tr><th>Name</th><th>Role</th><th>Activities</th><th>Status</th></tr></thead><tbody><tr><td><strong>Abigail MacDonald</strong></td><td>Inspector</td><td class="mono">47</td><td><span class="status status-pass"><span class="dot dot-green"></span> Active</span></td></tr><tr><td><strong>Brandon Kelly</strong></td><td>Builder</td><td class="mono">38</td><td><span class="status status-pass"><span class="dot dot-green"></span> Active</span></td></tr><tr><td><strong>Cameron Wilson</strong></td><td>Requestor</td><td class="mono">31</td><td><span class="status status-pass"><span class="dot dot-green"></span> Active</span></td></tr><tr><td><strong>Austin Gibson</strong></td><td>Builder</td><td class="mono">0</td><td><span class="status status-pending"><span class="dot dot-amber"></span> Inactive</span></td></tr></tbody></table>`,followups:['Builders only','Inspector workload','Contractor breakdown']},
+'Give me a safety compliance summary':{actions:['Search Scaffolds (AwaitingInspection)','Search Inspections (Fail)','Search Handovers (Fail)'],html:`<div class="prose">Safety compliance overview. A scaffold <strong>cannot go into service without passing inspection</strong>.</div><div class="metrics-row"><div class="metric"><div class="metric-val green">87.3%</div><div class="metric-label">Pass Rate (30d)</div></div><div class="metric"><div class="metric-val red">703</div><div class="metric-label">Awaiting Inspection</div></div><div class="metric"><div class="metric-val amber">139</div><div class="metric-label">Awaiting Repair</div></div><div class="metric"><div class="metric-val">65</div><div class="metric-label">Do Not Use</div></div></div><table class="data-table"><thead><tr><th>Status</th><th>Tag</th><th>Count</th></tr></thead><tbody><tr><td>Standing</td><td><span class="status status-pass"><span class="dot dot-green"></span> Green</span></td><td class="mono">467</td></tr><tr><td>Awaiting Inspection</td><td><span class="status status-fail"><span class="dot dot-red"></span> Red</span></td><td class="mono">703</td></tr><tr><td>Awaiting Repair</td><td><span class="status status-fail"><span class="dot dot-red"></span> Red</span></td><td class="mono">139</td></tr><tr><td>Do Not Use</td><td><span class="status status-fail"><span class="dot dot-red"></span> Red</span></td><td class="mono">65</td></tr></tbody></table><div class="prose"><strong>28.4% green-tagged</strong>. 71.6% red-tagged. Primary bottleneck: 703 awaiting inspection.</div>`,followups:['Expired inspection cycles','Failed handover details','Do Not Use reasons']}
+};
+const FB={actions:['Search Scaffolds'],html:`<div class="prose">I query your live ScaffoldIQ data: scaffolds, requests, inspections, handovers, areas, and people.</div>`,followups:['Scaffold status','Request pipeline','Inspections','Areas','Team','Safety']};
+
+function getR(q){
+  if(R[q])return R[q];
+  const l=q.toLowerCase();
+  for(const[k,v]of Object.entries(R)){const w=k.toLowerCase().split(/\s+/).filter(x=>x.length>3);if(w.filter(x=>l.includes(x)).length>=2)return v}
+  if(l.includes('scaffold')&&(l.includes('stand')||l.includes('status')))return R['Show me all standing scaffolds with their status'];
+  if(l.includes('request')||l.includes('pipeline'))return R['Show me the request pipeline'];
+  if(l.includes('inspect')||l.includes('fail'))return R['Show me inspection results'];
+  if(l.includes('safe')||l.includes('compli'))return R['Give me a safety compliance summary'];
+  if(l.includes('area')||l.includes('amru'))return R['Show me scaffolds by area'];
+  if(l.includes('team')||l.includes('people'))return R['Show me the team workload'];
+  if(l.includes('scaffold'))return R['Show me all standing scaffolds with their status'];
+  return FB;
+}
+
+let chatOpen=false,chatActive=false;
+
+function toggleChat(){
+  chatOpen=!chatOpen;
+  document.getElementById('chatOverlay').classList.toggle('open',chatOpen);
+  document.getElementById('aiFab').classList.toggle('open',chatOpen);
+  if(chatOpen)document.getElementById('chatInput').focus();
+}
+
+function sendMsg(){
+  const i=document.getElementById('chatInput');
+  const t=i.value.trim();if(!t)return;i.value='';askQ(t);
+}
+
+function askQ(query){
+  if(!chatOpen)toggleChat();
+  if(!chatActive){
+    chatActive=true;
+    document.getElementById('chatWelcome').style.display='none';
+    document.getElementById('qactions').style.display='none';
+    document.getElementById('chatMsgs').classList.add('active');
+  }
+  const m=document.getElementById('chatMsgs');
+  const u=document.createElement('div');u.className='msg msg-user';
+  u.innerHTML=`<div class="bubble">${esc(query)}</div>`;m.appendChild(u);
+  const tp=document.createElement('div');tp.className='msg msg-ai';
+  tp.innerHTML=`<div class="ai-head"><div class="orb"></div><span>ScaffoldIQ</span></div><div class="typing-indicator"><span></span><span></span><span></span></div>`;
+  m.appendChild(tp);m.scrollTop=m.scrollHeight;
+
+  setTimeout(()=>{
+    tp.remove();const d=getR(query);const a=document.createElement('div');a.className='msg msg-ai';
+    const sid='s'+Date.now();
+    let sh='';if(d.actions?.length)sh=`<div class="sources"><button class="sources-toggle" onclick="tSrc('${sid}',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>${d.actions.length} queries</button><div class="sources-list" id="${sid}">${d.actions.map(x=>`<div class="source-item">${esc(x)}</div>`).join('')}</div></div>`;
+    let fh='';if(d.followups?.length)fh=`<div class="followups">${d.followups.map(f=>`<button class="followup-btn" onclick="askQ('${ea(f)}')">${esc(f)}</button>`).join('')}</div>`;
+    a.innerHTML=`<div class="ai-head"><div class="orb"></div><span>ScaffoldIQ</span></div>${d.html}${sh}${fh}`;
+    m.appendChild(a);m.scrollTop=m.scrollHeight;
+    setTimeout(()=>{a.querySelectorAll('.chart-bar-fill').forEach(b=>{const w=b.style.width;b.style.width='0%';requestAnimationFrame(()=>{b.style.width=w})})},50);
+  },600+Math.random()*500);
+}
+
+function tSrc(id,btn){document.getElementById(id).classList.toggle('visible');btn.classList.toggle('open')}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function ea(s){return s.replace(/'/g,"\\'")}
+
+document.getElementById('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();sendMsg()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&chatOpen)toggleChat()});
+
+// Greeting
+(function(){const h=new Date().getHours();let g='Good morning';if(h>=12&&h<17)g='Good afternoon';if(h>=17)g='Good evening';
+document.getElementById('dashGreeting').textContent=g+', Zaib';
+document.getElementById('chatGreeting').textContent=g+', Zaib';})();
+
+// Animate area bars on load
+setTimeout(()=>{document.querySelectorAll('.area-fill').forEach(b=>{const w=b.style.width;b.style.width='0%';requestAnimationFrame(()=>{b.style.width=w})})},300);
+</script>
+</body>
+</html>
