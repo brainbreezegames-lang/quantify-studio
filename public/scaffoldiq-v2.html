@@ -19,18 +19,16 @@ html{font-size:100%;-webkit-font-smoothing:antialiased}
 }
 body{font-family:var(--font);background:var(--white);color:var(--gray-900);height:100vh;overflow:hidden;letter-spacing:-0.01em}
 
-/* ═══ TOP NAVBAR — light, properly aligned ═══ */
+/* ═══ TOP NAVBAR — clean, aligned with sidebar ═══ */
 .topbar{
-  height:60px;padding:0 20px 0 0;
+  height:60px;padding:0 24px;
   background:var(--white);
   border-bottom:1px solid var(--gray-200);
   display:flex;align-items:center;
   flex-shrink:0;
 }
-.topbar-logo{display:flex;align-items:center;gap:10px;padding:0 20px;height:100%}
-.topbar-icon{width:28px;height:28px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0}
-.topbar-name{font-weight:700;font-size:16px;color:var(--gray-900);letter-spacing:-0.03em}
-.topbar-sep{width:1px;height:20px;background:var(--gray-200);margin:0 16px}
+.topbar-title{font-size:15px;font-weight:600;color:var(--gray-900);letter-spacing:-0.02em}
+.topbar-sep{width:1px;height:18px;background:var(--gray-200);margin:0 14px}
 .topbar-site{font-size:14px;color:var(--gray-400);font-weight:400}
 .topbar-spacer{flex:1}
 .topbar-right{display:flex;align-items:center;gap:8px}
@@ -43,46 +41,66 @@ body{font-family:var(--font);background:var(--white);color:var(--gray-900);heigh
 .topbar-btn i{width:18px;height:18px;stroke-width:1.5}
 
 /* ═══ BODY — sidebar + content ═══ */
-.body{display:flex;height:calc(100vh - 64px)}
+.body{display:flex;height:100vh}
 
-/* ═══ SIDEBAR — same blue as FAB (#0A3EFF base) ═══ */
+/* ═══ SIDEBAR — matching reference exactly ═══ */
 .sidebar{
-  width:240px;flex-shrink:0;
+  width:260px;flex-shrink:0;
   background:var(--blue);
   display:flex;flex-direction:column;
   user-select:none;
-  padding-top:16px;
 }
+/* Logo in sidebar */
+.sb-logo{
+  display:flex;align-items:center;gap:12px;
+  padding:18px 20px 20px;
+}
+.sb-logo-icon{
+  width:32px;height:32px;background:rgba(255,255,255,0.15);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:13px;color:#fff;
+}
+.sb-logo-text{font-weight:700;font-size:16px;color:#fff;letter-spacing:-0.02em}
+
 .sb-it{
-  display:flex;align-items:center;gap:14px;
-  height:46px;padding:0 20px;
+  display:flex;align-items:center;gap:16px;
+  height:52px;padding:0 24px;
   cursor:pointer;position:relative;
-  white-space:nowrap;color:rgba(255,255,255,0.65);
-  font-size:14px;font-weight:400;
-  transition:all .12s;
+  white-space:nowrap;color:rgba(255,255,255,0.7);
+  font-size:15px;font-weight:400;
+  transition:background .12s;
 }
-.sb-it:hover{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.9)}
-.sb-it.on{background:rgba(255,255,255,0.14);color:#fff}
+.sb-it:hover{background:rgba(0,0,0,0.08);color:rgba(255,255,255,0.95)}
+.sb-it.on{background:rgba(0,0,0,0.15);color:#fff}
 .sb-it.on::before{
-  content:'';position:absolute;left:0;top:8px;bottom:8px;
-  width:3px;background:#fff;border-radius:0 2px 2px 0;
+  content:'';position:absolute;left:0;top:10px;bottom:10px;
+  width:4px;background:#fff;border-radius:0 2px 2px 0;
 }
 .sb-it.on .sb-tx{font-weight:600}
-.sb-ic{width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.sb-ic i{width:20px;height:20px;stroke-width:1.75}
+.sb-ic{width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-ic i{width:22px;height:22px;stroke-width:1.75}
 .sb-tx{flex:1}
-.sb-gap{height:1px;background:rgba(255,255,255,0.1);margin:12px 20px}
+.sb-gap{height:1px;background:rgba(255,255,255,0.12);margin:14px 24px}
 .sb-cnt{
-  font-size:9px;font-weight:600;
+  font-size:10px;font-weight:700;
   background:#EF4444;color:#fff;
-  min-width:18px;height:16px;
+  min-width:20px;height:20px;
   display:flex;align-items:center;justify-content:center;
-  padding:0 5px;flex-shrink:0;border-radius:10px;
+  padding:0 6px;flex-shrink:0;border-radius:10px;
 }
 .sb-dot{
-  width:8px;height:8px;border-radius:50%;
+  width:10px;height:10px;border-radius:50%;
   background:rgba(255,255,255,0.4);flex-shrink:0;
 }
+/* AI Dashboard tooltip */
+.sb-ai{position:relative}
+.sb-tip{
+  position:absolute;left:100%;top:50%;transform:translateY(-50%);margin-left:8px;
+  background:#222;color:#fff;font-size:11px;padding:5px 10px;
+  white-space:nowrap;border-radius:4px;pointer-events:none;
+  opacity:0;transition:opacity .15s;z-index:10;
+}
+.sb-ai:hover .sb-tip{opacity:1}
 
 /* ═══ MAIN CONTENT ═══ */
 .main{flex:1;overflow-y:auto;background:var(--gray-50)}
@@ -303,7 +321,7 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--blue)
 .ai-send svg{width:14px;height:14px}
 
 /* Responsive */
-@media(max-width:1024px){.tag-overview{grid-template-columns:1fr}.sidebar{width:56px}.sb-tx,.sb-cnt,.sb-dot{display:none}.sb-gap{margin:8px 12px}.sb-it{justify-content:center;padding:0 16px;gap:0}}
+@media(max-width:1024px){.tag-overview{grid-template-columns:1fr}.sidebar{width:60px}.sb-tx,.sb-cnt,.sb-dot,.sb-logo-text,.sb-tip{display:none}.sb-gap{margin:8px 14px}.sb-it{justify-content:center;padding:0 18px;gap:0}.sb-logo{justify-content:center;padding:16px 0}}
 @media(max-width:768px){
   .sidebar{display:none}
   .ai-panel{width:calc(100vw - 16px);top:8px;right:8px;bottom:8px}
@@ -316,43 +334,48 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--blue)
 </head>
 <body>
 
-<!-- ═══ TOP NAVBAR ═══ -->
-<div class="topbar">
-  <div class="topbar-logo">
-    <div class="topbar-icon">S</div>
-    <span class="topbar-name">ScaffoldIQ</span>
-  </div>
-  <div class="topbar-sep"></div>
-  <span class="topbar-site">Big Gore Refinery</span>
-  <div class="topbar-spacer"></div>
-  <div class="topbar-right">
-    <div class="topbar-btn" title="Profile"><i data-lucide="user"></i></div>
-    <div class="topbar-btn" title="Menu"><i data-lucide="grid-3x3"></i></div>
-  </div>
-</div>
-
-<!-- ═══ BODY ═══ -->
+<!-- ═══ BODY (sidebar + main, no separate navbar above sidebar) ═══ -->
 <div class="body">
 
 <!-- ═══ SIDEBAR ═══ -->
 <aside class="sidebar">
-  <div class="sb-it on" onclick="t(this)"><div class="sb-ic"><i data-lucide="map"></i></div><span class="sb-tx">Map</span></div>
-  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="file-text"></i></div><span class="sb-tx">Requests</span></div>
-  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="layout-grid"></i></div><span class="sb-tx">Scaffolds</span></div>
-  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="list"></i></div><span class="sb-tx">Activities</span></div>
+  <div class="sb-logo">
+    <div class="sb-logo-icon">S</div>
+    <span class="sb-logo-text">ScaffoldIQ</span>
+  </div>
+
+  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="map"></i></div><span class="sb-tx">Map</span></div>
+  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="clipboard-list"></i></div><span class="sb-tx">Requests</span></div>
+  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="grid-2x2"></i></div><span class="sb-tx">Scaffolds</span></div>
+  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="list-ordered"></i></div><span class="sb-tx">Activities</span></div>
 
   <div class="sb-gap"></div>
 
   <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="shield-check"></i></div><span class="sb-tx">Safety Documents</span></div>
   <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="check-check"></i></div><span class="sb-tx">Inspections</span></div>
-  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="arrow-left-right"></i></div><span class="sb-tx">Handovers</span></div>
+  <div class="sb-it on" onclick="t(this)"><div class="sb-ic"><i data-lucide="arrow-left-right"></i></div><span class="sb-tx">Handovers</span></div>
 
   <div class="sb-gap"></div>
 
-  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="sparkles"></i></div><span class="sb-tx">AI Dashboard</span><span class="sb-dot"></span></div>
+  <div class="sb-it sb-ai" onclick="t(this)"><div class="sb-ic"><i data-lucide="sparkles"></i></div><span class="sb-tx">AI Dashboard</span><span class="sb-dot"></span><span class="sb-tip">Opens in new tab</span></div>
   <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="users"></i></div><span class="sb-tx">People</span></div>
   <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="bell"></i></div><span class="sb-tx">Notifications</span><span class="sb-cnt">3</span></div>
 </aside>
+
+<!-- ═══ RIGHT SIDE (navbar + content) ═══ -->
+<div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+
+<!-- ═══ TOP NAVBAR (inside content area, right of sidebar) ═══ -->
+<div class="topbar">
+  <span class="topbar-title">ScaffoldIQ</span>
+  <div class="topbar-sep"></div>
+  <span class="topbar-site">Big Gore Refinery</span>
+  <div class="topbar-spacer"></div>
+  <div class="topbar-right">
+    <div class="topbar-btn" title="Profile"><i data-lucide="user"></i></div>
+    <div class="topbar-btn" title="Menu"><i data-lucide="grid-2x2"></i></div>
+  </div>
+</div>
 
 <!-- ═══ MAIN CONTENT ═══ -->
 <div class="main">
@@ -410,7 +433,8 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--blue)
     </div>
   </div>
 </div>
-</div>
+</div><!-- close right side -->
+</div><!-- close body -->
 
 <!-- ═══ AI FAB ═══ -->
 <button class="ai-fab" id="aiFab" onclick="openAI()"><div class="ai-orb"></div>Ask ScaffoldIQ</button>
