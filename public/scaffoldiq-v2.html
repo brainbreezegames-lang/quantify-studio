@@ -44,42 +44,41 @@ body{font-family:var(--font);background:var(--white);color:var(--gray-900);heigh
 
 /* ═══ SIDEBAR — exact replica from sidebar-mockup.html (variant A) ═══ */
 .sidebar{
-  width:260px;flex-shrink:0;
+  width:220px;flex-shrink:0;
   background:var(--blue);
   display:flex;flex-direction:column;
   user-select:none;
-  box-shadow:2px 0 12px rgba(0,0,0,0.06);
 }
 .sb-logo{
-  display:flex;align-items:center;gap:12px;
-  padding:16px 20px 14px;
+  display:flex;align-items:center;gap:10px;
+  padding:14px 16px 12px;
 }
 .sb-logo-icon{
-  width:32px;height:32px;background:rgba(255,255,255,0.15);
-  border-radius:8px;display:flex;align-items:center;justify-content:center;
-  font-weight:700;font-size:13px;color:#fff;
+  width:28px;height:28px;background:rgba(255,255,255,0.15);
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:12px;color:#fff;
 }
-.sb-logo-text{font-weight:700;font-size:16px;color:#fff;letter-spacing:-0.02em}
+.sb-logo-text{font-weight:600;font-size:15px;color:#fff;letter-spacing:-0.02em}
 .sb-it{
-  display:flex;align-items:center;gap:16px;
-  height:48px;padding:0 20px;
+  display:flex;align-items:center;gap:14px;
+  height:44px;padding:0 16px;
   cursor:pointer;position:relative;
   white-space:nowrap;color:#fff;
-  font-size:14px;
+  font-size:13px;
   transition:background .12s;
 }
 .sb-it:hover{background:rgba(0,0,0,0.10)}
-.sb-it.on{background:rgba(0,0,0,0.20)}
+.sb-it.on{background:rgba(0,0,0,0.18)}
 .sb-it.on::before{
   content:'';position:absolute;
-  left:3px;top:10px;bottom:10px;width:3px;
+  left:2px;top:10px;bottom:10px;width:3px;
   background:#fff;border-radius:1.5px;
 }
 .sb-it.on .sb-tx{font-weight:600}
-.sb-ic{width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.sb-ic svg{width:22px;height:22px;flex-shrink:0;display:block}
+.sb-ic{width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-ic svg{width:20px;height:20px;flex-shrink:0;display:block}
 .sb-tx{flex:1}
-.sb-gap{height:17px}
+.sb-gap{height:12px}
 .sb-sparkle{flex-shrink:0;font-size:13px;animation:spa 1.5s ease-in-out infinite;color:#fff}
 @keyframes spa{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.65)}}
 .sb-ai{position:relative}
