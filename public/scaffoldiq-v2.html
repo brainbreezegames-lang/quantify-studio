@@ -6,6 +6,7 @@
 <title>ScaffoldIQ</title>
 <link href="https://api.fontshare.com/v2/css?f[]=switzer@300,400,500,600,700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:100%;-webkit-font-smoothing:antialiased}
@@ -32,52 +33,65 @@ body{font-family:var(--font);background:var(--white);color:var(--gray-900);heigh
 .topbar-sep{width:1px;height:22px;background:var(--gray-200);margin:0 14px}
 .topbar-site{font-size:14px;color:var(--gray-400)}
 .topbar-spacer{flex:1}
-.topbar-right{display:flex;align-items:center;gap:12px}
+.topbar-right{display:flex;align-items:center;gap:10px}
 .topbar-btn{
-  width:40px;height:40px;border-radius:50%;border:1px solid var(--gray-200);
+  width:42px;height:42px;border-radius:50%;border:1px solid var(--gray-200);
   background:var(--white);display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all .12s;color:var(--gray-400);
+  cursor:pointer;transition:all .15s;color:var(--gray-400);
 }
 .topbar-btn:hover{border-color:var(--gray-300);color:var(--gray-600);background:var(--gray-50)}
-.topbar-btn svg{width:20px;height:20px}
+.topbar-btn i{width:20px;height:20px}
 
 /* ═══ BODY — sidebar + content ═══ */
 .body{display:flex;height:calc(100vh - 64px)}
 
-/* ═══ SIDEBAR — light mode ═══ */
+/* ═══ SIDEBAR — ScaffoldIQ blue (from sidebar-mockup.html) ═══ */
 .sidebar{
-  width:240px;flex-shrink:0;
-  background:var(--white);
-  border-right:1px solid var(--gray-200);
+  width:260px;flex-shrink:0;
+  background:#2B88D8;
   display:flex;flex-direction:column;
-  padding:20px 0;overflow-y:auto;
+  user-select:none;
 }
-.sidebar::-webkit-scrollbar{width:0}
-.sb-label{font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.06em;padding:16px 20px 8px}
-.sb-label:first-child{padding-top:0}
-.sb-item{
-  display:flex;align-items:center;gap:12px;
-  padding:10px 20px;margin:0 8px;border-radius:10px;
-  font-size:14px;color:var(--gray-500);cursor:pointer;
-  transition:all .12s;font-weight:400;
-  border-left:3px solid transparent;
+.sb-ham{
+  display:flex;align-items:center;
+  height:52px;padding:0 20px;
+  cursor:pointer;color:#fff;
+  transition:background .12s;
 }
-.sb-item:hover{background:var(--gray-50);color:var(--gray-700)}
-.sb-item.active{
-  background:rgba(10,62,255,0.05);
-  color:var(--blue);font-weight:500;
-  border-left-color:var(--blue);
+.sb-ham:hover{background:rgba(255,255,255,0.08)}
+.sb-ham i{width:20px;height:20px}
+.sb-it{
+  display:flex;align-items:center;gap:16px;
+  height:48px;padding:0 20px;
+  cursor:pointer;position:relative;
+  white-space:nowrap;color:#fff;
+  font-size:14px;
+  transition:background .12s;
 }
-.sb-item svg{width:20px;height:20px;flex-shrink:0;opacity:.4}
-.sb-item.active svg{opacity:.8}
-.sb-count{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--gray-300);font-weight:500;background:var(--gray-50);padding:2px 8px;border-radius:6px}
-.sb-item.active .sb-count{background:rgba(10,62,255,0.06);color:var(--blue-mid)}
-.sb-spacer{flex:1}
-.sb-footer{padding:12px 20px;border-top:1px solid var(--gray-100);margin-top:8px}
-.sb-user{display:flex;align-items:center;gap:10px}
-.sb-avatar{width:32px;height:32px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;color:#fff}
-.sb-uname{font-size:13px;font-weight:500;color:var(--gray-700)}
-.sb-site{font-size:11px;color:var(--gray-400)}
+.sb-it:hover{background:rgba(0,0,0,0.10)}
+.sb-it.on{background:rgba(0,0,0,0.20)}
+.sb-it.on::before{
+  content:'';position:absolute;left:3px;top:10px;bottom:10px;
+  width:3px;background:#fff;border-radius:1.5px;
+}
+.sb-it.on .sb-tx{font-weight:600}
+.sb-ic{width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-ic i{width:22px;height:22px}
+.sb-tx{flex:1}
+.sb-gap{height:17px;border-bottom:1px solid rgba(255,255,255,0.15);margin:0 20px}
+.sb-sparkle{flex-shrink:0;font-size:13px;animation:spa 1.5s ease-in-out infinite;color:#fff}
+@keyframes spa{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.65)}}
+.sb-cnt{
+  font-size:9px;font-weight:600;
+  background:#EF4444;color:#fff;
+  min-width:18px;height:16px;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 4px;flex-shrink:0;border-radius:2px;
+}
+.sb-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:rgba(255,255,255,0.5);flex-shrink:0;
+}
 
 /* ═══ MAIN CONTENT ═══ */
 .main{flex:1;overflow-y:auto;background:var(--gray-50)}
@@ -284,7 +298,7 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--gray-
 .ai-send svg{width:14px;height:14px}
 
 /* Responsive */
-@media(max-width:1024px){.metrics{grid-template-columns:1fr 1fr}.sidebar{width:60px}.sidebar .sb-item span,.sb-count,.sb-label,.sb-uname,.sb-site,.sb-footer{display:none}.sb-item{justify-content:center;padding:10px;margin:0 6px}}
+@media(max-width:1024px){.metrics{grid-template-columns:1fr 1fr}.sidebar{width:56px}.sb-tx,.sb-cnt,.sb-dot,.sb-gap{display:none}.sb-it{justify-content:center;padding:0 16px}.sb-ham{justify-content:center}}
 @media(max-width:768px){
   .sidebar{display:none}
   .ai-panel{width:calc(100vw - 16px);top:8px;right:8px;bottom:8px}
@@ -297,7 +311,7 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--gray-
 </head>
 <body>
 
-<!-- ═══ TOP NAVBAR — light, tall ═══ -->
+<!-- ═══ TOP NAVBAR ═══ -->
 <div class="topbar">
   <div class="topbar-logo">
     <div class="topbar-icon">S</div>
@@ -307,62 +321,34 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--gray-
   <span class="topbar-site">Big Gore Refinery</span>
   <div class="topbar-spacer"></div>
   <div class="topbar-right">
-    <div class="topbar-btn" title="Profile">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
-    </div>
-    <div class="topbar-btn" title="Menu">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="7" cy="7" r="1.5"/><circle cx="12" cy="7" r="1.5"/><circle cx="17" cy="7" r="1.5"/><circle cx="7" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="17" cy="12" r="1.5"/><circle cx="7" cy="17" r="1.5"/><circle cx="12" cy="17" r="1.5"/><circle cx="17" cy="17" r="1.5"/></svg>
-    </div>
+    <div class="topbar-btn" title="Profile"><i data-lucide="user"></i></div>
+    <div class="topbar-btn" title="Menu"><i data-lucide="grid-3x3"></i></div>
   </div>
 </div>
 
 <!-- ═══ BODY ═══ -->
 <div class="body">
 
-<!-- ═══ SIDEBAR — light ═══ -->
+<!-- ═══ SIDEBAR — ScaffoldIQ blue ═══ -->
 <aside class="sidebar">
-  <div class="sb-label">Navigation</div>
-  <div class="sb-item active">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
-    Map
-  </div>
-  <div class="sb-item">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-    Requests
-    <span class="sb-count">3,024</span>
-  </div>
-  <div class="sb-item">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/></svg>
-    Scaffolds
-    <span class="sb-count">1,645</span>
-  </div>
-  <div class="sb-item">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-    Activities
-    <span class="sb-count">406</span>
-  </div>
-  <div class="sb-label">Safety</div>
-  <div class="sb-item">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-    Inspections
-  </div>
-  <div class="sb-item">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
-    Handovers
-  </div>
-  <div class="sb-label">Organization</div>
-  <div class="sb-item">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
-    People
-    <span class="sb-count">54</span>
-  </div>
-  <div class="sb-spacer"></div>
-  <div class="sb-footer">
-    <div class="sb-user">
-      <div class="sb-avatar">Z</div>
-      <div><div class="sb-uname">Zaib Wemyss</div><div class="sb-site">Administrator</div></div>
-    </div>
-  </div>
+  <div class="sb-ham"><i data-lucide="menu"></i></div>
+
+  <div class="sb-it on" onclick="t(this)"><div class="sb-ic"><i data-lucide="map"></i></div><span class="sb-tx">Map</span></div>
+  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="file-text"></i></div><span class="sb-tx">Requests</span></div>
+  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="layout-grid"></i></div><span class="sb-tx">Scaffolds</span></div>
+  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="list"></i></div><span class="sb-tx">Activities</span></div>
+
+  <div class="sb-gap"></div>
+
+  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="shield-check"></i></div><span class="sb-tx">Safety Documents</span></div>
+  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="check-check"></i></div><span class="sb-tx">Inspections</span></div>
+  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="arrow-left-right"></i></div><span class="sb-tx">Handovers</span></div>
+
+  <div class="sb-gap"></div>
+
+  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="sparkles"></i></div><span class="sb-tx">AI Dashboard</span><span class="sb-dot"></span></div>
+  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="users"></i></div><span class="sb-tx">People</span></div>
+  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="bell"></i></div><span class="sb-tx">Notifications</span><span class="sb-cnt">3</span></div>
 </aside>
 
 <!-- ═══ MAIN CONTENT ═══ -->
@@ -463,6 +449,11 @@ function ea(s){return s.replace(/'/g,"\\'")}
 document.getElementById('aiInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();sendMsg()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panelOpen)closeAI()});
 (function(){const h=new Date().getHours();let g='Good morning';if(h>=12&&h<17)g='Good afternoon';if(h>=17)g='Good evening';document.getElementById('greeting').innerHTML=g+', <span>Zaib</span>. Here\u2019s Big Gore Refinery right now.'})();
+
+function t(el){el.closest('.sidebar').querySelectorAll('.sb-it').forEach(i=>i.classList.remove('on'));el.classList.add('on')}
+
+// Init Lucide icons
+lucide.createIcons();
 </script>
 </body>
 </html>
