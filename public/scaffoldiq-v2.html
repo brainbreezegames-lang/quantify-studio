@@ -84,116 +84,130 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh
 .f-text strong{color:var(--text);font-weight:500}
 .f-time{font-size:var(--t-xs);color:var(--text-muted);margin-top:1px}
 
-/* ══ AI FAB — bottom left ══ */
+/* ══ AI FAB — bottom left, minimal ══ */
 .ai-fab{
   position:fixed;bottom:24px;left:24px;z-index:1001;
   display:flex;align-items:center;gap:10px;
-  padding:14px 22px 14px 16px;
-  background:var(--blue-dark);color:#fff;
-  border:none;border-radius:16px;cursor:pointer;
-  font-family:var(--font);font-size:var(--t-base);font-weight:600;
+  padding:14px 22px 14px 14px;
+  background:#111;color:#fff;
+  border:none;border-radius:50px;cursor:pointer;
+  font-family:var(--font);font-size:var(--t-sm);font-weight:600;
   letter-spacing:-0.01em;
-  transition:all .25s cubic-bezier(.22,1,.36,1);
-  box-shadow:0 4px 24px rgba(16,41,110,0.25);
+  transition:all .3s cubic-bezier(.22,1,.36,1);
+  box-shadow:0 4px 20px rgba(0,0,0,0.15);
 }
-.ai-fab:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(16,41,110,0.35)}
+.ai-fab:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.2)}
 .ai-fab:active{transform:scale(0.96)}
-.ai-fab.hidden{opacity:0;pointer-events:none;transform:translateY(10px)}
-.ai-fab-dot{width:24px;height:24px;border-radius:50%;background:conic-gradient(from 0deg,var(--blue),var(--blue-mid),#fff,var(--blue-mid),var(--blue));animation:spin 3s linear infinite;flex-shrink:0}
-@keyframes spin{to{filter:hue-rotate(360deg)}}
+.ai-fab.hidden{opacity:0;pointer-events:none;transform:scale(0.8)}
+.ai-fab-icon{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--blue);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.ai-fab-icon svg{width:16px;height:16px;color:#fff}
 
-/* ══ AI PANEL — matching O/M proportions ══ */
-.ai-backdrop{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.08);opacity:0;pointer-events:none;transition:opacity .3s}
+/* ══ AI PANEL — WHITE, O/M proportions ══ */
+.ai-backdrop{position:fixed;inset:0;z-index:999;opacity:0;pointer-events:none;transition:opacity .3s}
 .ai-backdrop.open{opacity:1;pointer-events:auto}
 
 .ai-panel{
   position:fixed;
-  top:16px;left:16px;bottom:16px;
-  width:440px;z-index:1000;
-  background:var(--blue-dark);
-  border-radius:20px;
+  top:12px;left:12px;bottom:12px;
+  width:460px;z-index:1000;
+  background:var(--white);
+  border-radius:24px;
   display:flex;flex-direction:column;
   overflow:hidden;
-  transform:translateX(calc(-100% - 32px));
-  transition:transform .4s cubic-bezier(.22,1,.36,1);
-  box-shadow:0 16px 60px rgba(0,0,0,0.2);
+  /* Smooth scale/fade — NOT a slide */
+  transform:scale(0.92);opacity:0;
+  transform-origin:bottom left;
+  pointer-events:none;
+  transition:all .35s cubic-bezier(.16,1,.3,1);
+  box-shadow:0 20px 60px rgba(0,0,0,0.12),0 0 0 1px rgba(0,0,0,0.06);
 }
-.ai-panel.open{transform:translateX(0)}
+.ai-panel.open{transform:scale(1);opacity:1;pointer-events:auto}
 
 .ai-close{
   position:absolute;top:16px;right:16px;z-index:10;
   width:36px;height:36px;border:none;
-  background:rgba(255,255,255,0.12);color:#fff;
+  background:rgba(0,0,0,0.4);color:#fff;
   border-radius:50%;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  transition:background .15s;font-size:18px;font-family:var(--font);
+  transition:background .15s;font-size:16px;font-family:var(--font);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
 }
-.ai-close:hover{background:rgba(255,255,255,0.2)}
+.ai-close:hover{background:rgba(0,0,0,0.6)}
 
-/* Video — NO gradient, clean */
-.ai-video-wrap{flex-shrink:0;overflow:hidden;background:var(--blue-dark)}
-.ai-video{width:100%;display:block}
+/* Video — 75% of panel, clean */
+.ai-video-wrap{
+  flex:3;overflow:hidden;background:#111;
+  position:relative;min-height:0;
+}
+.ai-video{width:100%;height:100%;object-fit:cover;display:block}
 
-/* Panel content */
-.ai-body{flex:1;display:flex;flex-direction:column;padding:24px;overflow:hidden}
-.ai-label{font-size:var(--t-xs);color:rgba(255,255,255,0.35);margin-bottom:10px;font-weight:400;letter-spacing:0.02em}
-.ai-greeting{font-size:var(--t-xl);font-weight:600;color:#fff;line-height:1.3;letter-spacing:-0.03em;margin-bottom:6px}
-.ai-subtext{font-size:var(--t-base);color:rgba(255,255,255,0.45);line-height:1.5;margin-bottom:24px}
+/* Panel content — WHITE, below video */
+.ai-body{
+  flex:2;display:flex;flex-direction:column;
+  padding:24px 28px 20px;overflow:hidden;
+}
+.ai-label{font-size:var(--t-xs);color:var(--text-muted);margin-bottom:12px;font-weight:500;letter-spacing:0.03em}
+.ai-greeting{
+  font-size:var(--t-2xl);font-weight:700;color:var(--text);
+  line-height:1.25;letter-spacing:-0.03em;margin-bottom:20px;
+}
 
-.ai-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.ai-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
 .ai-chip{
-  font-size:var(--t-sm);font-weight:500;color:rgba(255,255,255,0.8);
-  background:transparent;border:1px solid rgba(255,255,255,0.2);
-  border-radius:10px;padding:9px 16px;cursor:pointer;
-  transition:all .12s;font-family:var(--font);
+  font-size:var(--t-sm);font-weight:500;color:var(--text);
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:10px;padding:10px 16px;cursor:pointer;
+  transition:all .15s;font-family:var(--font);
 }
-.ai-chip:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.35);color:#fff}
-.ai-chip:active{transform:scale(0.96)}
+.ai-chip:hover{background:var(--white);border-color:#bbb;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.ai-chip:active{transform:scale(0.97)}
 
-/* Chat messages — WHITE box with shadow */
+/* Chat messages — directly on white, no extra box */
 .ai-msgs{
   flex:1;overflow-y:auto;display:none;
-  background:var(--white);border-radius:14px;
-  margin:0 -8px;padding:20px;
-  box-shadow:0 2px 20px rgba(0,0,0,0.1),0 0 0 1px rgba(255,255,255,0.08);
+  margin:0 -4px;padding:0 4px;
 }
 .ai-msgs.active{display:block}
 .ai-msgs::-webkit-scrollbar{width:3px}
 .ai-msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
-/* Messages — light theme inside white box */
-.msg{margin-bottom:16px;animation:fadeUp .3s ease}
+/* Messages — on white surface, readable */
+.msg{margin-bottom:20px;animation:fadeUp .3s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 .msg-user{display:flex;justify-content:flex-end}
-.msg-user .bubble{background:var(--blue-dark);color:#fff;padding:10px 16px;border-radius:14px 14px 4px 14px;font-size:var(--t-sm);line-height:1.5;max-width:85%;font-weight:500}
+.msg-user .bubble{background:#111;color:#fff;padding:12px 18px;border-radius:18px 18px 4px 18px;font-size:var(--t-base);line-height:1.5;max-width:85%;font-weight:500}
 
 .msg-ai{max-width:100%}
-.ai-head{display:flex;align-items:center;gap:6px;margin-bottom:6px}
-.ai-head-dot{width:18px;height:18px;border-radius:50%;background:var(--blue);flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.ai-head-dot::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff}
-.ai-head span{font-size:var(--t-xs);font-weight:600;color:var(--text-sec)}
+.ai-head{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.ai-head-dot{width:22px;height:22px;border-radius:50%;background:var(--blue);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.ai-head-dot::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff}
+.ai-head span{font-size:var(--t-sm);font-weight:600;color:var(--text)}
 
-.prose{font-size:var(--t-sm);line-height:1.65;color:var(--text-sec);margin-bottom:8px}
+.prose{font-size:var(--t-base);line-height:1.65;color:var(--text-sec);margin-bottom:10px}
 .prose strong{color:var(--text);font-weight:600}
 
-/* Rich response components — LIGHT (inside white chat box) */
-.metrics-row{display:flex;gap:1px;margin:10px 0;background:var(--border);border-radius:8px;overflow:hidden}
-.metric{background:var(--bg);padding:10px 12px;flex:1}
-.metric-val{font-size:var(--t-lg);font-weight:700;letter-spacing:-0.03em;line-height:1;margin-bottom:2px;font-variant-numeric:tabular-nums;color:var(--text)}
+/* Rich response components */
+.metrics-row{display:flex;gap:1px;margin:12px 0;background:var(--border);border-radius:10px;overflow:hidden}
+.metric{background:var(--bg);padding:14px;flex:1}
+.metric-val{font-size:var(--t-xl);font-weight:700;letter-spacing:-0.03em;line-height:1;margin-bottom:3px;font-variant-numeric:tabular-nums;color:var(--text)}
 .metric-val.red{color:var(--red)}.metric-val.amber{color:var(--amber)}.metric-val.green{color:var(--green)}
-.metric-label{font-size:10px;color:var(--text-muted)}
+.metric-label{font-size:var(--t-xs);color:var(--text-sec)}
 
-.chart-bars{margin:10px 0}
-.chart-bar-row{display:flex;align-items:center;gap:6px;margin-bottom:3px}
-.chart-bar-label{font-size:var(--t-xs);color:var(--text-sec);width:100px;flex-shrink:0;text-align:right}
-.chart-bar-track{flex:1;height:20px;background:var(--bg);border-radius:4px;overflow:hidden}
-.chart-bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 6px;transition:width .8s cubic-bezier(.22,1,.36,1)}
-.chart-bar-fill span{font-size:9px;font-weight:600;color:#fff;white-space:nowrap}
-.chart-bar-count{font-size:var(--t-xs);font-weight:500;color:var(--text);width:40px;text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono)}
+.chart-bars{margin:12px 0}
+.chart-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.chart-bar-label{font-size:var(--t-sm);color:var(--text-sec);width:110px;flex-shrink:0;text-align:right}
+.chart-bar-track{flex:1;height:26px;background:var(--bg);border-radius:6px;overflow:hidden}
+.chart-bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding:0 8px;transition:width .8s cubic-bezier(.22,1,.36,1)}
+.chart-bar-fill span{font-size:10px;font-weight:600;color:#fff;white-space:nowrap}
+.chart-bar-count{font-size:var(--t-sm);font-weight:600;color:var(--text);width:44px;text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono)}
 
-.data-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:var(--t-sm)}
-.data-table th{text-align:left;font-weight:500;color:var(--text-muted);padding:6px 8px;border-bottom:1px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:0.04em}
-.data-table td{padding:7px 8px;border-bottom:1px solid var(--border-light);color:var(--text-sec)}
+.data-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:var(--t-base)}
+.data-table th{text-align:left;font-weight:600;color:var(--text-muted);padding:8px 10px;border-bottom:2px solid var(--border);font-size:var(--t-xs);text-transform:uppercase;letter-spacing:0.04em}
+.data-table td{padding:10px 10px;border-bottom:1px solid var(--border-light);color:var(--text-sec)}
 .data-table tr:hover td{background:var(--bg)}
 .data-table .mono{font-family:var(--mono);font-size:10px;color:var(--text-muted)}
 .data-table strong{font-weight:600;color:var(--text)}
@@ -221,19 +235,19 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh
 .typing-indicator span:nth-child(3){animation-delay:.2s}
 @keyframes tb{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 
-/* Panel input */
-.ai-input{padding:12px 0 0;flex-shrink:0;margin-top:auto}
+/* Panel input — on white */
+.ai-input{padding:16px 0 0;flex-shrink:0;margin-top:auto;border-top:1px solid var(--border-light)}
 .ai-input-row{
-  display:flex;align-items:center;gap:6px;
-  background:rgba(255,255,255,0.08);
-  border:1px solid rgba(255,255,255,0.12);
-  border-radius:12px;padding:4px 6px 4px 14px;transition:all .2s;
+  display:flex;align-items:center;gap:8px;
+  padding:4px 6px 4px 4px;
 }
-.ai-input-row:focus-within{border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.12)}
-.ai-input-row input{flex:1;border:none;outline:none;font-family:var(--font);font-size:var(--t-sm);background:transparent;color:#fff;padding:10px 0}
-.ai-input-row input::placeholder{color:rgba(255,255,255,0.3)}
-.ai-send{width:36px;height:36px;border:none;border-radius:8px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0}
-.ai-send:hover{background:var(--blue-mid)}
+.ai-input-icon{width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted)}
+.ai-input-icon svg{width:18px;height:18px}
+.ai-input-row input{flex:1;border:none;outline:none;font-family:var(--font);font-size:var(--t-base);background:transparent;color:var(--text);padding:10px 0}
+.ai-input-row input::placeholder{color:var(--text-muted)}
+.ai-send{width:36px;height:36px;border:none;border-radius:50%;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0;opacity:0.15}
+.ai-input-row:focus-within .ai-send{opacity:1}
+.ai-send:hover{background:#333}
 .ai-send:active{transform:scale(0.9)}
 .ai-send svg{width:14px;height:14px}
 
@@ -293,29 +307,27 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh
 </main>
 </div>
 
-<button class="ai-fab" id="aiFab" onclick="openAI()"><div class="ai-fab-dot"></div>Ask ScaffoldIQ</button>
+<button class="ai-fab" id="aiFab" onclick="openAI()"><div class="ai-fab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>Ask ScaffoldIQ</button>
 <div class="ai-backdrop" id="aiBack" onclick="closeAI()"></div>
 <div class="ai-panel" id="aiPanel">
   <button class="ai-close" onclick="closeAI()">&times;</button>
   <div class="ai-video-wrap"><video class="ai-video" src="ai-avatar.mp4" autoplay loop muted playsinline></video></div>
   <div class="ai-body">
     <div id="aiWelcome">
-      <div class="ai-label">ScaffoldIQ Assistant</div>
-      <div class="ai-greeting">Hey — I'm your AI assistant.<br>Anything catch your eye?</div>
+      <div class="ai-label">ScaffoldIQ</div>
+      <div class="ai-greeting">Hey — I'm your scaffold assistant.<br>How can I help?</div>
       <div class="ai-chips">
-        <div class="ai-chip" onclick="askQ('Show me all standing scaffolds with their status')">Scaffold status</div>
-        <div class="ai-chip" onclick="askQ('Show me the request pipeline')">Request pipeline</div>
-        <div class="ai-chip" onclick="askQ('Show me inspection results')">Inspections</div>
-        <div class="ai-chip" onclick="askQ('Show me scaffolds by area')">Areas</div>
-        <div class="ai-chip" onclick="askQ('Show me the team workload')">Team workload</div>
-        <div class="ai-chip" onclick="askQ('Give me a safety compliance summary')">Safety</div>
+        <div class="ai-chip" onclick="askQ('Show me all standing scaffolds with their status')">What's the scaffold status?</div>
+        <div class="ai-chip" onclick="askQ('Show me inspection results')">Show me inspections</div>
+        <div class="ai-chip" onclick="askQ('Give me a safety compliance summary')">Safety overview</div>
       </div>
     </div>
     <div class="ai-msgs" id="aiMsgs"></div>
     <div class="ai-input">
       <div class="ai-input-row">
+        <div class="ai-input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
         <input type="text" id="aiInput" placeholder="Ask me anything..." autocomplete="off" />
-        <button class="ai-send" onclick="sendMsg()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+        <button class="ai-send" onclick="sendMsg()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
       </div>
     </div>
   </div>
