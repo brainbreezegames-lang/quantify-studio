@@ -65,54 +65,70 @@ body{
 .welcome-top{
   padding:32px 0 0;
 }
-/* ── Explore section (metrics + topic cards merged) ── */
+/* ── Explore section — elevated card on warm gray ── */
 .explore-section{
-  background:var(--white);margin-bottom:32px;
-  animation:fadeIn .5s ease .2s both;
+  background:var(--white);
+  border:1px solid rgba(0,0,0,0.06);
+  box-shadow:0 1px 3px rgba(0,0,0,0.03),0 8px 24px rgba(0,0,0,0.02);
+  border-radius:16px;
+  margin:32px auto;max-width:760px;
+  overflow:hidden;
+  animation:fadeIn .6s ease .25s both;
 }
-.explore-metrics{
-  display:flex;border-bottom:1px solid var(--gray-light);
-}
+
+/* Metrics strip — top of the card */
+.explore-metrics{display:flex}
 .em{
-  flex:1;padding:20px 24px;cursor:pointer;
-  transition:background .12s;
-  border-right:1px solid var(--gray-light);
+  flex:1;padding:24px 28px;cursor:pointer;
+  transition:background .15s;
+  position:relative;
 }
-.em:last-child{border-right:none}
-.em:hover{background:var(--gray-xlight)}
+.em+.em::before{
+  content:'';position:absolute;left:0;top:20%;bottom:20%;
+  width:1px;background:rgba(0,0,0,0.06);
+}
+.em:hover{background:rgba(0,0,0,0.015)}
 .em-val{
-  display:block;font-size:32px;font-weight:700;
-  letter-spacing:-0.04em;line-height:1;margin-bottom:4px;
-  font-variant-numeric:tabular-nums;color:var(--black);
+  display:block;font-size:28px;font-weight:700;
+  letter-spacing:-0.03em;line-height:1;margin-bottom:6px;
+  font-variant-numeric:tabular-nums;
 }
 .em-val.green{color:var(--green)}.em-val.red{color:var(--red)}
-.em-val.amber{color:var(--amber)}
-.em-label{font-size:13px;color:var(--gray-xdark);font-weight:500}
+.em-val.amber{color:var(--amber)}.em-val:not([class*=" "]){color:var(--black)}
+.em-label{font-size:12px;color:rgba(0,0,0,0.4);font-weight:500;letter-spacing:0.01em}
 
-.explore-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);
-}
+/* Divider between metrics and grid */
+.explore-divider{height:1px;background:rgba(0,0,0,0.06);margin:0}
+
+/* Topic grid */
+.explore-grid{display:grid;grid-template-columns:repeat(3,1fr)}
 .eg{
-  display:flex;align-items:center;gap:14px;
-  padding:20px 24px;cursor:pointer;
-  border-right:1px solid var(--gray-light);
-  border-bottom:1px solid var(--gray-light);
-  transition:background .12s;
+  display:flex;align-items:center;gap:16px;
+  padding:22px 28px;cursor:pointer;
+  transition:background .15s;position:relative;
 }
-.eg:nth-child(3n){border-right:none}
-.eg:nth-child(n+4){border-bottom:none}
-.eg:hover{background:var(--gray-xlight)}
-.eg:active{transform:scale(0.99)}
+/* Vertical dividers */
+.eg:nth-child(3n-1)::before,.eg:nth-child(3n-2):not(:first-child)::before{
+  content:'';position:absolute;left:0;top:16px;bottom:16px;
+  width:1px;background:rgba(0,0,0,0.05);
+}
+/* Horizontal divider after row 1 */
+.eg:nth-child(n+4){border-top:1px solid rgba(0,0,0,0.05)}
+.eg:hover{background:rgba(0,0,0,0.015)}
+
 .eg-icon{
-  width:44px;height:44px;border-radius:10px;
+  width:48px;height:48px;border-radius:12px;
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
 .eg-icon svg{width:22px;height:22px}
 .eg-text{flex:1;min-width:0}
-.eg-title{font-size:15px;font-weight:600;color:var(--black);letter-spacing:-0.02em;margin-bottom:2px}
-.eg-desc{font-size:12px;color:var(--gray-xdark);line-height:1.4}
-.eg-arrow{width:16px;height:16px;color:var(--gray-light);flex-shrink:0;transition:all .15s}
-.eg:hover .eg-arrow{color:var(--blue);transform:translateX(2px)}
+.eg-title{font-size:16px;font-weight:600;color:var(--black);letter-spacing:-0.02em;margin-bottom:3px}
+.eg-desc{font-size:13px;color:rgba(0,0,0,0.4);line-height:1.4}
+.eg-arrow{
+  font-size:18px;color:rgba(0,0,0,0.12);flex-shrink:0;
+  transition:all .2s cubic-bezier(.16,1,.3,1);
+}
+.eg:hover .eg-arrow{color:var(--blue);transform:translateX(3px)}
 
 /* ── Avatar section ── */
 .hero-avatar{
@@ -362,14 +378,18 @@ body{
   .hero-input-label span{font-size:14px}
 }
 @media(max-width:768px){
+  .explore-section{margin:24px 16px;border-radius:12px}
   .explore-grid{grid-template-columns:1fr 1fr}
   .explore-metrics{flex-wrap:wrap}
-  .em{min-width:50%;border-bottom:1px solid var(--gray-light)}
+  .em{min-width:50%}
+  .em-val{font-size:24px}
+  .eg{padding:18px 20px}
 }
 @media(max-width:480px){
   .explore-grid{grid-template-columns:1fr}
-  .eg{border-right:none}
-  .em-val{font-size:24px}
+  .eg-icon{width:40px;height:40px}
+  .em-val{font-size:22px}
+  .em{padding:18px 20px}
 }
 @media(display-mode:standalone){.header{padding-top:env(safe-area-inset-top,44px)}}
 @supports(-webkit-touch-callout:none){.hero-input-wrap input,.chat-input-wrap input{font-size:16px}}
@@ -419,7 +439,7 @@ body{
       </div>
     </div>
 
-    <!-- Merged section: metrics + topic cards -->
+    <!-- Explore — elevated card: metrics strip + topic grid -->
     <div class="explore-section">
       <div class="explore-metrics">
         <div class="em" onclick="askQ('Show me all standing scaffolds with their status')"><span class="em-val green">467</span><span class="em-label">Green tag (safe)</span></div>
@@ -427,36 +447,37 @@ body{
         <div class="em" onclick="askQ('Show me the request pipeline')"><span class="em-val amber">3,024</span><span class="em-label">Open requests</span></div>
         <div class="em" onclick="askQ('Show me the team workload')"><span class="em-val">406</span><span class="em-label">Activities in progress</span></div>
       </div>
+      <div class="explore-divider"></div>
       <div class="explore-grid">
         <div class="eg" onclick="askQ('Show me all standing scaffolds with their status')">
           <div class="eg-icon" style="background:#EFF6FF;color:#10296E"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/></svg></div>
           <div class="eg-text"><div class="eg-title">Scaffolds</div><div class="eg-desc">Lifecycle status, tag colors, activities</div></div>
-          <svg class="eg-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <span class="eg-arrow">&rarr;</span>
         </div>
         <div class="eg" onclick="askQ('Show me the request pipeline')">
           <div class="eg-icon" style="background:#F3E8FF;color:#7C3AED"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
           <div class="eg-text"><div class="eg-title">Requests</div><div class="eg-desc">Build, modify, dismantle approvals</div></div>
-          <svg class="eg-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <span class="eg-arrow">&rarr;</span>
         </div>
         <div class="eg" onclick="askQ('Show me inspection results')">
           <div class="eg-icon" style="background:#FEF2F2;color:#E64059"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
           <div class="eg-text"><div class="eg-title">Inspections</div><div class="eg-desc">Pass/fail cycles, handovers, repairs</div></div>
-          <svg class="eg-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <span class="eg-arrow">&rarr;</span>
         </div>
         <div class="eg" onclick="askQ('Show me scaffolds by area')">
           <div class="eg-icon" style="background:#F0FDF4;color:#16A34A"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg></div>
           <div class="eg-text"><div class="eg-title">Areas</div><div class="eg-desc">Site hierarchy, distribution</div></div>
-          <svg class="eg-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <span class="eg-arrow">&rarr;</span>
         </div>
         <div class="eg" onclick="askQ('Show me the team workload')">
           <div class="eg-icon" style="background:#FFFBEB;color:#D97706"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></div>
           <div class="eg-text"><div class="eg-title">People</div><div class="eg-desc">Builders, inspectors, requestors</div></div>
-          <svg class="eg-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <span class="eg-arrow">&rarr;</span>
         </div>
         <div class="eg" onclick="askQ('Give me a safety compliance summary')">
           <div class="eg-icon" style="background:#FEF3C7;color:#B45309"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
           <div class="eg-text"><div class="eg-title">Safety</div><div class="eg-desc">Tag status, Do Not Use, compliance</div></div>
-          <svg class="eg-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <span class="eg-arrow">&rarr;</span>
         </div>
       </div>
     </div>
