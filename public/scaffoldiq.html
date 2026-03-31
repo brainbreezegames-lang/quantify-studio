@@ -95,7 +95,7 @@ body{
 }
 .em-val.green{color:var(--green)}.em-val.red{color:var(--red)}
 .em-val.amber{color:var(--amber)}.em-val:not([class*=" "]){color:var(--black)}
-.em-label{font-size:12px;color:rgba(0,0,0,0.4);font-weight:500;letter-spacing:0.01em}
+.em-label{font-size:13px;color:#555;font-weight:500;letter-spacing:0.01em;white-space:nowrap}
 
 /* Divider between metrics and grid */
 .explore-divider{height:1px;background:rgba(0,0,0,0.06);margin:0}
@@ -123,7 +123,7 @@ body{
 .eg-icon svg{width:22px;height:22px}
 .eg-text{flex:1;min-width:0}
 .eg-title{font-size:16px;font-weight:600;color:var(--black);letter-spacing:-0.02em;margin-bottom:3px}
-.eg-desc{font-size:13px;color:rgba(0,0,0,0.4);line-height:1.4}
+.eg-desc{font-size:13px;color:#555;line-height:1.4}
 .eg-arrow{
   font-size:18px;color:rgba(0,0,0,0.12);flex-shrink:0;
   transition:all .2s cubic-bezier(.16,1,.3,1);
@@ -443,7 +443,7 @@ body{
     <div class="explore-section">
       <div class="explore-metrics">
         <div class="em" onclick="askQ('Show me all standing scaffolds with their status')"><span class="em-val green">467</span><span class="em-label">Green tag (safe)</span></div>
-        <div class="em" onclick="askQ('Show me inspection results')"><span class="em-val red">703</span><span class="em-label">Red tag (awaiting inspection)</span></div>
+        <div class="em" onclick="askQ('Show me inspection results')"><span class="em-val red">703</span><span class="em-label">Awaiting inspection</span></div>
         <div class="em" onclick="askQ('Show me the request pipeline')"><span class="em-val amber">3,024</span><span class="em-label">Open requests</span></div>
         <div class="em" onclick="askQ('Show me the team workload')"><span class="em-val">406</span><span class="em-label">Activities in progress</span></div>
       </div>
