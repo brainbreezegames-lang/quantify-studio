@@ -6,12 +6,11 @@
 <title>ScaffoldIQ</title>
 <link href="https://api.fontshare.com/v2/css?f[]=switzer@300,400,500,600,700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:100%;-webkit-font-smoothing:antialiased}
 :root{
-  --blue:#0A3EFF;--blue-mid:#6F9DFF;--blue-dark:#10296E;
+  --blue:#10296E;--blue-mid:#6F9DFF;--blue-bright:#0A3EFF;
   --white:#fff;--gray-50:#fafaf8;--gray-100:#f2f2ef;--gray-200:#e5e5e0;--gray-300:#d0d0ca;
   --gray-400:#aaa;--gray-500:#777;--gray-600:#555;--gray-700:#333;--gray-900:#1a1a1a;
   --green:#22C55E;--green-bg:#ecfdf5;--red:#E64059;--red-bg:#fef2f2;--amber:#F9A825;--amber-bg:#fffbeb;
@@ -38,22 +37,22 @@ body{font-family:var(--font);background:var(--white);color:var(--gray-900);heigh
   cursor:pointer;transition:all .15s;color:var(--gray-400);
 }
 .topbar-btn:hover{border-color:var(--gray-300);color:var(--gray-600);background:var(--gray-50)}
-.topbar-btn i{width:18px;height:18px;stroke-width:1.5}
+.topbar-btn svg{width:18px;height:18px}
 
 /* ═══ BODY — sidebar + content ═══ */
 .body{display:flex;height:100vh}
 
-/* ═══ SIDEBAR — matching reference exactly ═══ */
+/* ═══ SIDEBAR — exact replica from sidebar-mockup.html (variant A) ═══ */
 .sidebar{
   width:260px;flex-shrink:0;
   background:var(--blue);
   display:flex;flex-direction:column;
   user-select:none;
+  box-shadow:2px 0 12px rgba(0,0,0,0.06);
 }
-/* Logo in sidebar */
 .sb-logo{
   display:flex;align-items:center;gap:12px;
-  padding:18px 20px 20px;
+  padding:16px 20px 14px;
 }
 .sb-logo-icon{
   width:32px;height:32px;background:rgba(255,255,255,0.15);
@@ -61,46 +60,46 @@ body{font-family:var(--font);background:var(--white);color:var(--gray-900);heigh
   font-weight:700;font-size:13px;color:#fff;
 }
 .sb-logo-text{font-weight:700;font-size:16px;color:#fff;letter-spacing:-0.02em}
-
 .sb-it{
   display:flex;align-items:center;gap:16px;
-  height:52px;padding:0 24px;
+  height:48px;padding:0 20px;
   cursor:pointer;position:relative;
-  white-space:nowrap;color:rgba(255,255,255,0.7);
-  font-size:15px;font-weight:400;
+  white-space:nowrap;color:#fff;
+  font-size:14px;
   transition:background .12s;
 }
-.sb-it:hover{background:rgba(0,0,0,0.08);color:rgba(255,255,255,0.95)}
-.sb-it.on{background:rgba(0,0,0,0.15);color:#fff}
+.sb-it:hover{background:rgba(0,0,0,0.10)}
+.sb-it.on{background:rgba(0,0,0,0.20)}
 .sb-it.on::before{
-  content:'';position:absolute;left:0;top:10px;bottom:10px;
-  width:4px;background:#fff;border-radius:0 2px 2px 0;
+  content:'';position:absolute;
+  left:3px;top:10px;bottom:10px;width:3px;
+  background:#fff;border-radius:1.5px;
 }
 .sb-it.on .sb-tx{font-weight:600}
 .sb-ic{width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.sb-ic i{width:22px;height:22px;stroke-width:1.75}
+.sb-ic svg{width:22px;height:22px;flex-shrink:0;display:block}
 .sb-tx{flex:1}
-.sb-gap{height:1px;background:rgba(255,255,255,0.12);margin:14px 24px}
-.sb-cnt{
-  font-size:10px;font-weight:700;
-  background:#EF4444;color:#fff;
-  min-width:20px;height:20px;
-  display:flex;align-items:center;justify-content:center;
-  padding:0 6px;flex-shrink:0;border-radius:10px;
-}
-.sb-dot{
-  width:10px;height:10px;border-radius:50%;
-  background:rgba(255,255,255,0.4);flex-shrink:0;
-}
-/* AI Dashboard tooltip */
+.sb-gap{height:17px}
+.sb-sparkle{flex-shrink:0;font-size:13px;animation:spa 1.5s ease-in-out infinite;color:#fff}
+@keyframes spa{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.65)}}
 .sb-ai{position:relative}
 .sb-tip{
-  position:absolute;left:100%;top:50%;transform:translateY(-50%);margin-left:8px;
-  background:#222;color:#fff;font-size:11px;padding:5px 10px;
-  white-space:nowrap;border-radius:4px;pointer-events:none;
+  position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);
+  background:#222;color:#fff;font-size:10px;padding:3px 8px;
+  white-space:nowrap;border-radius:3px;pointer-events:none;
   opacity:0;transition:opacity .15s;z-index:10;
 }
+.sb-tip::before{
+  content:'';position:absolute;top:-4px;left:50%;transform:translateX(-50%);
+  border-left:4px solid transparent;border-right:4px solid transparent;
+  border-bottom:4px solid #222;
+}
 .sb-ai:hover .sb-tip{opacity:1}
+.sb-cnt{
+  font-size:9px;font-weight:600;background:#D83B01;color:#fff;
+  min-width:18px;height:16px;display:flex;align-items:center;
+  justify-content:center;padding:0 4px;flex-shrink:0;
+}
 
 /* ═══ MAIN CONTENT ═══ */
 .main{flex:1;overflow-y:auto;background:var(--gray-50)}
@@ -129,7 +128,7 @@ body{font-family:var(--font);background:var(--white);color:var(--gray-900);heigh
 .tag-card.green .tag-indicator{background:var(--green-bg);color:var(--green)}
 .tag-card.red .tag-indicator{background:var(--red-bg);color:var(--red)}
 .tag-card.amber .tag-indicator{background:var(--amber-bg);color:var(--amber)}
-.tag-indicator i{width:20px;height:20px}
+.tag-indicator svg{width:20px;height:20px}
 .tag-val{font-size:28px;font-weight:700;letter-spacing:-0.04em;line-height:1;margin-bottom:2px;font-variant-numeric:tabular-nums;color:var(--gray-900)}
 .tag-label{font-size:14px;color:var(--gray-600);font-weight:500}
 .tag-sub{font-size:12px;color:var(--gray-400);margin-top:2px}
@@ -145,11 +144,11 @@ table{width:100%;border-collapse:collapse;font-size:14px}
 th{text-align:left;padding:10px 20px;font-weight:600;color:var(--gray-400);border-bottom:2px solid var(--gray-200);font-size:12px;text-transform:uppercase;letter-spacing:0.04em}
 td{padding:12px 20px;border-bottom:1px solid var(--gray-100);color:var(--gray-600)}
 tr:hover td{background:var(--gray-50)}
-td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--blue)}
+td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--gray-900)}
 .badge{display:inline-block;padding:4px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.03em}
 .badge-green{background:var(--green);color:#fff}
 .badge-amber{background:var(--amber);color:#fff}
-.badge-blue{background:var(--blue);color:#fff}
+.badge-blue{background:#1a7794;color:#fff}
 
 /* ═══ AI FAB — bottom right, blue ═══ */
 .ai-fab{
@@ -157,20 +156,21 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--blue)
   display:flex;align-items:center;gap:12px;
   padding:16px 26px 16px 16px;
   background:var(--blue);color:#fff;
+  border:none;
   border:none;border-radius:50px;cursor:pointer;
   font-family:var(--font);font-size:15px;font-weight:600;
   letter-spacing:-0.01em;
   transition:all .4s cubic-bezier(.16,1,.3,1);
-  box-shadow:0 6px 28px rgba(10,62,255,0.35);
+  box-shadow:0 6px 28px rgba(16,41,110,0.4);
 }
-.ai-fab:hover{transform:translateY(-3px);box-shadow:0 10px 36px rgba(10,62,255,0.45)}
+.ai-fab:hover{transform:translateY(-3px);box-shadow:0 10px 36px rgba(16,41,110,0.5)}
 .ai-fab:active{transform:scale(0.95)}
 .ai-fab.hidden{opacity:0;pointer-events:none;transform:scale(0.5)}
 .ai-orb{
   width:34px;height:34px;border-radius:50%;flex-shrink:0;
   background:radial-gradient(circle at 35% 35%,rgba(255,255,255,0.7),transparent 55%),
     radial-gradient(circle at 65% 65%,rgba(0,0,0,0.1),transparent 50%),
-    conic-gradient(from 180deg,#fff,var(--blue-mid),#fff,var(--blue-mid),#fff);
+    conic-gradient(from 180deg,#fff,#6F9DFF,#fff,#6F9DFF,#fff);
   animation:orbFloat 3s ease-in-out infinite;
   box-shadow:0 2px 8px rgba(0,0,0,0.12),inset 0 1px 2px rgba(255,255,255,0.3);
 }
@@ -321,7 +321,7 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--blue)
 .ai-send svg{width:14px;height:14px}
 
 /* Responsive */
-@media(max-width:1024px){.tag-overview{grid-template-columns:1fr}.sidebar{width:60px}.sb-tx,.sb-cnt,.sb-dot,.sb-logo-text,.sb-tip{display:none}.sb-gap{margin:8px 14px}.sb-it{justify-content:center;padding:0 18px;gap:0}.sb-logo{justify-content:center;padding:16px 0}}
+@media(max-width:1024px){.tag-overview{grid-template-columns:1fr}.sidebar{width:56px}.sb-tx,.sb-cnt,.sb-sparkle,.sb-logo-text,.sb-tip{display:none}.sb-gap{height:8px}.sb-it{justify-content:center;padding:0 16px;gap:0}.sb-logo{justify-content:center;padding:12px 0}}
 @media(max-width:768px){
   .sidebar{display:none}
   .ai-panel{width:calc(100vw - 16px);top:8px;right:8px;bottom:8px}
@@ -337,43 +337,50 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--blue)
 <!-- ═══ BODY (sidebar + main, no separate navbar above sidebar) ═══ -->
 <div class="body">
 
-<!-- ═══ SIDEBAR ═══ -->
+<!-- ═══ SIDEBAR — exact SVGs from sidebar-mockup.html ═══ -->
 <aside class="sidebar">
   <div class="sb-logo">
     <div class="sb-logo-icon">S</div>
     <span class="sb-logo-text">ScaffoldIQ</span>
   </div>
 
-  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="map"></i></div><span class="sb-tx">Map</span></div>
-  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="clipboard-list"></i></div><span class="sb-tx">Requests</span></div>
-  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="grid-2x2"></i></div><span class="sb-tx">Scaffolds</span></div>
-  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="list-ordered"></i></div><span class="sb-tx">Activities</span></div>
+  <div class="sb-it on" onclick="t(this)"><span class="sb-ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5l6-3 6 3 6-3v13l-6 3-6-3-6 3z"/><path d="M7 2v13M13 5v13"/></svg></span><span class="sb-tx">Map</span></div>
+  <div class="sb-it" onclick="t(this)"><span class="sb-ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 9.5c0 4-5 8-5 8s-5-4-5-8a5 5 0 0110 0z"/><circle cx="10" cy="9.5" r="1.8"/></svg></span><span class="sb-tx">Requests</span></div>
+  <div class="sb-it" onclick="t(this)"><span class="sb-ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="16" height="16"/><path d="M2 7h16M7 2v16"/></svg></span><span class="sb-tx">Scaffolds</span></div>
+  <div class="sb-it" onclick="t(this)"><span class="sb-ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="16" height="14" rx="1"/><path d="M6 8h8M6 11.5h5"/></svg></span><span class="sb-tx">Activities</span></div>
 
   <div class="sb-gap"></div>
 
-  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="shield-check"></i></div><span class="sb-tx">Safety Documents</span></div>
-  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="check-check"></i></div><span class="sb-tx">Inspections</span></div>
-  <div class="sb-it on" onclick="t(this)"><div class="sb-ic"><i data-lucide="arrow-left-right"></i></div><span class="sb-tx">Handovers</span></div>
+  <div class="sb-it" onclick="t(this)"><span class="sb-ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 1.5l7 3v5.5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V4.5z"/><polyline points="7,10 9.5,12.5 13.5,7.5"/></svg></span><span class="sb-tx">Safety Documents</span></div>
+  <div class="sb-it" onclick="t(this)"><span class="sb-ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="16" height="16" rx="1"/><polyline points="6,10 9,13 14,7"/></svg></span><span class="sb-tx">Inspections</span></div>
+  <div class="sb-it" onclick="t(this)"><span class="sb-ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="8" r="2.8"/><circle cx="13" cy="8" r="2.8"/><path d="M3.5 16.5c0-2 1.3-3.2 3.5-3.2M16.5 16.5c0-2-1.3-3.2-3.5-3.2"/><path d="M10 13v-2.5"/></svg></span><span class="sb-tx">Handovers</span></div>
 
   <div class="sb-gap"></div>
 
-  <div class="sb-it sb-ai" onclick="t(this)"><div class="sb-ic"><i data-lucide="sparkles"></i></div><span class="sb-tx">AI Dashboard</span><span class="sb-dot"></span><span class="sb-tip">Opens in new tab</span></div>
-  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="users"></i></div><span class="sb-tx">People</span></div>
-  <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="bell"></i></div><span class="sb-tx">Notifications</span><span class="sb-cnt">3</span></div>
+  <div class="sb-it sb-ai" onclick="t(this)"><span class="sb-ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 2.7l-1-1a1.4 1.4 0 00-2 0L1.7 14.5a1.4 1.4 0 000 2l1 1a1.4 1.4 0 002 0L17.5 4.7a1.4 1.4 0 000-2z"/><path d="M11.2 5.3l2.3 2.3"/><line x1="4" y1="4.3" x2="4" y2="7.7"/><line x1="2.3" y1="6" x2="5.7" y2="6"/><line x1="15" y1="11.3" x2="15" y2="14.7"/><line x1="13.3" y1="13" x2="16.7" y2="13"/></svg></span><span class="sb-tx">AI Dashboard</span><span class="sb-sparkle">&#10038;</span><span class="sb-tip">Opens in new tab</span></div>
+
+  <div class="sb-gap"></div>
+
+  <div class="sb-it" onclick="t(this)"><span class="sb-ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="7" r="3.5"/><path d="M3 18c0-3 3-5.5 7-5.5s7 2.5 7 5.5"/></svg></span><span class="sb-tx">People</span></div>
+  <div class="sb-it" onclick="t(this)"><span class="sb-ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="15" height="11" rx="1"/><line x1="6.5" y1="16.5" x2="13.5" y2="16.5"/><line x1="10" y1="13.5" x2="10" y2="16.5"/></svg></span><span class="sb-tx">Notifications</span><span class="sb-cnt">3</span></div>
 </aside>
 
 <!-- ═══ RIGHT SIDE (navbar + content) ═══ -->
 <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
 
-<!-- ═══ TOP NAVBAR (inside content area, right of sidebar) ═══ -->
+<!-- ═══ TOP NAVBAR ═══ -->
 <div class="topbar">
   <span class="topbar-title">ScaffoldIQ</span>
   <div class="topbar-sep"></div>
   <span class="topbar-site">Big Gore Refinery</span>
   <div class="topbar-spacer"></div>
   <div class="topbar-right">
-    <div class="topbar-btn" title="Profile"><i data-lucide="user"></i></div>
-    <div class="topbar-btn" title="Menu"><i data-lucide="grid-2x2"></i></div>
+    <div class="topbar-btn" title="Profile">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="7" r="3.5"/><path d="M3 18c0-3 3-5.5 7-5.5s7 2.5 7 5.5"/></svg>
+    </div>
+    <div class="topbar-btn" title="Menu">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="16" height="16"/><path d="M2 7h16M7 2v16"/></svg>
+    </div>
   </div>
 </div>
 
@@ -386,7 +393,7 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--blue)
     <!-- Tag status overview — the core metric for scaffold management -->
     <div class="tag-overview">
       <div class="tag-card green" onclick="askQ('Show me all standing scaffolds with their status')">
-        <div class="tag-indicator"><i data-lucide="circle-check"></i></div>
+        <div class="tag-indicator"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="8"/><polyline points="7,10 9.5,12.5 13.5,7.5"/></svg></div>
         <div class="tag-info">
           <div class="tag-val">467</div>
           <div class="tag-label">Green tagged</div>
@@ -394,7 +401,7 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--blue)
         </div>
       </div>
       <div class="tag-card red" onclick="askQ('Show me inspection results')">
-        <div class="tag-indicator"><i data-lucide="alert-triangle"></i></div>
+        <div class="tag-indicator"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2L1 18h18L10 2z"/><line x1="10" y1="8" x2="10" y2="12"/><circle cx="10" cy="15" r=".5"/></svg></div>
         <div class="tag-info">
           <div class="tag-val">703</div>
           <div class="tag-label">Awaiting inspection</div>
@@ -402,7 +409,7 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--blue)
         </div>
       </div>
       <div class="tag-card amber" onclick="askQ('Show me the request pipeline')">
-        <div class="tag-indicator"><i data-lucide="clock"></i></div>
+        <div class="tag-indicator"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="8"/><polyline points="10,5 10,10 13.5,12"/></svg></div>
         <div class="tag-info">
           <div class="tag-val">3,024</div>
           <div class="tag-label">Open requests</div>
@@ -502,8 +509,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panelOpen)closeAI()
 
 function t(el){el.closest('.sidebar').querySelectorAll('.sb-it').forEach(i=>i.classList.remove('on'));el.classList.add('on')}
 
-// Init Lucide icons
-lucide.createIcons();
 </script>
 </body>
 </html>
