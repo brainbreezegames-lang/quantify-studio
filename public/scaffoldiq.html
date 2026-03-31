@@ -219,23 +219,18 @@ body{
 
 .chat-messages{
   flex:1;overflow-y:auto;padding:24px;
+  background:var(--white);
 }
 .chat-messages-inner{max-width:720px;margin:0 auto;width:100%}
 .chat-messages::-webkit-scrollbar{width:3px}
 .chat-messages::-webkit-scrollbar-thumb{background:var(--gray-light)}
 
-/* Sticky bottom input in chat mode */
+/* Sticky bottom input in chat mode — unified with messages */
 .chat-input-area{
-  border-top:1px solid var(--gray-light);
-  background:var(--white);padding:12px 24px 16px;
+  background:var(--white);padding:8px 24px 20px;
   flex-shrink:0;
 }
 .chat-input-inner{max-width:720px;margin:0 auto}
-.chat-input-top{
-  display:flex;align-items:center;gap:6px;margin-bottom:8px;
-}
-.chat-input-top svg{width:14px;height:14px;color:var(--blue)}
-.chat-input-top span{font-size:12px;font-weight:600;color:var(--gray-xdark)}
 .chat-input-wrap{
   display:flex;align-items:center;
   border:2px solid var(--gray-light);
@@ -494,10 +489,6 @@ body{
   </div>
   <div class="chat-input-area">
     <div class="chat-input-inner">
-      <div class="chat-input-top">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        <span>Ask ScaffoldIQ</span>
-      </div>
       <div class="chat-input-wrap">
         <input type="text" id="chatInput" placeholder="Ask a follow-up question..." autocomplete="off" />
         <button class="chat-send" onclick="sendFromChat()" title="Send">
