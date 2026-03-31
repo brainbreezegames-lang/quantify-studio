@@ -89,10 +89,27 @@ body{
 .s-num.red{color:var(--red)}.s-num.amber{color:var(--amber)}
 .s-num.green{color:var(--green)}.s-num.blue{color:var(--blue)}
 
+/* ── Avatar section ── */
+.hero-avatar{
+  position:relative;overflow:hidden;
+  margin-bottom:0;
+  animation:fadeIn .5s ease .1s both;
+}
+.hero-avatar video,.hero-avatar img{
+  width:100%;display:block;
+  object-fit:cover;
+  max-height:360px;
+}
+.hero-avatar-blend{
+  position:absolute;bottom:0;left:0;right:0;height:50%;
+  background:linear-gradient(to top,var(--blue-dark),transparent);
+  pointer-events:none;
+}
+
 /* ── THE INPUT — hero, inside content flow ── */
 .hero-input{
   background:var(--blue-dark);
-  padding:24px;margin-bottom:32px;
+  padding:24px;padding-top:20px;margin-bottom:32px;
   animation:fadeIn .5s ease .15s both;
 }
 .hero-input-label{
@@ -394,6 +411,12 @@ body{
         <div class="summary-cell" onclick="askQ('Show me the request pipeline')"><div class="s-num amber">3,024</div><div class="s-label">Open requests</div></div>
         <div class="summary-cell" onclick="askQ('Show me the team workload')"><div class="s-num">406</div><div class="s-label">Activities in progress</div></div>
       </div>
+    </div>
+
+    <!-- Avatar with gradient blend into input -->
+    <div class="hero-avatar">
+      <video src="ai-avatar.mp4" autoplay loop muted playsinline></video>
+      <div class="hero-avatar-blend"></div>
     </div>
 
     <!-- THE INPUT — in the content, not a footer -->
