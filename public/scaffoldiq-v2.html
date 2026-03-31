@@ -19,78 +19,69 @@ html{font-size:100%;-webkit-font-smoothing:antialiased}
 }
 body{font-family:var(--font);background:var(--white);color:var(--gray-900);height:100vh;overflow:hidden;letter-spacing:-0.01em}
 
-/* ═══ TOP NAVBAR — light, tall, minimal ═══ */
+/* ═══ TOP NAVBAR — light, properly aligned ═══ */
 .topbar{
-  height:64px;padding:0 24px;
+  height:60px;padding:0 20px 0 0;
   background:var(--white);
   border-bottom:1px solid var(--gray-200);
   display:flex;align-items:center;
   flex-shrink:0;
 }
-.topbar-logo{display:flex;align-items:center;gap:12px}
-.topbar-icon{width:32px;height:32px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff}
-.topbar-name{font-weight:700;font-size:17px;color:var(--gray-900);letter-spacing:-0.03em}
-.topbar-sep{width:1px;height:22px;background:var(--gray-200);margin:0 14px}
-.topbar-site{font-size:14px;color:var(--gray-400)}
+.topbar-logo{display:flex;align-items:center;gap:10px;padding:0 20px;height:100%}
+.topbar-icon{width:28px;height:28px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0}
+.topbar-name{font-weight:700;font-size:16px;color:var(--gray-900);letter-spacing:-0.03em}
+.topbar-sep{width:1px;height:20px;background:var(--gray-200);margin:0 16px}
+.topbar-site{font-size:14px;color:var(--gray-400);font-weight:400}
 .topbar-spacer{flex:1}
-.topbar-right{display:flex;align-items:center;gap:10px}
+.topbar-right{display:flex;align-items:center;gap:8px}
 .topbar-btn{
-  width:42px;height:42px;border-radius:50%;border:1px solid var(--gray-200);
+  width:40px;height:40px;border-radius:50%;border:1px solid var(--gray-200);
   background:var(--white);display:flex;align-items:center;justify-content:center;
   cursor:pointer;transition:all .15s;color:var(--gray-400);
 }
 .topbar-btn:hover{border-color:var(--gray-300);color:var(--gray-600);background:var(--gray-50)}
-.topbar-btn i{width:20px;height:20px}
+.topbar-btn i{width:18px;height:18px;stroke-width:1.5}
 
 /* ═══ BODY — sidebar + content ═══ */
 .body{display:flex;height:calc(100vh - 64px)}
 
-/* ═══ SIDEBAR — ScaffoldIQ blue (from sidebar-mockup.html) ═══ */
+/* ═══ SIDEBAR — same blue as FAB (#0A3EFF base) ═══ */
 .sidebar{
-  width:260px;flex-shrink:0;
-  background:#2B88D8;
+  width:240px;flex-shrink:0;
+  background:var(--blue);
   display:flex;flex-direction:column;
   user-select:none;
+  padding-top:16px;
 }
-.sb-ham{
-  display:flex;align-items:center;
-  height:52px;padding:0 20px;
-  cursor:pointer;color:#fff;
-  transition:background .12s;
-}
-.sb-ham:hover{background:rgba(255,255,255,0.08)}
-.sb-ham i{width:20px;height:20px}
 .sb-it{
-  display:flex;align-items:center;gap:16px;
-  height:48px;padding:0 20px;
+  display:flex;align-items:center;gap:14px;
+  height:46px;padding:0 20px;
   cursor:pointer;position:relative;
-  white-space:nowrap;color:#fff;
-  font-size:14px;
-  transition:background .12s;
+  white-space:nowrap;color:rgba(255,255,255,0.65);
+  font-size:14px;font-weight:400;
+  transition:all .12s;
 }
-.sb-it:hover{background:rgba(0,0,0,0.10)}
-.sb-it.on{background:rgba(0,0,0,0.20)}
+.sb-it:hover{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.9)}
+.sb-it.on{background:rgba(255,255,255,0.14);color:#fff}
 .sb-it.on::before{
-  content:'';position:absolute;left:3px;top:10px;bottom:10px;
-  width:3px;background:#fff;border-radius:1.5px;
+  content:'';position:absolute;left:0;top:8px;bottom:8px;
+  width:3px;background:#fff;border-radius:0 2px 2px 0;
 }
 .sb-it.on .sb-tx{font-weight:600}
-.sb-ic{width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.sb-ic i{width:22px;height:22px}
+.sb-ic{width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-ic i{width:20px;height:20px;stroke-width:1.75}
 .sb-tx{flex:1}
-.sb-gap{height:17px;border-bottom:1px solid rgba(255,255,255,0.15);margin:0 20px}
-.sb-sparkle{flex-shrink:0;font-size:13px;animation:spa 1.5s ease-in-out infinite;color:#fff}
-@keyframes spa{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.65)}}
+.sb-gap{height:1px;background:rgba(255,255,255,0.1);margin:12px 20px}
 .sb-cnt{
   font-size:9px;font-weight:600;
   background:#EF4444;color:#fff;
   min-width:18px;height:16px;
   display:flex;align-items:center;justify-content:center;
-  padding:0 4px;flex-shrink:0;border-radius:2px;
+  padding:0 5px;flex-shrink:0;border-radius:10px;
 }
 .sb-dot{
-  width:10px;height:10px;border-radius:50%;
-  background:rgba(255,255,255,0.5);flex-shrink:0;
+  width:8px;height:8px;border-radius:50%;
+  background:rgba(255,255,255,0.4);flex-shrink:0;
 }
 
 /* ═══ MAIN CONTENT ═══ */
@@ -99,34 +90,48 @@ body{font-family:var(--font);background:var(--white);color:var(--gray-900);heigh
 .main::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:4px}
 .content{max-width:1100px;padding:32px 36px}
 
-.greeting{font-size:22px;font-weight:600;letter-spacing:-0.03em;margin-bottom:24px;color:var(--gray-900)}
+/* Greeting */
+.greeting{font-size:24px;font-weight:700;letter-spacing:-0.04em;margin-bottom:4px;color:var(--gray-900)}
 .greeting span{font-weight:700}
+.greeting-sub{font-size:14px;color:var(--gray-400);margin-bottom:28px;font-weight:400}
 
-/* Metric cards */
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
-.mc{background:var(--white);border:1px solid var(--gray-200);border-radius:12px;padding:24px;transition:all .15s;cursor:pointer}
-.mc:hover{border-color:var(--gray-300);box-shadow:0 4px 16px rgba(0,0,0,0.04)}
-.mc-val{font-size:36px;font-weight:700;letter-spacing:-0.04em;line-height:1;margin-bottom:6px;font-variant-numeric:tabular-nums}
-.mc-val.green{color:var(--green)}.mc-val.red{color:var(--red)}.mc-val.amber{color:var(--amber)}.mc-val.blue{color:var(--blue)}
-.mc-label{font-size:14px;color:var(--gray-500);font-weight:500}
-.mc-trend{font-size:12px;color:var(--green);margin-top:8px;font-weight:500}
+/* Tag overview — 3 cards with left color indicator (Quantify-inspired) */
+.tag-overview{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+.tag-card{
+  background:var(--white);border:1px solid var(--gray-200);
+  padding:20px 20px 20px 16px;cursor:pointer;
+  transition:all .15s;display:flex;gap:14px;align-items:center;
+  border-left:4px solid transparent;
+}
+.tag-card:hover{box-shadow:0 2px 12px rgba(0,0,0,0.04);border-color:var(--gray-300)}
+.tag-card.green{border-left-color:var(--green)}
+.tag-card.red{border-left-color:var(--red)}
+.tag-card.amber{border-left-color:var(--amber)}
+.tag-indicator{width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:8px}
+.tag-card.green .tag-indicator{background:var(--green-bg);color:var(--green)}
+.tag-card.red .tag-indicator{background:var(--red-bg);color:var(--red)}
+.tag-card.amber .tag-indicator{background:var(--amber-bg);color:var(--amber)}
+.tag-indicator i{width:20px;height:20px}
+.tag-val{font-size:28px;font-weight:700;letter-spacing:-0.04em;line-height:1;margin-bottom:2px;font-variant-numeric:tabular-nums;color:var(--gray-900)}
+.tag-label{font-size:14px;color:var(--gray-600);font-weight:500}
+.tag-sub{font-size:12px;color:var(--gray-400);margin-top:2px}
 
-/* Scaffold table */
-.table-section{background:var(--white);border:1px solid var(--gray-200);border-radius:12px;overflow:hidden}
-.table-header{padding:16px 24px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between}
-.table-title{font-size:16px;font-weight:600;letter-spacing:-0.02em}
+/* Scaffold table — Quantify-inspired (sharp, precise) */
+.table-section{background:var(--white);border:1px solid var(--gray-200);overflow:hidden}
+.table-header{padding:14px 20px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between}
+.table-title{font-size:15px;font-weight:600;letter-spacing:-0.02em;color:var(--gray-900)}
 .table-actions{font-size:13px;color:var(--gray-400);display:flex;gap:16px}
 .table-actions span{cursor:pointer;transition:color .12s}
-.table-actions span:hover{color:var(--gray-600)}
+.table-actions span:hover{color:var(--blue)}
 table{width:100%;border-collapse:collapse;font-size:14px}
-th{text-align:left;padding:12px 24px;font-weight:500;color:var(--gray-400);border-bottom:1px solid var(--gray-100);font-size:13px}
-td{padding:14px 24px;border-bottom:1px solid var(--gray-100);color:var(--gray-600)}
+th{text-align:left;padding:10px 20px;font-weight:600;color:var(--gray-400);border-bottom:2px solid var(--gray-200);font-size:12px;text-transform:uppercase;letter-spacing:0.04em}
+td{padding:12px 20px;border-bottom:1px solid var(--gray-100);color:var(--gray-600)}
 tr:hover td{background:var(--gray-50)}
-td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--gray-900)}
-.badge{display:inline-block;padding:4px 12px;border-radius:4px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.03em}
+td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--blue)}
+.badge{display:inline-block;padding:4px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.03em}
 .badge-green{background:var(--green);color:#fff}
 .badge-amber{background:var(--amber);color:#fff}
-.badge-teal{background:#1a7794;color:#fff}
+.badge-blue{background:var(--blue);color:#fff}
 
 /* ═══ AI FAB — bottom right, blue ═══ */
 .ai-fab{
@@ -298,7 +303,7 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--gray-
 .ai-send svg{width:14px;height:14px}
 
 /* Responsive */
-@media(max-width:1024px){.metrics{grid-template-columns:1fr 1fr}.sidebar{width:56px}.sb-tx,.sb-cnt,.sb-dot,.sb-gap{display:none}.sb-it{justify-content:center;padding:0 16px}.sb-ham{justify-content:center}}
+@media(max-width:1024px){.tag-overview{grid-template-columns:1fr}.sidebar{width:56px}.sb-tx,.sb-cnt,.sb-dot{display:none}.sb-gap{margin:8px 12px}.sb-it{justify-content:center;padding:0 16px;gap:0}}
 @media(max-width:768px){
   .sidebar{display:none}
   .ai-panel{width:calc(100vw - 16px);top:8px;right:8px;bottom:8px}
@@ -329,10 +334,8 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--gray-
 <!-- ═══ BODY ═══ -->
 <div class="body">
 
-<!-- ═══ SIDEBAR — ScaffoldIQ blue ═══ -->
+<!-- ═══ SIDEBAR ═══ -->
 <aside class="sidebar">
-  <div class="sb-ham"><i data-lucide="menu"></i></div>
-
   <div class="sb-it on" onclick="t(this)"><div class="sb-ic"><i data-lucide="map"></i></div><span class="sb-tx">Map</span></div>
   <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="file-text"></i></div><span class="sb-tx">Requests</span></div>
   <div class="sb-it" onclick="t(this)"><div class="sb-ic"><i data-lucide="layout-grid"></i></div><span class="sb-tx">Scaffolds</span></div>
@@ -354,31 +357,54 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--gray-
 <!-- ═══ MAIN CONTENT ═══ -->
 <div class="main">
   <div class="content">
-    <div class="greeting" id="greeting">Good morning, <span>Zaib</span>. Here's Big Gore Refinery right now.</div>
+    <div class="greeting" id="greeting">Good morning, <span>Zaib</span></div>
+    <div class="greeting-sub">Big Gore Refinery &middot; All Areas</div>
 
-    <div class="metrics">
-      <div class="mc" onclick="askQ('Show me all standing scaffolds with their status')"><div class="mc-val green">467</div><div class="mc-label">Green tag (safe)</div><div class="mc-trend">+15 this week</div></div>
-      <div class="mc" onclick="askQ('Show me inspection results')"><div class="mc-val red">703</div><div class="mc-label">Red tag (awaiting inspection)</div></div>
-      <div class="mc" onclick="askQ('Show me the request pipeline')"><div class="mc-val amber">3,024</div><div class="mc-label">Open requests</div></div>
-      <div class="mc" onclick="askQ('Show me the team workload')"><div class="mc-val">406</div><div class="mc-label">Activities in progress</div></div>
+    <!-- Tag status overview — the core metric for scaffold management -->
+    <div class="tag-overview">
+      <div class="tag-card green" onclick="askQ('Show me all standing scaffolds with their status')">
+        <div class="tag-indicator"><i data-lucide="circle-check"></i></div>
+        <div class="tag-info">
+          <div class="tag-val">467</div>
+          <div class="tag-label">Green tagged</div>
+          <div class="tag-sub">Safe to use</div>
+        </div>
+      </div>
+      <div class="tag-card red" onclick="askQ('Show me inspection results')">
+        <div class="tag-indicator"><i data-lucide="alert-triangle"></i></div>
+        <div class="tag-info">
+          <div class="tag-val">703</div>
+          <div class="tag-label">Awaiting inspection</div>
+          <div class="tag-sub">Red tagged</div>
+        </div>
+      </div>
+      <div class="tag-card amber" onclick="askQ('Show me the request pipeline')">
+        <div class="tag-indicator"><i data-lucide="clock"></i></div>
+        <div class="tag-info">
+          <div class="tag-val">3,024</div>
+          <div class="tag-label">Open requests</div>
+          <div class="tag-sub">In approval pipeline</div>
+        </div>
+      </div>
     </div>
 
+    <!-- Scaffold list from the real app -->
     <div class="table-section">
       <div class="table-header">
-        <span class="table-title">Recent Scaffolds</span>
-        <div class="table-actions"><span>Active</span><span>Refresh</span><span>View PDF</span></div>
+        <span class="table-title">Scaffolds &middot; All Areas</span>
+        <div class="table-actions"><span>Active</span><span>Refresh</span></div>
       </div>
       <table>
-        <thead><tr><th>Scaffold</th><th>Status</th><th>Signed</th><th>Scaffold Status</th><th>Description</th><th>Date Created</th></tr></thead>
+        <thead><tr><th>Scaffold</th><th>Area</th><th>Scaffold Status</th><th>Description</th><th>Last Activity</th></tr></thead>
         <tbody>
-          <tr><td class="mono">S-0000001</td><td>Active</td><td>0 of 1</td><td><span class="badge badge-green">Standing</span></td><td>Safety Document</td><td>29/07/2025</td></tr>
-          <tr><td class="mono">S-0000023</td><td>Active</td><td>0 of 0</td><td><span class="badge badge-amber">Awaiting Inspection</span></td><td>Safety Document</td><td>11/07/2025</td></tr>
-          <tr><td class="mono">S-0000026</td><td>Active</td><td>0 of 0</td><td><span class="badge badge-green">Standing</span></td><td>Safety doc</td><td>11/07/2025</td></tr>
-          <tr><td class="mono">S-0000045</td><td>Active</td><td>0 of 0</td><td><span class="badge badge-green">Standing</span></td><td>Safety Document -...</td><td>14/07/2025</td></tr>
-          <tr><td class="mono">S-0000046</td><td>Active</td><td>4 of 4</td><td><span class="badge badge-amber">Awaiting Inspection</span></td><td>Safety Document f...</td><td>08/08/2025</td></tr>
-          <tr><td class="mono">S-0000002</td><td>Active</td><td>1 of 2</td><td><span class="badge badge-teal">Build In Progress</span></td><td>Main access tower</td><td>12/07/2025</td></tr>
-          <tr><td class="mono">S-0000054</td><td>Active</td><td>0 of 0</td><td><span class="badge badge-amber">Awaiting Inspection</span></td><td>Safety Document</td><td>11/07/2025</td></tr>
-          <tr><td class="mono">S-0000051</td><td>Active</td><td>0 of 0</td><td><span class="badge badge-green">Standing</span></td><td>Pipe rack access</td><td>20/07/2025</td></tr>
+          <tr><td class="mono">S-0000001</td><td>ALKY</td><td><span class="badge badge-green">Standing</span></td><td>Main platform access</td><td>29/07/2025</td></tr>
+          <tr><td class="mono">S-0000023</td><td>CRU</td><td><span class="badge badge-amber">Awaiting Inspection</span></td><td>Reactor vessel wrap</td><td>11/07/2025</td></tr>
+          <tr><td class="mono">S-0000026</td><td>ALKY</td><td><span class="badge badge-green">Standing</span></td><td>Pipe rack level 3</td><td>11/07/2025</td></tr>
+          <tr><td class="mono">S-0000045</td><td>Boilerhouse</td><td><span class="badge badge-green">Standing</span></td><td>Stack access scaffold</td><td>14/07/2025</td></tr>
+          <tr><td class="mono">S-0000046</td><td>NIHN</td><td><span class="badge badge-amber">Awaiting Inspection</span></td><td>Exchanger platform</td><td>08/08/2025</td></tr>
+          <tr><td class="mono">S-0000002</td><td>SRU</td><td><span class="badge badge-blue">Build In Progress</span></td><td>Main access tower</td><td>12/07/2025</td></tr>
+          <tr><td class="mono">S-0000054</td><td>CRU 2</td><td><span class="badge badge-amber">Awaiting Inspection</span></td><td>Winterization wrap</td><td>11/07/2025</td></tr>
+          <tr><td class="mono">S-0000051</td><td>Maintenance</td><td><span class="badge badge-green">Standing</span></td><td>Pipe rack access</td><td>20/07/2025</td></tr>
         </tbody>
       </table>
     </div>
