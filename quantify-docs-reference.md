@@ -813,3 +813,105 @@ Part Number, Serial Number, Description, On Rent, In Transit, Discrepancy, Total
 - Adds Requests tab to main Quantify interface
 - Adds Requests tab to Job Site dialog
 - Available: Enterprise and Industrial editions only
+
+---
+
+## Scaffold Status Machine (ScaffoldIQ)
+
+> Source: Confluence spec "Status Machine: Scaffold and Activity" by Brian Webb
+
+The Status Machine manages the entire lifecycle of a scaffold — switching statuses of scaffolds, activities, and requests as they change. These statuses are of primary importance to everyone on a construction site and closely correspond with the physical scaffold tag.
+
+### Scaffold Lifecycle
+
+```
+Awaiting Build (blue) → Build In Progress (red) → Standing (green)
+  ↕ Modify In Progress (red) ← Scheduled Modification
+  ↕ Repair In Progress (red) ← failed inspection/handover only
+  ↕ Awaiting Inspection (red) → Inspection pass → Standing
+  ↕ Awaiting Handover (red) → Handover pass → Standing
+  ↕ Do Not Use (red) — generic safety hold
+  → Dismantle In Progress (red) ← Scheduled Dismantle → Dismantled
+```
+
+### Scaffold Statuses & Tag Colors
+
+| Status | Tag Color | Meaning |
+|--------|-----------|---------|
+| Awaiting Build | Blue | No physical scaffold exists yet — planning phase |
+| Build In Progress | Red | Materials on site, being built — hazardous, cannot be used |
+| Standing | Green | Completed, safe to use by all trades |
+| Standing (precautions) | Yellow/Green | Safe but with noted hazards (e.g., 100% tie-off required) |
+| Scheduled Modification | Blue | Future modification planned |
+| Modify In Progress | Red | Being modified — cannot be used |
+| Repair In Progress | Red | Being repaired after failed inspection/handover — cannot be used |
+| Awaiting Repair | Red | Failed inspection/handover, needs repair |
+| Scheduled Dismantle | Blue | Future dismantle planned |
+| Dismantle In Progress | Red | Being dismantled — cannot be used |
+| Dismantled | None | No materials, no tag — scaffold record retained for templates |
+| Awaiting Inspection | Red | Built/modified/repaired, waiting for safety sign-off |
+| Awaiting Handover | Red | Work complete, waiting for requestor to verify scope |
+| Do Not Use | Red | Generic safety hold for any reason |
+
+### Physical Scaffold Tags
+
+Every scaffold must have a non-removable tag at every access point (ladder/stairs) by law.
+
+- **Red tag**: Incomplete or defective — cannot be used by end-users (builders can use it for work)
+- **Green tag**: Completed and safe to use
+- **Yellow/Green tag**: Usable but with specific precautions noted on tag
+
+### Activity Types
+
+| Type | Can Be Requested? | How Many Per Scaffold? | Notes |
+|------|-------------------|----------------------|-------|
+| Build | Yes (new scaffold) | Exactly 1 | Life of scaffold begins here |
+| Modify | Yes | Multiple allowed | Planned changes to standing scaffold |
+| Repair | No — internal only | Multiple allowed | Created only from failed inspection or failed handover |
+| Dismantle | Yes | Exactly 1 | Only when all activities completed |
+
+### Key Processes
+
+**Handover**: Pass/fail event after build/modify/repair/dismantle completion. Requestor verifies work was performed to scope with the builder. A failed handover may create a Repair activity.
+
+**Inspection**: Recurring pass/fail safety check by a dedicated inspector. Frequency varies by site (number of days, or every shift change). A failed inspection creates a Repair activity and red-tags the scaffold. Inspection forms are stored with unique numbers as history.
+
+**Do Not Use**: A toggle status for any safety concern. Can be applied to any Standing scaffold — question about scope, safety, lack of time to inspect, etc.
+
+### Personas
+
+| Persona | Role | Primary Concern |
+|---------|------|----------------|
+| Scaffold End-User | Painters, pipers, insulators who use scaffolds daily | Is it safe? Any precautions? |
+| Builder | Competent person who builds/modifies/dismantles | Materials, resources, work to be done |
+| Requestor | Anyone who requests build/modify/dismantle | Coordination with trades, cost management |
+| Inspector | Dedicated safety inspector | Recurring structural safety checks, pass/fail |
+
+### Relationships
+
+```
+Request ←(1:1)→ Activity ←(many:1)→ Scaffold
+```
+
+- 1 request always creates exactly 1 activity
+- 1 scaffold can have many activities
+- 1 activity belongs to exactly 1 scaffold
+- Repair activities have NO associated request
+
+### Business Rules
+
+- A scaffold can only have 1 Build activity and 1 Dismantle activity
+- A scaffold can have multiple Modify activities
+- Only 1 activity can be In Progress at any time per scaffold
+- Modification only allowed when build is completed or scaffold is in Do Not Use
+- Dismantle only allowed when all activities are completed
+- Do Not Use, Repair, Handover, Inspection only possible when scaffold is Standing
+- Failed inspection → automatically creates Repair activity
+- Failed handover → may create Repair activity
+- Scaffold can only be deleted when Dismantled (deletes all related records)
+
+### Status Colors in UI
+
+- **Blue**: Not yet built / scheduled for future work (no physical presence)
+- **Red**: Cannot be used — any in-progress work or safety hold
+- **Green**: Standing and safe to use

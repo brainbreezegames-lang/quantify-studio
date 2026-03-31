@@ -94,7 +94,10 @@ Timeout: 290s on generation (Vercel max is 300s). Use AbortController for cleanu
 **Avontus Quantify** is scaffolding rental management software. Key domain concepts:
 - Location hierarchy: Branch → Sub-Branch → Staging → Job Sites → Scaffolds
 - Core workflows: Deliveries, Returns, Transfers, Reservations
-- Full domain reference: `quantify-docs-reference.md`
+- Scaffold lifecycle (Status Machine): Awaiting Build → Build In Progress → Standing → Modify/Repair/Inspect/Handover → Dismantle → Dismantled
+- Tag colors: Blue (not built yet), Red (cannot use), Green (safe), Yellow (precautions)
+- Activity types: Build (1 per scaffold), Modify (multiple), Repair (internal only — no request), Dismantle (1 per scaffold)
+- Full domain reference: `quantify-docs-reference.md` (includes complete Status Machine spec)
 
 Design outputs target **Material Design 3** adapted for enterprise equipment management. Brand/style reference: `server/avontus-brand-guide.js`.
 
