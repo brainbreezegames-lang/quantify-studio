@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScaffoldIQ</title>
+<link href="https://api.fontshare.com/v2/css?f[]=switzer@300,400,500,600,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:100%;-webkit-font-smoothing:antialiased}
+:root{
+  --navy:#10296E;--navy-mid:#6F9DFF;
+  --white:#fff;--off:#f6f6f4;--card:#fff;
+  --b1:#eaeae6;--b2:#f0f0ec;--b3:#d8d8d2;
+  --t1:#111;--t2:#555;--t3:#999;
+  --green:#22C55E;--green-bg:#ecfdf5;--red:#E64059;--red-bg:#fef2f2;--amber:#F9A825;--amber-bg:#fffbeb;
+  --mono:'JetBrains Mono',monospace;--font:'Switzer',-apple-system,sans-serif;
+}
+body{font-family:var(--font);background:var(--off);color:var(--t1);height:100vh;overflow:hidden;letter-spacing:-0.01em}
+
+/* ═══ LAYOUT: icon sidebar + left panel + right panel ═══ */
+.app{display:flex;height:100vh}
+
+/* Icon sidebar — barely there */
+.icon-bar{
+  width:48px;flex-shrink:0;
+  background:var(--navy);
+  display:flex;flex-direction:column;
+  align-items:center;padding:14px 0;gap:2px;
+}
+.ib-logo{
+  width:30px;height:30px;background:rgba(255,255,255,0.12);
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:11px;color:#fff;margin-bottom:16px;
+}
+.ib-item{
+  width:36px;height:36px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(255,255,255,0.35);cursor:pointer;transition:all .12s;
+}
+.ib-item:hover{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7)}
+.ib-item.on{background:rgba(255,255,255,0.12);color:#fff}
+.ib-item svg{width:18px;height:18px}
+.ib-spacer{flex:1}
+
+/* ═══ LEFT PANEL — 35%, overview + avatar ═══ */
+.left{
+  width:35%;min-width:320px;max-width:440px;
+  background:var(--white);
+  border-right:1px solid var(--b1);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.left-top{padding:28px 28px 0;flex-shrink:0}
+.left-site{font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:20px}
+
+/* Avatar */
+.left-avatar{
+  flex:1;position:relative;overflow:hidden;
+  display:flex;align-items:flex-end;justify-content:center;
+  background:var(--navy);
+  margin:0 -0px;
+}
+.left-avatar img{
+  width:100%;height:100%;object-fit:cover;object-position:top center;
+}
+.left-avatar-fade{
+  position:absolute;bottom:0;left:0;right:0;height:50%;
+  background:linear-gradient(to top,var(--white),transparent);
+  pointer-events:none;
+}
+
+/* Greeting area overlaying bottom of avatar */
+.left-greeting{
+  padding:0 28px 24px;flex-shrink:0;
+  position:relative;z-index:2;
+  margin-top:-60px;
+}
+.left-name{font-size:11px;color:var(--t3);margin-bottom:6px;font-weight:500}
+.left-hi{font-size:22px;font-weight:700;letter-spacing:-0.03em;line-height:1.2;color:var(--t1)}
+.left-hi span{font-weight:300;color:var(--t2)}
+
+/* Mini stats */
+.left-stats{
+  display:flex;gap:1px;background:var(--b1);
+  margin:0;flex-shrink:0;
+}
+.ls{flex:1;background:var(--white);padding:14px 16px;text-align:center;cursor:pointer;transition:background .12s}
+.ls:hover{background:var(--b2)}
+.ls-val{font-size:20px;font-weight:700;letter-spacing:-0.03em;line-height:1;margin-bottom:2px;font-variant-numeric:tabular-nums}
+.ls-val.green{color:var(--green)}.ls-val.red{color:var(--red)}.ls-val.amber{color:var(--amber)}
+.ls-label{font-size:10px;color:var(--t3);font-weight:500}
+
+/* ═══ RIGHT PANEL — 65%, the chat ═══ */
+.right{
+  flex:1;display:flex;flex-direction:column;
+  background:var(--off);overflow:hidden;
+}
+
+/* Right header */
+.right-header{
+  padding:20px 32px;display:flex;align-items:center;
+  flex-shrink:0;
+}
+.rh-title{font-size:13px;font-weight:600;color:var(--t1);letter-spacing:-0.01em}
+.rh-dot{width:6px;height:6px;border-radius:50%;background:var(--green);margin-left:8px}
+.rh-spacer{flex:1}
+.rh-btn{
+  width:36px;height:36px;border-radius:50%;border:1px solid var(--b1);
+  background:var(--white);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--t3);transition:all .12s;margin-left:8px;
+}
+.rh-btn:hover{border-color:var(--b3);color:var(--t2)}
+.rh-btn svg{width:16px;height:16px}
+
+/* Chat area */
+.chat-area{
+  flex:1;overflow-y:auto;padding:0 32px 24px;
+}
+.chat-area::-webkit-scrollbar{width:3px}
+.chat-area::-webkit-scrollbar-thumb{background:var(--b1);border-radius:3px}
+
+/* Welcome state */
+.chat-welcome{
+  display:flex;flex-direction:column;
+  justify-content:center;
+  min-height:100%;
+  padding:40px 0;
+}
+.cw-headline{
+  font-size:48px;font-weight:700;letter-spacing:-0.04em;
+  line-height:1.05;color:var(--t1);margin-bottom:8px;
+}
+.cw-headline span{color:var(--t3);font-weight:300}
+.cw-sub{font-size:16px;color:var(--t3);margin-bottom:40px;font-weight:400;line-height:1.5}
+
+/* Quick action grid — visual, icon-focused */
+.qa-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:32px}
+.qa{
+  background:var(--white);border:1px solid var(--b1);
+  border-radius:14px;padding:20px;cursor:pointer;
+  transition:all .2s cubic-bezier(.16,1,.3,1);
+  display:flex;flex-direction:column;gap:10px;
+}
+.qa:hover{border-color:var(--b3);transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.04)}
+.qa:active{transform:scale(0.98)}
+.qa-icon{
+  width:40px;height:40px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+}
+.qa-icon svg{width:20px;height:20px}
+.qa-title{font-size:14px;font-weight:600;color:var(--t1);letter-spacing:-0.02em}
+.qa-desc{font-size:12px;color:var(--t3);line-height:1.4}
+
+/* Chat input — bottom */
+.chat-input{
+  padding:16px 32px 24px;flex-shrink:0;
+}
+.ci-wrap{
+  display:flex;align-items:center;
+  background:var(--white);border:1.5px solid var(--b1);
+  border-radius:16px;padding:6px 8px 6px 20px;
+  transition:all .2s;
+}
+.ci-wrap:focus-within{border-color:var(--navy);box-shadow:0 0 0 3px rgba(16,41,110,0.06)}
+.ci-wrap input{
+  flex:1;border:none;outline:none;font-family:var(--font);
+  font-size:15px;background:transparent;color:var(--t1);
+  padding:12px 0;letter-spacing:-0.01em;
+}
+.ci-wrap input::placeholder{color:var(--b3)}
+.ci-send{
+  width:42px;height:42px;border:none;border-radius:12px;
+  background:var(--navy);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .15s;flex-shrink:0;
+}
+.ci-send:hover{opacity:.85}
+.ci-send:active{transform:scale(0.92)}
+.ci-send svg{width:16px;height:16px}
+
+/* ═══ Messages ═══ */
+.msg{margin-bottom:24px;animation:msgIn .4s cubic-bezier(.16,1,.3,1) both}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg-user{display:flex;justify-content:flex-end}
+.msg-user .bubble{
+  background:var(--navy);color:#fff;
+  padding:14px 20px;border-radius:20px 20px 6px 20px;
+  font-size:15px;line-height:1.5;max-width:85%;font-weight:500;
+}
+.msg-ai{max-width:100%}
+.ai-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ai-dot{width:24px;height:24px;border-radius:50%;background:var(--navy);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.ai-dot::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff}
+.ai-head span{font-size:14px;font-weight:600;color:var(--t1)}
+
+.prose{font-size:15px;line-height:1.7;color:var(--t2);margin-bottom:12px}
+.prose strong{color:var(--t1);font-weight:600}
+
+/* Response components */
+.metrics-row{display:flex;gap:8px;margin:14px 0;flex-wrap:wrap}
+.metric{background:var(--white);border:1px solid var(--b1);border-radius:10px;padding:14px 16px;flex:1;min-width:90px}
+.metric-val{font-size:22px;font-weight:700;letter-spacing:-0.03em;line-height:1;margin-bottom:4px;font-variant-numeric:tabular-nums;color:var(--t1)}
+.metric-val.red{color:var(--red)}.metric-val.amber{color:var(--amber)}.metric-val.green{color:var(--green)}
+.metric-label{font-size:12px;color:var(--t3);font-weight:500}
+
+.chart-bars{margin:14px 0}
+.chart-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:5px}
+.chart-bar-label{font-size:13px;color:var(--t2);width:110px;flex-shrink:0;text-align:right;font-weight:500}
+.chart-bar-track{flex:1;height:28px;background:var(--b2);border-radius:6px;overflow:hidden}
+.chart-bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding:0 10px;transition:width .8s cubic-bezier(.22,1,.36,1)}
+.chart-bar-fill span{font-size:11px;font-weight:600;color:#fff}
+.chart-bar-count{font-size:14px;font-weight:600;color:var(--t1);width:48px;text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono)}
+
+.data-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+.data-table th{text-align:left;font-weight:600;color:var(--t3);padding:8px 12px;border-bottom:2px solid var(--b1);font-size:11px;text-transform:uppercase;letter-spacing:0.05em}
+.data-table td{padding:10px 12px;border-bottom:1px solid var(--b2);color:var(--t2)}
+.data-table tr:hover td{background:var(--b2)}
+.data-table .mono{font-family:var(--mono);font-size:12px;color:var(--t3);font-weight:500}
+.data-table strong{font-weight:600;color:var(--t1)}
+.status{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:4px}
+.status-pass{background:var(--green-bg);color:var(--green)}.status-fail{background:var(--red-bg);color:var(--red)}.status-pending{background:var(--amber-bg);color:var(--amber)}
+.dot{width:5px;height:5px;display:inline-block;border-radius:50%}
+.dot-red{background:var(--red)}.dot-green{background:var(--green)}.dot-amber{background:var(--amber)}
+
+.sources{margin-top:10px;padding-top:8px;border-top:1px solid var(--b2)}
+.sources-toggle{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--t3);cursor:pointer;background:none;border:none;font-family:var(--font)}
+.sources-toggle:hover{color:var(--t2)}
+.sources-toggle svg{width:10px;height:10px;transition:transform .2s}
+.sources-toggle.open svg{transform:rotate(90deg)}
+.sources-list{display:none;margin-top:6px}.sources-list.visible{display:block}
+.source-item{font-size:11px;color:var(--t3);padding:2px 0;font-family:var(--mono)}
+
+.followups{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.followup-btn{font-size:13px;font-weight:500;color:var(--navy);background:rgba(16,41,110,0.04);border:1.5px solid rgba(16,41,110,0.12);border-radius:10px;padding:8px 14px;cursor:pointer;transition:all .15s;font-family:var(--font)}
+.followup-btn:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+.typing-indicator{display:flex;gap:4px;padding:10px 0}
+.typing-indicator span{width:6px;height:6px;border-radius:50%;background:var(--b3);animation:tb .6s ease infinite}
+.typing-indicator span:nth-child(2){animation-delay:.1s}
+.typing-indicator span:nth-child(3){animation-delay:.2s}
+@keyframes tb{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+/* ═══ Responsive ═══ */
+@media(max-width:1024px){.left{width:280px;min-width:280px}.qa-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:768px){.icon-bar,.left{display:none}.qa-grid{grid-template-columns:1fr 1fr}.chat-area{padding:0 20px 20px}.chat-input{padding:12px 20px 16px}.right-header{padding:16px 20px}}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<!-- Icon sidebar -->
+<div class="icon-bar">
+  <div class="ib-logo">S</div>
+  <div class="ib-item on"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5l6-3 6 3 6-3v13l-6 3-6-3-6 3z"/><path d="M7 2v13M13 5v13"/></svg></div>
+  <div class="ib-item"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="16" height="16"/><path d="M2 7h16M7 2v16"/></svg></div>
+  <div class="ib-item"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 1.5l7 3v5.5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V4.5z"/><polyline points="7,10 9.5,12.5 13.5,7.5"/></svg></div>
+  <div class="ib-item"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="7" r="3.5"/><path d="M3 18c0-3 3-5.5 7-5.5s7 2.5 7 5.5"/></svg></div>
+  <div class="ib-spacer"></div>
+  <div class="ib-item"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><path d="M10 7v3l2 1.5"/></svg></div>
+</div>
+
+<!-- Left panel -->
+<div class="left">
+  <div class="left-top">
+    <div class="left-site">Big Gore Refinery</div>
+  </div>
+  <div class="left-avatar">
+    <img src="bg.png" alt="ScaffoldIQ Assistant" />
+  </div>
+  <div class="left-greeting">
+    <div class="left-name">ScaffoldIQ</div>
+    <div class="left-hi">Hi Zaib,<br><span>how can I help you today?</span></div>
+  </div>
+  <div class="left-stats">
+    <div class="ls" onclick="askQ('Show me all standing scaffolds with their status')"><div class="ls-val green">467</div><div class="ls-label">Green</div></div>
+    <div class="ls" onclick="askQ('Show me inspection results')"><div class="ls-val red">703</div><div class="ls-label">Red</div></div>
+    <div class="ls" onclick="askQ('Show me the request pipeline')"><div class="ls-val amber">3,024</div><div class="ls-label">Requests</div></div>
+    <div class="ls" onclick="askQ('Show me the team workload')"><div class="ls-val">406</div><div class="ls-label">Active</div></div>
+  </div>
+</div>
+
+<!-- Right panel — chat -->
+<div class="right">
+  <div class="right-header">
+    <span class="rh-title">ScaffoldIQ Assistant</span>
+    <div class="rh-dot"></div>
+    <div class="rh-spacer"></div>
+    <div class="rh-btn"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="10" cy="7" r="3.5"/><path d="M3 18c0-3 3-5.5 7-5.5s7 2.5 7 5.5"/></svg></div>
+    <div class="rh-btn"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><rect x="2" y="2" width="16" height="16"/><path d="M2 7h16M7 2v16"/></svg></div>
+  </div>
+
+  <div class="chat-area" id="chatArea">
+    <div class="chat-welcome" id="chatWelcome">
+      <div class="cw-headline">New Chat<br><span>Ask anything about your site.</span></div>
+      <div class="qa-grid">
+        <div class="qa" onclick="askQ('Show me all standing scaffolds with their status')">
+          <div class="qa-icon" style="background:rgba(34,197,94,0.08);color:var(--green)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="16" height="16"/><path d="M2 7h16M7 2v16"/></svg></div>
+          <div class="qa-title">Scaffolds</div>
+          <div class="qa-desc">Tag status, lifecycle</div>
+        </div>
+        <div class="qa" onclick="askQ('Show me the request pipeline')">
+          <div class="qa-icon" style="background:rgba(249,168,37,0.08);color:var(--amber)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="16" height="14" rx="1"/><path d="M6 8h8M6 11.5h5"/></svg></div>
+          <div class="qa-title">Requests</div>
+          <div class="qa-desc">Approval pipeline</div>
+        </div>
+        <div class="qa" onclick="askQ('Show me inspection results')">
+          <div class="qa-icon" style="background:rgba(230,64,89,0.08);color:var(--red)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 1.5l7 3v5.5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V4.5z"/><polyline points="7,10 9.5,12.5 13.5,7.5"/></svg></div>
+          <div class="qa-title">Inspections</div>
+          <div class="qa-desc">Pass/fail, repairs</div>
+        </div>
+        <div class="qa" onclick="askQ('Show me scaffolds by area')">
+          <div class="qa-icon" style="background:rgba(16,41,110,0.06);color:var(--navy)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5l6-3 6 3 6-3v13l-6 3-6-3-6 3z"/><path d="M7 2v13M13 5v13"/></svg></div>
+          <div class="qa-title">Areas</div>
+          <div class="qa-desc">Site distribution</div>
+        </div>
+        <div class="qa" onclick="askQ('Show me the team workload')">
+          <div class="qa-icon" style="background:rgba(16,41,110,0.06);color:var(--navy)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="7" r="3.5"/><path d="M3 18c0-3 3-5.5 7-5.5s7 2.5 7 5.5"/></svg></div>
+          <div class="qa-title">People</div>
+          <div class="qa-desc">Team workload</div>
+        </div>
+        <div class="qa" onclick="askQ('Give me a safety compliance summary')">
+          <div class="qa-icon" style="background:rgba(230,64,89,0.06);color:var(--red)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2L1 18h18L10 2z"/><line x1="10" y1="8" x2="10" y2="12"/><circle cx="10" cy="15" r=".5"/></svg></div>
+          <div class="qa-title">Safety</div>
+          <div class="qa-desc">Compliance, risks</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-input">
+    <div class="ci-wrap">
+      <input type="text" id="chatInput" placeholder="Ask ScaffoldIQ anything..." autocomplete="off"/>
+      <button class="ci-send" onclick="sendMsg()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const R={'Show me all standing scaffolds with their status':{actions:['Search Scaffolds (all)','Search Scaffolds (Standing)'],html:`<div class="prose"><strong>1,645 scaffolds</strong> on site. Only <strong>467 (28.4%)</strong> are green-tagged and safe for end-users.</div><div class="metrics-row"><div class="metric"><div class="metric-val green">467</div><div class="metric-label">Standing (green)</div></div><div class="metric"><div class="metric-val red">703</div><div class="metric-label">Awaiting Inspection</div></div><div class="metric"><div class="metric-val amber">140</div><div class="metric-label">Build In Progress</div></div><div class="metric"><div class="metric-val">16</div><div class="metric-label">Awaiting Build</div></div></div><div class="prose">Remaining <strong>1,178 are red-tagged</strong> \u2014 awaiting inspection, repair, or active work.</div>`,followups:['Green-tagged only','Red-tagged by reason','Awaiting handover']},'Show me the request pipeline':{actions:['Search Requests (all)'],html:`<div class="prose"><strong>3,024 open requests</strong> for Build, Modify, or Dismantle.</div><div class="chart-bars"><div class="chart-bar-row"><div class="chart-bar-label">Initial Approval</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:85%;background:var(--navy)"><span>35%</span></div></div><div class="chart-bar-count">1,059</div></div><div class="chart-bar-row"><div class="chart-bar-label">Final Approval</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:83%;background:var(--navy-mid)"><span>34%</span></div></div><div class="chart-bar-count">1,031</div></div><div class="chart-bar-row"><div class="chart-bar-label">Secondary</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:50%;background:#93b4ff"><span>20%</span></div></div><div class="chart-bar-count">613</div></div><div class="chart-bar-row"><div class="chart-bar-label">Estimate</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:25%;background:#b8ceff"><span>10%</span></div></div><div class="chart-bar-count">302</div></div></div><div class="prose"><strong>16</strong> fully approved. <strong>47</strong> stuck over 7 days.</div>`,followups:['Stuck over 7 days','Build requests','Dismantle requests']},'Show me inspection results':{actions:['Search Inspections (all)'],html:`<div class="prose">Failed inspections auto-create <strong>Repair activities</strong> and red-tag the scaffold.</div><div class="metrics-row"><div class="metric"><div class="metric-val red">703</div><div class="metric-label">Awaiting Inspection</div></div><div class="metric"><div class="metric-val">561</div><div class="metric-label">Total Failed</div></div><div class="metric"><div class="metric-val amber">23</div><div class="metric-label">Failed This Week</div></div><div class="metric"><div class="metric-val green">87.3%</div><div class="metric-label">Pass Rate (30d)</div></div></div><table class="data-table"><thead><tr><th>ID</th><th>Scaffold</th><th>Result</th><th>Area</th></tr></thead><tbody><tr><td class="mono">I-0000648</td><td class="mono">S-0001203</td><td><span class="status status-fail"><span class="dot dot-red"></span> Fail</span></td><td>ALKY</td></tr><tr><td class="mono">I-0000647</td><td class="mono">S-0000891</td><td><span class="status status-pass"><span class="dot dot-green"></span> Pass</span></td><td>AMRU</td></tr><tr><td class="mono">I-0000646</td><td class="mono">S-0001189</td><td><span class="status status-pass"><span class="dot dot-green"></span> Pass</span></td><td>12PS</td></tr></tbody></table>`,followups:['Failed by area','Handover results','Inspector workload']},'Show me scaffolds by area':{actions:['List All Areas'],html:`<div class="prose"><strong>10 areas</strong>. AMRU has the highest concentration.</div><div class="chart-bars"><div class="chart-bar-row"><div class="chart-bar-label">AMRU</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:100%;background:var(--navy)"><span>350</span></div></div><div class="chart-bar-count">350</div></div><div class="chart-bar-row"><div class="chart-bar-label">ALKY</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:82%;background:var(--navy-mid)"></div></div><div class="chart-bar-count">288</div></div><div class="chart-bar-row"><div class="chart-bar-label">LFSP</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:79%;background:#93b4ff"></div></div><div class="chart-bar-count">277</div></div></div>`,followups:['Sub-areas in AMRU','Tags by area']},'Show me the team workload':{actions:['Search People'],html:`<div class="prose"><strong>54 people</strong>. <strong>31 active this week</strong>.</div><table class="data-table"><thead><tr><th>Name</th><th>Role</th><th>Activities</th><th>Status</th></tr></thead><tbody><tr><td><strong>Abigail MacDonald</strong></td><td>Inspector</td><td class="mono">47</td><td><span class="status status-pass"><span class="dot dot-green"></span> Active</span></td></tr><tr><td><strong>Brandon Kelly</strong></td><td>Builder</td><td class="mono">38</td><td><span class="status status-pass"><span class="dot dot-green"></span> Active</span></td></tr><tr><td><strong>Cameron Wilson</strong></td><td>Requestor</td><td class="mono">31</td><td><span class="status status-pass"><span class="dot dot-green"></span> Active</span></td></tr></tbody></table>`,followups:['Builders only','Inspector workload']},'Give me a safety compliance summary':{actions:['Search Scaffolds (AwaitingInspection)'],html:`<div class="prose">A scaffold <strong>cannot go into service without passing inspection</strong>.</div><div class="metrics-row"><div class="metric"><div class="metric-val green">87.3%</div><div class="metric-label">Pass Rate (30d)</div></div><div class="metric"><div class="metric-val red">703</div><div class="metric-label">Awaiting Inspection</div></div><div class="metric"><div class="metric-val amber">139</div><div class="metric-label">Awaiting Repair</div></div><div class="metric"><div class="metric-val">65</div><div class="metric-label">Do Not Use</div></div></div><div class="prose"><strong>28.4% green-tagged</strong>. 703 awaiting inspection is the bottleneck.</div>`,followups:['Expired cycles','Failed handovers','Do Not Use reasons']}};
+const FB={actions:[],html:`<div class="prose">I query your live ScaffoldIQ data.</div>`,followups:['Scaffold status','Requests','Inspections','Areas','Team','Safety']};
+function getR(q){if(R[q])return R[q];const l=q.toLowerCase();for(const[k,v]of Object.entries(R)){const w=k.toLowerCase().split(/\s+/).filter(x=>x.length>3);if(w.filter(x=>l.includes(x)).length>=2)return v}if(l.includes('scaffold')&&(l.includes('stand')||l.includes('status')))return R['Show me all standing scaffolds with their status'];if(l.includes('request')||l.includes('pipeline'))return R['Show me the request pipeline'];if(l.includes('inspect')||l.includes('fail'))return R['Show me inspection results'];if(l.includes('safe')||l.includes('compli'))return R['Give me a safety compliance summary'];if(l.includes('area'))return R['Show me scaffolds by area'];if(l.includes('team')||l.includes('people'))return R['Show me the team workload'];return FB}
+let chatActive=false;
+function sendMsg(){const i=document.getElementById('chatInput');const t=i.value.trim();if(!t)return;i.value='';askQ(t)}
+function askQ(q){
+  if(!chatActive){chatActive=true;document.getElementById('chatWelcome').style.display='none'}
+  const m=document.getElementById('chatArea');
+  const u=document.createElement('div');u.className='msg msg-user';u.innerHTML=`<div class="bubble">${esc(q)}</div>`;m.appendChild(u);
+  const tp=document.createElement('div');tp.className='msg msg-ai';tp.innerHTML=`<div class="ai-head"><div class="ai-dot"></div><span>ScaffoldIQ</span></div><div class="typing-indicator"><span></span><span></span><span></span></div>`;m.appendChild(tp);m.scrollTop=m.scrollHeight;
+  setTimeout(()=>{tp.remove();const d=getR(q);const a=document.createElement('div');a.className='msg msg-ai';
+  const sid='s'+Date.now();let sh='';if(d.actions?.length)sh=`<div class="sources"><button class="sources-toggle" onclick="tS('${sid}',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>${d.actions.length} queries</button><div class="sources-list" id="${sid}">${d.actions.map(x=>`<div class="source-item">${esc(x)}</div>`).join('')}</div></div>`;
+  let fh='';if(d.followups?.length)fh=`<div class="followups">${d.followups.map(f=>`<button class="followup-btn" onclick="askQ('${ea(f)}')">${esc(f)}</button>`).join('')}</div>`;
+  a.innerHTML=`<div class="ai-head"><div class="ai-dot"></div><span>ScaffoldIQ</span></div>${d.html}${sh}${fh}`;m.appendChild(a);m.scrollTop=m.scrollHeight;
+  setTimeout(()=>{a.querySelectorAll('.chart-bar-fill').forEach(b=>{const w=b.style.width;b.style.width='0%';requestAnimationFrame(()=>{b.style.width=w})})},50)},700+Math.random()*500)}
+function tS(id,btn){document.getElementById(id).classList.toggle('visible');btn.classList.toggle('open')}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function ea(s){return s.replace(/'/g,"\\'")}
+document.getElementById('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();sendMsg()}});
+</script>
+</body>
+</html>
