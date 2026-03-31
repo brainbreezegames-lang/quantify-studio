@@ -69,30 +69,32 @@ body{
 .avatar:hover{transform:scale(1.08);background:var(--blue-mid)}
 .avatar:active{transform:scale(0.95)}
 
-/* ── Topic Chips (above input, always visible) ── */
+/* ── Topic Chips (inside dark input area) ── */
 .topic-chips{
   display:flex;gap:6px;
   overflow-x:auto;-webkit-overflow-scrolling:touch;
   scrollbar-width:none;
-  padding:0 0 10px;
-  max-width:720px;margin:0 auto;width:100%;
 }
 .topic-chips::-webkit-scrollbar{display:none}
 .topic-chip{
   display:flex;align-items:center;gap:6px;
-  padding:8px 14px;
-  font-size:14px;font-weight:500;color:var(--black);
-  background:var(--gray-xlight);
-  border:1px solid var(--gray-light);
+  padding:7px 14px;
+  font-size:13px;font-weight:500;color:rgba(255,255,255,0.55);
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
   cursor:pointer;white-space:nowrap;
   transition:all .12s ease;
   font-family:inherit;letter-spacing:-0.01em;
 }
-.topic-chip:hover{border-color:var(--blue);color:var(--blue);background:#f0f4ff}
+.topic-chip:hover{
+  border-color:rgba(255,255,255,0.25);
+  color:rgba(255,255,255,0.9);
+  background:rgba(255,255,255,0.1);
+}
 .topic-chip:active{transform:scale(0.96);background:var(--blue);color:#fff;border-color:var(--blue)}
 .topic-chip .chip-count{
-  font-family:var(--mono);font-size:12px;font-weight:500;
-  color:var(--gray-xdark);
+  font-family:var(--mono);font-size:11px;font-weight:500;
+  color:rgba(255,255,255,0.3);
 }
 
 /* Topic cards in welcome */
@@ -289,38 +291,70 @@ body{
 .typing-indicator span:nth-child(3){animation-delay:.2s}
 @keyframes typeBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 
-/* ── Input — elevated, prominent ── */
+/* ── Input — THE HERO, unmissable ── */
 .input-area{
-  padding:12px 24px 18px;
-  border-top:1px solid var(--gray-light);
-  flex-shrink:0;background:var(--white);
+  padding:0;flex-shrink:0;
+  background:var(--blue-dark);
+  border-top:none;
+}
+.input-inner{
+  max-width:760px;margin:0 auto;
+  padding:16px 24px 20px;
+}
+.input-header{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:10px;
+}
+.input-header-icon{
+  width:20px;height:20px;
+  color:var(--blue-mid);flex-shrink:0;
+  animation:sparkPulse 3s ease infinite;
+}
+@keyframes sparkPulse{0%,100%{opacity:1}50%{opacity:.5}}
+.input-header-label{
+  font-size:14px;font-weight:600;color:rgba(255,255,255,0.6);
+  letter-spacing:-0.01em;
+}
+.input-header-badge{
+  font-size:11px;font-weight:500;
+  color:var(--green);
+  background:rgba(34,197,94,0.12);
+  padding:2px 8px;margin-left:auto;
+  display:flex;align-items:center;gap:4px;
+  font-family:var(--mono);
+}
+.input-header-badge::before{
+  content:'';width:5px;height:5px;
+  background:var(--green);animation:blink 2s ease infinite;
 }
 .input-wrap{
-  max-width:720px;margin:0 auto;
-  border:2px solid var(--gray-light);
   display:flex;align-items:center;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
   padding:4px 6px 4px 18px;
-  transition:all .2s ease;background:var(--white);
+  transition:all .2s ease;
+  margin-bottom:12px;
 }
 .input-wrap:focus-within{
-  border-color:var(--blue);
-  box-shadow:0 0 0 4px rgba(10,62,255,0.08);
+  background:rgba(255,255,255,0.12);
+  border-color:rgba(255,255,255,0.25);
+  box-shadow:0 0 0 4px rgba(10,62,255,0.2);
 }
 .input-wrap input{
   flex:1;border:none;outline:none;
   font-family:inherit;font-size:15px;
-  background:transparent;color:var(--black);
+  background:transparent;color:#fff;
   padding:12px 0;letter-spacing:-0.01em;
 }
-.input-wrap input::placeholder{color:var(--gray-xdark)}
+.input-wrap input::placeholder{color:rgba(255,255,255,0.35)}
 .send-btn{
   width:42px;height:42px;border:none;
   background:var(--blue);color:#fff;
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;transition:all .15s ease;flex-shrink:0;
 }
-.send-btn:hover{background:var(--blue-dark);transform:scale(1.04)}
-.send-btn:active{transform:scale(0.92);background:var(--blue-dark)}
+.send-btn:hover{background:var(--blue-mid);transform:scale(1.04)}
+.send-btn:active{transform:scale(0.92)}
 .send-btn svg{width:16px;height:16px}
 
 /* ── Responsive / Mobile-First iOS Feel ── */
@@ -342,11 +376,12 @@ body{
   .chart-bar-track{height:32px}
   .data-table th,.data-table td{padding:10px 10px}
   .followup-btn{min-height:44px;font-size:14px}
-  .topic-chips{padding:0 0 8px}
-  .topic-chip{padding:10px 16px;font-size:14px;min-height:44px}
-  .input-area{padding:10px 16px calc(env(safe-area-inset-bottom,12px) + 10px)}
+  .topic-chips{padding:0}
+  .topic-chip{padding:8px 14px;font-size:13px;min-height:40px}
+  .input-inner{padding:12px 16px calc(env(safe-area-inset-bottom,12px) + 14px)}
   .input-wrap input{font-size:16px;padding:12px 0}
   .send-btn{width:44px;height:44px}
+  .input-header-label{font-size:13px}
 }
 @media(max-width:480px){
   .summary-cell .s-num{font-size:24px}
@@ -448,19 +483,26 @@ body{
   </div>
 
   <div class="input-area">
-    <div class="topic-chips">
-      <button class="topic-chip" onclick="askQ('Show me all standing scaffolds with their status')">Scaffolds <span class="chip-count">1,645</span></button>
-      <button class="topic-chip" onclick="askQ('Show me the request pipeline')">Requests <span class="chip-count">3,024</span></button>
-      <button class="topic-chip" onclick="askQ('Show me inspection results')">Inspections <span class="chip-count">703</span></button>
-      <button class="topic-chip" onclick="askQ('Show me scaffolds by area')">Areas <span class="chip-count">10</span></button>
-      <button class="topic-chip" onclick="askQ('Show me the team workload')">People <span class="chip-count">54</span></button>
-      <button class="topic-chip" onclick="askQ('Give me a safety compliance summary')">Safety</button>
-    </div>
-    <div class="input-wrap" style="max-width:720px">
-      <input type="text" id="input" placeholder="Ask about scaffolds, inspections, requests..." autocomplete="off" />
-      <button class="send-btn" onclick="send()" title="Send">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-      </button>
+    <div class="input-inner">
+      <div class="input-header">
+        <svg class="input-header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span class="input-header-label">Ask ScaffoldIQ</span>
+        <span class="input-header-badge">Connected</span>
+      </div>
+      <div class="input-wrap">
+        <input type="text" id="input" placeholder="Ask about scaffolds, inspections, requests..." autocomplete="off" />
+        <button class="send-btn" onclick="send()" title="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="topic-chips">
+        <button class="topic-chip" onclick="askQ('Show me all standing scaffolds with their status')">Scaffolds <span class="chip-count">1,645</span></button>
+        <button class="topic-chip" onclick="askQ('Show me the request pipeline')">Requests <span class="chip-count">3,024</span></button>
+        <button class="topic-chip" onclick="askQ('Show me inspection results')">Inspections <span class="chip-count">703</span></button>
+        <button class="topic-chip" onclick="askQ('Show me scaffolds by area')">Areas <span class="chip-count">10</span></button>
+        <button class="topic-chip" onclick="askQ('Show me the team workload')">People <span class="chip-count">54</span></button>
+        <button class="topic-chip" onclick="askQ('Give me a safety compliance summary')">Safety</button>
+      </div>
     </div>
   </div>
 </div>
