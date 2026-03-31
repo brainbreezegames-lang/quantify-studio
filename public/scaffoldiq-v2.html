@@ -18,36 +18,72 @@ html{font-size:100%;-webkit-font-smoothing:antialiased}
 }
 body{font-family:var(--font);background:var(--white);color:var(--gray-900);height:100vh;overflow:hidden;letter-spacing:-0.01em}
 
-/* ═══ TOP NAVBAR — clean, blue, single level ═══ */
+/* ═══ TOP NAVBAR — light, tall, minimal ═══ */
 .topbar{
-  height:56px;padding:0 24px;
-  background:var(--blue-dark);
+  height:64px;padding:0 24px;
+  background:var(--white);
+  border-bottom:1px solid var(--gray-200);
   display:flex;align-items:center;
   flex-shrink:0;
 }
 .topbar-logo{display:flex;align-items:center;gap:12px}
-.topbar-icon{width:30px;height:30px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff}
-.topbar-name{font-weight:600;font-size:16px;color:#fff;letter-spacing:-0.02em}
-.topbar-sep{width:1px;height:20px;background:rgba(255,255,255,0.15);margin:0 12px}
-.topbar-site{font-size:13px;color:rgba(255,255,255,0.45)}
+.topbar-icon{width:32px;height:32px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff}
+.topbar-name{font-weight:700;font-size:17px;color:var(--gray-900);letter-spacing:-0.03em}
+.topbar-sep{width:1px;height:22px;background:var(--gray-200);margin:0 14px}
+.topbar-site{font-size:14px;color:var(--gray-400)}
 .topbar-spacer{flex:1}
-.topbar-nav{display:flex;gap:4px;margin-right:24px}
-.topbar-nav a{
-  font-size:13px;color:rgba(255,255,255,0.5);
-  padding:8px 14px;border-radius:8px;cursor:pointer;
-  transition:all .12s;text-decoration:none;font-weight:500;
+.topbar-right{display:flex;align-items:center;gap:12px}
+.topbar-btn{
+  width:40px;height:40px;border-radius:50%;border:1px solid var(--gray-200);
+  background:var(--white);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .12s;color:var(--gray-400);
 }
-.topbar-nav a:hover{color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.06)}
-.topbar-nav a.active{color:#fff;background:rgba(255,255,255,0.12)}
-.topbar-live{font-size:12px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:6px;margin-right:20px}
-.topbar-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green)}
-.topbar-avatar{width:32px;height:32px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;color:#fff;cursor:pointer}
+.topbar-btn:hover{border-color:var(--gray-300);color:var(--gray-600);background:var(--gray-50)}
+.topbar-btn svg{width:20px;height:20px}
+
+/* ═══ BODY — sidebar + content ═══ */
+.body{display:flex;height:calc(100vh - 64px)}
+
+/* ═══ SIDEBAR — light mode ═══ */
+.sidebar{
+  width:240px;flex-shrink:0;
+  background:var(--white);
+  border-right:1px solid var(--gray-200);
+  display:flex;flex-direction:column;
+  padding:20px 0;overflow-y:auto;
+}
+.sidebar::-webkit-scrollbar{width:0}
+.sb-label{font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.06em;padding:16px 20px 8px}
+.sb-label:first-child{padding-top:0}
+.sb-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 20px;margin:0 8px;border-radius:10px;
+  font-size:14px;color:var(--gray-500);cursor:pointer;
+  transition:all .12s;font-weight:400;
+  border-left:3px solid transparent;
+}
+.sb-item:hover{background:var(--gray-50);color:var(--gray-700)}
+.sb-item.active{
+  background:rgba(10,62,255,0.05);
+  color:var(--blue);font-weight:500;
+  border-left-color:var(--blue);
+}
+.sb-item svg{width:20px;height:20px;flex-shrink:0;opacity:.4}
+.sb-item.active svg{opacity:.8}
+.sb-count{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--gray-300);font-weight:500;background:var(--gray-50);padding:2px 8px;border-radius:6px}
+.sb-item.active .sb-count{background:rgba(10,62,255,0.06);color:var(--blue-mid)}
+.sb-spacer{flex:1}
+.sb-footer{padding:12px 20px;border-top:1px solid var(--gray-100);margin-top:8px}
+.sb-user{display:flex;align-items:center;gap:10px}
+.sb-avatar{width:32px;height:32px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;color:#fff}
+.sb-uname{font-size:13px;font-weight:500;color:var(--gray-700)}
+.sb-site{font-size:11px;color:var(--gray-400)}
 
 /* ═══ MAIN CONTENT ═══ */
-.main{height:calc(100vh - 56px);overflow-y:auto;background:var(--gray-50)}
+.main{flex:1;overflow-y:auto;background:var(--gray-50)}
 .main::-webkit-scrollbar{width:4px}
 .main::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:4px}
-.content{max-width:1200px;margin:0 auto;padding:32px 40px}
+.content{max-width:1100px;padding:32px 36px}
 
 .greeting{font-size:22px;font-weight:600;letter-spacing:-0.03em;margin-bottom:24px;color:var(--gray-900)}
 .greeting span{font-weight:700}
@@ -248,8 +284,9 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--gray-
 .ai-send svg{width:14px;height:14px}
 
 /* Responsive */
-@media(max-width:1024px){.metrics{grid-template-columns:1fr 1fr}.topbar-nav{display:none}}
+@media(max-width:1024px){.metrics{grid-template-columns:1fr 1fr}.sidebar{width:60px}.sidebar .sb-item span,.sb-count,.sb-label,.sb-uname,.sb-site,.sb-footer{display:none}.sb-item{justify-content:center;padding:10px;margin:0 6px}}
 @media(max-width:768px){
+  .sidebar{display:none}
   .ai-panel{width:calc(100vw - 16px);top:8px;right:8px;bottom:8px}
   .metrics{grid-template-columns:1fr 1fr}
   .content{padding:20px}
@@ -260,7 +297,7 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--gray-
 </head>
 <body>
 
-<!-- ═══ TOP NAVBAR ═══ -->
+<!-- ═══ TOP NAVBAR — light, tall ═══ -->
 <div class="topbar">
   <div class="topbar-logo">
     <div class="topbar-icon">S</div>
@@ -269,16 +306,64 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--gray-
   <div class="topbar-sep"></div>
   <span class="topbar-site">Big Gore Refinery</span>
   <div class="topbar-spacer"></div>
-  <nav class="topbar-nav">
-    <a class="active">Scaffolds</a>
-    <a>Requests</a>
-    <a>Inspections</a>
-    <a>Activities</a>
-    <a>People</a>
-  </nav>
-  <span class="topbar-live">Live data</span>
-  <div class="topbar-avatar">Z</div>
+  <div class="topbar-right">
+    <div class="topbar-btn" title="Profile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+    </div>
+    <div class="topbar-btn" title="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="7" cy="7" r="1.5"/><circle cx="12" cy="7" r="1.5"/><circle cx="17" cy="7" r="1.5"/><circle cx="7" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="17" cy="12" r="1.5"/><circle cx="7" cy="17" r="1.5"/><circle cx="12" cy="17" r="1.5"/><circle cx="17" cy="17" r="1.5"/></svg>
+    </div>
+  </div>
 </div>
+
+<!-- ═══ BODY ═══ -->
+<div class="body">
+
+<!-- ═══ SIDEBAR — light ═══ -->
+<aside class="sidebar">
+  <div class="sb-label">Navigation</div>
+  <div class="sb-item active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+    Map
+  </div>
+  <div class="sb-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Requests
+    <span class="sb-count">3,024</span>
+  </div>
+  <div class="sb-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/></svg>
+    Scaffolds
+    <span class="sb-count">1,645</span>
+  </div>
+  <div class="sb-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    Activities
+    <span class="sb-count">406</span>
+  </div>
+  <div class="sb-label">Safety</div>
+  <div class="sb-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Inspections
+  </div>
+  <div class="sb-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+    Handovers
+  </div>
+  <div class="sb-label">Organization</div>
+  <div class="sb-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+    People
+    <span class="sb-count">54</span>
+  </div>
+  <div class="sb-spacer"></div>
+  <div class="sb-footer">
+    <div class="sb-user">
+      <div class="sb-avatar">Z</div>
+      <div><div class="sb-uname">Zaib Wemyss</div><div class="sb-site">Administrator</div></div>
+    </div>
+  </div>
+</aside>
 
 <!-- ═══ MAIN CONTENT ═══ -->
 <div class="main">
@@ -312,6 +397,7 @@ td.mono{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--gray-
       </table>
     </div>
   </div>
+</div>
 </div>
 
 <!-- ═══ AI FAB ═══ -->
