@@ -1,0 +1,2077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantify Mobile — Shipments Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://api.fontshare.com">
+<style>
+@font-face { font-family:'Switzer'; src:url('https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap'); }
+@import url('https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap');
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  /* Quantify PROBE palette */
+  --blue: #0A3EFF;
+  --blue-dark: #0832CC;
+  --blue-tint: #E8EEFF;
+  --navy: #10296E;
+  --ink: #0A0C18;
+  --text: #202020;
+  --muted: #6B6F7B;
+  --dim: #9CA3AF;
+  --line: rgba(10, 30, 80, 0.08);
+  --line-strong: rgba(10, 30, 80, 0.14);
+  --surface: #FFFFFF;
+  --surface-2: #F7F8FA;
+  --surface-3: #EFF1F5;
+  --ok: #1B8A4A;
+  --ok-bg: #E7F5EC;
+  --warn: #B45309;
+  --warn-bg: #FEF3C7;
+  --err: #B91C1C;
+  --err-bg: #FEE2E2;
+
+  /* Stage backdrop */
+  --stage-bg: #F4F5F8;
+  --stage-text: #0A0C18;
+  --stage-muted: #6B6F7B;
+
+  /* Easing — Emil's signature */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html, body {
+  font-family: 'Switzer', -apple-system, system-ui, sans-serif;
+  background: var(--stage-bg);
+  color: var(--stage-text);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── Subtle film grain ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Subtle ambient glow behind phone */
+body::after {
+  content: '';
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(10,62,255,0.06) 0%, transparent 60%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ms {
+  font-family: 'Material Symbols Sharp';
+  font-size: 22px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+  flex-shrink: 0;
+}
+.ms.f { font-variation-settings: 'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; }
+.ms.sm { font-size: 18px; }
+.ms.xs { font-size: 16px; }
+.ms.lg { font-size: 28px; }
+
+/* ════════════════════════════════════════════════════════
+   STAGE LAYOUT
+════════════════════════════════════════════════════════ */
+
+.stage {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: auto 1fr auto;
+  gap: 0;
+}
+
+/* Top bar */
+.top-bar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32px 56px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.brand-mark {
+  width: 24px;
+  height: 24px;
+  background: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.brand-mark::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: white;
+}
+.brand-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--stage-text);
+  letter-spacing: -0.1px;
+}
+.brand-text span {
+  color: var(--stage-muted);
+  font-weight: 400;
+}
+.top-meta {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--stage-muted);
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+/* Left context panel */
+.context-left {
+  padding: 60px 56px 60px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 380px;
+}
+.scene-num {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--blue);
+  letter-spacing: 0.8px;
+  margin-bottom: 14px;
+}
+.scene-title {
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--stage-text);
+  letter-spacing: -1px;
+  line-height: 1.05;
+  margin-bottom: 16px;
+  transition: opacity 240ms var(--ease-out);
+}
+.scene-desc {
+  font-size: 14px;
+  color: var(--stage-muted);
+  line-height: 1.6;
+  max-width: 320px;
+  transition: opacity 240ms var(--ease-out);
+}
+
+/* Phone column (center) */
+.phone-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 0 60px;
+}
+
+/* Right context panel */
+.context-right {
+  padding: 60px 56px 60px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 380px;
+}
+.callouts {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.callout {
+  border-left: 2px solid var(--blue);
+  padding-left: 16px;
+}
+.callout-num {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  color: var(--blue);
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+.callout-text {
+  font-size: 13px;
+  color: var(--stage-text);
+  line-height: 1.5;
+  font-weight: 500;
+}
+.callout-text span {
+  color: var(--stage-muted);
+  font-weight: 400;
+}
+
+/* Scene navigation */
+.bottom-bar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 56px 40px;
+}
+.scene-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.scene-dot {
+  width: 28px;
+  height: 4px;
+  background: rgba(10, 30, 80, 0.12);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 200ms ease;
+}
+.scene-dot:hover { background: rgba(10, 30, 80, 0.22); }
+.scene-dot.active { background: var(--blue); }
+.scene-dot.passed { background: rgba(10, 62, 255, 0.4); }
+.bottom-controls {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  font-size: 11px;
+  color: var(--stage-muted);
+  letter-spacing: 0.4px;
+}
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--stage-text);
+  background: white;
+  border: 1px solid var(--line-strong);
+  border-bottom-width: 2px;
+  margin: 0 4px;
+}
+.reset-btn {
+  background: none;
+  border: none;
+  color: var(--blue);
+  font-family: 'Switzer', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+/* ════════════════════════════════════════════════════════
+   PHONE
+════════════════════════════════════════════════════════ */
+
+.phone {
+  width: 372px;
+  height: 780px;
+  background: #0a0a0a;
+  border-radius: 48px;
+  padding: 12px;
+  box-shadow:
+    0 0 0 1.5px #1a1a1a,
+    0 1px 2px rgba(0,0,0,0.04),
+    0 10px 30px rgba(10, 30, 80, 0.10),
+    0 32px 80px rgba(10, 30, 80, 0.18),
+    0 60px 120px rgba(10, 30, 80, 0.10);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  background: var(--surface);
+  border-radius: 36px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* iPhone notch */
+.phone-screen::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 28px;
+  background: #0a0a0a;
+  border-radius: 14px;
+  z-index: 100;
+}
+
+/* ════════════════════════════════════════════════════════
+   APP — STATUS BAR
+════════════════════════════════════════════════════════ */
+
+.sb {
+  height: 50px;
+  padding: 16px 28px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+.sb-time {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.2px;
+  margin-left: -8px;
+}
+.sb-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: -4px;
+}
+.sb-icons .ms { font-size: 14px; color: var(--ink); }
+
+/* ════════════════════════════════════════════════════════
+   SCREENS
+════════════════════════════════════════════════════════ */
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.985);
+  transition: opacity 220ms var(--ease-out), transform 280ms var(--ease-out);
+}
+.screen.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: scale(1);
+}
+
+/* Common: nav header */
+.nav {
+  display: flex;
+  align-items: center;
+  padding: 4px 16px 14px;
+  gap: 8px;
+  flex-shrink: 0;
+  background: var(--surface);
+}
+.nav-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+  transition: background 160ms ease, transform 120ms var(--ease-out);
+  margin-left: -6px;
+}
+.nav-btn:active {
+  background: var(--surface-3);
+  transform: scale(0.92);
+}
+.nav-title {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.2px;
+}
+.nav-sub {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 400;
+  margin-top: 2px;
+  letter-spacing: 0.1px;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--surface-2);
+  -webkit-overflow-scrolling: touch;
+}
+.content::-webkit-scrollbar { width: 0; }
+
+/* ─── SCREEN 1: TODAY ─── */
+
+.today-hero {
+  padding: 6px 24px 26px;
+  background: var(--surface);
+}
+.hero-eyebrow {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  color: var(--blue);
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.hero-headline {
+  font-size: 34px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -1.3px;
+  line-height: 1;
+  margin-bottom: 14px;
+}
+.hero-stat-row {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.hero-stat-row strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+.hero-stat-row .sep {
+  width: 3px;
+  height: 3px;
+  background: var(--dim);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.section-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 12px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.section-label .count {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  color: var(--dim);
+  font-weight: 500;
+}
+
+.ship-card {
+  background: var(--surface);
+  margin: 0 16px 8px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  cursor: pointer;
+  transition: transform 160ms var(--ease-out), border-color 160ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.ship-card:active {
+  transform: scale(0.985);
+  border-color: var(--line-strong);
+}
+.ship-card.featured {
+  border-left: 3px solid var(--blue);
+  padding-left: 17px;
+}
+.ship-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.ship-tag {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  padding: 3px 7px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.ship-tag.del {
+  background: var(--blue-tint);
+  color: var(--blue);
+}
+.ship-tag.ret {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+.ship-tag.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.ship-time {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 500;
+}
+.ship-name {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.3px;
+  margin-bottom: 4px;
+}
+.ship-site {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.ship-site .ms { font-size: 12px; color: var(--dim); }
+.ship-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.ship-stat {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.ship-stat strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+.ship-arrow {
+  color: var(--dim);
+  font-size: 18px;
+}
+
+/* ─── SCREEN 2: SHIPMENT DETAIL ─── */
+
+.detail-hero {
+  padding: 4px 24px 22px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.detail-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.detail-eyebrow .ship-tag { padding: 3px 8px; }
+.detail-id {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 500;
+}
+.detail-name {
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.8px;
+  line-height: 1.05;
+  margin-bottom: 6px;
+}
+.detail-site {
+  font-size: 13px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+.detail-site .ms { font-size: 14px; color: var(--dim); }
+.detail-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+  margin: 0 -24px -22px;
+  padding: 18px 24px;
+  background: var(--surface-2);
+  border-top: 1px solid var(--line);
+}
+.dm-col {
+  border-right: 1px solid var(--line);
+  padding-right: 12px;
+}
+.dm-col:last-child { border-right: none; padding-left: 14px; padding-right: 0; }
+.dm-col:nth-child(2) { padding-left: 14px; }
+.dm-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--dim);
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.dm-value {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.3px;
+}
+
+.items-section { padding: 0 0 16px; }
+.items-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 24px 12px;
+}
+.items-label-text {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.items-label-count {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--blue);
+  font-weight: 500;
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  padding: 14px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.item-num {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  color: var(--dim);
+  font-weight: 500;
+  width: 24px;
+}
+.item-body { flex: 1; min-width: 0; }
+.item-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.1px;
+}
+.item-spec {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+.item-qty {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.item-qty span {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 11px;
+  margin-left: 2px;
+}
+
+/* ─── SCREEN 3: COUNTING ─── */
+
+.count-header {
+  padding: 4px 24px 18px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.count-progress-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.count-progress-text {
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.6px;
+}
+.count-progress-text strong { color: var(--blue); }
+.count-progress-meta {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 500;
+}
+.progress-bar {
+  height: 3px;
+  background: var(--surface-3);
+  position: relative;
+  overflow: hidden;
+}
+.progress-fill {
+  position: absolute;
+  inset: 0 25% 0 0;
+  background: var(--blue);
+  transition: right 400ms var(--ease-out);
+}
+
+.count-list { padding: 8px 0 16px; }
+.count-row {
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  gap: 14px;
+  transition: background 200ms ease;
+}
+.count-row.matched { background: #FAFCFB; }
+.count-row.diff { background: #FFFBF5; }
+.cr-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 200ms var(--ease-out);
+}
+.cr-check.on {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: white;
+}
+.cr-check.diff-on {
+  background: var(--warn);
+  border-color: var(--warn);
+  color: white;
+}
+.cr-check .ms { font-size: 14px; }
+.cr-body { flex: 1; min-width: 0; }
+.cr-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.1px;
+}
+.cr-expected {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+.cr-counter {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.cnt-btn {
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid var(--line-strong);
+  background: var(--surface);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--ink);
+  font-family: 'Switzer', sans-serif;
+  font-weight: 500;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 140ms var(--ease-out);
+}
+.cnt-btn:hover { border-color: var(--blue); color: var(--blue); }
+.cnt-btn:active {
+  transform: scale(0.88);
+  background: var(--blue-tint);
+  border-color: var(--blue);
+}
+.cnt-val {
+  width: 36px;
+  text-align: center;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  transition: color 200ms ease;
+}
+.cnt-val.diff { color: var(--warn); }
+
+/* Bottom action bar */
+.bot-action {
+  padding: 16px 20px 28px;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.btn-primary {
+  width: 100%;
+  height: 52px;
+  background: var(--blue);
+  color: white;
+  border: none;
+  font-family: 'Switzer', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: 0.1px;
+  transition: all 200ms var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-primary:hover { background: var(--blue-dark); }
+.btn-primary:active {
+  transform: scale(0.985);
+  background: var(--blue-dark);
+}
+.btn-primary.disabled {
+  background: var(--surface-3);
+  color: var(--dim);
+  pointer-events: none;
+}
+.btn-secondary {
+  width: 100%;
+  height: 52px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1.5px solid var(--line-strong);
+  font-family: 'Switzer', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 200ms var(--ease-out);
+  margin-top: 10px;
+}
+.btn-secondary:hover { border-color: var(--blue); color: var(--blue); }
+.btn-secondary:active { transform: scale(0.985); }
+
+/* ─── SCREEN 4: DISCREPANCY ─── */
+
+.disc-screen { background: var(--surface); }
+.disc-banner {
+  padding: 16px 24px;
+  background: var(--warn-bg);
+  border-bottom: 1px solid #F5DEB3;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.disc-banner-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--warn);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.disc-banner-body {
+  flex: 1;
+}
+.disc-banner-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--warn);
+  margin-bottom: 1px;
+}
+.disc-banner-text {
+  font-size: 11px;
+  color: #92400E;
+}
+
+.disc-item-card {
+  margin: 24px 24px 0;
+  padding: 20px;
+  background: var(--surface-2);
+  border-left: 3px solid var(--warn);
+}
+.disc-item-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.3px;
+  margin-bottom: 6px;
+}
+.disc-item-spec {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+.disc-numbers {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+  background: var(--surface);
+  padding: 14px 0;
+}
+.disc-num-col {
+  text-align: center;
+  border-right: 1px solid var(--line);
+}
+.disc-num-col:last-child { border-right: none; }
+.dn-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.dn-value {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1;
+}
+.dn-value.warn { color: var(--warn); }
+.dn-value.minus { color: var(--err); }
+
+.photo-section {
+  padding: 24px 24px 0;
+}
+.photo-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.photo-row {
+  display: flex;
+  gap: 8px;
+}
+.photo-tile {
+  width: 76px;
+  height: 76px;
+  background: var(--surface-2);
+  border: 1.5px dashed var(--line-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 160ms ease;
+}
+.photo-tile:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-tint);
+}
+.photo-tile.filled {
+  background: linear-gradient(135deg, #233047 0%, #475569 100%);
+  border: none;
+  position: relative;
+  color: white;
+}
+.photo-tile.filled::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='76' height='76'%3E%3Crect width='76' height='76' fill='%23475569'/%3E%3Cpath d='M0 50 L20 35 L35 45 L55 25 L76 40 L76 76 L0 76 Z' fill='%23334155'/%3E%3Ccircle cx='55' cy='18' r='5' fill='%23FBBF24'/%3E%3C/svg%3E");
+}
+
+.note-section {
+  padding: 18px 24px 0;
+}
+.note-input {
+  width: 100%;
+  height: 64px;
+  border: 1.5px solid var(--line);
+  background: var(--surface-2);
+  padding: 12px 14px;
+  font-family: 'Switzer', sans-serif;
+  font-size: 13px;
+  color: var(--ink);
+  resize: none;
+  outline: none;
+  transition: border-color 160ms ease;
+}
+.note-input:focus { border-color: var(--blue); background: white; }
+.note-input::placeholder { color: var(--dim); }
+
+/* ─── SCREEN 5: CONFIRM ─── */
+
+.conf-summary {
+  padding: 6px 24px 22px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.conf-headline {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.6px;
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+.conf-summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  background: var(--surface-2);
+  padding: 16px;
+  margin: 0 -2px;
+}
+.cs-item { padding: 0 12px; border-right: 1px solid var(--line); }
+.cs-item:last-child { border-right: none; }
+.cs-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.cs-value {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cs-value.ok { color: var(--ok); }
+.cs-value.warn { color: var(--warn); }
+.cs-value .ms { font-size: 16px; }
+
+.sig-section {
+  padding: 22px 24px 0;
+  background: var(--surface);
+}
+.sig-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.sig-label-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+.sig-clear {
+  font-size: 11px;
+  color: var(--blue);
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Switzer', sans-serif;
+}
+.sig-pad {
+  width: 100%;
+  height: 130px;
+  border: 1.5px solid var(--line);
+  background: var(--surface-2);
+  position: relative;
+  cursor: crosshair;
+  touch-action: none;
+}
+.sig-pad svg { width: 100%; height: 100%; display: block; }
+.sig-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--dim);
+  pointer-events: none;
+  letter-spacing: 0.3px;
+  font-style: italic;
+  font-family: 'DM Serif Display', serif;
+  font-size: 14px;
+}
+.sig-pad.has-sig .sig-hint { display: none; }
+.sig-line {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  right: 14px;
+  height: 1px;
+  background: var(--line-strong);
+}
+.sig-line::after {
+  content: '×';
+  position: absolute;
+  bottom: 6px;
+  left: 0;
+  font-size: 12px;
+  color: var(--dim);
+}
+
+.sig-name-section {
+  padding: 16px 24px 8px;
+  background: var(--surface);
+}
+.sig-name-input {
+  width: 100%;
+  height: 44px;
+  border: none;
+  border-bottom: 1.5px solid var(--line);
+  background: transparent;
+  padding: 0 0 6px;
+  font-family: 'Switzer', sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  outline: none;
+  font-weight: 500;
+  transition: border-color 160ms ease;
+}
+.sig-name-input:focus { border-color: var(--blue); }
+.sig-name-input::placeholder { color: var(--dim); font-weight: 400; }
+
+/* ─── SCREEN 6: DONE ─── */
+
+.done-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 32px;
+  text-align: center;
+  background: var(--surface);
+}
+.done-mark {
+  width: 88px;
+  height: 88px;
+  background: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 36px;
+  position: relative;
+}
+.done-mark .ms {
+  font-size: 48px;
+  color: white;
+}
+.done-eyebrow {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  color: var(--ok);
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.done-headline {
+  font-size: 30px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -1px;
+  line-height: 1.05;
+  margin-bottom: 14px;
+  max-width: 280px;
+}
+.done-meta {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  max-width: 260px;
+  margin-bottom: 28px;
+}
+.done-meta strong { color: var(--ink); font-weight: 500; }
+.done-stats {
+  display: flex;
+  gap: 0;
+  background: var(--surface-2);
+  padding: 16px 0;
+  margin: 0 -32px 32px;
+  width: calc(100% + 64px);
+}
+.done-stat {
+  flex: 1;
+  text-align: center;
+  border-right: 1px solid var(--line);
+}
+.done-stat:last-child { border-right: none; }
+.ds-num {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1;
+}
+.ds-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  margin-top: 5px;
+}
+.done-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+.done-btn-prim {
+  width: 100%;
+  height: 50px;
+  background: var(--blue);
+  color: white;
+  border: none;
+  font-family: 'Switzer', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 200ms var(--ease-out);
+}
+.done-btn-prim:hover { background: var(--blue-dark); }
+.done-btn-prim:active { transform: scale(0.985); }
+.done-btn-text {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: 'Switzer', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px;
+}
+.done-btn-text:hover { color: var(--blue); }
+
+/* ─── ANIMATIONS ─── */
+
+@keyframes successScale {
+  0% { transform: scale(0.4); opacity: 0; }
+  60% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.screen.active .done-mark {
+  animation: successScale 480ms var(--ease-out) both;
+}
+
+@keyframes rowSlide {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.screen.active .ship-card { animation: rowSlide 320ms var(--ease-out) both; }
+.screen.active .ship-card:nth-child(1) { animation-delay: 60ms; }
+.screen.active .ship-card:nth-child(2) { animation-delay: 100ms; }
+.screen.active .ship-card:nth-child(3) { animation-delay: 140ms; }
+.screen.active .ship-card:nth-child(4) { animation-delay: 180ms; }
+
+/* ─── RESPONSIVE ─── */
+
+@media (max-width: 1240px) {
+  .stage { grid-template-columns: 1fr auto 1fr; }
+  .context-left, .context-right { padding: 40px 32px; max-width: 300px; }
+}
+
+@media (max-width: 980px) {
+  .stage { grid-template-columns: 1fr; grid-template-rows: auto auto auto auto auto; }
+  .context-left, .context-right {
+    grid-column: 1;
+    max-width: 100%;
+    padding: 20px 32px;
+    text-align: center;
+    align-items: center;
+  }
+  .scene-title { font-size: 22px; }
+  .callouts { display: none; }
+  .top-bar, .bottom-bar { padding: 20px 24px; }
+  .phone-col { padding: 20px 0 30px; }
+}
+
+@media (max-width: 480px) {
+  .phone { width: 320px; height: 680px; }
+  .scene-title { font-size: 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <!-- Top bar -->
+  <div class="top-bar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div class="brand-text">Quantify Mobile <span>· Shipments prototype</span></div>
+    </div>
+    <div class="top-meta">Internal · Early concept</div>
+  </div>
+
+  <!-- Left context -->
+  <div class="context-left">
+    <div class="scene-num" id="sceneNum">SCENE 01 / 06</div>
+    <div class="scene-title" id="sceneTitle">Today's shipments</div>
+    <div class="scene-desc" id="sceneDesc">Yard worker opens the app. Sees what's scheduled for today, in priority order. The next pending delivery is featured at the top.</div>
+  </div>
+
+  <!-- Phone -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen">
+
+        <!-- ─── SCREEN 1: TODAY ─── -->
+        <div class="screen active" data-screen="1">
+          <div class="sb">
+            <div class="sb-time">9:42</div>
+            <div class="sb-icons">
+              <span class="ms">signal_cellular_alt</span>
+              <span class="ms">wifi</span>
+              <span class="ms">battery_full</span>
+            </div>
+          </div>
+
+          <div class="content">
+            <div class="today-hero">
+              <div class="hero-eyebrow">FRIDAY · APR 11</div>
+              <div class="hero-headline">Today</div>
+              <div class="hero-stat-row">
+                <span><strong>4</strong> shipments</span>
+                <span class="sep"></span>
+                <span><strong>2</strong> pending</span>
+                <span class="sep"></span>
+                <span><strong>348</strong> units</span>
+              </div>
+            </div>
+
+            <div class="section-label">
+              <span>NEXT UP</span>
+              <span class="count">09:00 — 12:00</span>
+            </div>
+
+            <div class="ship-card featured" onclick="goTo(2)">
+              <div class="ship-top">
+                <div class="ship-tag del"><span class="ship-tag dot"></span>DELIVERY</div>
+                <div class="ship-time">09:42</div>
+              </div>
+              <div class="ship-name">Murphy Construction Co.</div>
+              <div class="ship-site"><span class="ms">place</span>4521 Industrial Way · Bay 3</div>
+              <div class="ship-foot">
+                <div class="ship-stat"><span><strong>8</strong> items</span><span><strong>142</strong> units</span></div>
+                <span class="ms ship-arrow">arrow_forward</span>
+              </div>
+            </div>
+
+            <div class="ship-card">
+              <div class="ship-top">
+                <div class="ship-tag del"><span class="ship-tag dot"></span>DELIVERY</div>
+                <div class="ship-time">11:00</div>
+              </div>
+              <div class="ship-name">Riverside Apartments</div>
+              <div class="ship-site"><span class="ms">place</span>180 Riverside Drive</div>
+              <div class="ship-foot">
+                <div class="ship-stat"><span><strong>5</strong> items</span><span><strong>96</strong> units</span></div>
+                <span class="ms ship-arrow">arrow_forward</span>
+              </div>
+            </div>
+
+            <div class="section-label">
+              <span>LATER TODAY</span>
+              <span class="count">13:00 — 17:00</span>
+            </div>
+
+            <div class="ship-card">
+              <div class="ship-top">
+                <div class="ship-tag ret"><span class="ship-tag dot"></span>RETURN</div>
+                <div class="ship-time">13:30</div>
+              </div>
+              <div class="ship-name">Cooper Industrial</div>
+              <div class="ship-site"><span class="ms">place</span>772 Cooper Ave · Lot B</div>
+              <div class="ship-foot">
+                <div class="ship-stat"><span><strong>6</strong> items</span><span><strong>68</strong> units</span></div>
+                <span class="ms ship-arrow">arrow_forward</span>
+              </div>
+            </div>
+
+            <div class="ship-card">
+              <div class="ship-top">
+                <div class="ship-tag ret"><span class="ship-tag dot"></span>RETURN</div>
+                <div class="ship-time">15:00</div>
+              </div>
+              <div class="ship-name">Westside Renovation</div>
+              <div class="ship-site"><span class="ms">place</span>112 W Park · Site C</div>
+              <div class="ship-foot">
+                <div class="ship-stat"><span><strong>4</strong> items</span><span><strong>42</strong> units</span></div>
+                <span class="ms ship-arrow">arrow_forward</span>
+              </div>
+            </div>
+
+            <div style="height: 32px;"></div>
+          </div>
+        </div>
+
+        <!-- ─── SCREEN 2: SHIPMENT DETAIL ─── -->
+        <div class="screen" data-screen="2">
+          <div class="sb">
+            <div class="sb-time">9:43</div>
+            <div class="sb-icons">
+              <span class="ms">signal_cellular_alt</span>
+              <span class="ms">wifi</span>
+              <span class="ms">battery_full</span>
+            </div>
+          </div>
+
+          <div class="nav">
+            <button class="nav-btn" onclick="goTo(1)"><span class="ms">arrow_back</span></button>
+            <div class="nav-title">Shipment<span class="nav-sub">Awaiting count</span></div>
+            <button class="nav-btn"><span class="ms">more_horiz</span></button>
+          </div>
+
+          <div class="content">
+            <div class="detail-hero">
+              <div class="detail-eyebrow">
+                <span class="ship-tag del"><span class="ship-tag dot"></span>DELIVERY</span>
+                <span class="detail-id">DEL-2401</span>
+              </div>
+              <div class="detail-name">Murphy Construction Co.</div>
+              <div class="detail-site"><span class="ms">place</span>4521 Industrial Way · Bay 3</div>
+              <div class="detail-meta-grid">
+                <div class="dm-col">
+                  <div class="dm-label">SCHEDULED</div>
+                  <div class="dm-value">09:42</div>
+                </div>
+                <div class="dm-col">
+                  <div class="dm-label">ITEMS</div>
+                  <div class="dm-value">8</div>
+                </div>
+                <div class="dm-col">
+                  <div class="dm-label">UNITS</div>
+                  <div class="dm-value">142</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="items-section">
+              <div class="items-label">
+                <span class="items-label-text">EXPECTED ON TRUCK</span>
+                <span class="items-label-count">8 LINES</span>
+              </div>
+
+              <div class="item-row">
+                <div class="item-num">01</div>
+                <div class="item-body">
+                  <div class="item-name">Standard 8'</div>
+                  <div class="item-spec">Vertical pole · galvanized</div>
+                </div>
+                <div class="item-qty">24<span> units</span></div>
+              </div>
+              <div class="item-row">
+                <div class="item-num">02</div>
+                <div class="item-body">
+                  <div class="item-name">Ledger 7'</div>
+                  <div class="item-spec">Horizontal cross-member</div>
+                </div>
+                <div class="item-qty">48<span> units</span></div>
+              </div>
+              <div class="item-row">
+                <div class="item-num">03</div>
+                <div class="item-body">
+                  <div class="item-name">Transom 4'</div>
+                  <div class="item-spec">Cross brace · steel</div>
+                </div>
+                <div class="item-qty">24<span> units</span></div>
+              </div>
+              <div class="item-row">
+                <div class="item-num">04</div>
+                <div class="item-body">
+                  <div class="item-name">Board 8' × 9"</div>
+                  <div class="item-spec">Scaffold deck plank</div>
+                </div>
+                <div class="item-qty">60<span> units</span></div>
+              </div>
+              <div class="item-row">
+                <div class="item-num">05</div>
+                <div class="item-body">
+                  <div class="item-name">Toe board 8'</div>
+                  <div class="item-spec">Edge protection</div>
+                </div>
+                <div class="item-qty">24<span> units</span></div>
+              </div>
+              <div class="item-row">
+                <div class="item-num">06</div>
+                <div class="item-body">
+                  <div class="item-name">Single coupler</div>
+                  <div class="item-spec">Right-angle clamp</div>
+                </div>
+                <div class="item-qty">120<span> units</span></div>
+              </div>
+              <div class="item-row">
+                <div class="item-num">07</div>
+                <div class="item-body">
+                  <div class="item-name">Base plate</div>
+                  <div class="item-spec">150 × 150 mm</div>
+                </div>
+                <div class="item-qty">24<span> units</span></div>
+              </div>
+              <div class="item-row">
+                <div class="item-num">08</div>
+                <div class="item-body">
+                  <div class="item-name">Guardrail 7'</div>
+                  <div class="item-spec">Top rail · steel</div>
+                </div>
+                <div class="item-qty">24<span> units</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bot-action">
+            <button class="btn-primary" onclick="goTo(3)">Start counting <span class="ms">arrow_forward</span></button>
+          </div>
+        </div>
+
+        <!-- ─── SCREEN 3: COUNTING ─── -->
+        <div class="screen" data-screen="3">
+          <div class="sb">
+            <div class="sb-time">9:48</div>
+            <div class="sb-icons">
+              <span class="ms">signal_cellular_alt</span>
+              <span class="ms">wifi</span>
+              <span class="ms">battery_full</span>
+            </div>
+          </div>
+
+          <div class="nav">
+            <button class="nav-btn" onclick="goTo(2)"><span class="ms">arrow_back</span></button>
+            <div class="nav-title">Count items<span class="nav-sub">Murphy Construction · DEL-2401</span></div>
+            <button class="nav-btn"><span class="ms">photo_camera</span></button>
+          </div>
+
+          <div class="count-header">
+            <div class="count-progress-row">
+              <div class="count-progress-text"><strong>8</strong> of 8 counted</div>
+              <div class="count-progress-meta">7 OK · 1 DIFF</div>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="right: 0%;"></div></div>
+          </div>
+
+          <div class="content">
+            <div class="count-list">
+              <div class="count-row matched">
+                <div class="cr-check on"><span class="ms">check</span></div>
+                <div class="cr-body">
+                  <div class="cr-name">Standard 8'</div>
+                  <div class="cr-expected">Expected 24</div>
+                </div>
+                <div class="cr-counter">
+                  <button class="cnt-btn">−</button>
+                  <div class="cnt-val">24</div>
+                  <button class="cnt-btn">+</button>
+                </div>
+              </div>
+              <div class="count-row matched">
+                <div class="cr-check on"><span class="ms">check</span></div>
+                <div class="cr-body">
+                  <div class="cr-name">Ledger 7'</div>
+                  <div class="cr-expected">Expected 48</div>
+                </div>
+                <div class="cr-counter">
+                  <button class="cnt-btn">−</button>
+                  <div class="cnt-val">48</div>
+                  <button class="cnt-btn">+</button>
+                </div>
+              </div>
+              <div class="count-row matched">
+                <div class="cr-check on"><span class="ms">check</span></div>
+                <div class="cr-body">
+                  <div class="cr-name">Transom 4'</div>
+                  <div class="cr-expected">Expected 24</div>
+                </div>
+                <div class="cr-counter">
+                  <button class="cnt-btn">−</button>
+                  <div class="cnt-val">24</div>
+                  <button class="cnt-btn">+</button>
+                </div>
+              </div>
+              <div class="count-row diff">
+                <div class="cr-check diff-on"><span class="ms">priority_high</span></div>
+                <div class="cr-body">
+                  <div class="cr-name">Board 8' × 9"</div>
+                  <div class="cr-expected">Expected 60 · Short by 2</div>
+                </div>
+                <div class="cr-counter">
+                  <button class="cnt-btn">−</button>
+                  <div class="cnt-val diff">58</div>
+                  <button class="cnt-btn">+</button>
+                </div>
+              </div>
+              <div class="count-row matched">
+                <div class="cr-check on"><span class="ms">check</span></div>
+                <div class="cr-body">
+                  <div class="cr-name">Toe board 8'</div>
+                  <div class="cr-expected">Expected 24</div>
+                </div>
+                <div class="cr-counter">
+                  <button class="cnt-btn">−</button>
+                  <div class="cnt-val">24</div>
+                  <button class="cnt-btn">+</button>
+                </div>
+              </div>
+              <div class="count-row matched">
+                <div class="cr-check on"><span class="ms">check</span></div>
+                <div class="cr-body">
+                  <div class="cr-name">Single coupler</div>
+                  <div class="cr-expected">Expected 120</div>
+                </div>
+                <div class="cr-counter">
+                  <button class="cnt-btn">−</button>
+                  <div class="cnt-val">120</div>
+                  <button class="cnt-btn">+</button>
+                </div>
+              </div>
+              <div class="count-row matched">
+                <div class="cr-check on"><span class="ms">check</span></div>
+                <div class="cr-body">
+                  <div class="cr-name">Base plate</div>
+                  <div class="cr-expected">Expected 24</div>
+                </div>
+                <div class="cr-counter">
+                  <button class="cnt-btn">−</button>
+                  <div class="cnt-val">24</div>
+                  <button class="cnt-btn">+</button>
+                </div>
+              </div>
+              <div class="count-row matched">
+                <div class="cr-check on"><span class="ms">check</span></div>
+                <div class="cr-body">
+                  <div class="cr-name">Guardrail 7'</div>
+                  <div class="cr-expected">Expected 24</div>
+                </div>
+                <div class="cr-counter">
+                  <button class="cnt-btn">−</button>
+                  <div class="cnt-val">24</div>
+                  <button class="cnt-btn">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bot-action">
+            <button class="btn-primary" onclick="goTo(4)">Resolve discrepancy <span class="ms">arrow_forward</span></button>
+          </div>
+        </div>
+
+        <!-- ─── SCREEN 4: DISCREPANCY ─── -->
+        <div class="screen" data-screen="4">
+          <div class="sb">
+            <div class="sb-time">9:51</div>
+            <div class="sb-icons">
+              <span class="ms">signal_cellular_alt</span>
+              <span class="ms">wifi</span>
+              <span class="ms">battery_full</span>
+            </div>
+          </div>
+
+          <div class="nav">
+            <button class="nav-btn" onclick="goTo(3)"><span class="ms">arrow_back</span></button>
+            <div class="nav-title">Discrepancy<span class="nav-sub">1 item · resolve before confirming</span></div>
+          </div>
+
+          <div class="content disc-screen">
+            <div class="disc-banner">
+              <div class="disc-banner-icon"><span class="ms">priority_high</span></div>
+              <div class="disc-banner-body">
+                <div class="disc-banner-title">2 units short on Boards</div>
+                <div class="disc-banner-text">Add a photo and a quick note for the office</div>
+              </div>
+            </div>
+
+            <div class="disc-item-card">
+              <div class="disc-item-name">Board 8' × 9"</div>
+              <div class="disc-item-spec">Scaffold deck plank · line 04</div>
+              <div class="disc-numbers">
+                <div class="disc-num-col">
+                  <div class="dn-label">EXPECTED</div>
+                  <div class="dn-value">60</div>
+                </div>
+                <div class="disc-num-col">
+                  <div class="dn-label">COUNTED</div>
+                  <div class="dn-value warn">58</div>
+                </div>
+                <div class="disc-num-col">
+                  <div class="dn-label">DIFF</div>
+                  <div class="dn-value minus">−2</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="photo-section">
+              <div class="photo-label">PHOTO EVIDENCE</div>
+              <div class="photo-row">
+                <div class="photo-tile filled"></div>
+                <div class="photo-tile">
+                  <span class="ms">add_a_photo</span>
+                </div>
+                <div class="photo-tile">
+                  <span class="ms">add_a_photo</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="note-section">
+              <div class="photo-label">NOTE FOR OFFICE</div>
+              <textarea class="note-input" placeholder="e.g. 2 boards damaged at the bottom of the stack, left at yard for inspection.">2 boards damaged on the bottom of the stack — kept at yard for inspection.</textarea>
+            </div>
+
+            <div style="height: 24px;"></div>
+          </div>
+
+          <div class="bot-action">
+            <button class="btn-primary" onclick="goTo(5)">Continue to confirm <span class="ms">arrow_forward</span></button>
+          </div>
+        </div>
+
+        <!-- ─── SCREEN 5: CONFIRM + SIGN ─── -->
+        <div class="screen" data-screen="5">
+          <div class="sb">
+            <div class="sb-time">9:54</div>
+            <div class="sb-icons">
+              <span class="ms">signal_cellular_alt</span>
+              <span class="ms">wifi</span>
+              <span class="ms">battery_full</span>
+            </div>
+          </div>
+
+          <div class="nav">
+            <button class="nav-btn" onclick="goTo(4)"><span class="ms">arrow_back</span></button>
+            <div class="nav-title">Confirm shipment<span class="nav-sub">Murphy Construction · DEL-2401</span></div>
+          </div>
+
+          <div class="content" style="background: var(--surface);">
+            <div class="conf-summary">
+              <div class="conf-headline">Ready to confirm.<br>Sign to release the truck.</div>
+              <div class="conf-summary-grid">
+                <div class="cs-item">
+                  <div class="cs-label">MATCHED</div>
+                  <div class="cs-value ok"><span class="ms">check_circle</span>7 of 8</div>
+                </div>
+                <div class="cs-item">
+                  <div class="cs-label">DISCREPANCIES</div>
+                  <div class="cs-value warn"><span class="ms">priority_high</span>1 logged</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sig-section">
+              <div class="sig-label">
+                <span class="sig-label-text">CUSTOMER SIGNATURE</span>
+                <button class="sig-clear" onclick="clearSig()">Clear</button>
+              </div>
+              <div class="sig-pad" id="sigPad">
+                <svg id="sigSvg"></svg>
+                <div class="sig-line"></div>
+                <div class="sig-hint">Sign here</div>
+              </div>
+            </div>
+
+            <div class="sig-name-section">
+              <input type="text" class="sig-name-input" placeholder="Customer name (printed)" value="James Murphy">
+            </div>
+
+            <div style="height: 16px;"></div>
+          </div>
+
+          <div class="bot-action">
+            <button class="btn-primary" onclick="goTo(6)">Confirm shipment <span class="ms">check</span></button>
+          </div>
+        </div>
+
+        <!-- ─── SCREEN 6: DONE ─── -->
+        <div class="screen" data-screen="6">
+          <div class="sb">
+            <div class="sb-time">9:55</div>
+            <div class="sb-icons">
+              <span class="ms">signal_cellular_alt</span>
+              <span class="ms">wifi</span>
+              <span class="ms">battery_full</span>
+            </div>
+          </div>
+
+          <div class="done-screen">
+            <div class="done-mark"><span class="ms">check</span></div>
+            <div class="done-eyebrow">DEL-2401 · CONFIRMED</div>
+            <div class="done-headline">Shipment released to job site.</div>
+            <div class="done-meta">The office sees the updated count and discrepancy note in real time. Rent has started for 7 of 8 line items.</div>
+
+            <div class="done-stats">
+              <div class="done-stat">
+                <div class="ds-num">9:55</div>
+                <div class="ds-label">CONFIRMED</div>
+              </div>
+              <div class="done-stat">
+                <div class="ds-num">13</div>
+                <div class="ds-label">MIN TOTAL</div>
+              </div>
+              <div class="done-stat">
+                <div class="ds-num">3</div>
+                <div class="ds-label">PENDING</div>
+              </div>
+            </div>
+
+            <div class="done-actions">
+              <button class="done-btn-prim" onclick="goTo(1)">Next shipment <span class="ms" style="font-size:16px;vertical-align:middle;margin-left:6px;">arrow_forward</span></button>
+              <button class="done-btn-text" onclick="goTo(1)">Back to today's list</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Right context (callouts) -->
+  <div class="context-right">
+    <div class="callouts" id="callouts"></div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="bottom-bar">
+    <div class="scene-dots" id="sceneDots"></div>
+    <div class="bottom-controls">
+      <span>Use</span>
+      <span class="kbd">←</span>
+      <span class="kbd">→</span>
+      <span style="margin-left:14px;"><button class="reset-btn" onclick="goTo(1)">Restart</button></span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const scenes = [
+  null,
+  {
+    title: "Today's shipments",
+    desc: "Yard worker opens the app. Sees what's scheduled for today, in priority order. The next pending delivery is featured at the top.",
+    callouts: [
+      { num: "01", text: "<span>One scrollable list — </span>no menus, no filters by default." },
+      { num: "02", text: "<span>The active shipment is </span>visually featured first<span> — no decision-making at the start.</span>" },
+      { num: "03", text: "<span>Each row shows what matters in the yard: </span>customer, time, item count<span>.</span>" }
+    ]
+  },
+  {
+    title: "Shipment detail",
+    desc: "Tapping a shipment opens the full pick list. The worker confirms what's expected before counting begins — no surprises mid-task.",
+    callouts: [
+      { num: "01", text: "<span>The </span>pick ticket replaces paper<span>. Worker can scroll the full list before starting.</span>" },
+      { num: "02", text: "<span>Customer, site, and time </span>stay anchored at the top<span> through the whole flow.</span>" },
+      { num: "03", text: "<span>One CTA: </span>Start counting<span>. No detours, no settings.</span>" }
+    ]
+  },
+  {
+    title: "Counting items",
+    desc: "Each line is checked, incremented, or marked as a discrepancy. Real-time progress at the top. The interface stays large-tap friendly for gloved hands.",
+    callouts: [
+      { num: "01", text: "<span>Line by line, </span>+/− with large tap targets<span>. Designed for gloves.</span>" },
+      { num: "02", text: "<span>Discrepancies </span>auto-highlight in amber<span> — no extra step to flag them.</span>" },
+      { num: "03", text: "<span>Progress bar at the top is </span>always visible<span> — context never disappears.</span>" }
+    ]
+  },
+  {
+    title: "Resolve the discrepancy",
+    desc: "When a count doesn't match, the app routes the worker through a quick photo + note step. The office sees this in real time, no phone call required.",
+    callouts: [
+      { num: "01", text: "<span>The discrepancy </span>has its own screen<span> — not buried in a modal.</span>" },
+      { num: "02", text: "<span>Photo capture is </span>front and center<span>. Visual proof beats word-of-mouth.</span>" },
+      { num: "03", text: "<span>Pre-filled note suggestion gives </span>structure without forcing it<span>.</span>" }
+    ]
+  },
+  {
+    title: "Sign and confirm",
+    desc: "Customer signs on the tablet. The signature, the count, the discrepancy, and the note are all bundled into one transaction.",
+    callouts: [
+      { num: "01", text: "<span>Signature is </span>drawn on the screen<span> — works for offline workflows too.</span>" },
+      { num: "02", text: "<span>Summary above the pad: </span>matched / discrepancies<span>. No surprises.</span>" },
+      { num: "03", text: "<span>Open question: </span>do customers actually need a drawn signature, or is a typed name enough?<span></span>" }
+    ]
+  },
+  {
+    title: "Released to site",
+    desc: "The truck leaves. The office sees the confirmed count, the discrepancy, and the photo evidence — all updated in real time. No paperwork to re-enter.",
+    callouts: [
+      { num: "01", text: "<span>Real-time sync means </span>no re-entry in the office<span>.</span>" },
+      { num: "02", text: "<span>Rent starts automatically for </span>matched line items<span> — discrepancies stay open until resolved.</span>" },
+      { num: "03", text: "<span>The yard worker is back to the list </span>in two taps<span>.</span>" }
+    ]
+  }
+];
+
+let current = 1;
+const total = 6;
+
+function render() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const active = document.querySelector(`.screen[data-screen="${current}"]`);
+  if (active) active.classList.add('active');
+
+  const sceneNumEl = document.getElementById('sceneNum');
+  const sceneTitleEl = document.getElementById('sceneTitle');
+  const sceneDescEl = document.getElementById('sceneDesc');
+  const calloutsEl = document.getElementById('callouts');
+
+  sceneNumEl.textContent = `SCENE ${String(current).padStart(2,'0')} / ${String(total).padStart(2,'0')}`;
+  sceneTitleEl.style.opacity = '0';
+  sceneDescEl.style.opacity = '0';
+  calloutsEl.style.opacity = '0';
+
+  setTimeout(() => {
+    sceneTitleEl.textContent = scenes[current].title;
+    sceneDescEl.textContent = scenes[current].desc;
+    calloutsEl.innerHTML = scenes[current].callouts.map(c => `
+      <div class="callout">
+        <div class="callout-num">${c.num}</div>
+        <div class="callout-text">${c.text}</div>
+      </div>
+    `).join('');
+    sceneTitleEl.style.opacity = '1';
+    sceneDescEl.style.opacity = '1';
+    calloutsEl.style.opacity = '1';
+  }, 140);
+
+  // Update dots
+  document.querySelectorAll('.scene-dot').forEach((d, i) => {
+    d.classList.remove('active', 'passed');
+    if (i + 1 === current) d.classList.add('active');
+    else if (i + 1 < current) d.classList.add('passed');
+  });
+}
+
+function goTo(n) {
+  if (n < 1 || n > total) return;
+  current = n;
+  render();
+}
+
+// Build dots
+const dotsEl = document.getElementById('sceneDots');
+for (let i = 1; i <= total; i++) {
+  const b = document.createElement('button');
+  b.className = 'scene-dot';
+  b.onclick = () => goTo(i);
+  dotsEl.appendChild(b);
+}
+
+// Keyboard nav
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') goTo(current + 1);
+  if (e.key === 'ArrowLeft') goTo(current - 1);
+  if (e.key === 'Home' || e.key === 'r') goTo(1);
+});
+
+// Signature pad — minimal SVG drawing
+const sigPad = document.getElementById('sigPad');
+const sigSvg = document.getElementById('sigSvg');
+let drawing = false, points = [], paths = [];
+
+function svgPoint(e) {
+  const rect = sigPad.getBoundingClientRect();
+  const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+  const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+  return { x, y };
+}
+
+function startDraw(e) {
+  e.preventDefault();
+  drawing = true;
+  points = [svgPoint(e)];
+  sigPad.classList.add('has-sig');
+}
+function moveDraw(e) {
+  if (!drawing) return;
+  e.preventDefault();
+  points.push(svgPoint(e));
+  redrawSig();
+}
+function endDraw() {
+  if (!drawing) return;
+  drawing = false;
+  if (points.length > 1) paths.push(points.slice());
+  points = [];
+}
+function redrawSig() {
+  let d = '';
+  const drawPath = (pts) => {
+    if (pts.length < 2) return '';
+    let p = `M ${pts[0].x} ${pts[0].y}`;
+    for (let i = 1; i < pts.length; i++) p += ` L ${pts[i].x} ${pts[i].y}`;
+    return p;
+  };
+  let allPaths = paths.map(drawPath).join(' ');
+  if (points.length > 1) allPaths += ' ' + drawPath(points);
+  sigSvg.innerHTML = `<path d="${allPaths}" stroke="#0A0C18" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+}
+function clearSig() {
+  paths = []; points = [];
+  sigSvg.innerHTML = '';
+  sigPad.classList.remove('has-sig');
+}
+sigPad.addEventListener('mousedown', startDraw);
+sigPad.addEventListener('mousemove', moveDraw);
+window.addEventListener('mouseup', endDraw);
+sigPad.addEventListener('touchstart', startDraw);
+sigPad.addEventListener('touchmove', moveDraw);
+sigPad.addEventListener('touchend', endDraw);
+
+render();
+</script>
+
+</body>
+</html>
