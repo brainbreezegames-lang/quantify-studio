@@ -14,31 +14,31 @@
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
 :root {
-  /* Quantify PROBE palette */
+  /* Quantify PROBE palette — sun-readable, AAA contrast */
   --blue: #0A3EFF;
   --blue-dark: #0832CC;
-  --blue-tint: #E8EEFF;
+  --blue-tint: #DCE5FF;
   --navy: #10296E;
-  --ink: #0A0C18;
-  --text: #202020;
-  --muted: #6B6F7B;
-  --dim: #9CA3AF;
-  --line: rgba(10, 30, 80, 0.08);
-  --line-strong: rgba(10, 30, 80, 0.14);
+  --ink: #0A0C18;          /* 19.7:1 on white */
+  --text: #1A1D24;         /* 16.6:1 on white */
+  --muted: #3F434B;        /* 10.4:1 on white — was 6B6F7B at 4.9:1 */
+  --dim: #5A5E68;          /* 7.3:1 on white — was 9CA3AF at 3.0:1 (FAIL) */
+  --line: rgba(10, 30, 80, 0.18);        /* visible in sunlight */
+  --line-strong: rgba(10, 30, 80, 0.32);
   --surface: #FFFFFF;
-  --surface-2: #F7F8FA;
-  --surface-3: #EFF1F5;
-  --ok: #1B8A4A;
-  --ok-bg: #E7F5EC;
-  --warn: #B45309;
-  --warn-bg: #FEF3C7;
-  --err: #B91C1C;
-  --err-bg: #FEE2E2;
+  --surface-2: #F4F5F8;
+  --surface-3: #E7E9EF;
+  --ok: #146B36;           /* darker green for AAA */
+  --ok-bg: #DCEFE3;
+  --warn: #92400E;         /* darker amber for AAA */
+  --warn-bg: #FDEBC8;
+  --err: #991B1B;
+  --err-bg: #FCDADA;
 
   /* Stage backdrop */
   --stage-bg: #F4F5F8;
   --stage-text: #0A0C18;
-  --stage-muted: #6B6F7B;
+  --stage-muted: #3F434B;
 
   /* Easing — Emil's signature */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -164,8 +164,8 @@ body::after {
 }
 .scene-num {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   color: var(--blue);
   letter-spacing: 0.8px;
   margin-bottom: 14px;
@@ -394,8 +394,8 @@ body::after {
   background: var(--surface);
 }
 .nav-btn {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border: none;
   background: none;
   cursor: pointer;
@@ -405,24 +405,25 @@ body::after {
   color: var(--ink);
   -webkit-tap-highlight-color: transparent;
   transition: background 160ms ease, transform 120ms var(--ease-out);
-  margin-left: -6px;
+  margin-left: -10px;
 }
+.nav-btn .icon { width: 24px; height: 24px; stroke-width: 2; }
 .nav-btn:active {
   background: var(--surface-3);
   transform: scale(0.92);
 }
 .nav-title {
   flex: 1;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: 600;
   color: var(--ink);
   letter-spacing: -0.2px;
 }
 .nav-sub {
   display: block;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
-  font-weight: 400;
+  font-weight: 500;
   margin-top: 2px;
   letter-spacing: 0.1px;
 }
@@ -443,27 +444,28 @@ body::after {
 }
 .hero-eyebrow {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--blue);
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .hero-headline {
-  font-size: 34px;
-  font-weight: 500;
+  font-size: 36px;
+  font-weight: 600;
   color: var(--ink);
   letter-spacing: -1.3px;
   line-height: 1;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 .hero-stat-row {
   display: flex;
   align-items: baseline;
   gap: 16px;
-  font-size: 13px;
-  color: var(--muted);
+  font-size: 15px;
+  color: var(--text);
+  font-weight: 500;
 }
 .hero-stat-row strong {
   color: var(--ink);
@@ -482,16 +484,16 @@ body::after {
   align-items: center;
   justify-content: space-between;
   padding: 24px 24px 12px;
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 .section-label .count {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  color: var(--dim);
-  font-weight: 500;
+  color: var(--muted);
+  font-weight: 600;
 }
 
 .ship-card {
@@ -519,10 +521,10 @@ body::after {
 }
 .ship-tag {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   letter-spacing: 0.8px;
-  padding: 3px 7px;
+  padding: 4px 8px;
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -545,24 +547,25 @@ body::after {
 }
 .ship-time {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 11px;
-  color: var(--muted);
-  font-weight: 500;
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 600;
 }
 .ship-name {
-  font-size: 17px;
-  font-weight: 500;
+  font-size: 19px;
+  font-weight: 600;
   color: var(--ink);
   letter-spacing: -0.3px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 .ship-site {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   margin-bottom: 14px;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+  font-weight: 500;
 }
 .ship-site .icon { color: var(--dim); }
 .ship-foot {
@@ -575,16 +578,17 @@ body::after {
 .ship-stat {
   display: flex;
   align-items: center;
-  gap: 14px;
-  font-size: 12px;
+  gap: 16px;
+  font-size: 14px;
   color: var(--muted);
+  font-weight: 500;
 }
 .ship-stat strong {
   color: var(--ink);
-  font-weight: 500;
+  font-weight: 600;
 }
 .ship-arrow {
-  color: var(--dim);
+  color: var(--text);
 }
 
 /* ─── SCREEN 2: SHIPMENT DETAIL ─── */
@@ -603,27 +607,28 @@ body::after {
 .detail-eyebrow .ship-tag { padding: 3px 8px; }
 .detail-id {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
-  font-weight: 500;
+  font-weight: 600;
 }
 .detail-name {
-  font-size: 26px;
-  font-weight: 500;
+  font-size: 28px;
+  font-weight: 600;
   color: var(--ink);
   letter-spacing: -0.8px;
   line-height: 1.05;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 .detail-site {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--muted);
   display: flex;
   align-items: center;
   gap: 6px;
   margin-bottom: 18px;
+  font-weight: 500;
 }
-.detail-site .icon { color: var(--dim); }
+.detail-site .icon { color: var(--text); }
 .detail-meta-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -640,16 +645,16 @@ body::after {
 .dm-col:last-child { border-right: none; padding-left: 14px; padding-right: 0; }
 .dm-col:nth-child(2) { padding-left: 14px; }
 .dm-label {
-  font-size: 9px;
-  font-weight: 600;
-  color: var(--dim);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
   letter-spacing: 0.7px;
   text-transform: uppercase;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 .dm-value {
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: 600;
   color: var(--ink);
   letter-spacing: -0.3px;
 }
@@ -662,56 +667,58 @@ body::after {
   padding: 22px 24px 12px;
 }
 .items-label-text {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 .items-label-count {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--blue);
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .item-row {
   display: flex;
   align-items: center;
-  padding: 14px 24px;
+  padding: 16px 24px;
   background: var(--surface);
   border-bottom: 1px solid var(--line);
+  gap: 14px;
 }
 .item-num {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 10px;
-  color: var(--dim);
-  font-weight: 500;
-  width: 24px;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+  width: 22px;
 }
 .item-body { flex: 1; min-width: 0; }
 .item-name {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 600;
   color: var(--ink);
   letter-spacing: -0.1px;
 }
 .item-spec {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
-  margin-top: 1px;
+  margin-top: 2px;
+  font-weight: 500;
 }
 .item-qty {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   color: var(--ink);
 }
 .item-qty span {
   color: var(--muted);
-  font-weight: 400;
-  font-size: 11px;
-  margin-left: 2px;
+  font-weight: 500;
+  font-size: 12px;
+  margin-left: 3px;
 }
 
 /* ─── SCREEN 3: COUNTING ─── */
@@ -728,20 +735,20 @@ body::after {
   margin-bottom: 12px;
 }
 .count-progress-text {
-  font-size: 24px;
-  font-weight: 500;
+  font-size: 26px;
+  font-weight: 600;
   color: var(--ink);
   letter-spacing: -0.6px;
 }
 .count-progress-text strong { color: var(--blue); }
 .count-progress-meta {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 11px;
-  color: var(--muted);
-  font-weight: 500;
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 600;
 }
 .progress-bar {
-  height: 3px;
+  height: 6px;
   background: var(--surface-3);
   position: relative;
   overflow: hidden;
@@ -763,13 +770,13 @@ body::after {
   gap: 14px;
   transition: background 200ms ease;
 }
-.count-row.matched { background: #FAFCFB; }
-.count-row.diff { background: #FFFBF5; }
+.count-row.matched { background: #F5FBF7; }
+.count-row.diff { background: #FFF8EC; }
 .cr-check {
-  width: 22px;
-  height: 22px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  border: 1.5px solid var(--line-strong);
+  border: 2px solid var(--line-strong);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -786,53 +793,55 @@ body::after {
   border-color: var(--warn);
   color: white;
 }
-.cr-check .icon { color: inherit; }
+.cr-check .icon { color: inherit; width: 16px; height: 16px; stroke-width: 2.75; }
 .cr-body { flex: 1; min-width: 0; }
 .cr-name {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 600;
   color: var(--ink);
   letter-spacing: -0.1px;
 }
 .cr-expected {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
-  margin-top: 1px;
+  margin-top: 2px;
+  font-weight: 500;
 }
 .cr-counter {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   flex-shrink: 0;
 }
 .cnt-btn {
-  width: 32px;
-  height: 32px;
-  border: 1.5px solid var(--line-strong);
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--line-strong);
   background: var(--surface);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 22px;
   color: var(--ink);
   font-family: 'Switzer', sans-serif;
-  font-weight: 500;
+  font-weight: 600;
   -webkit-tap-highlight-color: transparent;
   transition: all 140ms var(--ease-out);
+  user-select: none;
 }
 .cnt-btn:hover { border-color: var(--blue); color: var(--blue); }
 .cnt-btn:active {
-  transform: scale(0.88);
+  transform: scale(0.9);
   background: var(--blue-tint);
   border-color: var(--blue);
 }
 .cnt-val {
-  width: 36px;
+  width: 44px;
   text-align: center;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
   color: var(--ink);
   transition: color 200ms ease;
 }
@@ -847,18 +856,18 @@ body::after {
 }
 .btn-primary {
   width: 100%;
-  height: 52px;
+  height: 56px;
   background: var(--blue);
   color: white;
   border: none;
   font-family: 'Switzer', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   letter-spacing: 0.1px;
   transition: all 200ms var(--ease-out);
   -webkit-tap-highlight-color: transparent;
@@ -897,16 +906,16 @@ body::after {
 
 .disc-screen { background: var(--surface); }
 .disc-banner {
-  padding: 16px 24px;
+  padding: 18px 24px;
   background: var(--warn-bg);
-  border-bottom: 1px solid #F5DEB3;
+  border-bottom: 1px solid #DDB872;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 .disc-banner-icon {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   background: var(--warn);
   color: white;
   display: flex;
@@ -914,37 +923,40 @@ body::after {
   justify-content: center;
   flex-shrink: 0;
 }
+.disc-banner-icon .icon { width: 22px; height: 22px; stroke-width: 2.5; }
 .disc-banner-body {
   flex: 1;
 }
 .disc-banner-title {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   color: var(--warn);
-  margin-bottom: 1px;
+  margin-bottom: 3px;
 }
 .disc-banner-text {
-  font-size: 11px;
-  color: #92400E;
+  font-size: 13px;
+  color: #6B3508;
+  font-weight: 500;
 }
 
 .disc-item-card {
   margin: 24px 24px 0;
-  padding: 20px;
+  padding: 22px;
   background: var(--surface-2);
-  border-left: 3px solid var(--warn);
+  border-left: 4px solid var(--warn);
 }
 .disc-item-name {
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 19px;
+  font-weight: 600;
   color: var(--ink);
   letter-spacing: -0.3px;
   margin-bottom: 6px;
 }
 .disc-item-spec {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   margin-bottom: 18px;
+  font-weight: 500;
 }
 .disc-numbers {
   display: grid;
@@ -959,17 +971,17 @@ body::after {
 }
 .disc-num-col:last-child { border-right: none; }
 .dn-label {
-  font-size: 9px;
-  font-weight: 600;
-  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
   letter-spacing: 0.7px;
   text-transform: uppercase;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 .dn-value {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 26px;
+  font-weight: 700;
   color: var(--ink);
   line-height: 1;
 }
@@ -977,69 +989,111 @@ body::after {
 .dn-value.minus { color: var(--err); }
 
 .photo-section {
-  padding: 24px 24px 0;
+  padding: 26px 24px 0;
 }
 .photo-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
   letter-spacing: 0.7px;
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.photo-label .ph-count {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  color: var(--muted);
+  font-weight: 600;
 }
 .photo-row {
   display: flex;
-  gap: 8px;
+  gap: 10px;
 }
 .photo-tile {
-  width: 76px;
-  height: 76px;
+  width: 84px;
+  height: 84px;
   background: var(--surface-2);
-  border: 1.5px dashed var(--line-strong);
+  border: 2px dashed var(--line-strong);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 4px;
   cursor: pointer;
   color: var(--muted);
   transition: all 160ms ease;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  overflow: hidden;
 }
 .photo-tile:hover {
   border-color: var(--blue);
   color: var(--blue);
   background: var(--blue-tint);
 }
+.photo-tile:active {
+  transform: scale(0.95);
+}
+.photo-tile .icon { width: 24px; height: 24px; stroke-width: 1.75; }
+.photo-tile-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
 .photo-tile.filled {
-  border: none;
-  position: relative;
-  background-color: #1f2937;
-  background-size: cover;
-  background-position: center;
+  border: 2px solid var(--ok);
+  padding: 0;
 }
-.photo-tile.filled.p1 {
-  background-image: url('https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=300&q=70');
+.photo-tile.filled img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
-.photo-tile.filled.p2 {
-  background-image: url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=300&q=70');
+.photo-tile.filled .photo-check {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ok);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
+.photo-tile.filled .photo-check svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 3.5;
+}
+.photo-input { display: none; }
 
 .note-section {
-  padding: 18px 24px 0;
+  padding: 22px 24px 0;
 }
 .note-input {
   width: 100%;
-  height: 64px;
-  border: 1.5px solid var(--line);
+  height: 80px;
+  border: 2px solid var(--line);
   background: var(--surface-2);
-  padding: 12px 14px;
+  padding: 14px 16px;
   font-family: 'Switzer', sans-serif;
-  font-size: 13px;
+  font-size: 15px;
+  font-weight: 500;
   color: var(--ink);
   resize: none;
   outline: none;
   transition: border-color 160ms ease;
+  line-height: 1.45;
 }
 .note-input:focus { border-color: var(--blue); background: white; }
-.note-input::placeholder { color: var(--dim); }
+.note-input::placeholder { color: var(--muted); font-weight: 500; }
 
 /* ─── SCREEN 5: CONFIRM ─── */
 
@@ -1049,38 +1103,38 @@ body::after {
   border-bottom: 1px solid var(--line);
 }
 .conf-headline {
-  font-size: 22px;
-  font-weight: 500;
+  font-size: 24px;
+  font-weight: 600;
   color: var(--ink);
   letter-spacing: -0.6px;
   line-height: 1.15;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 .conf-summary-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0;
   background: var(--surface-2);
-  padding: 16px;
+  padding: 18px;
   margin: 0 -2px;
 }
-.cs-item { padding: 0 12px; border-right: 1px solid var(--line); }
+.cs-item { padding: 0 14px; border-right: 1px solid var(--line); }
 .cs-item:last-child { border-right: none; }
 .cs-label {
-  font-size: 9px;
-  font-weight: 600;
-  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
   letter-spacing: 0.7px;
   text-transform: uppercase;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 .cs-value {
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 17px;
+  font-weight: 600;
   color: var(--ink);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
 }
 .cs-value.ok { color: var(--ok); }
 .cs-value.warn { color: var(--warn); }
@@ -1097,25 +1151,26 @@ body::after {
   margin-bottom: 10px;
 }
 .sig-label-text {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
   letter-spacing: 0.7px;
   text-transform: uppercase;
 }
 .sig-clear {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--blue);
-  font-weight: 500;
+  font-weight: 600;
   background: none;
   border: none;
   cursor: pointer;
   font-family: 'Switzer', sans-serif;
+  padding: 4px 8px;
 }
 .sig-pad {
   width: 100%;
-  height: 130px;
-  border: 1.5px solid var(--line);
+  height: 140px;
+  border: 2px solid var(--line);
   background: var(--surface-2);
   position: relative;
   cursor: crosshair;
@@ -1128,13 +1183,12 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  color: var(--dim);
+  color: var(--muted);
   pointer-events: none;
   letter-spacing: 0.3px;
   font-style: italic;
   font-family: 'DM Serif Display', serif;
-  font-size: 14px;
+  font-size: 16px;
 }
 .sig-pad.has-sig .sig-hint { display: none; }
 .sig-line {
@@ -1160,20 +1214,20 @@ body::after {
 }
 .sig-name-input {
   width: 100%;
-  height: 44px;
+  height: 48px;
   border: none;
-  border-bottom: 1.5px solid var(--line);
+  border-bottom: 2px solid var(--line);
   background: transparent;
-  padding: 0 0 6px;
+  padding: 0 0 8px;
   font-family: 'Switzer', sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--ink);
   outline: none;
-  font-weight: 500;
+  font-weight: 600;
   transition: border-color 160ms ease;
 }
 .sig-name-input:focus { border-color: var(--blue); }
-.sig-name-input::placeholder { color: var(--dim); font-weight: 400; }
+.sig-name-input::placeholder { color: var(--muted); font-weight: 500; }
 
 /* ─── SCREEN 6: DONE ─── */
 
@@ -1205,35 +1259,36 @@ body::after {
 }
 .done-eyebrow {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--ok);
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 1.2px;
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 .done-headline {
-  font-size: 30px;
-  font-weight: 500;
+  font-size: 32px;
+  font-weight: 600;
   color: var(--ink);
   letter-spacing: -1px;
   line-height: 1.05;
-  margin-bottom: 14px;
-  max-width: 280px;
+  margin-bottom: 16px;
+  max-width: 290px;
 }
 .done-meta {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.5;
-  max-width: 260px;
-  margin-bottom: 28px;
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.55;
+  max-width: 280px;
+  margin-bottom: 30px;
+  font-weight: 500;
 }
-.done-meta strong { color: var(--ink); font-weight: 500; }
+.done-meta strong { color: var(--ink); font-weight: 600; }
 .done-stats {
   display: flex;
   gap: 0;
   background: var(--surface-2);
-  padding: 16px 0;
+  padding: 18px 0;
   margin: 0 -32px 32px;
   width: calc(100% + 64px);
 }
@@ -1245,18 +1300,18 @@ body::after {
 .done-stat:last-child { border-right: none; }
 .ds-num {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 24px;
+  font-weight: 700;
   color: var(--ink);
   line-height: 1;
 }
 .ds-label {
-  font-size: 9px;
-  font-weight: 600;
-  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
   letter-spacing: 0.7px;
   text-transform: uppercase;
-  margin-top: 5px;
+  margin-top: 7px;
 }
 .done-actions {
   display: flex;
@@ -1266,13 +1321,13 @@ body::after {
 }
 .done-btn-prim {
   width: 100%;
-  height: 50px;
+  height: 56px;
   background: var(--blue);
   color: white;
   border: none;
   font-family: 'Switzer', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 200ms var(--ease-out);
 }
@@ -1281,12 +1336,12 @@ body::after {
 .done-btn-text {
   background: none;
   border: none;
-  color: var(--muted);
+  color: var(--text);
   font-family: 'Switzer', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  padding: 8px;
+  padding: 10px;
 }
 .done-btn-text:hover { color: var(--blue); }
 
@@ -1592,118 +1647,21 @@ body::after {
           </div>
 
           <div class="nav">
-            <button class="nav-btn" onclick="goTo(2)"><i data-lucide="arrow-left" class="icon"></i></button>
+            <button class="nav-btn" onclick="goTo(2)" aria-label="Back"><i data-lucide="arrow-left" class="icon"></i></button>
             <div class="nav-title">Count items<span class="nav-sub">Phillips 66 Sweeny · DEL-2401</span></div>
-            <button class="nav-btn"><i data-lucide="camera" class="icon"></i></button>
+            <button class="nav-btn" id="navCameraBtn" aria-label="Take photo"><i data-lucide="camera" class="icon"></i></button>
           </div>
 
           <div class="count-header">
             <div class="count-progress-row">
-              <div class="count-progress-text"><strong>8</strong> of 8 counted</div>
-              <div class="count-progress-meta">7 OK · 1 DIFF</div>
+              <div class="count-progress-text"><strong id="countDone">8</strong> of <span id="countTotal">8</span> counted</div>
+              <div class="count-progress-meta"><span id="countOk">7</span> OK · <span id="countDiff">1</span> DIFF</div>
             </div>
-            <div class="progress-bar"><div class="progress-fill" style="right: 0%;"></div></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill" style="right: 0%;"></div></div>
           </div>
 
           <div class="content">
-            <div class="count-list">
-              <div class="count-row matched">
-                <div class="cr-check on"><i data-lucide="check" class="icon icon-xs"></i></div>
-                <div class="cr-body">
-                  <div class="cr-name">Cuplok Standard 2.0m</div>
-                  <div class="cr-expected">Expected 48</div>
-                </div>
-                <div class="cr-counter">
-                  <button class="cnt-btn">−</button>
-                  <div class="cnt-val">48</div>
-                  <button class="cnt-btn">+</button>
-                </div>
-              </div>
-              <div class="count-row matched">
-                <div class="cr-check on"><i data-lucide="check" class="icon icon-xs"></i></div>
-                <div class="cr-body">
-                  <div class="cr-name">Cuplok Ledger 2.5m</div>
-                  <div class="cr-expected">Expected 96</div>
-                </div>
-                <div class="cr-counter">
-                  <button class="cnt-btn">−</button>
-                  <div class="cnt-val">96</div>
-                  <button class="cnt-btn">+</button>
-                </div>
-              </div>
-              <div class="count-row matched">
-                <div class="cr-check on"><i data-lucide="check" class="icon icon-xs"></i></div>
-                <div class="cr-body">
-                  <div class="cr-name">Cuplok Transom 1.2m</div>
-                  <div class="cr-expected">Expected 48</div>
-                </div>
-                <div class="cr-counter">
-                  <button class="cnt-btn">−</button>
-                  <div class="cnt-val">48</div>
-                  <button class="cnt-btn">+</button>
-                </div>
-              </div>
-              <div class="count-row diff">
-                <div class="cr-check diff-on"><i data-lucide="alert-triangle" class="icon icon-xs"></i></div>
-                <div class="cr-body">
-                  <div class="cr-name">LVL Plank 2.5m</div>
-                  <div class="cr-expected">Expected 60 · Short by 2</div>
-                </div>
-                <div class="cr-counter">
-                  <button class="cnt-btn">−</button>
-                  <div class="cnt-val diff">58</div>
-                  <button class="cnt-btn">+</button>
-                </div>
-              </div>
-              <div class="count-row matched">
-                <div class="cr-check on"><i data-lucide="check" class="icon icon-xs"></i></div>
-                <div class="cr-body">
-                  <div class="cr-name">Cuplok Toe Board 2.5m</div>
-                  <div class="cr-expected">Expected 24</div>
-                </div>
-                <div class="cr-counter">
-                  <button class="cnt-btn">−</button>
-                  <div class="cnt-val">24</div>
-                  <button class="cnt-btn">+</button>
-                </div>
-              </div>
-              <div class="count-row matched">
-                <div class="cr-check on"><i data-lucide="check" class="icon icon-xs"></i></div>
-                <div class="cr-body">
-                  <div class="cr-name">Cuplok Spigot</div>
-                  <div class="cr-expected">Expected 24</div>
-                </div>
-                <div class="cr-counter">
-                  <button class="cnt-btn">−</button>
-                  <div class="cnt-val">24</div>
-                  <button class="cnt-btn">+</button>
-                </div>
-              </div>
-              <div class="count-row matched">
-                <div class="cr-check on"><i data-lucide="check" class="icon icon-xs"></i></div>
-                <div class="cr-body">
-                  <div class="cr-name">Base Jack 600mm</div>
-                  <div class="cr-expected">Expected 24</div>
-                </div>
-                <div class="cr-counter">
-                  <button class="cnt-btn">−</button>
-                  <div class="cnt-val">24</div>
-                  <button class="cnt-btn">+</button>
-                </div>
-              </div>
-              <div class="count-row matched">
-                <div class="cr-check on"><i data-lucide="check" class="icon icon-xs"></i></div>
-                <div class="cr-body">
-                  <div class="cr-name">Cuplok Guardrail 2.5m</div>
-                  <div class="cr-expected">Expected 18</div>
-                </div>
-                <div class="cr-counter">
-                  <button class="cnt-btn">−</button>
-                  <div class="cnt-val">18</div>
-                  <button class="cnt-btn">+</button>
-                </div>
-              </div>
-            </div>
+            <div class="count-list" id="countList"></div>
           </div>
 
           <div class="bot-action">
@@ -1756,18 +1714,29 @@ body::after {
             </div>
 
             <div class="photo-section">
-              <div class="photo-label">PHOTO EVIDENCE</div>
-              <div class="photo-row">
-                <div class="photo-tile filled p1"></div>
-                <div class="photo-tile filled p2"></div>
-                <div class="photo-tile">
-                  <i data-lucide="image-plus" class="icon"></i>
-                </div>
+              <div class="photo-label">
+                <span>PHOTO EVIDENCE</span>
+                <span class="ph-count" id="photoCount">0 OF 3</span>
               </div>
+              <div class="photo-row" id="photoRow">
+                <button type="button" class="photo-tile" data-slot="0">
+                  <i data-lucide="camera" class="icon"></i>
+                  <span class="photo-tile-label">TAP TO ADD</span>
+                </button>
+                <button type="button" class="photo-tile" data-slot="1">
+                  <i data-lucide="camera" class="icon"></i>
+                  <span class="photo-tile-label">TAP TO ADD</span>
+                </button>
+                <button type="button" class="photo-tile" data-slot="2">
+                  <i data-lucide="camera" class="icon"></i>
+                  <span class="photo-tile-label">TAP TO ADD</span>
+                </button>
+              </div>
+              <input type="file" accept="image/*" capture="environment" class="photo-input" id="photoInput">
             </div>
 
             <div class="note-section">
-              <div class="photo-label">NOTE FOR OFFICE</div>
+              <div class="photo-label"><span>NOTE FOR OFFICE</span></div>
               <textarea class="note-input" placeholder="Add note for the office">2 LVL planks split at the bottom of the bundle — pulled from the load and kept in the Sweeny return rack for inspection.</textarea>
             </div>
 
@@ -1954,6 +1923,135 @@ const scenes = [
   }
 ];
 
+// ───── ITEM DATA + COUNTER LOGIC ─────
+const items = [
+  { name: "Cuplok Standard 2.0m", expected: 48, counted: 48 },
+  { name: "Cuplok Ledger 2.5m",   expected: 96, counted: 96 },
+  { name: "Cuplok Transom 1.2m",  expected: 48, counted: 48 },
+  { name: "LVL Plank 2.5m",       expected: 60, counted: 58 },
+  { name: "Cuplok Toe Board 2.5m",expected: 24, counted: 24 },
+  { name: "Cuplok Spigot",        expected: 24, counted: 24 },
+  { name: "Base Jack 600mm",      expected: 24, counted: 24 },
+  { name: "Cuplok Guardrail 2.5m",expected: 18, counted: 18 }
+];
+
+function buildCountList() {
+  const list = document.getElementById('countList');
+  if (!list) return;
+  list.innerHTML = items.map((it, i) => {
+    const diff = it.counted - it.expected;
+    const status = diff === 0 ? 'matched' : 'diff';
+    const checkClass = diff === 0 ? 'on' : 'diff-on';
+    const iconName = diff === 0 ? 'check' : 'alert-triangle';
+    const expectedText = diff === 0
+      ? `Expected ${it.expected}`
+      : (diff < 0
+          ? `Expected ${it.expected} · Short by ${Math.abs(diff)}`
+          : `Expected ${it.expected} · Over by ${diff}`);
+    const valClass = diff === 0 ? '' : 'diff';
+    return `
+      <div class="count-row ${status}" data-line="${i}">
+        <div class="cr-check ${checkClass}"><i data-lucide="${iconName}" class="icon icon-xs"></i></div>
+        <div class="cr-body">
+          <div class="cr-name">${it.name}</div>
+          <div class="cr-expected">${expectedText}</div>
+        </div>
+        <div class="cr-counter">
+          <button class="cnt-btn" onclick="adjust(${i}, -1)" aria-label="Subtract">−</button>
+          <div class="cnt-val ${valClass}">${it.counted}</div>
+          <button class="cnt-btn" onclick="adjust(${i}, 1)" aria-label="Add">+</button>
+        </div>
+      </div>`;
+  }).join('');
+  if (window.lucide) lucide.createIcons();
+  updateCountHeader();
+}
+
+function adjust(i, delta) {
+  items[i].counted = Math.max(0, items[i].counted + delta);
+  buildCountList();
+}
+
+function updateCountHeader() {
+  const total = items.length;
+  const ok = items.filter(i => i.counted === i.expected).length;
+  const diff = total - ok;
+  const counted = items.filter(i => i.counted > 0 || i.expected === 0).length;
+
+  const okEl = document.getElementById('countOk');
+  const diffEl = document.getElementById('countDiff');
+  const doneEl = document.getElementById('countDone');
+  const totalEl = document.getElementById('countTotal');
+  const fillEl = document.getElementById('progressFill');
+  if (okEl) okEl.textContent = ok;
+  if (diffEl) diffEl.textContent = diff;
+  if (doneEl) doneEl.textContent = counted;
+  if (totalEl) totalEl.textContent = total;
+  if (fillEl) {
+    const pct = Math.round((counted / total) * 100);
+    fillEl.style.right = (100 - pct) + '%';
+  }
+}
+
+// ───── PHOTO CAPTURE LOGIC ─────
+let activeSlot = null;
+
+function setupPhotos() {
+  const input = document.getElementById('photoInput');
+  if (!input) return;
+
+  // Photo evidence slots
+  document.querySelectorAll('#photoRow .photo-tile').forEach(tile => {
+    tile.addEventListener('click', () => {
+      activeSlot = parseInt(tile.dataset.slot, 10);
+      input.value = '';
+      input.click();
+    });
+  });
+
+  // Nav camera button — adds to next empty slot
+  const navBtn = document.getElementById('navCameraBtn');
+  if (navBtn) {
+    navBtn.addEventListener('click', () => {
+      // Jump to discrepancy screen if not there yet, then add photo
+      if (current !== 4) goTo(4);
+      setTimeout(() => {
+        const empty = document.querySelector('#photoRow .photo-tile:not(.filled)');
+        if (empty) {
+          activeSlot = parseInt(empty.dataset.slot, 10);
+          input.value = '';
+          input.click();
+        }
+      }, 250);
+    });
+  }
+
+  input.addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file || activeSlot === null) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const tile = document.querySelector(`#photoRow .photo-tile[data-slot="${activeSlot}"]`);
+      if (!tile) return;
+      tile.classList.add('filled');
+      tile.innerHTML = `
+        <img src="${ev.target.result}" alt="Photo evidence">
+        <div class="photo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg></div>
+      `;
+      updatePhotoCount();
+      activeSlot = null;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function updatePhotoCount() {
+  const filled = document.querySelectorAll('#photoRow .photo-tile.filled').length;
+  const total = document.querySelectorAll('#photoRow .photo-tile').length;
+  const el = document.getElementById('photoCount');
+  if (el) el.textContent = `${filled} OF ${total}`;
+}
+
 let current = 1;
 const total = 6;
 
@@ -2071,13 +2169,22 @@ sigPad.addEventListener('touchmove', moveDraw);
 sigPad.addEventListener('touchend', endDraw);
 
 // Render Lucide icons
-if (window.lucide) {
-  lucide.createIcons();
-} else {
-  window.addEventListener('load', () => lucide.createIcons());
+function initIcons() {
+  if (window.lucide) lucide.createIcons();
 }
 
-render();
+function init() {
+  initIcons();
+  buildCountList();
+  setupPhotos();
+  render();
+}
+
+if (window.lucide) {
+  init();
+} else {
+  window.addEventListener('load', init);
+}
 </script>
 
 </body>
