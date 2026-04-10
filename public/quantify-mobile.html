@@ -4,11 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quantify Mobile — Shipments Prototype</title>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
-@font-face { font-family:'Switzer'; src:url('https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap'); }
-@import url('https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap');
 
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
@@ -79,23 +80,20 @@ body::after {
   z-index: 0;
 }
 
-.ms {
-  font-family: 'Material Symbols Sharp';
-  font-size: 22px;
-  font-weight: 400;
-  font-style: normal;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
-  font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+/* Lucide icons — sharp, monoline, matches PROBE identity */
+.icon {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.75;
   flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
 }
-.ms.f { font-variation-settings: 'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; }
-.ms.sm { font-size: 18px; }
-.ms.xs { font-size: 16px; }
-.ms.lg { font-size: 28px; }
+.icon-xs { width: 14px; height: 14px; stroke-width: 2; }
+.icon-sm { width: 16px; height: 16px; stroke-width: 1.75; }
+.icon-md { width: 22px; height: 22px; stroke-width: 1.75; }
+.icon-lg { width: 28px; height: 28px; stroke-width: 1.75; }
+.icon-xl { width: 48px; height: 48px; stroke-width: 1.5; }
 
 /* ════════════════════════════════════════════════════════
    STAGE LAYOUT
@@ -363,7 +361,7 @@ body::after {
   gap: 6px;
   margin-right: -4px;
 }
-.sb-icons .ms { font-size: 14px; color: var(--ink); }
+.sb-icons .icon { color: var(--ink); }
 
 /* ════════════════════════════════════════════════════════
    SCREENS
@@ -537,11 +535,13 @@ body::after {
   background: var(--warn-bg);
   color: var(--warn);
 }
-.ship-tag.dot {
+.tag-dot {
   width: 5px;
   height: 5px;
   border-radius: 50%;
   background: currentColor;
+  display: inline-block;
+  flex-shrink: 0;
 }
 .ship-time {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
@@ -564,7 +564,7 @@ body::after {
   align-items: center;
   gap: 5px;
 }
-.ship-site .ms { font-size: 12px; color: var(--dim); }
+.ship-site .icon { color: var(--dim); }
 .ship-foot {
   display: flex;
   align-items: center;
@@ -585,7 +585,6 @@ body::after {
 }
 .ship-arrow {
   color: var(--dim);
-  font-size: 18px;
 }
 
 /* ─── SCREEN 2: SHIPMENT DETAIL ─── */
@@ -624,7 +623,7 @@ body::after {
   gap: 6px;
   margin-bottom: 18px;
 }
-.detail-site .ms { font-size: 14px; color: var(--dim); }
+.detail-site .icon { color: var(--dim); }
 .detail-meta-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -787,7 +786,7 @@ body::after {
   border-color: var(--warn);
   color: white;
 }
-.cr-check .ms { font-size: 14px; }
+.cr-check .icon { color: inherit; }
 .cr-body { flex: 1; min-width: 0; }
 .cr-name {
   font-size: 13px;
@@ -1010,16 +1009,17 @@ body::after {
   background: var(--blue-tint);
 }
 .photo-tile.filled {
-  background: linear-gradient(135deg, #233047 0%, #475569 100%);
   border: none;
   position: relative;
-  color: white;
+  background-color: #1f2937;
+  background-size: cover;
+  background-position: center;
 }
-.photo-tile.filled::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='76' height='76'%3E%3Crect width='76' height='76' fill='%23475569'/%3E%3Cpath d='M0 50 L20 35 L35 45 L55 25 L76 40 L76 76 L0 76 Z' fill='%23334155'/%3E%3Ccircle cx='55' cy='18' r='5' fill='%23FBBF24'/%3E%3C/svg%3E");
+.photo-tile.filled.p1 {
+  background-image: url('https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=300&q=70');
+}
+.photo-tile.filled.p2 {
+  background-image: url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=300&q=70');
 }
 
 .note-section {
@@ -1084,7 +1084,7 @@ body::after {
 }
 .cs-value.ok { color: var(--ok); }
 .cs-value.warn { color: var(--warn); }
-.cs-value .ms { font-size: 16px; }
+.cs-value .icon { color: inherit; }
 
 .sig-section {
   padding: 22px 24px 0;
@@ -1197,8 +1197,10 @@ body::after {
   margin-bottom: 36px;
   position: relative;
 }
-.done-mark .ms {
-  font-size: 48px;
+.done-mark .icon {
+  width: 44px;
+  height: 44px;
+  stroke-width: 2;
   color: white;
 }
 .done-eyebrow {
@@ -1352,9 +1354,9 @@ body::after {
   <div class="top-bar">
     <div class="brand">
       <div class="brand-mark"></div>
-      <div class="brand-text">Quantify Mobile <span>· Shipments prototype</span></div>
+      <div class="brand-text">Quantify Mobile <span>· AT-PAC Shipments</span></div>
     </div>
-    <div class="top-meta">Internal · Early concept</div>
+    <div class="top-meta">Internal preview · For AT-PAC team</div>
   </div>
 
   <!-- Left context -->
@@ -1374,9 +1376,9 @@ body::after {
           <div class="sb">
             <div class="sb-time">9:42</div>
             <div class="sb-icons">
-              <span class="ms">signal_cellular_alt</span>
-              <span class="ms">wifi</span>
-              <span class="ms">battery_full</span>
+              <i data-lucide="signal" class="icon icon-xs"></i>
+              <i data-lucide="wifi" class="icon icon-xs"></i>
+              <i data-lucide="battery-full" class="icon icon-xs"></i>
             </div>
           </div>
 
@@ -1389,7 +1391,7 @@ body::after {
                 <span class="sep"></span>
                 <span><strong>2</strong> pending</span>
                 <span class="sep"></span>
-                <span><strong>348</strong> units</span>
+                <span><strong>548</strong> units</span>
               </div>
             </div>
 
@@ -1400,27 +1402,27 @@ body::after {
 
             <div class="ship-card featured" onclick="goTo(2)">
               <div class="ship-top">
-                <div class="ship-tag del"><span class="ship-tag dot"></span>DELIVERY</div>
+                <div class="ship-tag del"><span class="tag-dot"></span>DELIVERY</div>
                 <div class="ship-time">09:42</div>
               </div>
-              <div class="ship-name">Murphy Construction Co.</div>
-              <div class="ship-site"><span class="ms">place</span>4521 Industrial Way · Bay 3</div>
+              <div class="ship-name">Phillips 66 Sweeny Refinery</div>
+              <div class="ship-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Old Ocean, TX · Unit 14 turnaround</div>
               <div class="ship-foot">
-                <div class="ship-stat"><span><strong>8</strong> items</span><span><strong>142</strong> units</span></div>
-                <span class="ms ship-arrow">arrow_forward</span>
+                <div class="ship-stat"><span><strong>8</strong> items</span><span><strong>342</strong> units</span></div>
+                <i data-lucide="arrow-right" class="icon icon-sm ship-arrow"></i>
               </div>
             </div>
 
             <div class="ship-card">
               <div class="ship-top">
-                <div class="ship-tag del"><span class="ship-tag dot"></span>DELIVERY</div>
+                <div class="ship-tag del"><span class="tag-dot"></span>DELIVERY</div>
                 <div class="ship-time">11:00</div>
               </div>
-              <div class="ship-name">Riverside Apartments</div>
-              <div class="ship-site"><span class="ms">place</span>180 Riverside Drive</div>
+              <div class="ship-name">ExxonMobil Beaumont</div>
+              <div class="ship-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Beaumont, TX · Coker 2 platform</div>
               <div class="ship-foot">
                 <div class="ship-stat"><span><strong>5</strong> items</span><span><strong>96</strong> units</span></div>
-                <span class="ms ship-arrow">arrow_forward</span>
+                <i data-lucide="arrow-right" class="icon icon-sm ship-arrow"></i>
               </div>
             </div>
 
@@ -1431,27 +1433,27 @@ body::after {
 
             <div class="ship-card">
               <div class="ship-top">
-                <div class="ship-tag ret"><span class="ship-tag dot"></span>RETURN</div>
+                <div class="ship-tag ret"><span class="tag-dot"></span>RETURN</div>
                 <div class="ship-time">13:30</div>
               </div>
-              <div class="ship-name">Cooper Industrial</div>
-              <div class="ship-site"><span class="ms">place</span>772 Cooper Ave · Lot B</div>
+              <div class="ship-name">Marathon Galveston Bay</div>
+              <div class="ship-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Texas City, TX · FCC unit return</div>
               <div class="ship-foot">
                 <div class="ship-stat"><span><strong>6</strong> items</span><span><strong>68</strong> units</span></div>
-                <span class="ms ship-arrow">arrow_forward</span>
+                <i data-lucide="arrow-right" class="icon icon-sm ship-arrow"></i>
               </div>
             </div>
 
             <div class="ship-card">
               <div class="ship-top">
-                <div class="ship-tag ret"><span class="ship-tag dot"></span>RETURN</div>
+                <div class="ship-tag ret"><span class="tag-dot"></span>RETURN</div>
                 <div class="ship-time">15:00</div>
               </div>
-              <div class="ship-name">Westside Renovation</div>
-              <div class="ship-site"><span class="ms">place</span>112 W Park · Site C</div>
+              <div class="ship-name">Dow Freeport</div>
+              <div class="ship-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Freeport, TX · Plant B-3 partial return</div>
               <div class="ship-foot">
                 <div class="ship-stat"><span><strong>4</strong> items</span><span><strong>42</strong> units</span></div>
-                <span class="ms ship-arrow">arrow_forward</span>
+                <i data-lucide="arrow-right" class="icon icon-sm ship-arrow"></i>
               </div>
             </div>
 
@@ -1464,26 +1466,26 @@ body::after {
           <div class="sb">
             <div class="sb-time">9:43</div>
             <div class="sb-icons">
-              <span class="ms">signal_cellular_alt</span>
-              <span class="ms">wifi</span>
-              <span class="ms">battery_full</span>
+              <i data-lucide="signal" class="icon icon-xs"></i>
+              <i data-lucide="wifi" class="icon icon-xs"></i>
+              <i data-lucide="battery-full" class="icon icon-xs"></i>
             </div>
           </div>
 
           <div class="nav">
-            <button class="nav-btn" onclick="goTo(1)"><span class="ms">arrow_back</span></button>
+            <button class="nav-btn" onclick="goTo(1)"><i data-lucide="arrow-left" class="icon"></i></button>
             <div class="nav-title">Shipment<span class="nav-sub">Awaiting count</span></div>
-            <button class="nav-btn"><span class="ms">more_horiz</span></button>
+            <button class="nav-btn"><i data-lucide="more-horizontal" class="icon"></i></button>
           </div>
 
           <div class="content">
             <div class="detail-hero">
               <div class="detail-eyebrow">
-                <span class="ship-tag del"><span class="ship-tag dot"></span>DELIVERY</span>
+                <span class="ship-tag del"><span class="tag-dot"></span>DELIVERY</span>
                 <span class="detail-id">DEL-2401</span>
               </div>
-              <div class="detail-name">Murphy Construction Co.</div>
-              <div class="detail-site"><span class="ms">place</span>4521 Industrial Way · Bay 3</div>
+              <div class="detail-name">Phillips 66 Sweeny Refinery</div>
+              <div class="detail-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Old Ocean, TX · Unit 14 turnaround</div>
               <div class="detail-meta-grid">
                 <div class="dm-col">
                   <div class="dm-label">SCHEDULED</div>
@@ -1495,7 +1497,7 @@ body::after {
                 </div>
                 <div class="dm-col">
                   <div class="dm-label">UNITS</div>
-                  <div class="dm-value">142</div>
+                  <div class="dm-value">342</div>
                 </div>
               </div>
             </div>
@@ -1509,72 +1511,72 @@ body::after {
               <div class="item-row">
                 <div class="item-num">01</div>
                 <div class="item-body">
-                  <div class="item-name">Standard 8'</div>
-                  <div class="item-spec">Vertical pole · galvanized</div>
-                </div>
-                <div class="item-qty">24<span> units</span></div>
-              </div>
-              <div class="item-row">
-                <div class="item-num">02</div>
-                <div class="item-body">
-                  <div class="item-name">Ledger 7'</div>
-                  <div class="item-spec">Horizontal cross-member</div>
+                  <div class="item-name">Cuplok Standard 2.0m</div>
+                  <div class="item-spec">Vertical · 4 cup welded</div>
                 </div>
                 <div class="item-qty">48<span> units</span></div>
               </div>
               <div class="item-row">
+                <div class="item-num">02</div>
+                <div class="item-body">
+                  <div class="item-name">Cuplok Ledger 2.5m</div>
+                  <div class="item-spec">Horizontal · galvanized</div>
+                </div>
+                <div class="item-qty">96<span> units</span></div>
+              </div>
+              <div class="item-row">
                 <div class="item-num">03</div>
                 <div class="item-body">
-                  <div class="item-name">Transom 4'</div>
-                  <div class="item-spec">Cross brace · steel</div>
+                  <div class="item-name">Cuplok Transom 1.2m</div>
+                  <div class="item-spec">Intermediate · galvanized</div>
                 </div>
-                <div class="item-qty">24<span> units</span></div>
+                <div class="item-qty">48<span> units</span></div>
               </div>
               <div class="item-row">
                 <div class="item-num">04</div>
                 <div class="item-body">
-                  <div class="item-name">Board 8' × 9"</div>
-                  <div class="item-spec">Scaffold deck plank</div>
+                  <div class="item-name">LVL Plank 2.5m</div>
+                  <div class="item-spec">Laminated veneer · OSHA grade</div>
                 </div>
                 <div class="item-qty">60<span> units</span></div>
               </div>
               <div class="item-row">
                 <div class="item-num">05</div>
                 <div class="item-body">
-                  <div class="item-name">Toe board 8'</div>
-                  <div class="item-spec">Edge protection</div>
+                  <div class="item-name">Cuplok Toe Board 2.5m</div>
+                  <div class="item-spec">Edge protection · steel</div>
                 </div>
                 <div class="item-qty">24<span> units</span></div>
               </div>
               <div class="item-row">
                 <div class="item-num">06</div>
                 <div class="item-body">
-                  <div class="item-name">Single coupler</div>
-                  <div class="item-spec">Right-angle clamp</div>
+                  <div class="item-name">Cuplok Spigot</div>
+                  <div class="item-spec">Vertical joint connector</div>
                 </div>
-                <div class="item-qty">120<span> units</span></div>
+                <div class="item-qty">24<span> units</span></div>
               </div>
               <div class="item-row">
                 <div class="item-num">07</div>
                 <div class="item-body">
-                  <div class="item-name">Base plate</div>
-                  <div class="item-spec">150 × 150 mm</div>
+                  <div class="item-name">Base Jack 600mm</div>
+                  <div class="item-spec">Adjustable · 38mm thread</div>
                 </div>
                 <div class="item-qty">24<span> units</span></div>
               </div>
               <div class="item-row">
                 <div class="item-num">08</div>
                 <div class="item-body">
-                  <div class="item-name">Guardrail 7'</div>
-                  <div class="item-spec">Top rail · steel</div>
+                  <div class="item-name">Cuplok Guardrail 2.5m</div>
+                  <div class="item-spec">Top rail · galvanized</div>
                 </div>
-                <div class="item-qty">24<span> units</span></div>
+                <div class="item-qty">18<span> units</span></div>
               </div>
             </div>
           </div>
 
           <div class="bot-action">
-            <button class="btn-primary" onclick="goTo(3)">Start counting <span class="ms">arrow_forward</span></button>
+            <button class="btn-primary" onclick="goTo(3)">Start counting <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
           </div>
         </div>
 
@@ -1583,16 +1585,16 @@ body::after {
           <div class="sb">
             <div class="sb-time">9:48</div>
             <div class="sb-icons">
-              <span class="ms">signal_cellular_alt</span>
-              <span class="ms">wifi</span>
-              <span class="ms">battery_full</span>
+              <i data-lucide="signal" class="icon icon-xs"></i>
+              <i data-lucide="wifi" class="icon icon-xs"></i>
+              <i data-lucide="battery-full" class="icon icon-xs"></i>
             </div>
           </div>
 
           <div class="nav">
-            <button class="nav-btn" onclick="goTo(2)"><span class="ms">arrow_back</span></button>
-            <div class="nav-title">Count items<span class="nav-sub">Murphy Construction · DEL-2401</span></div>
-            <button class="nav-btn"><span class="ms">photo_camera</span></button>
+            <button class="nav-btn" onclick="goTo(2)"><i data-lucide="arrow-left" class="icon"></i></button>
+            <div class="nav-title">Count items<span class="nav-sub">Phillips 66 Sweeny · DEL-2401</span></div>
+            <button class="nav-btn"><i data-lucide="camera" class="icon"></i></button>
           </div>
 
           <div class="count-header">
@@ -1606,21 +1608,9 @@ body::after {
           <div class="content">
             <div class="count-list">
               <div class="count-row matched">
-                <div class="cr-check on"><span class="ms">check</span></div>
+                <div class="cr-check on"><i data-lucide="check" class="icon icon-xs"></i></div>
                 <div class="cr-body">
-                  <div class="cr-name">Standard 8'</div>
-                  <div class="cr-expected">Expected 24</div>
-                </div>
-                <div class="cr-counter">
-                  <button class="cnt-btn">−</button>
-                  <div class="cnt-val">24</div>
-                  <button class="cnt-btn">+</button>
-                </div>
-              </div>
-              <div class="count-row matched">
-                <div class="cr-check on"><span class="ms">check</span></div>
-                <div class="cr-body">
-                  <div class="cr-name">Ledger 7'</div>
+                  <div class="cr-name">Cuplok Standard 2.0m</div>
                   <div class="cr-expected">Expected 48</div>
                 </div>
                 <div class="cr-counter">
@@ -1630,21 +1620,33 @@ body::after {
                 </div>
               </div>
               <div class="count-row matched">
-                <div class="cr-check on"><span class="ms">check</span></div>
+                <div class="cr-check on"><i data-lucide="check" class="icon icon-xs"></i></div>
                 <div class="cr-body">
-                  <div class="cr-name">Transom 4'</div>
-                  <div class="cr-expected">Expected 24</div>
+                  <div class="cr-name">Cuplok Ledger 2.5m</div>
+                  <div class="cr-expected">Expected 96</div>
                 </div>
                 <div class="cr-counter">
                   <button class="cnt-btn">−</button>
-                  <div class="cnt-val">24</div>
+                  <div class="cnt-val">96</div>
+                  <button class="cnt-btn">+</button>
+                </div>
+              </div>
+              <div class="count-row matched">
+                <div class="cr-check on"><i data-lucide="check" class="icon icon-xs"></i></div>
+                <div class="cr-body">
+                  <div class="cr-name">Cuplok Transom 1.2m</div>
+                  <div class="cr-expected">Expected 48</div>
+                </div>
+                <div class="cr-counter">
+                  <button class="cnt-btn">−</button>
+                  <div class="cnt-val">48</div>
                   <button class="cnt-btn">+</button>
                 </div>
               </div>
               <div class="count-row diff">
-                <div class="cr-check diff-on"><span class="ms">priority_high</span></div>
+                <div class="cr-check diff-on"><i data-lucide="alert-triangle" class="icon icon-xs"></i></div>
                 <div class="cr-body">
-                  <div class="cr-name">Board 8' × 9"</div>
+                  <div class="cr-name">LVL Plank 2.5m</div>
                   <div class="cr-expected">Expected 60 · Short by 2</div>
                 </div>
                 <div class="cr-counter">
@@ -1654,9 +1656,9 @@ body::after {
                 </div>
               </div>
               <div class="count-row matched">
-                <div class="cr-check on"><span class="ms">check</span></div>
+                <div class="cr-check on"><i data-lucide="check" class="icon icon-xs"></i></div>
                 <div class="cr-body">
-                  <div class="cr-name">Toe board 8'</div>
+                  <div class="cr-name">Cuplok Toe Board 2.5m</div>
                   <div class="cr-expected">Expected 24</div>
                 </div>
                 <div class="cr-counter">
@@ -1666,21 +1668,9 @@ body::after {
                 </div>
               </div>
               <div class="count-row matched">
-                <div class="cr-check on"><span class="ms">check</span></div>
+                <div class="cr-check on"><i data-lucide="check" class="icon icon-xs"></i></div>
                 <div class="cr-body">
-                  <div class="cr-name">Single coupler</div>
-                  <div class="cr-expected">Expected 120</div>
-                </div>
-                <div class="cr-counter">
-                  <button class="cnt-btn">−</button>
-                  <div class="cnt-val">120</div>
-                  <button class="cnt-btn">+</button>
-                </div>
-              </div>
-              <div class="count-row matched">
-                <div class="cr-check on"><span class="ms">check</span></div>
-                <div class="cr-body">
-                  <div class="cr-name">Base plate</div>
+                  <div class="cr-name">Cuplok Spigot</div>
                   <div class="cr-expected">Expected 24</div>
                 </div>
                 <div class="cr-counter">
@@ -1690,14 +1680,26 @@ body::after {
                 </div>
               </div>
               <div class="count-row matched">
-                <div class="cr-check on"><span class="ms">check</span></div>
+                <div class="cr-check on"><i data-lucide="check" class="icon icon-xs"></i></div>
                 <div class="cr-body">
-                  <div class="cr-name">Guardrail 7'</div>
+                  <div class="cr-name">Base Jack 600mm</div>
                   <div class="cr-expected">Expected 24</div>
                 </div>
                 <div class="cr-counter">
                   <button class="cnt-btn">−</button>
                   <div class="cnt-val">24</div>
+                  <button class="cnt-btn">+</button>
+                </div>
+              </div>
+              <div class="count-row matched">
+                <div class="cr-check on"><i data-lucide="check" class="icon icon-xs"></i></div>
+                <div class="cr-body">
+                  <div class="cr-name">Cuplok Guardrail 2.5m</div>
+                  <div class="cr-expected">Expected 18</div>
+                </div>
+                <div class="cr-counter">
+                  <button class="cnt-btn">−</button>
+                  <div class="cnt-val">18</div>
                   <button class="cnt-btn">+</button>
                 </div>
               </div>
@@ -1705,7 +1707,7 @@ body::after {
           </div>
 
           <div class="bot-action">
-            <button class="btn-primary" onclick="goTo(4)">Resolve discrepancy <span class="ms">arrow_forward</span></button>
+            <button class="btn-primary" onclick="goTo(4)">Resolve discrepancy <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
           </div>
         </div>
 
@@ -1714,29 +1716,29 @@ body::after {
           <div class="sb">
             <div class="sb-time">9:51</div>
             <div class="sb-icons">
-              <span class="ms">signal_cellular_alt</span>
-              <span class="ms">wifi</span>
-              <span class="ms">battery_full</span>
+              <i data-lucide="signal" class="icon icon-xs"></i>
+              <i data-lucide="wifi" class="icon icon-xs"></i>
+              <i data-lucide="battery-full" class="icon icon-xs"></i>
             </div>
           </div>
 
           <div class="nav">
-            <button class="nav-btn" onclick="goTo(3)"><span class="ms">arrow_back</span></button>
+            <button class="nav-btn" onclick="goTo(3)"><i data-lucide="arrow-left" class="icon"></i></button>
             <div class="nav-title">Discrepancy<span class="nav-sub">1 item · resolve before confirming</span></div>
           </div>
 
           <div class="content disc-screen">
             <div class="disc-banner">
-              <div class="disc-banner-icon"><span class="ms">priority_high</span></div>
+              <div class="disc-banner-icon"><i data-lucide="alert-triangle" class="icon icon-sm"></i></div>
               <div class="disc-banner-body">
-                <div class="disc-banner-title">2 units short on Boards</div>
+                <div class="disc-banner-title">2 units short on LVL Plank</div>
                 <div class="disc-banner-text">Add a photo and a quick note for the office</div>
               </div>
             </div>
 
             <div class="disc-item-card">
-              <div class="disc-item-name">Board 8' × 9"</div>
-              <div class="disc-item-spec">Scaffold deck plank · line 04</div>
+              <div class="disc-item-name">LVL Plank 2.5m</div>
+              <div class="disc-item-spec">Laminated veneer · OSHA grade · line 04</div>
               <div class="disc-numbers">
                 <div class="disc-num-col">
                   <div class="dn-label">EXPECTED</div>
@@ -1756,26 +1758,24 @@ body::after {
             <div class="photo-section">
               <div class="photo-label">PHOTO EVIDENCE</div>
               <div class="photo-row">
-                <div class="photo-tile filled"></div>
+                <div class="photo-tile filled p1"></div>
+                <div class="photo-tile filled p2"></div>
                 <div class="photo-tile">
-                  <span class="ms">add_a_photo</span>
-                </div>
-                <div class="photo-tile">
-                  <span class="ms">add_a_photo</span>
+                  <i data-lucide="image-plus" class="icon"></i>
                 </div>
               </div>
             </div>
 
             <div class="note-section">
               <div class="photo-label">NOTE FOR OFFICE</div>
-              <textarea class="note-input" placeholder="e.g. 2 boards damaged at the bottom of the stack, left at yard for inspection.">2 boards damaged on the bottom of the stack — kept at yard for inspection.</textarea>
+              <textarea class="note-input" placeholder="Add note for the office">2 LVL planks split at the bottom of the bundle — pulled from the load and kept in the Sweeny return rack for inspection.</textarea>
             </div>
 
             <div style="height: 24px;"></div>
           </div>
 
           <div class="bot-action">
-            <button class="btn-primary" onclick="goTo(5)">Continue to confirm <span class="ms">arrow_forward</span></button>
+            <button class="btn-primary" onclick="goTo(5)">Continue to confirm <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
           </div>
         </div>
 
@@ -1784,15 +1784,15 @@ body::after {
           <div class="sb">
             <div class="sb-time">9:54</div>
             <div class="sb-icons">
-              <span class="ms">signal_cellular_alt</span>
-              <span class="ms">wifi</span>
-              <span class="ms">battery_full</span>
+              <i data-lucide="signal" class="icon icon-xs"></i>
+              <i data-lucide="wifi" class="icon icon-xs"></i>
+              <i data-lucide="battery-full" class="icon icon-xs"></i>
             </div>
           </div>
 
           <div class="nav">
-            <button class="nav-btn" onclick="goTo(4)"><span class="ms">arrow_back</span></button>
-            <div class="nav-title">Confirm shipment<span class="nav-sub">Murphy Construction · DEL-2401</span></div>
+            <button class="nav-btn" onclick="goTo(4)"><i data-lucide="arrow-left" class="icon"></i></button>
+            <div class="nav-title">Confirm shipment<span class="nav-sub">Phillips 66 Sweeny · DEL-2401</span></div>
           </div>
 
           <div class="content" style="background: var(--surface);">
@@ -1801,11 +1801,11 @@ body::after {
               <div class="conf-summary-grid">
                 <div class="cs-item">
                   <div class="cs-label">MATCHED</div>
-                  <div class="cs-value ok"><span class="ms">check_circle</span>7 of 8</div>
+                  <div class="cs-value ok"><i data-lucide="check-circle-2" class="icon icon-sm"></i>7 of 8</div>
                 </div>
                 <div class="cs-item">
                   <div class="cs-label">DISCREPANCIES</div>
-                  <div class="cs-value warn"><span class="ms">priority_high</span>1 logged</div>
+                  <div class="cs-value warn"><i data-lucide="alert-triangle" class="icon icon-sm"></i>1 logged</div>
                 </div>
               </div>
             </div>
@@ -1823,14 +1823,14 @@ body::after {
             </div>
 
             <div class="sig-name-section">
-              <input type="text" class="sig-name-input" placeholder="Customer name (printed)" value="James Murphy">
+              <input type="text" class="sig-name-input" placeholder="Customer name (printed)" value="Marcus Holbrook · Site Supervisor">
             </div>
 
             <div style="height: 16px;"></div>
           </div>
 
           <div class="bot-action">
-            <button class="btn-primary" onclick="goTo(6)">Confirm shipment <span class="ms">check</span></button>
+            <button class="btn-primary" onclick="goTo(6)">Confirm shipment <i data-lucide="check" class="icon icon-sm"></i></button>
           </div>
         </div>
 
@@ -1839,17 +1839,17 @@ body::after {
           <div class="sb">
             <div class="sb-time">9:55</div>
             <div class="sb-icons">
-              <span class="ms">signal_cellular_alt</span>
-              <span class="ms">wifi</span>
-              <span class="ms">battery_full</span>
+              <i data-lucide="signal" class="icon icon-xs"></i>
+              <i data-lucide="wifi" class="icon icon-xs"></i>
+              <i data-lucide="battery-full" class="icon icon-xs"></i>
             </div>
           </div>
 
           <div class="done-screen">
-            <div class="done-mark"><span class="ms">check</span></div>
+            <div class="done-mark"><i data-lucide="check" class="icon"></i></div>
             <div class="done-eyebrow">DEL-2401 · CONFIRMED</div>
-            <div class="done-headline">Shipment released to job site.</div>
-            <div class="done-meta">The office sees the updated count and discrepancy note in real time. Rent has started for 7 of 8 line items.</div>
+            <div class="done-headline">Released to Sweeny Refinery.</div>
+            <div class="done-meta">The Atlanta office sees the updated count and discrepancy note in real time. Rent has started on 7 of 8 line items — LVL Plank stays open until resolved.</div>
 
             <div class="done-stats">
               <div class="done-stat">
@@ -1867,7 +1867,7 @@ body::after {
             </div>
 
             <div class="done-actions">
-              <button class="done-btn-prim" onclick="goTo(1)">Next shipment <span class="ms" style="font-size:16px;vertical-align:middle;margin-left:6px;">arrow_forward</span></button>
+              <button class="done-btn-prim" onclick="goTo(1)">Next shipment <i data-lucide="arrow-right" class="icon icon-sm" style="margin-left:6px;"></i></button>
               <button class="done-btn-text" onclick="goTo(1)">Back to today's list</button>
             </div>
           </div>
@@ -1900,34 +1900,34 @@ const scenes = [
   null,
   {
     title: "Today's shipments",
-    desc: "Yard worker opens the app. Sees what's scheduled for today, in priority order. The next pending delivery is featured at the top.",
+    desc: "An AT-PAC yard worker opens the app and sees what's scheduled for today — Sweeny, Beaumont, Galveston Bay, Freeport. The next pending delivery is featured at the top.",
     callouts: [
       { num: "01", text: "<span>One scrollable list — </span>no menus, no filters by default." },
-      { num: "02", text: "<span>The active shipment is </span>visually featured first<span> — no decision-making at the start.</span>" },
-      { num: "03", text: "<span>Each row shows what matters in the yard: </span>customer, time, item count<span>.</span>" }
+      { num: "02", text: "<span>The active shipment is </span>visually featured first<span> — no decision-making at the start of the day.</span>" },
+      { num: "03", text: "<span>Each row shows what matters in the yard: </span>job site, scheduled time, item and unit count<span>.</span>" }
     ]
   },
   {
     title: "Shipment detail",
-    desc: "Tapping a shipment opens the full pick list. The worker confirms what's expected before counting begins — no surprises mid-task.",
+    desc: "Tapping a shipment opens the full pick list — every Cuplok component expected on the truck. The worker reviews before counting begins.",
     callouts: [
-      { num: "01", text: "<span>The </span>pick ticket replaces paper<span>. Worker can scroll the full list before starting.</span>" },
-      { num: "02", text: "<span>Customer, site, and time </span>stay anchored at the top<span> through the whole flow.</span>" },
+      { num: "01", text: "<span>This screen </span>replaces the printed pick ticket<span> — the same information, no paper.</span>" },
+      { num: "02", text: "<span>Job site and scheduled time </span>stay anchored at the top<span> through the whole flow.</span>" },
       { num: "03", text: "<span>One CTA: </span>Start counting<span>. No detours, no settings.</span>" }
     ]
   },
   {
     title: "Counting items",
-    desc: "Each line is checked, incremented, or marked as a discrepancy. Real-time progress at the top. The interface stays large-tap friendly for gloved hands.",
+    desc: "Each Cuplok line is counted, incremented, or marked as a discrepancy. Real-time progress at the top. Tap targets stay large for gloved hands.",
     callouts: [
-      { num: "01", text: "<span>Line by line, </span>+/− with large tap targets<span>. Designed for gloves.</span>" },
+      { num: "01", text: "<span>Line by line — </span>+/− with large tap targets<span>. Designed for gloves and sun glare.</span>" },
       { num: "02", text: "<span>Discrepancies </span>auto-highlight in amber<span> — no extra step to flag them.</span>" },
-      { num: "03", text: "<span>Progress bar at the top is </span>always visible<span> — context never disappears.</span>" }
+      { num: "03", text: "<span>Progress bar at the top stays </span>visible at all times<span> — context never disappears.</span>" }
     ]
   },
   {
     title: "Resolve the discrepancy",
-    desc: "When a count doesn't match, the app routes the worker through a quick photo + note step. The office sees this in real time, no phone call required.",
+    desc: "Two LVL planks are short. The app routes the worker through a quick photo + note step. The Atlanta office sees this in real time — no phone call needed.",
     callouts: [
       { num: "01", text: "<span>The discrepancy </span>has its own screen<span> — not buried in a modal.</span>" },
       { num: "02", text: "<span>Photo capture is </span>front and center<span>. Visual proof beats word-of-mouth.</span>" },
@@ -1936,20 +1936,20 @@ const scenes = [
   },
   {
     title: "Sign and confirm",
-    desc: "Customer signs on the tablet. The signature, the count, the discrepancy, and the note are all bundled into one transaction.",
+    desc: "The customer's site supervisor signs on the tablet. The signature, the count, the discrepancy, and the photos all bundle into one transaction.",
     callouts: [
-      { num: "01", text: "<span>Signature is </span>drawn on the screen<span> — works for offline workflows too.</span>" },
-      { num: "02", text: "<span>Summary above the pad: </span>matched / discrepancies<span>. No surprises.</span>" },
-      { num: "03", text: "<span>Open question: </span>do customers actually need a drawn signature, or is a typed name enough?<span></span>" }
+      { num: "01", text: "<span>Signature is </span>drawn on the screen<span> — works offline if signal drops in the yard.</span>" },
+      { num: "02", text: "<span>Summary above the pad: </span>7 matched, 1 discrepancy<span>. No surprises before signing.</span>" },
+      { num: "03", text: "<span>Open question for AT-PAC: </span>do your customers actually require a drawn signature, or is a typed name enough?<span></span>" }
     ]
   },
   {
-    title: "Released to site",
-    desc: "The truck leaves. The office sees the confirmed count, the discrepancy, and the photo evidence — all updated in real time. No paperwork to re-enter.",
+    title: "Released to Sweeny",
+    desc: "The truck leaves. The Atlanta office sees the confirmed count, the discrepancy on LVL Plank, and the photo evidence — all updated in real time. No paperwork to re-enter.",
     callouts: [
-      { num: "01", text: "<span>Real-time sync means </span>no re-entry in the office<span>.</span>" },
-      { num: "02", text: "<span>Rent starts automatically for </span>matched line items<span> — discrepancies stay open until resolved.</span>" },
-      { num: "03", text: "<span>The yard worker is back to the list </span>in two taps<span>.</span>" }
+      { num: "01", text: "<span>Real-time sync means </span>no re-entry in Atlanta<span>.</span>" },
+      { num: "02", text: "<span>Rent starts automatically on </span>matched line items<span> — the LVL Plank discrepancy stays open until resolved.</span>" },
+      { num: "03", text: "<span>The yard worker is back to today's list </span>in two taps<span>.</span>" }
     ]
   }
 ];
@@ -2069,6 +2069,13 @@ window.addEventListener('mouseup', endDraw);
 sigPad.addEventListener('touchstart', startDraw);
 sigPad.addEventListener('touchmove', moveDraw);
 sigPad.addEventListener('touchend', endDraw);
+
+// Render Lucide icons
+if (window.lucide) {
+  lucide.createIcons();
+} else {
+  window.addEventListener('load', () => lucide.createIcons());
+}
 
 render();
 </script>
