@@ -814,15 +814,15 @@ body::after {
   flex-shrink: 0;
 }
 .cnt-btn {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border: 2px solid var(--line-strong);
   background: var(--surface);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 24px;
   color: var(--ink);
   font-family: 'Switzer', sans-serif;
   font-weight: 600;
@@ -1488,7 +1488,7 @@ body::after {
 
             <div class="ship-card">
               <div class="ship-top">
-                <div class="ship-tag ret"><span class="tag-dot"></span>RETURN</div>
+                <div class="ship-tag ret"><span class="tag-dot"></span>PRE-RETURN</div>
                 <div class="ship-time">13:30</div>
               </div>
               <div class="ship-name">Marathon Galveston Bay</div>
@@ -1501,7 +1501,7 @@ body::after {
 
             <div class="ship-card">
               <div class="ship-top">
-                <div class="ship-tag ret"><span class="tag-dot"></span>RETURN</div>
+                <div class="ship-tag ret"><span class="tag-dot"></span>PRE-RETURN</div>
                 <div class="ship-time">15:00</div>
               </div>
               <div class="ship-name">Dow Freeport</div>
@@ -1528,16 +1528,16 @@ body::after {
           </div>
 
           <div class="nav">
-            <button class="nav-btn" onclick="goTo(1)"><i data-lucide="arrow-left" class="icon"></i></button>
-            <div class="nav-title">Shipment<span class="nav-sub">Awaiting count</span></div>
-            <button class="nav-btn"><i data-lucide="more-horizontal" class="icon"></i></button>
+            <button class="nav-btn" onclick="goTo(1)" aria-label="Back"><i data-lucide="arrow-left" class="icon"></i></button>
+            <div class="nav-title">Shipment<span class="nav-sub">Reservation · awaiting load</span></div>
+            <button class="nav-btn" aria-label="More"><i data-lucide="more-horizontal" class="icon"></i></button>
           </div>
 
           <div class="content">
             <div class="detail-hero">
               <div class="detail-eyebrow">
                 <span class="ship-tag del"><span class="tag-dot"></span>DELIVERY</span>
-                <span class="detail-id">DEL-2401</span>
+                <span class="detail-id">RESERVATION #2401</span>
               </div>
               <div class="detail-name">Phillips 66 Sweeny Refinery</div>
               <div class="detail-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Old Ocean, TX · Unit 14 turnaround</div>
@@ -1559,7 +1559,7 @@ body::after {
 
             <div class="items-section">
               <div class="items-label">
-                <span class="items-label-text">EXPECTED ON TRUCK</span>
+                <span class="items-label-text">RESERVED QUANTITIES</span>
                 <span class="items-label-count">8 LINES</span>
               </div>
 
@@ -1631,7 +1631,7 @@ body::after {
           </div>
 
           <div class="bot-action">
-            <button class="btn-primary" onclick="goTo(3)">Start counting <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
+            <button class="btn-primary" onclick="goTo(3)">Start loading <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
           </div>
         </div>
 
@@ -1648,14 +1648,14 @@ body::after {
 
           <div class="nav">
             <button class="nav-btn" onclick="goTo(2)" aria-label="Back"><i data-lucide="arrow-left" class="icon"></i></button>
-            <div class="nav-title">Count items<span class="nav-sub">Phillips 66 Sweeny · DEL-2401</span></div>
+            <div class="nav-title">Load items<span class="nav-sub">Phillips 66 Sweeny · #2401</span></div>
             <button class="nav-btn" id="navCameraBtn" aria-label="Take photo"><i data-lucide="camera" class="icon"></i></button>
           </div>
 
           <div class="count-header">
             <div class="count-progress-row">
-              <div class="count-progress-text"><strong id="countDone">8</strong> of <span id="countTotal">8</span> counted</div>
-              <div class="count-progress-meta"><span id="countOk">7</span> OK · <span id="countDiff">1</span> DIFF</div>
+              <div class="count-progress-text"><strong id="countDone">8</strong> of <span id="countTotal">8</span> loaded</div>
+              <div class="count-progress-meta"><span id="countOk">7</span> FULL · <span id="countDiff">1</span> SHORT</div>
             </div>
             <div class="progress-bar"><div class="progress-fill" id="progressFill" style="right: 0%;"></div></div>
           </div>
@@ -1665,11 +1665,11 @@ body::after {
           </div>
 
           <div class="bot-action">
-            <button class="btn-primary" onclick="goTo(4)">Resolve discrepancy <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
+            <button class="btn-primary" onclick="goTo(4)">Note short load <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
           </div>
         </div>
 
-        <!-- ─── SCREEN 4: DISCREPANCY ─── -->
+        <!-- ─── SCREEN 4: SHORTAGE NOTE ─── -->
         <div class="screen" data-screen="4">
           <div class="sb">
             <div class="sb-time">9:51</div>
@@ -1681,16 +1681,16 @@ body::after {
           </div>
 
           <div class="nav">
-            <button class="nav-btn" onclick="goTo(3)"><i data-lucide="arrow-left" class="icon"></i></button>
-            <div class="nav-title">Discrepancy<span class="nav-sub">1 item · resolve before confirming</span></div>
+            <button class="nav-btn" onclick="goTo(3)" aria-label="Back"><i data-lucide="arrow-left" class="icon"></i></button>
+            <div class="nav-title">Note for office<span class="nav-sub">1 short item · before marking loaded</span></div>
           </div>
 
           <div class="content disc-screen">
             <div class="disc-banner">
               <div class="disc-banner-icon"><i data-lucide="alert-triangle" class="icon icon-sm"></i></div>
               <div class="disc-banner-body">
-                <div class="disc-banner-title">2 units short on LVL Plank</div>
-                <div class="disc-banner-text">Add a photo and a quick note for the office</div>
+                <div class="disc-banner-title">Loading 58 of 60 LVL Plank</div>
+                <div class="disc-banner-text">Add a reason and a photo so the office knows</div>
               </div>
             </div>
 
@@ -1699,15 +1699,15 @@ body::after {
               <div class="disc-item-spec">Laminated veneer · OSHA grade · line 04</div>
               <div class="disc-numbers">
                 <div class="disc-num-col">
-                  <div class="dn-label">EXPECTED</div>
+                  <div class="dn-label">RESERVED</div>
                   <div class="dn-value">60</div>
                 </div>
                 <div class="disc-num-col">
-                  <div class="dn-label">COUNTED</div>
+                  <div class="dn-label">LOADED</div>
                   <div class="dn-value warn">58</div>
                 </div>
                 <div class="disc-num-col">
-                  <div class="dn-label">DIFF</div>
+                  <div class="dn-label">SHORT</div>
                   <div class="dn-value minus">−2</div>
                 </div>
               </div>
@@ -1744,11 +1744,11 @@ body::after {
           </div>
 
           <div class="bot-action">
-            <button class="btn-primary" onclick="goTo(5)">Continue to confirm <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
+            <button class="btn-primary" onclick="goTo(5)">Continue to sign-off <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
           </div>
         </div>
 
-        <!-- ─── SCREEN 5: CONFIRM + SIGN ─── -->
+        <!-- ─── SCREEN 5: PREPARED-BY SIGN-OFF ─── -->
         <div class="screen" data-screen="5">
           <div class="sb">
             <div class="sb-time">9:54</div>
@@ -1760,28 +1760,28 @@ body::after {
           </div>
 
           <div class="nav">
-            <button class="nav-btn" onclick="goTo(4)"><i data-lucide="arrow-left" class="icon"></i></button>
-            <div class="nav-title">Confirm shipment<span class="nav-sub">Phillips 66 Sweeny · DEL-2401</span></div>
+            <button class="nav-btn" onclick="goTo(4)" aria-label="Back"><i data-lucide="arrow-left" class="icon"></i></button>
+            <div class="nav-title">Sign off the load<span class="nav-sub">Phillips 66 Sweeny · #2401</span></div>
           </div>
 
           <div class="content" style="background: var(--surface);">
             <div class="conf-summary">
-              <div class="conf-headline">Ready to confirm.<br>Sign to release the truck.</div>
+              <div class="conf-headline">Confirm the load.<br>Driver picks up next.</div>
               <div class="conf-summary-grid">
                 <div class="cs-item">
-                  <div class="cs-label">MATCHED</div>
+                  <div class="cs-label">LOADED IN FULL</div>
                   <div class="cs-value ok"><i data-lucide="check-circle-2" class="icon icon-sm"></i>7 of 8</div>
                 </div>
                 <div class="cs-item">
-                  <div class="cs-label">DISCREPANCIES</div>
-                  <div class="cs-value warn"><i data-lucide="alert-triangle" class="icon icon-sm"></i>1 logged</div>
+                  <div class="cs-label">SHORT</div>
+                  <div class="cs-value warn"><i data-lucide="alert-triangle" class="icon icon-sm"></i>1 noted</div>
                 </div>
               </div>
             </div>
 
             <div class="sig-section">
               <div class="sig-label">
-                <span class="sig-label-text">CUSTOMER SIGNATURE</span>
+                <span class="sig-label-text">PREPARED BY · YARD</span>
                 <button class="sig-clear" onclick="clearSig()">Clear</button>
               </div>
               <div class="sig-pad" id="sigPad">
@@ -1792,14 +1792,20 @@ body::after {
             </div>
 
             <div class="sig-name-section">
-              <input type="text" class="sig-name-input" placeholder="Customer name (printed)" value="Marcus Holbrook · Site Supervisor">
+              <input type="text" class="sig-name-input" placeholder="Yard worker name (printed)" value="Daniel Reyes · Yard supervisor">
+            </div>
+
+            <div style="padding: 16px 24px 4px;">
+              <p style="font-size: 12px; color: var(--muted); font-weight: 500; line-height: 1.5;">
+                Driver and customer rep signatures captured at delivery. The shipment moves to <strong style="color: var(--text);">In Transit</strong> when marked loaded.
+              </p>
             </div>
 
             <div style="height: 16px;"></div>
           </div>
 
           <div class="bot-action">
-            <button class="btn-primary" onclick="goTo(6)">Confirm shipment <i data-lucide="check" class="icon icon-sm"></i></button>
+            <button class="btn-primary" onclick="goTo(6)">Mark as loaded <i data-lucide="check" class="icon icon-sm"></i></button>
           </div>
         </div>
 
@@ -1816,14 +1822,14 @@ body::after {
 
           <div class="done-screen">
             <div class="done-mark"><i data-lucide="check" class="icon"></i></div>
-            <div class="done-eyebrow">DEL-2401 · CONFIRMED</div>
-            <div class="done-headline">Released to Sweeny Refinery.</div>
-            <div class="done-meta">The Atlanta office sees the updated count and discrepancy note in real time. Rent has started on 7 of 8 line items — LVL Plank stays open until resolved.</div>
+            <div class="done-eyebrow">#2401 · IN TRANSIT</div>
+            <div class="done-headline">Loaded and dispatched.</div>
+            <div class="done-meta">The Atlanta office sees the shipment as <strong>In Transit</strong>. Rent activates when Sweeny confirms receipt. The 2 short LVL planks stay on the reservation for follow-up.</div>
 
             <div class="done-stats">
               <div class="done-stat">
                 <div class="ds-num">9:55</div>
-                <div class="ds-label">CONFIRMED</div>
+                <div class="ds-label">LOADED</div>
               </div>
               <div class="done-stat">
                 <div class="ds-num">13</div>
@@ -1831,7 +1837,7 @@ body::after {
               </div>
               <div class="done-stat">
                 <div class="ds-num">3</div>
-                <div class="ds-label">PENDING</div>
+                <div class="ds-label">REMAINING</div>
               </div>
             </div>
 
@@ -1869,56 +1875,56 @@ const scenes = [
   null,
   {
     title: "Today's shipments",
-    desc: "An AT-PAC yard worker opens the app and sees what's scheduled for today — Sweeny, Beaumont, Galveston Bay, Freeport. The next pending delivery is featured at the top.",
+    desc: "An AT-PAC yard worker opens the app and sees what's scheduled for today — Sweeny, Beaumont, Galveston Bay, Freeport. Deliveries to load and Pre-Returns to unload, in time order.",
     callouts: [
       { num: "01", text: "<span>One scrollable list — </span>no menus, no filters by default." },
       { num: "02", text: "<span>The active shipment is </span>visually featured first<span> — no decision-making at the start of the day.</span>" },
-      { num: "03", text: "<span>Each row shows what matters in the yard: </span>job site, scheduled time, item and unit count<span>.</span>" }
+      { num: "03", text: "<span>Each row shows what matters in the yard: </span>job site, scheduled time, line and unit count<span>.</span>" }
     ]
   },
   {
-    title: "Shipment detail",
-    desc: "Tapping a shipment opens the full pick list — every Cuplok component expected on the truck. The worker reviews before counting begins.",
+    title: "Reservation detail",
+    desc: "Tapping the shipment opens the reservation — every Cuplok line and the reserved quantities. The yard worker reviews before loading begins. This screen replaces the printed pick ticket.",
     callouts: [
-      { num: "01", text: "<span>This screen </span>replaces the printed pick ticket<span> — the same information, no paper.</span>" },
-      { num: "02", text: "<span>Job site and scheduled time </span>stay anchored at the top<span> through the whole flow.</span>" },
-      { num: "03", text: "<span>One CTA: </span>Start counting<span>. No detours, no settings.</span>" }
+      { num: "01", text: "<span>This is the reservation — </span>replaces the printed pick ticket<span>. Same info, no paper.</span>" },
+      { num: "02", text: "<span>Status: </span>Reserved · awaiting load<span>. Will move to In Transit when loaded.</span>" },
+      { num: "03", text: "<span>One CTA: </span>Start loading<span>. No detours, no settings.</span>" }
     ]
   },
   {
-    title: "Counting items",
-    desc: "Each Cuplok line is counted, incremented, or marked as a discrepancy. Real-time progress at the top. Tap targets stay large for gloved hands.",
+    title: "Loading items",
+    desc: "Each Cuplok line is counted as it goes on the truck. The worker confirms the loaded qty matches the reserved qty, or marks a short. Rows highlight amber when they don't match.",
     callouts: [
-      { num: "01", text: "<span>Line by line — </span>+/− with large tap targets<span>. Designed for gloves and sun glare.</span>" },
-      { num: "02", text: "<span>Discrepancies </span>auto-highlight in amber<span> — no extra step to flag them.</span>" },
-      { num: "03", text: "<span>Progress bar at the top stays </span>visible at all times<span> — context never disappears.</span>" }
+      { num: "01", text: "<span>Line by line — </span>+/− with 56px tap targets<span>. Designed for gloves and sun glare.</span>" },
+      { num: "02", text: "<span>Short rows </span>auto-highlight in amber<span> — no extra step to flag them.</span>" },
+      { num: "03", text: "<span>Progress and counts stay </span>visible at all times<span> at the top.</span>" }
     ]
   },
   {
-    title: "Resolve the discrepancy",
-    desc: "Two LVL planks are short. The app routes the worker through a quick photo + note step. The Atlanta office sees this in real time — no phone call needed.",
+    title: "Note the short load",
+    desc: "Two LVL planks couldn't be loaded — they're damaged. The yard worker captures a photo and a note. The Atlanta office sees it in real time. No discrepancy status fires yet — that only happens if the customer also disputes the count at delivery.",
     callouts: [
-      { num: "01", text: "<span>The discrepancy </span>has its own screen<span> — not buried in a modal.</span>" },
-      { num: "02", text: "<span>Photo capture is </span>front and center<span>. Visual proof beats word-of-mouth.</span>" },
-      { num: "03", text: "<span>Pre-filled note suggestion gives </span>structure without forcing it<span>.</span>" }
+      { num: "01", text: "<span>Notes attach to the shipment </span>before it leaves the yard<span> — Atlanta sees them live.</span>" },
+      { num: "02", text: "<span>Photo capture is </span>front and center<span>. Visual proof beats a phone call.</span>" },
+      { num: "03", text: "<span>The 2 short LVL planks </span>stay on the reservation<span> — they can be filled by a follow-up shipment.</span>" }
     ]
   },
   {
-    title: "Sign and confirm",
-    desc: "The customer's site supervisor signs on the tablet. The signature, the count, the discrepancy, and the photos all bundle into one transaction.",
+    title: "Sign off the load",
+    desc: "The yard preparer signs to confirm what was loaded. This is the 'Prepared by' signature on the pick ticket. Driver and customer signatures are captured later, at delivery.",
     callouts: [
-      { num: "01", text: "<span>Signature is </span>drawn on the screen<span> — works offline if signal drops in the yard.</span>" },
-      { num: "02", text: "<span>Summary above the pad: </span>7 matched, 1 discrepancy<span>. No surprises before signing.</span>" },
-      { num: "03", text: "<span>Open question for AT-PAC: </span>do your customers actually require a drawn signature, or is a typed name enough?<span></span>" }
+      { num: "01", text: "<span>This is the </span>Prepared by signature<span> — proves who counted the load. Customer rep signs at delivery.</span>" },
+      { num: "02", text: "<span>Summary above the pad: </span>7 loaded in full, 1 short<span>. No surprises before signing.</span>" },
+      { num: "03", text: "<span>Open question for AT-PAC: </span>Quantify desktop currently uses a typed-name field. Should mobile match, or upgrade to drawn signatures?<span></span>" }
     ]
   },
   {
-    title: "Released to Sweeny",
-    desc: "The truck leaves. The Atlanta office sees the confirmed count, the discrepancy on LVL Plank, and the photo evidence — all updated in real time. No paperwork to re-enter.",
+    title: "Marked In Transit",
+    desc: "The shipment status changes from Reserved to In Transit. The Atlanta office sees the loaded quantities, the short note, and the photo. Rent activates only when the customer confirms receipt at Sweeny.",
     callouts: [
-      { num: "01", text: "<span>Real-time sync means </span>no re-entry in Atlanta<span>.</span>" },
-      { num: "02", text: "<span>Rent starts automatically on </span>matched line items<span> — the LVL Plank discrepancy stays open until resolved.</span>" },
-      { num: "03", text: "<span>The yard worker is back to today's list </span>in two taps<span>.</span>" }
+      { num: "01", text: "<span>Status: </span>In Transit<span> — not yet On Rent. Rent starts when Sweeny confirms receipt.</span>" },
+      { num: "02", text: "<span>The 2 short LVL planks </span>stay on the reservation<span> for follow-up — not lost.</span>" },
+      { num: "03", text: "<span>Real-time sync to Atlanta means </span>no re-entry<span>. The yard worker is back to today's list in two taps.</span>" }
     ]
   }
 ];
@@ -1944,10 +1950,10 @@ function buildCountList() {
     const checkClass = diff === 0 ? 'on' : 'diff-on';
     const iconName = diff === 0 ? 'check' : 'alert-triangle';
     const expectedText = diff === 0
-      ? `Expected ${it.expected}`
+      ? `Reserved ${it.expected}`
       : (diff < 0
-          ? `Expected ${it.expected} · Short by ${Math.abs(diff)}`
-          : `Expected ${it.expected} · Over by ${diff}`);
+          ? `Reserved ${it.expected} · Short by ${Math.abs(diff)}`
+          : `Reserved ${it.expected} · Over by ${diff}`);
     const valClass = diff === 0 ? '' : 'diff';
     return `
       <div class="count-row ${status}" data-line="${i}">
