@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Quantify — Real-Time Validation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'Switzer';
+    src: url('https://cdn.fontshare.com/wf/ZALDQ5GZAJ7WP3WDNTYGSM3ONVSA4OHR/UYIJILXMZ45X3NMFQYXIN5DLMJXY4NHT/YIZDEFD5HV4KXLH5LTOZGNZ7NHLSMFAL.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Switzer';
+    src: url('https://cdn.fontshare.com/wf/ZALDQ5GZAJ7WP3WDNTYGSM3ONVSA4OHR/5BWXRJQPXCHM7IUKFWSGZPFP5GMJUGTF/M7R7V4OFJ7BHPOLNHQF6F4NMPUICJFSR.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    /* Uno Material Toolkit tokens from Figma */
+    --primary: #0A3EFF;
+    --on-primary: #FFFFFF;
+    --secondary-container: #D6E0FF;
+    --error: #E64059;
+    --on-error: #FFFFFF;
+    --surface: #FFFFFF;
+    --background: #FFFFFF;
+    --on-surface: #202020;
+    --on-surface-variant: #878787;
+    --outline: #B5B5B5;
+    --success: #1B8A4A;
+    --success-bg: #E8F5E9;
+    --warning: #E6A817;
+    --warning-bg: #FFF8E1;
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'Switzer', -apple-system, system-ui, sans-serif;
+    background: #F0F0F0;
+    color: var(--on-surface);
+    -webkit-font-smoothing: antialiased;
+    overflow: auto;
+  }
+
+  /* Material Symbols */
+  .ms {
+    font-family: 'Material Symbols Sharp';
+    font-size: 24px;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    user-select: none;
+    vertical-align: middle;
+  }
+  .ms.f { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+  /* ── App Shell ── */
+  .app {
+    width: 100%;
+    height: 100%;
+    max-width: 390px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    background: var(--background);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── iOS Status Bar ── */
+  .statusbar {
+    height: 44px;
+    padding: 0 24px 0 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    background: var(--surface);
+    flex-shrink: 0;
+  }
+  .sb-time {
+    font-family: -apple-system, 'SF Pro', system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #000;
+    letter-spacing: 0.4px;
+  }
+  .sb-icons { display: flex; gap: 4px; align-items: center; }
+  .sb-icons .ms { font-size: 16px; color: #000; }
+
+  /* ── NavigationBar (Top App Bar) ── */
+  .navbar {
+    height: 64px;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    padding: 12px 8px;
+    gap: 8px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+  }
+  .nav-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--on-surface);
+    flex-shrink: 0;
+    position: relative;
+    border-radius: 20px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav-btn:active { background: rgba(0,0,0,0.06); }
+  .nav-btn .ms { font-size: 24px; }
+  .nav-title {
+    flex: 1;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--on-surface);
+    letter-spacing: 0px;
+  }
+  .nav-btn.save-off { opacity: 0.25; pointer-events: none; }
+  .nav-btn.save-on { color: var(--primary); }
+
+  .nav-badge {
+    position: absolute;
+    top: 2px;
+    right: 0;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 35px;
+    font-family: 'Switzer', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 4px;
+    color: var(--on-error);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .nav-badge.err { background: var(--error); }
+  .nav-badge.warn { background: var(--warning); }
+  .nav-badge.hide { display: none; }
+
+  /* ── Content ── */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    background: var(--background);
+  }
+
+  /* ── ListItem row (toggle, menu) ── */
+  .list-item {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    padding: 16px;
+    min-height: 56px;
+    background: var(--surface);
+  }
+  .list-item + .list-item { border-top: 1px solid rgba(0,0,0,0.06); }
+  .li-content { flex: 1; min-width: 0; }
+  .li-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--on-surface);
+    letter-spacing: 0.1px;
+    line-height: 1.4;
+  }
+  .li-desc {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--on-surface-variant);
+    letter-spacing: 0.25px;
+    margin-top: 2px;
+  }
+
+  /* ── Toggle Switch (Uno Material 52x32) ── */
+  .toggle-sw {
+    width: 52px;
+    height: 32px;
+    border-radius: 16px;
+    background: var(--outline);
+    cursor: pointer;
+    position: relative;
+    transition: background 200ms;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .toggle-sw.on { background: var(--primary); }
+  .toggle-sw::after {
+    content: '';
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    background: #fff;
+    top: 2px;
+    left: 2px;
+    transition: transform 200ms;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+  .toggle-sw.on::after { transform: translateX(20px); }
+
+  /* ── Outlined TextBox (Figma: .Template_TextBoxOutlined) ── */
+  .textbox {
+    position: relative;
+    height: 56px;
+    width: 100%;
+    border: 1px solid var(--outline);
+    border-radius: 4px;
+    background: var(--surface);
+    transition: border-color 180ms, border-width 0ms;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 16px;
+    cursor: text;
+  }
+  .textbox.focused { border: 2px solid var(--on-surface); padding: 0 15px; }
+  .textbox.err { border: 2px solid var(--error); padding: 0 15px; }
+  .textbox.warn { border: 2px solid var(--warning); padding: 0 15px; }
+  .textbox.ok { border: 2px solid var(--success); padding: 0 15px; }
+
+  .tb-content { flex: 1; display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+  .tb-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--on-surface-variant);
+    letter-spacing: 0.4px;
+    line-height: 1;
+    transition: color 180ms, font-size 180ms, transform 180ms;
+  }
+  .textbox.focused .tb-label { color: var(--on-surface); }
+  .textbox.err .tb-label { color: var(--error); }
+  .textbox.warn .tb-label { color: var(--warning); }
+  .textbox.ok .tb-label { color: var(--success); }
+  .tb-label.small {
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    margin-bottom: 2px;
+  }
+
+  .tb-input {
+    border: none;
+    outline: none;
+    background: none;
+    font-family: 'Switzer', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--on-surface);
+    letter-spacing: 0.15px;
+    width: 100%;
+    padding: 0;
+    line-height: 1.2;
+  }
+  .tb-input::placeholder { color: transparent; }
+  .tb-input:focus::placeholder { color: var(--on-surface-variant); }
+
+  .tb-trailing { flex-shrink: 0; display: flex; align-items: center; }
+  .tb-trailing .ms { font-size: 24px; }
+
+  /* ── Field wrapper ── */
+  .field { padding: 0 16px; margin-bottom: 4px; }
+  .field-msg {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 4px 16px 0;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.4px;
+    line-height: 1.3;
+    min-height: 20px;
+    transition: opacity 180ms, max-height 200ms;
+    overflow: hidden;
+    max-height: 40px;
+    opacity: 1;
+  }
+  .field-msg .ms { font-size: 16px; flex-shrink: 0; }
+  .field-msg.err { color: var(--error); }
+  .field-msg.warn { color: var(--warning); }
+  .field-msg.ok { color: var(--success); }
+  .field-msg.info { color: var(--primary); }
+  .field-msg.gone { max-height: 0; opacity: 0; min-height: 0; padding-top: 0; }
+
+  /* ── Select (dropdown) ── */
+  .select-box {
+    position: relative;
+    height: 56px;
+    width: 100%;
+    border: 1px solid var(--outline);
+    border-radius: 4px;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 16px;
+    cursor: pointer;
+    transition: border-color 180ms;
+  }
+  .select-box.err { border: 2px solid var(--error); padding: 0 15px; }
+  .select-box.ok { border: 2px solid var(--success); padding: 0 15px; }
+  .select-content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .select-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--on-surface-variant);
+    letter-spacing: 0.4px;
+    line-height: 1;
+  }
+  .select-box.err .select-label { color: var(--error); }
+  .select-box.ok .select-label { color: var(--success); }
+  .select-label.small { font-size: 12px; margin-bottom: 2px; }
+  .select-value {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--on-surface);
+    letter-spacing: 0.15px;
+  }
+  .select-value.empty { color: var(--on-surface-variant); }
+  .native-select {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  /* ── Date TextBox ── */
+  .date-box {
+    position: relative;
+    height: 56px;
+    width: 100%;
+    border: 1px solid var(--outline);
+    border-radius: 4px;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 16px;
+    cursor: pointer;
+    transition: border-color 180ms;
+  }
+  .date-box.err { border: 2px solid var(--error); padding: 0 15px; }
+  .date-box.ok { border: 2px solid var(--success); padding: 0 15px; }
+  .date-content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .date-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--on-surface-variant);
+    letter-spacing: 0.4px;
+  }
+  .date-box.err .date-label { color: var(--error); }
+  .date-box.ok .date-label { color: var(--success); }
+  .date-label.small { font-size: 12px; margin-bottom: 2px; }
+  .date-value {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--on-surface);
+    letter-spacing: 0.15px;
+  }
+  .native-date {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .native-date::-webkit-calendar-picker-indicator {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    opacity: 0;
+  }
+
+  /* ── Divider ── */
+  .divider { height: 8px; background: #F5F5F5; }
+
+  /* ── Section Label ── */
+  .section-label {
+    padding: 20px 16px 12px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--on-surface-variant);
+  }
+
+  /* ── Validation Popup ── */
+  .popup-dim {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.32);
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms;
+  }
+  .popup-dim.show { opacity: 1; pointer-events: auto; }
+
+  .popup-card {
+    position: absolute;
+    top: 100px;
+    left: 16px;
+    right: 16px;
+    background: var(--surface);
+    border-radius: 12px;
+    z-index: 51;
+    transform: translateY(-8px) scale(0.98);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 200ms, opacity 200ms;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  }
+  .popup-card.show { transform: translateY(0) scale(1); opacity: 1; pointer-events: auto; }
+
+  .popup-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .popup-head-l { display: flex; align-items: center; gap: 8px; }
+  .popup-head h3 { font-size: 14px; font-weight: 500; color: var(--on-surface); letter-spacing: 0.1px; }
+  .popup-cnt {
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: 'Switzer', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    color: #fff;
+  }
+  .popup-cnt.err { background: var(--error); }
+  .popup-cnt.warn { background: var(--warning); }
+  .popup-cnt.ok { background: var(--success); }
+  .popup-x {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--on-surface-variant);
+    border-radius: 20px;
+    margin: -8px -8px -8px 0;
+  }
+  .popup-x:active { background: rgba(0,0,0,0.06); }
+
+  .popup-list { list-style: none; }
+  .popup-li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    line-height: 1.4;
+    color: var(--on-surface);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+  }
+  .popup-li:last-child { border-bottom: none; }
+  .popup-li:active { background: #F5F5F5; }
+  .popup-li .ms { flex-shrink: 0; }
+
+  /* ── Fade anim ── */
+  @keyframes up { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+  .anim { animation: up 180ms ease; }
+
+  /* ── Guide drawer (outside the app) ── */
+  .guide-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 48px;
+    height: 48px;
+    border-radius: 24px;
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    z-index: 200;
+    transition: transform 200ms, background 200ms;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .guide-fab:hover { background: #333; }
+  .guide-fab:active { transform: scale(0.92); }
+  .guide-fab .ms { font-size: 22px; }
+  .guide-fab.open { background: #555; }
+
+  .guide-panel {
+    position: fixed;
+    bottom: 84px;
+    right: 24px;
+    width: 320px;
+    max-height: calc(100vh - 120px);
+    background: #1a1a1a;
+    color: #ccc;
+    border-radius: 16px;
+    z-index: 199;
+    overflow-y: auto;
+    transform: translateY(12px) scale(0.95);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 250ms, opacity 200ms;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+  }
+  .guide-panel.show {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .guide-header {
+    padding: 20px 20px 4px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #666;
+  }
+  .guide-title {
+    padding: 4px 20px 16px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+  .guide-steps { padding: 0 12px 12px; }
+  .guide-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 150ms;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .guide-step:hover { background: rgba(255,255,255,0.06); }
+  .guide-step.active { background: rgba(255,255,255,0.08); }
+  .guide-num {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    background: #333;
+    color: #888;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    transition: background 200ms, color 200ms;
+  }
+  .guide-step.active .guide-num { background: var(--primary); color: #fff; }
+  .guide-step-text {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.45;
+    color: #999;
+    transition: color 200ms;
+  }
+  .guide-step.active .guide-step-text { color: #ddd; }
+  .guide-step-text strong {
+    display: block;
+    font-weight: 500;
+    color: #bbb;
+    margin-bottom: 2px;
+    font-size: 13px;
+  }
+  .guide-step.active .guide-step-text strong { color: #fff; }
+
+  /* ── Desktop wrapper ── */
+  @media (min-width: 500px) {
+    body {
+      background: #E8E8E8;
+      padding: 32px 0;
+    }
+    .app {
+      height: auto;
+      min-height: 844px;
+      margin: 0 auto;
+      border-radius: 36px;
+      overflow: hidden;
+      box-shadow: 0 0 0 8px #1a1a1a, 0 20px 60px rgba(0,0,0,0.25);
+    }
+    .content {
+      overflow: visible;
+    }
+  }
+
+  @media (max-width: 499px) {
+    .guide-panel {
+      right: 12px;
+      left: 12px;
+      width: auto;
+      bottom: 80px;
+    }
+    .guide-fab {
+      bottom: 16px;
+      right: 16px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Status Bar -->
+  <div class="statusbar">
+    <span class="sb-time">9:41</span>
+    <div class="sb-icons">
+      <span class="ms" style="font-size:15px">signal_cellular_alt</span>
+      <span class="ms" style="font-size:15px">wifi</span>
+      <span class="ms" style="font-size:15px">battery_full</span>
+    </div>
+  </div>
+
+  <!-- NavigationBar -->
+  <div class="navbar">
+    <button class="nav-btn" onclick="handleClose()"><span class="ms">close</span></button>
+    <span class="nav-title">Scaffold Settings</span>
+    <button class="nav-btn" id="valBtn" onclick="openPopup()">
+      <span class="ms f" id="valIcon" style="color:var(--warning)">warning</span>
+    </button>
+    <button class="nav-btn save-off" id="saveBtn" onclick="handleSave()">
+      <span class="ms">check</span>
+    </button>
+  </div>
+
+  <!-- Scrollable Content -->
+  <div class="content">
+
+    <!-- Toggle: Use Bing Maps -->
+    <div class="list-item">
+      <div class="li-content">
+        <div class="li-title">Use Bing Maps</div>
+        <div class="li-desc">Enable satellite map overlays</div>
+      </div>
+      <div class="toggle-sw on" onclick="this.classList.toggle('on')"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-label">Required Fields</div>
+
+    <!-- TextBox: Bing Maps Key -->
+    <div class="field" id="fKey">
+      <div class="textbox err" id="bKey" onclick="$('iKey').focus()">
+        <div class="tb-content">
+          <span class="tb-label" id="lKey">Bing Maps Key</span>
+          <input class="tb-input" id="iKey" type="text" placeholder="Enter API key"
+            oninput="vKey()" onfocus="focusBox('Key')" onblur="blurBox('Key')">
+        </div>
+        <div class="tb-trailing" id="tKey">
+          <span class="ms f" style="color:var(--error);font-size:20px">cancel</span>
+        </div>
+      </div>
+    </div>
+    <div class="field-msg err" id="mKey">
+      <span class="ms f">cancel</span> Bing Maps Key is required
+    </div>
+
+    <!-- Select: Rate Profile -->
+    <div class="field" id="fRate" style="margin-top:12px">
+      <div class="select-box err" id="bRate">
+        <div class="select-content">
+          <span class="select-label" id="lRate">Rate Profile</span>
+          <span class="select-value empty" id="vRate">Select a rate profile</span>
+        </div>
+        <span class="ms" style="color:var(--on-surface-variant);font-size:20px">expand_more</span>
+        <select class="native-select" id="iRate" onchange="vRate()">
+          <option value="" disabled selected></option>
+          <option value="std">Standard Daily</option>
+          <option value="wk">Weekly Flat Rate</option>
+          <option value="mo">Monthly Contract</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-msg err" id="mRate">
+      <span class="ms f">cancel</span> Rate Profile is required
+    </div>
+
+    <!-- Date: Inspection Date -->
+    <div class="field" id="fDate" style="margin-top:12px">
+      <div class="date-box err" id="bDate">
+        <div class="date-content">
+          <span class="date-label" id="lDate">Next Inspection Date</span>
+          <span class="date-value" id="vDate" style="color:var(--on-surface-variant)">Select a date</span>
+        </div>
+        <span class="ms" style="color:var(--on-surface-variant);font-size:20px">calendar_today</span>
+        <input class="native-date" id="iDate" type="date" onchange="vDate()">
+      </div>
+    </div>
+    <div class="field-msg err" id="mDate">
+      <span class="ms f">cancel</span> Inspection date is required
+    </div>
+
+    <div class="divider" style="margin-top:16px"></div>
+
+    <!-- TextBox: Notes (optional) -->
+    <div class="section-label">Optional</div>
+    <div class="field" id="fNotes">
+      <div class="textbox" id="bNotes" onclick="$('iNotes').focus()">
+        <div class="tb-content">
+          <span class="tb-label" id="lNotes">Notes</span>
+          <input class="tb-input" id="iNotes" type="text" placeholder="Add notes for this scaffold"
+            onfocus="focusBox('Notes');showNotesHint()" onblur="blurBox('Notes');hideNotesHint()">
+        </div>
+      </div>
+    </div>
+    <div class="field-msg info gone" id="mNotes">
+      <span class="ms f">info</span> Notes are visible to all crew members
+    </div>
+
+    <div style="height:60px"></div>
+  </div>
+
+  <!-- Popup -->
+  <div class="popup-dim" id="popDim" onclick="closePopup()"></div>
+  <div class="popup-card" id="popCard">
+    <div class="popup-head">
+      <div class="popup-head-l">
+        <h3>Validation</h3>
+        <span class="popup-cnt err" id="popCnt">3</span>
+      </div>
+      <button class="popup-x" onclick="closePopup()"><span class="ms" style="font-size:20px">close</span></button>
+    </div>
+    <ul class="popup-list" id="popList"></ul>
+  </div>
+
+</div>
+
+<!-- Guide FAB + Panel (outside the app) -->
+<button class="guide-fab" id="guideFab" onclick="toggleGuide()">
+  <span class="ms" id="guideIcon">play_arrow</span>
+</button>
+<div class="guide-panel" id="guidePanel">
+  <div class="guide-header">Walkthrough</div>
+  <div class="guide-title">Real-Time Validation Flow</div>
+  <div class="guide-steps" id="guideSteps"></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+function setBox(n, cls) {
+  const b = $('b'+n);
+  b.classList.remove('err','warn','ok','focused');
+  b.classList.add(cls);
+}
+function setTrail(n, icon, color) {
+  const t = $('t'+n);
+  if (t) t.innerHTML = `<span class="ms f" style="color:var(${color});font-size:20px">${icon}</span>`;
+}
+function setMsg(n, cls, icon, text) {
+  const m = $('m'+n);
+  m.className = `field-msg ${cls} anim`;
+  m.innerHTML = `<span class="ms f">${icon}</span> ${text}`;
+}
+
+function focusBox(n) {
+  const b = $('b'+n);
+  if (!b.classList.contains('err') && !b.classList.contains('warn') && !b.classList.contains('ok')) {
+    b.classList.add('focused');
+  }
+  $('l'+n).classList.add('small');
+}
+function blurBox(n) {
+  $('b'+n).classList.remove('focused');
+  if (!$('i'+n).value) $('l'+n).classList.remove('small');
+}
+
+function vKey() {
+  const v = $('iKey').value;
+  $('lKey').classList.add('small');
+  if (!v) {
+    setBox('Key','err'); setTrail('Key','cancel','--error');
+    setMsg('Key','err','cancel','Bing Maps Key is required');
+    $('lKey').classList.remove('small');
+  } else if (v.length < 32) {
+    setBox('Key','warn'); setTrail('Key','warning','--warning');
+    setMsg('Key','warn','warning',`Key must be at least 32 characters (${v.length}/32)`);
+  } else {
+    setBox('Key','ok'); setTrail('Key','check_circle','--success');
+    setMsg('Key','ok','check_circle','Valid key');
+  }
+  sync();
+}
+
+function vRate() {
+  const v = $('iRate').value;
+  if (v) {
+    $('bRate').classList.remove('err'); $('bRate').classList.add('ok');
+    $('lRate').classList.add('small');
+    const txt = $('iRate').options[$('iRate').selectedIndex].text;
+    $('vRate').textContent = txt; $('vRate').classList.remove('empty');
+    setMsg('Rate','ok','check_circle', txt);
+  } else {
+    $('bRate').classList.remove('ok'); $('bRate').classList.add('err');
+    $('vRate').textContent = 'Select a rate profile'; $('vRate').classList.add('empty');
+    setMsg('Rate','err','cancel','Rate Profile is required');
+  }
+  sync();
+}
+
+function vDate() {
+  const v = $('iDate').value;
+  if (v) {
+    $('bDate').classList.remove('err'); $('bDate').classList.add('ok');
+    $('lDate').classList.add('small');
+    const d = new Date(v);
+    const txt = d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+    $('vDate').textContent = txt; $('vDate').style.color = '';
+    setMsg('Date','ok','check_circle', txt);
+  } else {
+    $('bDate').classList.remove('ok'); $('bDate').classList.add('err');
+    $('vDate').textContent = 'Select a date'; $('vDate').style.color = 'var(--on-surface-variant)';
+    setMsg('Date','err','cancel','Inspection date is required');
+  }
+  sync();
+}
+
+function showNotesHint() { $('mNotes').classList.remove('gone'); }
+function hideNotesHint() { if(!$('iNotes').value) $('mNotes').classList.add('gone'); }
+
+function sync() {
+  const errs = getE(), warns = getW();
+  const icon = $('valIcon'), save = $('saveBtn'), btn = $('valBtn');
+  if (errs.length) {
+    icon.textContent='warning'; icon.style.color='var(--warning)';
+    save.className='nav-btn save-off';
+    btn.style.display='';
+  } else if (warns.length) {
+    icon.textContent='warning'; icon.style.color='var(--warning)';
+    save.className='nav-btn save-on';
+    btn.style.display='';
+  } else {
+    btn.style.display='none';
+    save.className='nav-btn save-on';
+  }
+  buildPop();
+}
+
+function getE() {
+  const e=[];
+  if($('bKey').classList.contains('err')) e.push({f:'Key',m:'Bing Maps Key is required'});
+  if($('bRate').classList.contains('err')) e.push({f:'Rate',m:'Rate Profile is required'});
+  if($('bDate').classList.contains('err')) e.push({f:'Date',m:'Inspection date is required'});
+  return e;
+}
+function getW() {
+  const w=[];
+  if($('bKey').classList.contains('warn')) w.push({f:'Key',m:'Key must be at least 32 characters'});
+  return w;
+}
+
+function buildPop() {
+  const all=[...getE().map(e=>({...e,s:'err',i:'cancel',c:'--error'})),...getW().map(w=>({...w,s:'warn',i:'warning',c:'--warning'}))];
+  const list=$('popList'), cnt=$('popCnt');
+  if(!all.length){
+    list.innerHTML='<li class="popup-li" style="color:var(--success)"><span class="ms f" style="color:var(--success)">check_circle</span>All fields are valid</li>';
+    cnt.textContent='0'; cnt.className='popup-cnt ok';
+  } else {
+    cnt.textContent=all.length;
+    cnt.className=all.some(a=>a.s==='err')?'popup-cnt err':'popup-cnt warn';
+    list.innerHTML=all.map(a=>`<li class="popup-li" onclick="jumpTo('${a.f}')"><span class="ms f" style="color:var(${a.c})">${a.i}</span>${a.m}</li>`).join('');
+  }
+}
+function openPopup(){$('popDim').classList.add('show');$('popCard').classList.add('show');}
+function closePopup(){$('popDim').classList.remove('show');$('popCard').classList.remove('show');}
+function jumpTo(f){
+  closePopup();
+  const map={Key:'iKey',Rate:'iRate',Date:'iDate'};
+  const el=$(map[f]);
+  if(el){el.scrollIntoView({behavior:'smooth',block:'center'}); if(el.focus) el.focus();}
+}
+
+function handleClose(){location.reload();}
+function handleSave(){
+  if($('saveBtn').classList.contains('save-off'))return;
+  $('saveBtn').innerHTML='<span class="ms f" style="color:var(--success)">check_circle</span>';
+  setTimeout(()=>{$('saveBtn').innerHTML='<span class="ms">check</span>';},1200);
+}
+
+sync();
+
+/* ── Guide walkthrough ── */
+const steps = [
+  {
+    title: 'Form Load',
+    desc: 'Required fields show errors immediately when the form opens. No save attempt needed.',
+    run() {
+      location.reload(); // clean state
+    }
+  },
+  {
+    title: 'Typing — Too Short',
+    desc: 'User types "AB7". Error becomes a warning — key is too short. Toolbar icon updates live.',
+    run() {
+      resetForm();
+      $('iKey').value='AB7'; $('lKey').classList.add('small');
+      setBox('Key','warn'); setTrail('Key','warning','--warning');
+      setMsg('Key','warn','warning','Key must be at least 32 characters (3/32)');
+      sync(); $('iKey').focus();
+    }
+  },
+  {
+    title: 'Valid Input',
+    desc: 'Key reaches 32 characters. Error clears instantly. Green check confirms.',
+    run() {
+      resetForm();
+      $('iKey').value='BK-7X2M9P4NQRTZ8VW1JLCY6DE3FG5H'; $('lKey').classList.add('small');
+      setBox('Key','ok'); setTrail('Key','check_circle','--success');
+      setMsg('Key','ok','check_circle','Valid key');
+      sync();
+    }
+  },
+  {
+    title: 'Dropdown Selection',
+    desc: 'User picks "Standard Daily". Error clears on selection, not on save.',
+    run() {
+      resetForm();
+      $('iKey').value='BK-7X2M9P4NQRTZ8VW1JLCY6DE3FG5H'; $('lKey').classList.add('small');
+      setBox('Key','ok'); setTrail('Key','check_circle','--success');
+      setMsg('Key','ok','check_circle','Valid key');
+      $('iRate').value='std'; $('bRate').classList.remove('err'); $('bRate').classList.add('ok');
+      $('lRate').classList.add('small'); $('vRate').textContent='Standard Daily'; $('vRate').classList.remove('empty');
+      setMsg('Rate','ok','check_circle','Standard Daily');
+      sync();
+    }
+  },
+  {
+    title: 'Date Selection',
+    desc: 'Last error clears. Toolbar turns green. Save activates.',
+    run() {
+      resetForm();
+      $('iKey').value='BK-7X2M9P4NQRTZ8VW1JLCY6DE3FG5H'; $('lKey').classList.add('small');
+      setBox('Key','ok'); setTrail('Key','check_circle','--success');
+      setMsg('Key','ok','check_circle','Valid key');
+      $('iRate').value='std'; $('bRate').classList.remove('err'); $('bRate').classList.add('ok');
+      $('lRate').classList.add('small'); $('vRate').textContent='Standard Daily'; $('vRate').classList.remove('empty');
+      setMsg('Rate','ok','check_circle','Standard Daily');
+      $('iDate').value='2025-04-15'; $('bDate').classList.remove('err'); $('bDate').classList.add('ok');
+      $('lDate').classList.add('small'); $('vDate').textContent='April 15, 2025'; $('vDate').style.color='';
+      setMsg('Date','ok','check_circle','April 15, 2025');
+      sync();
+    }
+  },
+  {
+    title: 'Validation Summary',
+    desc: 'Tap the toolbar icon to see all issues at once. Tap an issue to jump to that field.',
+    run() {
+      resetForm();
+      $('iKey').value='BK-7X2M9P4NQRTZ8VW1JLCY6DE3FG5H'; $('lKey').classList.add('small');
+      setBox('Key','ok'); setTrail('Key','check_circle','--success');
+      setMsg('Key','ok','check_circle','Valid key');
+      sync();
+      setTimeout(openPopup, 300);
+    }
+  },
+];
+
+let guideOpen = false;
+let activeStep = -1;
+
+function resetForm() {
+  closePopup();
+  $('iKey').value=''; setBox('Key','err'); $('lKey').classList.remove('small');
+  $('tKey').innerHTML='<span class="ms f" style="color:var(--error);font-size:20px">cancel</span>';
+  setMsg('Key','err','cancel','Bing Maps Key is required');
+  $('iRate').selectedIndex=0; $('bRate').classList.remove('ok'); $('bRate').classList.add('err');
+  $('lRate').classList.remove('small'); $('vRate').textContent='Select a rate profile'; $('vRate').classList.add('empty');
+  setMsg('Rate','err','cancel','Rate Profile is required');
+  $('iDate').value=''; $('bDate').classList.remove('ok'); $('bDate').classList.add('err');
+  $('lDate').classList.remove('small'); $('vDate').textContent='Select a date'; $('vDate').style.color='var(--on-surface-variant)';
+  setMsg('Date','err','cancel','Inspection date is required');
+  $('iNotes').value=''; $('bNotes').classList.remove('focused'); $('lNotes').classList.remove('small');
+  $('mNotes').classList.add('gone');
+  sync();
+}
+
+function buildGuide() {
+  $('guideSteps').innerHTML = steps.map((s, i) =>
+    `<div class="guide-step${i===activeStep?' active':''}" onclick="runStep(${i})">
+      <span class="guide-num">${i+1}</span>
+      <div class="guide-step-text"><strong>${s.title}</strong>${s.desc}</div>
+    </div>`
+  ).join('');
+}
+
+function toggleGuide() {
+  guideOpen = !guideOpen;
+  $('guidePanel').classList.toggle('show', guideOpen);
+  $('guideFab').classList.toggle('open', guideOpen);
+  $('guideIcon').textContent = guideOpen ? 'close' : 'play_arrow';
+  if (guideOpen && activeStep === -1) { activeStep = 0; buildGuide(); }
+}
+
+function runStep(i) {
+  activeStep = i;
+  buildGuide();
+  if (i === 0) { resetForm(); sync(); }
+  else steps[i].run();
+}
+
+buildGuide();
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closePopup(); if (guideOpen) toggleGuide(); }
+});
+</script>
+
+</body>
+</html>

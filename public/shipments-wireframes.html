@@ -1,0 +1,2076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantify Shipments — 5 Wireframe Options</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+<style>
+@font-face { font-family:'Switzer'; src:url('https://cdn.fontshare.com/wf/ZALDQ5GZAJ7WP3WDNTYGSM3ONVSA4OHR/UYIJILXMZ45X3NMFQYXIN5DLMJXY4NHT/YIZDEFD5HV4KXLH5LTOZGNZ7NHLSMFAL.woff2') format('woff2'); font-weight:400; }
+@font-face { font-family:'Switzer'; src:url('https://cdn.fontshare.com/wf/ZALDQ5GZAJ7WP3WDNTYGSM3ONVSA4OHR/5BWXRJQPXCHM7IUKFWSGZPFP5GMJUGTF/M7R7V4OFJ7BHPOLNHQF6F4NMPUICJFSR.woff2') format('woff2'); font-weight:500; }
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --primary: #0A3EFF;
+  --navy: #10296E;
+  --surface: #FFFFFF;
+  --bg: #F5F5F5;
+  --ink: #202020;
+  --muted: #878787;
+  --outline: #B5B5B5;
+  --div: rgba(0,0,0,0.07);
+  --err: #D32F2F;
+  --ok: #1B8A4A;
+  --ok-bg: #E8F5E9;
+  --warn: #E65100;
+  --del-bg: #EEF2FF;
+  --ret-bg: #FFF3E0;
+}
+
+html, body {
+  font-family: 'Switzer', -apple-system, system-ui, sans-serif;
+  background: #F2F4FA;
+  color: #1A1A1A;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+.ms {
+  font-family: 'Material Symbols Sharp';
+  font-size: 24px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+}
+.ms.f { font-variation-settings: 'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; }
+.ms.sm { font-size: 18px; font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20; }
+
+/* ── Page ── */
+.page-head {
+  padding: 44px 48px 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.q-logo {
+  width: 32px; height: 32px;
+  background: var(--primary);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.page-title { font-size: 13px; color: #555; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+.page-title strong { display: block; font-size: 20px; color: #F0F0F0; text-transform: none; letter-spacing: 0; margin-bottom: 2px; font-weight: 500; }
+
+.scroll-hint {
+  padding: 16px 48px 0;
+  font-size: 12px;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.phones-row {
+  display: flex;
+  gap: 28px;
+  padding: 32px 48px 64px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+}
+.phones-row::-webkit-scrollbar { height: 4px; }
+.phones-row::-webkit-scrollbar-track { background: rgba(0,0,0,0.04); }
+.phones-row::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.18); border-radius: 2px; }
+
+/* ── Option Wrap ── */
+.opt-wrap {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  scroll-snap-align: start;
+}
+.opt-pill {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 100px;
+  padding: 4px 14px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #666;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+.opt-label { text-align: center; max-width: 295px; }
+.opt-label h3 { font-size: 15px; font-weight: 500; color: #D0D0D0; margin-bottom: 4px; }
+.opt-label p { font-size: 12px; color: #555; line-height: 1.6; }
+
+/* ── Phone ── */
+.phone {
+  width: 295px;
+  height: 638px;
+  background: var(--surface);
+  border-radius: 18px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.10), 0 16px 48px rgba(10,30,80,0.10);
+  flex-shrink: 0;
+}
+
+/* ── Screens ── */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+.screen.active { opacity: 1; pointer-events: all; }
+
+/* ── Status Bar ── */
+.sb {
+  height: 40px;
+  padding: 10px 18px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  background: var(--surface);
+}
+.sb-time { font-size: 14px; font-weight: 600; color: var(--ink); letter-spacing: 0.2px; }
+.sb-icons { display: flex; align-items: center; gap: 3px; }
+.sb-icons .ms { font-size: 14px; color: var(--ink); }
+
+/* ── NavBar ── */
+.navbar {
+  height: 54px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  gap: 2px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--div);
+}
+.nav-btn {
+  width: 42px; height: 42px;
+  border: none; background: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink); flex-shrink: 0; border-radius: 21px;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-btn:active { background: rgba(0,0,0,0.05); }
+.nav-btn.blue { color: var(--primary); }
+.nav-title { flex: 1; font-size: 19px; font-weight: 400; color: var(--ink); padding-left: 4px; line-height: 1.2; }
+.nav-sub { display: block; font-size: 12px; color: var(--muted); font-weight: 400; margin-top: 1px; }
+
+/* ── Content ── */
+.content { flex: 1; overflow-y: auto; background: var(--bg); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+
+/* ── List row ── */
+.row {
+  display: flex; align-items: center;
+  padding: 0 14px;
+  min-height: 60px;
+  background: var(--surface);
+  cursor: pointer; border: none; width: 100%; text-align: left;
+  gap: 10px;
+  -webkit-tap-highlight-color: transparent;
+}
+.row:active { background: #F8F8F8; }
+.row + .row { border-top: 1px solid var(--div); }
+
+.row-icon {
+  width: 36px; height: 36px; border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.row-icon.del { background: var(--del-bg); color: var(--primary); }
+.row-icon.ret { background: var(--ret-bg); color: var(--warn); }
+.row-body { flex: 1; min-width: 0; }
+.row-title { font-size: 14px; font-weight: 500; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row-meta { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.row-right { flex-shrink: 0; text-align: right; }
+.row-count { font-size: 13px; font-weight: 500; color: var(--ink); }
+.row-time { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.chev { color: var(--outline); }
+
+/* ── Badge ── */
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 2px 7px; border-radius: 4px;
+  font-size: 10px; font-weight: 500; letter-spacing: 0.4px;
+}
+.badge.del { background: var(--del-bg); color: var(--primary); }
+.badge.ret { background: var(--ret-bg); color: var(--warn); }
+
+/* ── Section label ── */
+.sec-label {
+  padding: 16px 14px 6px;
+  font-size: 10px; font-weight: 500; color: var(--muted);
+  letter-spacing: 0.7px; text-transform: uppercase;
+  background: var(--bg);
+}
+
+/* ── Card container ── */
+.card { background: var(--surface); margin: 0 8px 6px; border-radius: 10px; overflow: hidden; }
+
+/* ── Tabs ── */
+.tab-bar {
+  display: flex; background: var(--surface);
+  border-bottom: 1px solid var(--div); flex-shrink: 0;
+}
+.tab {
+  flex: 1; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 500; color: var(--muted);
+  cursor: pointer; border: none; background: none;
+  border-bottom: 2px solid transparent;
+  font-family: 'Switzer',sans-serif; gap: 5px;
+  -webkit-tap-highlight-color: transparent;
+}
+.tab.on { color: var(--primary); border-bottom-color: var(--primary); }
+.tab-n {
+  border-radius: 9px; padding: 1px 6px;
+  font-size: 10px; min-width: 16px; text-align: center;
+}
+.tab.on .tab-n { background: var(--primary); color: #fff; }
+.tab:not(.on) .tab-n { background: var(--outline); color: #fff; }
+
+/* ── Status dot ── */
+.dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.dot.todo { background: var(--outline); }
+.dot.inprog { background: var(--primary); }
+.dot.done { background: var(--ok); }
+
+/* ── Stats row (Option D) ── */
+.stats { display: flex; gap: 6px; padding: 10px 8px 0; }
+.stat { flex: 1; background: var(--surface); border-radius: 10px; padding: 10px 8px; text-align: center; }
+.stat-n { font-size: 22px; font-weight: 500; color: var(--ink); line-height: 1; }
+.stat-l { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.stat.red .stat-n { color: var(--err); }
+
+/* ── Hero card (Option E) ── */
+.hero {
+  margin: 10px 8px 0;
+  background: var(--navy);
+  border-radius: 14px; padding: 18px;
+  color: #fff;
+}
+.hero-eyebrow { font-size: 10px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; opacity: 0.5; margin-bottom: 10px; }
+.hero-name { font-size: 18px; font-weight: 500; margin-bottom: 3px; }
+.hero-meta { font-size: 13px; opacity: 0.6; margin-bottom: 6px; }
+.hero-row { display: flex; align-items: center; gap: 6px; margin-bottom: 16px; }
+.overdue-chip { font-size: 11px; font-weight: 500; color: #FF7B72; background: rgba(255,123,114,0.15); padding: 2px 8px; border-radius: 8px; }
+.hero-btn {
+  width: 100%; height: 44px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 100px; color: #fff;
+  font-family: 'Switzer',sans-serif; font-size: 13px; font-weight: 500;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.hero-btn:active { background: rgba(255,255,255,0.2); }
+
+/* ── Rich card row (Options D) ── */
+.rc-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--div);
+}
+.rc-row:last-child { border-bottom: none; }
+.rc-body { flex: 1; min-width: 0; }
+.rc-name { font-size: 13px; font-weight: 500; color: var(--ink); }
+.rc-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.rc-btn {
+  font-size: 13px; font-weight: 500; color: var(--primary);
+  background: none; border: none; cursor: pointer;
+  font-family: 'Switzer',sans-serif;
+  flex-shrink: 0;
+}
+
+/* ── Time label ── */
+.time-grp { padding: 10px 14px 4px; font-size: 11px; font-weight: 500; color: var(--muted); letter-spacing: 0.3px; background: var(--bg); }
+
+/* ── Featured card (Option D) ── */
+.feat-card {
+  margin: 0 8px 6px;
+  background: var(--surface);
+  border-radius: 10px; overflow: hidden;
+  border-left: 3px solid var(--err);
+}
+.feat-inner { padding: 14px; }
+.feat-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.feat-name { font-size: 16px; font-weight: 500; color: var(--ink); margin-bottom: 3px; }
+.feat-addr { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+.feat-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.chip { display: flex; align-items: center; gap: 3px; background: var(--bg); border-radius: 6px; padding: 3px 7px; font-size: 11px; color: var(--muted); font-weight: 500; }
+.chip .ms { font-size: 13px; }
+.feat-btn {
+  width: 100%; height: 38px;
+  border: 1.5px solid var(--primary); border-radius: 100px;
+  background: none; color: var(--primary);
+  font-family: 'Switzer',sans-serif; font-size: 13px; font-weight: 500;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.feat-btn:active { background: var(--del-bg); }
+
+/* ── Count screen ── */
+.ship-info {
+  padding: 10px 14px;
+  background: var(--surface);
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid var(--div);
+  flex-shrink: 0;
+}
+.count-row {
+  display: flex; align-items: center;
+  padding: 0 14px;
+  height: 68px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--div);
+}
+.c-body { flex: 1; min-width: 0; }
+.c-name { font-size: 13px; font-weight: 500; color: var(--ink); }
+.c-exp { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.c-ctrl { display: flex; align-items: center; gap: 3px; flex-shrink: 0; }
+.c-btn {
+  width: 34px; height: 34px;
+  border: 1.5px solid var(--outline); border-radius: 17px;
+  background: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; line-height: 1; color: var(--ink);
+  font-family: 'Switzer',sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+.c-btn:active { background: var(--bg); }
+.c-val { width: 40px; text-align: center; font-size: 17px; font-weight: 500; color: var(--ink); }
+.c-val.diff { color: var(--warn); }
+
+/* ── Bottom bar ── */
+.bot {
+  padding: 10px 14px 24px;
+  background: var(--surface);
+  border-top: 1px solid var(--div);
+  flex-shrink: 0;
+}
+.btn-fill {
+  width: 100%; height: 50px;
+  background: var(--primary); color: #fff;
+  border: none; border-radius: 100px;
+  font-family: 'Switzer',sans-serif; font-size: 14px; font-weight: 500;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.btn-fill:active { background: #0835D4; }
+
+/* ── Confirmed ── */
+.confirmed {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 32px; text-align: center; background: var(--surface);
+}
+.ok-ring {
+  width: 68px; height: 68px; border-radius: 50%;
+  background: var(--ok-bg);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+}
+.back-btn {
+  height: 44px; padding: 0 28px;
+  background: none; border: 1.5px solid var(--outline);
+  border-radius: 100px;
+  font-family: 'Switzer',sans-serif; font-size: 13px; font-weight: 500;
+  color: var(--ink); cursor: pointer; margin-top: 32px;
+}
+
+/* ── Emil Kowalski polish ── */
+
+/* Custom easing — built-in easings are too weak */
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* Screen transitions — scale + opacity, never from zero */
+.screen {
+  transform: scale(0.98);
+  transition: opacity 0.16s var(--ease-out), transform 0.16s var(--ease-out);
+}
+.screen.active {
+  transform: scale(1);
+}
+
+/* Confirm button — scale on press, not just color */
+.btn-fill {
+  transition: transform 160ms var(--ease-out), background 160ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-fill:hover { background: #1244E8; }
+}
+.btn-fill:active {
+  background: #0835D4;
+  transform: scale(0.97);
+}
+
+/* Back button press */
+.back-btn {
+  transition: transform 160ms var(--ease-out), background 160ms ease;
+}
+.back-btn:active {
+  transform: scale(0.97);
+  background: var(--bg);
+}
+
+/* Count +/− buttons — more scale, they're small */
+.c-btn {
+  transition: transform 120ms var(--ease-out), background 120ms ease;
+}
+.c-btn:active {
+  background: var(--bg);
+  transform: scale(0.88);
+}
+
+/* Count value — smooth color transition when it differs */
+.c-val {
+  transition: color 180ms ease-out;
+}
+
+/* List rows — scale on press */
+.row {
+  transition: transform 160ms var(--ease-out);
+}
+.row:active {
+  background: #F8F8F8;
+  transform: scale(0.99);
+}
+
+/* Nav buttons */
+.nav-btn {
+  transition: transform 120ms var(--ease-out);
+}
+.nav-btn:active {
+  background: rgba(0,0,0,0.05);
+  transform: scale(0.88);
+}
+
+/* Tab switching */
+.tab {
+  transition: color 150ms ease-out, border-color 150ms ease-out;
+}
+
+/* Hero button */
+.hero-btn {
+  transition: transform 160ms var(--ease-out), background 160ms ease;
+}
+.hero-btn:active {
+  background: rgba(255,255,255,0.2);
+  transform: scale(0.97);
+}
+
+/* Featured button */
+.feat-btn {
+  transition: transform 160ms var(--ease-out), background 160ms ease;
+}
+.feat-btn:active {
+  background: var(--del-bg);
+  transform: scale(0.97);
+}
+
+/* RC inline start button */
+.rc-btn {
+  transition: transform 120ms var(--ease-out), opacity 120ms ease;
+}
+.rc-btn:active {
+  transform: scale(0.92);
+  opacity: 0.7;
+}
+
+/* Success icon entrance — scale in from 0.6, not 0 */
+@keyframes successPop {
+  0%   { transform: scale(0.6); opacity: 0; }
+  60%  { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.ok-ring {
+  animation: successPop 400ms var(--ease-out) both;
+}
+
+/* Stagger list rows on screen entry */
+@keyframes rowIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.screen.active .content .row:nth-child(1),
+.screen.active .content .card:nth-child(1) .row { animation: rowIn 220ms var(--ease-out) 30ms both; }
+.screen.active .content .row:nth-child(2),
+.screen.active .content .card:nth-child(2) .row { animation: rowIn 220ms var(--ease-out) 70ms both; }
+.screen.active .content .row:nth-child(3),
+.screen.active .content .card:nth-child(3) .row { animation: rowIn 220ms var(--ease-out) 110ms both; }
+.screen.active .content .row:nth-child(4),
+.screen.active .content .card:nth-child(4) .row { animation: rowIn 220ms var(--ease-out) 150ms both; }
+.screen.active .content .row:nth-child(5),
+.screen.active .content .card:nth-child(5) .row { animation: rowIn 220ms var(--ease-out) 190ms both; }
+
+/* V2 phones — same treatment */
+.v2screen {
+  transform: scale(0.98);
+  transition: opacity 0.16s var(--ease-out), transform 0.16s var(--ease-out);
+}
+.v2screen.active { transform: scale(1); }
+
+.v2-btn-fill {
+  transition: transform 160ms var(--ease-out), background 160ms ease;
+}
+.v2-btn-fill:active { transform: scale(0.97); background: #0835D4; }
+.v2-btn-fill.ghost:active { transform: scale(0.97); background: var(--bg); }
+
+.v2-c-btn {
+  transition: transform 120ms var(--ease-out), background 120ms ease;
+}
+.v2-c-btn:active { transform: scale(0.88); background: #F5F5F5; }
+
+.v2-c-val { transition: color 180ms ease-out; }
+
+.v2-count-row { transition: background 200ms ease-out; }
+
+/* Reduced motion — keep opacity, remove movement */
+@media (prefers-reduced-motion: reduce) {
+  .screen, .v2screen {
+    transition: opacity 0.15s ease;
+    transform: none !important;
+  }
+  .btn-fill, .back-btn, .c-btn, .row, .nav-btn,
+  .hero-btn, .feat-btn, .rc-btn, .v2-btn-fill, .v2-c-btn {
+    transition: none;
+  }
+  .btn-fill:active, .back-btn:active, .c-btn:active,
+  .row:active, .nav-btn:active, .hero-btn:active,
+  .feat-btn:active, .v2-btn-fill:active, .v2-c-btn:active {
+    transform: none;
+  }
+  .ok-ring { animation: none; }
+  .screen.active .content .row,
+  .screen.active .content .card .row { animation: none; }
+}
+
+/* ─────────────────────────────────────────────────────
+   design-taste-frontend  DV:8 / MI:6 / VD:4
+───────────────────────────────────────────────────── */
+
+/* Subtle film grain — fixed pseudo-element, never on scroll container */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.018;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ── Page header — asymmetric, editorial ── */
+.page-head {
+  padding: 56px 48px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.q-logo {
+  width: 28px;
+  height: 28px;
+  margin-bottom: 28px;
+}
+
+.page-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: #6B7280;
+  margin-bottom: 10px;
+}
+
+/* Override: page-title is now just the big headline container */
+.page-title {
+  font-size: 13px;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  font-weight: 500;
+}
+
+.page-title strong {
+  display: block;
+  font-size: 52px;
+  color: #0A0C18;
+  text-transform: none;
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-bottom: 18px;
+  font-weight: 500;
+}
+
+.page-desc {
+  font-size: 14px;
+  color: #6B7280;
+  line-height: 1.65;
+  max-width: 460px;
+  margin-bottom: 44px;
+}
+
+.page-rule {
+  width: 100%;
+  height: 1px;
+  background: rgba(10,30,80,0.08);
+}
+
+/* ── Scroll hint — stripped back ── */
+.scroll-hint {
+  padding: 24px 48px 0;
+  font-size: 11px;
+  color: #9CA3AF;
+  letter-spacing: 0.4px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+/* ── Opt-pill — flat label, no bubble ── */
+.opt-pill {
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  font-size: 10px;
+  font-weight: 600;
+  color: #9CA3AF;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+/* ── Option labels — refined typography ── */
+.opt-label h3 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 5px;
+  letter-spacing: -0.2px;
+}
+
+.opt-label p {
+  font-size: 12px;
+  color: #6B7280;
+  line-height: 1.65;
+}
+
+/* ── V2 section divider — more breathing room ── */
+.v2-divider {
+  padding: 72px 48px 0;
+  border-top: 1px solid rgba(10,30,80,0.08);
+  margin-top: 56px;
+}
+
+.v2-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.9px;
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+
+.v2-title {
+  font-size: 36px;
+  font-weight: 500;
+  color: #0A0C18;
+  letter-spacing: -1.2px;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+
+.v2-sub {
+  font-size: 14px;
+  color: #6B7280;
+  line-height: 1.7;
+  max-width: 560px;
+  margin-bottom: 32px;
+}
+
+/* ── Staggered entrance for option cards ── */
+@keyframes optIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.phones-row .opt-wrap:nth-child(1) { animation: optIn 280ms var(--ease-out)  60ms both; }
+.phones-row .opt-wrap:nth-child(2) { animation: optIn 280ms var(--ease-out) 110ms both; }
+.phones-row .opt-wrap:nth-child(3) { animation: optIn 280ms var(--ease-out) 160ms both; }
+.phones-row .opt-wrap:nth-child(4) { animation: optIn 280ms var(--ease-out) 210ms both; }
+.phones-row .opt-wrap:nth-child(5) { animation: optIn 280ms var(--ease-out) 260ms both; }
+
+.phones-grid .opt-wrap:nth-child(1) { animation: optIn 280ms var(--ease-out)  80ms both; }
+.phones-grid .opt-wrap:nth-child(2) { animation: optIn 280ms var(--ease-out) 160ms both; }
+.phones-grid .opt-wrap:nth-child(3) { animation: optIn 280ms var(--ease-out) 240ms both; }
+
+@media (prefers-reduced-motion: reduce) {
+  body::before { display: none; }
+  .phones-row .opt-wrap,
+  .phones-grid .opt-wrap { animation: none; opacity: 1; }
+}
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <div class="q-logo">
+    <img src="/quantify-logo.svg" width="18" height="18" alt="Q">
+  </div>
+  <div class="page-eyebrow">Quantify Mobile · Apr 2026</div>
+  <div class="page-title"><strong>Shipments</strong></div>
+  <p class="page-desc">5 wireframe options for the yard worker shipment flow.<br>Tap any item to interact with the count screen.</p>
+  <div class="page-rule"></div>
+</div>
+
+<div class="scroll-hint">Scroll right to compare all options &nbsp;→</div>
+
+<div class="phones-row">
+
+<!-- ═══════════════════════════════════════════
+     OPTION A — Timeline (grouped by time)
+════════════════════════════════════════════ -->
+<div class="opt-wrap">
+  <div class="opt-pill">Option A</div>
+  <div class="phone">
+
+    <div class="screen active" id="sA-list">
+      <div class="sb"><span class="sb-time">9:41</span><div class="sb-icons"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+      <div class="navbar">
+        <div style="width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <div style="width:26px;height:26px;background:var(--primary);display:flex;align-items:center;justify-content:center;border-radius:3px"><img src="/quantify-logo.svg" width="18" height="18"></div>
+        </div>
+        <span class="nav-title">Shipments<span class="nav-sub">Mon Apr 7 · 5 jobs</span></span>
+        <button class="nav-btn"><span class="ms">tune</span></button>
+      </div>
+      <div class="content">
+
+        <div class="time-grp">8:00 AM</div>
+        <div class="card">
+          <button class="row" onclick="goCount('A','Smith Construction','DEL',143)">
+            <div class="row-icon del"><span class="ms sm">local_shipping</span></div>
+            <div class="row-body"><div class="row-title">Smith Construction</div><div class="row-meta">DEL · 143 items · Truck 2</div></div>
+            <div class="row-right"><div class="row-count">143</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+        </div>
+
+        <div class="time-grp">9:30 AM</div>
+        <div class="card">
+          <button class="row" onclick="goCount('A','Westside Scaffolding','RET',67)">
+            <div class="row-icon ret"><span class="ms sm">assignment_return</span></div>
+            <div class="row-body"><div class="row-title">Westside Scaffolding</div><div class="row-meta">RET · 67 items · Truck 4</div></div>
+            <div class="row-right"><div class="row-count">67</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+        </div>
+
+        <div class="time-grp">11:00 AM</div>
+        <div class="card">
+          <button class="row" onclick="goCount('A','Delta Builders','DEL',218)">
+            <div class="row-icon del"><span class="ms sm">local_shipping</span></div>
+            <div class="row-body"><div class="row-title">Delta Builders</div><div class="row-meta">DEL · 218 items · Truck 1</div></div>
+            <div class="row-right"><div class="row-count">218</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+        </div>
+
+        <div class="time-grp">2:00 PM</div>
+        <div class="card">
+          <button class="row" onclick="goCount('A','Harbor View Co.','RET',89)">
+            <div class="row-icon ret"><span class="ms sm">assignment_return</span></div>
+            <div class="row-body"><div class="row-title">Harbor View Co.</div><div class="row-meta">RET · 89 items · Truck 3</div></div>
+            <div class="row-right"><div class="row-count">89</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+        </div>
+
+        <div class="time-grp">3:30 PM</div>
+        <div class="card">
+          <button class="row" onclick="goCount('A','Metro Infrastructure','DEL',312)">
+            <div class="row-icon del"><span class="ms sm">local_shipping</span></div>
+            <div class="row-body"><div class="row-title">Metro Infrastructure</div><div class="row-meta">DEL · 312 items · Truck 5</div></div>
+            <div class="row-right"><div class="row-count">312</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+        </div>
+
+        <div style="height:16px"></div>
+      </div>
+      <div class="bot" style="padding:8px 14px 20px;border-top:1px solid var(--div)">
+        <div style="text-align:center;font-size:12px;color:var(--muted)">3 deliveries · 2 returns today</div>
+      </div>
+    </div>
+
+    <div class="screen" id="sA-count"></div>
+  </div>
+  <div class="opt-label">
+    <h3>Timeline</h3>
+    <p>Jobs grouped by time of day. The schedule is the mental model — worker always knows what's next by when.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     OPTION B — Type Tabs (DEL / RET)
+════════════════════════════════════════════ -->
+<div class="opt-wrap">
+  <div class="opt-pill">Option B</div>
+  <div class="phone">
+
+    <div class="screen active" id="sB-list">
+      <div class="sb"><span class="sb-time">9:41</span><div class="sb-icons"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+      <div class="navbar">
+        <div style="width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <div style="width:26px;height:26px;background:var(--primary);display:flex;align-items:center;justify-content:center;border-radius:3px"><img src="/quantify-logo.svg" width="18" height="18"></div>
+        </div>
+        <span class="nav-title">Shipments</span>
+        <button class="nav-btn"><span class="ms">more_vert</span></button>
+      </div>
+      <div class="tab-bar">
+        <button class="tab on" id="tabB-del-btn" onclick="switchB('del')">Deliveries <span class="tab-n">3</span></button>
+        <button class="tab" id="tabB-ret-btn" onclick="switchB('ret')">Returns <span class="tab-n">2</span></button>
+      </div>
+
+      <div class="content" id="tabB-del">
+        <div style="height:8px"></div>
+        <div class="card">
+          <button class="row" onclick="goCount('B','Smith Construction','DEL',143)">
+            <div class="row-body"><div class="row-title">Smith Construction</div><div class="row-meta">143 items · Truck 2</div></div>
+            <div class="row-right"><div class="row-count">143</div><div class="row-time">8:00 AM</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+          <button class="row" onclick="goCount('B','Delta Builders','DEL',218)">
+            <div class="row-body"><div class="row-title">Delta Builders</div><div class="row-meta">218 items · Truck 1</div></div>
+            <div class="row-right"><div class="row-count">218</div><div class="row-time">11:00 AM</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+          <button class="row" onclick="goCount('B','Metro Infrastructure','DEL',312)">
+            <div class="row-body"><div class="row-title">Metro Infrastructure</div><div class="row-meta">312 items · Truck 5</div></div>
+            <div class="row-right"><div class="row-count">312</div><div class="row-time">3:30 PM</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="content" id="tabB-ret" style="display:none">
+        <div style="height:8px"></div>
+        <div class="card">
+          <button class="row" onclick="goCount('B','Westside Scaffolding','RET',67)">
+            <div class="row-body"><div class="row-title">Westside Scaffolding</div><div class="row-meta">67 items · Truck 4</div></div>
+            <div class="row-right"><div class="row-count">67</div><div class="row-time">9:30 AM</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+          <button class="row" onclick="goCount('B','Harbor View Co.','RET',89)">
+            <div class="row-body"><div class="row-title">Harbor View Co.</div><div class="row-meta">89 items · Truck 3</div></div>
+            <div class="row-right"><div class="row-count">89</div><div class="row-time">2:00 PM</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen" id="sB-count"></div>
+  </div>
+  <div class="opt-label">
+    <h3>Deliveries / Returns Split</h3>
+    <p>Worker picks their mode first — loading trucks or receiving returns. Cleaner mental separation of two very different workflows.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     OPTION C — Status Board (To Do / Done)
+════════════════════════════════════════════ -->
+<div class="opt-wrap">
+  <div class="opt-pill">Option C</div>
+  <div class="phone">
+
+    <div class="screen active" id="sC-list">
+      <div class="sb"><span class="sb-time">9:41</span><div class="sb-icons"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+      <div class="navbar">
+        <div style="width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <div style="width:26px;height:26px;background:var(--primary);display:flex;align-items:center;justify-content:center;border-radius:3px"><img src="/quantify-logo.svg" width="18" height="18"></div>
+        </div>
+        <span class="nav-title">Shipments<span class="nav-sub">Mon Apr 7</span></span>
+      </div>
+      <div class="content">
+
+        <div class="sec-label">To Do · 3</div>
+        <div class="card">
+          <button class="row" onclick="goCount('C','Smith Construction','DEL',143)">
+            <div class="dot todo"></div>
+            <div class="row-body"><div class="row-title">Smith Construction</div><div class="row-meta"><span class="badge del">DEL</span>&ensp;143 items · 8:00 AM</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+          <button class="row" onclick="goCount('C','Westside Scaffolding','RET',67)">
+            <div class="dot todo"></div>
+            <div class="row-body"><div class="row-title">Westside Scaffolding</div><div class="row-meta"><span class="badge ret">RET</span>&ensp;67 items · 9:30 AM</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+          <button class="row" onclick="goCount('C','Delta Builders','DEL',218)">
+            <div class="dot todo"></div>
+            <div class="row-body"><div class="row-title">Delta Builders</div><div class="row-meta"><span class="badge del">DEL</span>&ensp;218 items · 11:00 AM</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+        </div>
+
+        <div class="sec-label">In Progress · 1</div>
+        <div class="card">
+          <button class="row" onclick="goCount('C','Metro Infrastructure','DEL',312)">
+            <div class="dot inprog"></div>
+            <div class="row-body"><div class="row-title">Metro Infrastructure</div><div class="row-meta"><span class="badge del">DEL</span>&ensp;187 / 312 counted</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+        </div>
+
+        <div class="sec-label">Done · 1</div>
+        <div class="card">
+          <button class="row" onclick="goCount('C','Harbor View Co.','RET',89)" style="opacity:0.55">
+            <span class="ms f sm" style="color:var(--ok);flex-shrink:0">check_circle</span>
+            <div class="row-body"><div class="row-title">Harbor View Co.</div><div class="row-meta"><span class="badge ret">RET</span>&ensp;89 items · confirmed</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+        </div>
+
+        <div style="height:16px"></div>
+      </div>
+    </div>
+
+    <div class="screen" id="sC-count"></div>
+  </div>
+  <div class="opt-label">
+    <h3>Status Board</h3>
+    <p>To Do / In Progress / Done. Supervisor can see the full picture. Worker knows exactly where they left off.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     OPTION D — Dashboard + Featured Card
+════════════════════════════════════════════ -->
+<div class="opt-wrap">
+  <div class="opt-pill">Option D</div>
+  <div class="phone">
+
+    <div class="screen active" id="sD-list">
+      <div class="sb"><span class="sb-time">9:41</span><div class="sb-icons"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+      <div class="navbar">
+        <div style="width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <div style="width:26px;height:26px;background:var(--primary);display:flex;align-items:center;justify-content:center;border-radius:3px"><img src="/quantify-logo.svg" width="18" height="18"></div>
+        </div>
+        <span class="nav-title">Today's Work</span>
+      </div>
+      <div class="content">
+
+        <div class="stats">
+          <div class="stat"><div class="stat-n">3</div><div class="stat-l">Deliveries</div></div>
+          <div class="stat"><div class="stat-n">2</div><div class="stat-l">Returns</div></div>
+          <div class="stat red"><div class="stat-n">1</div><div class="stat-l">Overdue</div></div>
+        </div>
+
+        <div class="sec-label" style="padding-top:14px">Next Up</div>
+        <div class="feat-card">
+          <div class="feat-inner">
+            <div class="feat-top">
+              <span class="badge del">DELIVERY</span>
+              <span style="font-size:11px;color:var(--err);font-weight:500">OVERDUE · 8:00 AM</span>
+            </div>
+            <div class="feat-name">Smith Construction</div>
+            <div class="feat-addr">Crane Street, Portland</div>
+            <div class="feat-chips">
+              <div class="chip"><span class="ms">inventory_2</span>143 items</div>
+              <div class="chip"><span class="ms">local_shipping</span>Truck 2</div>
+            </div>
+            <button class="feat-btn" onclick="goCount('D','Smith Construction','DEL',143)">Start counting</button>
+          </div>
+        </div>
+
+        <div class="sec-label">All Today</div>
+        <div class="card">
+          <div class="rc-row">
+            <div class="row-icon ret" style="width:32px;height:32px;border-radius:16px;flex-shrink:0"><span class="ms sm">assignment_return</span></div>
+            <div class="rc-body"><div class="rc-name">Westside Scaffolding</div><div class="rc-meta">RET · 67 items · 9:30 AM</div></div>
+            <button class="rc-btn" onclick="goCount('D','Westside Scaffolding','RET',67)">Start</button>
+          </div>
+          <div class="rc-row">
+            <div class="row-icon del" style="width:32px;height:32px;border-radius:16px;flex-shrink:0"><span class="ms sm">local_shipping</span></div>
+            <div class="rc-body"><div class="rc-name">Delta Builders</div><div class="rc-meta">DEL · 218 items · 11:00 AM</div></div>
+            <button class="rc-btn" onclick="goCount('D','Delta Builders','DEL',218)">Start</button>
+          </div>
+          <div class="rc-row">
+            <div class="row-icon ret" style="width:32px;height:32px;border-radius:16px;flex-shrink:0"><span class="ms sm">assignment_return</span></div>
+            <div class="rc-body"><div class="rc-name">Harbor View Co.</div><div class="rc-meta">RET · 89 items · 2:00 PM</div></div>
+            <button class="rc-btn" onclick="goCount('D','Harbor View Co.','RET',89)">Start</button>
+          </div>
+          <div class="rc-row" style="border-bottom:none">
+            <div class="row-icon del" style="width:32px;height:32px;border-radius:16px;flex-shrink:0"><span class="ms sm">local_shipping</span></div>
+            <div class="rc-body"><div class="rc-name">Metro Infrastructure</div><div class="rc-meta">DEL · 312 items · 3:30 PM</div></div>
+            <button class="rc-btn" onclick="goCount('D','Metro Infrastructure','DEL',312)">Start</button>
+          </div>
+        </div>
+
+        <div style="height:16px"></div>
+      </div>
+    </div>
+
+    <div class="screen" id="sD-count"></div>
+  </div>
+  <div class="opt-label">
+    <h3>Dashboard + Featured</h3>
+    <p>Summary stats at a glance. The most urgent job is always featured prominently. Everything else stays in a compact list below.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     OPTION E — Next Up / Sequential Focus
+════════════════════════════════════════════ -->
+<div class="opt-wrap">
+  <div class="opt-pill">Option E</div>
+  <div class="phone">
+
+    <div class="screen active" id="sE-list">
+      <div class="sb"><span class="sb-time">9:41</span><div class="sb-icons"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+      <div class="navbar">
+        <div style="width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <div style="width:26px;height:26px;background:var(--primary);display:flex;align-items:center;justify-content:center;border-radius:3px"><img src="/quantify-logo.svg" width="18" height="18"></div>
+        </div>
+        <span class="nav-title">Hi, Marcus</span>
+        <button class="nav-btn"><span class="ms">notifications</span></button>
+      </div>
+      <div class="content">
+
+        <div class="hero">
+          <div class="hero-eyebrow">Next up</div>
+          <div class="hero-name">Smith Construction</div>
+          <div class="hero-meta">Delivery · 143 items · Truck 2</div>
+          <div class="hero-row">
+            <span class="ms sm" style="opacity:0.4">schedule</span>
+            <span style="font-size:12px;opacity:0.4">Due 8:00 AM</span>
+            <span style="flex:1"></span>
+            <span class="overdue-chip">Overdue</span>
+          </div>
+          <button class="hero-btn" onclick="goCount('E','Smith Construction','DEL',143)">
+            <span class="ms sm">play_arrow</span>Start counting
+          </button>
+        </div>
+
+        <div class="sec-label" style="padding-top:14px">Later today · 4 more</div>
+        <div class="card">
+          <button class="row" onclick="goCount('E','Westside Scaffolding','RET',67)">
+            <div class="row-icon ret"><span class="ms sm">assignment_return</span></div>
+            <div class="row-body"><div class="row-title">Westside Scaffolding</div><div class="row-meta">RET · 67 items · 9:30 AM</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+          <button class="row" onclick="goCount('E','Delta Builders','DEL',218)">
+            <div class="row-icon del"><span class="ms sm">local_shipping</span></div>
+            <div class="row-body"><div class="row-title">Delta Builders</div><div class="row-meta">DEL · 218 items · 11:00 AM</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+          <button class="row" onclick="goCount('E','Harbor View Co.','RET',89)">
+            <div class="row-icon ret"><span class="ms sm">assignment_return</span></div>
+            <div class="row-body"><div class="row-title">Harbor View Co.</div><div class="row-meta">RET · 89 items · 2:00 PM</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+          <button class="row" onclick="goCount('E','Metro Infrastructure','DEL',312)">
+            <div class="row-icon del"><span class="ms sm">local_shipping</span></div>
+            <div class="row-body"><div class="row-title">Metro Infrastructure</div><div class="row-meta">DEL · 312 items · 3:30 PM</div></div>
+            <span class="ms chev">chevron_right</span>
+          </button>
+        </div>
+
+        <div style="height:16px"></div>
+      </div>
+    </div>
+
+    <div class="screen" id="sE-count"></div>
+  </div>
+  <div class="opt-label">
+    <h3>Next Up — Sequential</h3>
+    <p>One job front and center. Queue stays out of the way. Worker can't feel overwhelmed — just focus on what's in front of them.</p>
+  </div>
+</div>
+
+</div><!-- /phones-row -->
+
+<script>
+const ITEMS = [
+  { name:'Ledger Board 8ft',  exp:24 },
+  { name:'Ledger Board 10ft', exp:18 },
+  { name:'Standard 6ft',      exp:32 },
+  { name:'Diagonal Brace',    exp:16 },
+  { name:'Sole Board',        exp:53 },
+];
+
+let CV = {};
+
+function goCount(opt, site, type, total) {
+  CV[opt] = ITEMS.map(i => i.exp);
+  const isDel = type === 'DEL';
+
+  document.getElementById('s'+opt+'-count').innerHTML = `
+    <div class="sb"><span class="sb-time">9:41</span><div class="sb-icons"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+    <div class="navbar">
+      <button class="nav-btn" onclick="goList('${opt}')"><span class="ms">arrow_back</span></button>
+      <span class="nav-title" style="font-size:16px">${site}<span class="nav-sub">${isDel?'Delivery':'Return'} · ${total} items</span></span>
+      <button class="nav-btn blue"><span class="ms">check</span></button>
+    </div>
+    <div class="ship-info">
+      <span class="badge ${type.toLowerCase()}">${type}</span>
+      <span style="font-size:12px;color:var(--muted)">Truck 2 &nbsp;·&nbsp; Apr 7 &nbsp;·&nbsp; 8:00 AM</span>
+    </div>
+    <div class="content">
+      ${ITEMS.map((item,i)=>`
+        <div class="count-row">
+          <div class="c-body">
+            <div class="c-name">${item.name}</div>
+            <div class="c-exp">Expected: ${item.exp}</div>
+          </div>
+          <div class="c-ctrl">
+            <button class="c-btn" onclick="adj('${opt}',${i},-1)">−</button>
+            <div class="c-val" id="cv-${opt}-${i}">${item.exp}</div>
+            <button class="c-btn" onclick="adj('${opt}',${i},1)">+</button>
+          </div>
+        </div>
+      `).join('')}
+      <div style="height:12px"></div>
+    </div>
+    <div class="bot">
+      <button class="btn-fill" onclick="goConfirm('${opt}','${site}','${type}')">
+        <span class="ms sm">check</span>
+        Confirm ${isDel?'Delivery':'Return'}
+      </button>
+    </div>
+  `;
+
+  document.getElementById('s'+opt+'-list').classList.remove('active');
+  document.getElementById('s'+opt+'-count').classList.add('active');
+}
+
+function adj(opt, i, d) {
+  CV[opt][i] = Math.max(0, CV[opt][i]+d);
+  const el = document.getElementById('cv-'+opt+'-'+i);
+  el.textContent = CV[opt][i];
+  el.className = 'c-val' + (CV[opt][i] !== ITEMS[i].exp ? ' diff' : '');
+}
+
+function goList(opt) {
+  document.getElementById('s'+opt+'-list').classList.add('active');
+  document.getElementById('s'+opt+'-count').classList.remove('active');
+}
+
+function goConfirm(opt, site, type) {
+  const isDel = type==='DEL';
+  document.getElementById('s'+opt+'-count').innerHTML = `
+    <div class="confirmed">
+      <div class="ok-ring">
+        <span class="ms f" style="color:var(--ok);font-size:34px">check_circle</span>
+      </div>
+      <div style="font-size:18px;font-weight:500;color:var(--ink);margin-bottom:6px">${isDel?'Delivery confirmed':'Return confirmed'}</div>
+      <div style="font-size:14px;color:var(--muted);margin-bottom:4px">${site}</div>
+      <div style="font-size:12px;color:var(--muted)">Syncing to Quantify…</div>
+      <button class="back-btn" onclick="goList('${opt}')">Back to shipments</button>
+    </div>
+  `;
+}
+
+function switchB(tab) {
+  document.getElementById('tabB-del-btn').className = 'tab'+(tab==='del'?' on':'');
+  document.getElementById('tabB-ret-btn').className = 'tab'+(tab==='ret'?' on':'');
+  document.getElementById('tabB-del').style.display = tab==='del'?'':'none';
+  document.getElementById('tabB-ret').style.display = tab==='ret'?'':'none';
+}
+</script>
+
+<!-- ══════════════════════════════════════════════════════
+     V2 — SCOPE-INFORMED WIREFRAMES
+     Key changes from v1:
+     · Products only (no consumables / billing items)
+     · Condition flagging on returns
+     · Review screen before confirming
+     · 0px border-radius (Quantify brand)
+     · Full flow: list → detail → count → review → done
+══════════════════════════════════════════════════════ -->
+
+<style>
+.v2-divider {
+  padding: 48px 48px 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  margin-top: 16px;
+}
+.v2-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #0A3EFF;
+  margin-bottom: 8px;
+}
+.v2-title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #D0D0D0;
+  margin-bottom: 6px;
+}
+.v2-sub {
+  font-size: 13px;
+  color: #444;
+  max-width: 560px;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+.v2-changes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 40px;
+}
+.v2-chip {
+  font-size: 11px;
+  font-weight: 500;
+  color: #0A3EFF;
+  background: rgba(10,62,255,0.1);
+  border: 1px solid rgba(10,62,255,0.2);
+  padding: 4px 10px;
+  letter-spacing: 0.2px;
+}
+.phones-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 36px;
+  padding: 0 48px 80px;
+}
+
+/* Flat/sharp style overrides for v2 phones */
+.v2phone {
+  width: 295px;
+  height: 638px;
+  background: #fff;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.10), 0 16px 48px rgba(10,30,80,0.10);
+  flex-shrink: 0;
+}
+.v2screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+.v2screen.active { opacity: 1; pointer-events: all; }
+
+/* Flat buttons (0px radius) */
+.v2-btn-fill {
+  width: 100%; height: 52px;
+  background: #0A3EFF; color: #fff;
+  border: none;
+  font-family: 'Switzer',sans-serif; font-size: 14px; font-weight: 500;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+  flex-shrink: 0;
+}
+.v2-btn-fill:active { background: #0835D4; }
+.v2-btn-fill.ghost {
+  background: none; color: #0A3EFF;
+  border: 1.5px solid #B5B5B5; color: #111;
+}
+.v2-btn-fill.ghost:active { background: #F7F7F7; }
+
+/* Count controls — square */
+.v2-c-btn {
+  width: 36px; height: 36px;
+  border: 1.5px solid #B5B5B5;
+  background: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; line-height: 1; color: #111;
+  font-family: 'Switzer',sans-serif;
+  flex-shrink: 0;
+}
+.v2-c-btn:active { background: #F7F7F7; }
+
+/* Detail screen */
+.v2-detail-header {
+  padding: 14px;
+  background: #fff;
+  border-bottom: 1px solid #E2E2E2;
+  flex-shrink: 0;
+}
+.v2-detail-tag {
+  display: inline-block;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.6px;
+  padding: 2px 7px;
+  margin-bottom: 6px;
+}
+.v2-detail-tag.del { background: #EEF2FF; color: #0A3EFF; }
+.v2-detail-tag.ret { background: #FFF3E0; color: #E65100; }
+.v2-detail-title { font-size: 17px; font-weight: 500; color: #111; margin-bottom: 2px; }
+.v2-detail-meta { font-size: 12px; color: #878787; }
+
+/* Product item in detail */
+.v2-prod-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid #F0F0F0;
+  font-size: 13px;
+}
+.v2-prod-name { color: #111; font-weight: 500; }
+.v2-prod-qty { color: #555; }
+
+/* Count row v2 */
+.v2-count-row {
+  display: flex; align-items: center;
+  padding: 0 14px;
+  height: 64px;
+  background: #fff;
+  border-bottom: 1px solid #E2E2E2;
+  gap: 8px;
+}
+.v2-count-row.changed { background: #FFFBEF; }
+.v2-c-name { font-size: 13px; font-weight: 500; color: #111; }
+.v2-c-exp { font-size: 11px; color: #878787; margin-top: 2px; }
+.v2-c-val { width: 38px; text-align: center; font-size: 17px; font-weight: 600; color: #111; }
+.v2-c-val.diff { color: #E6A817; }
+
+/* Condition flag */
+.v2-flag {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; cursor: pointer; border: none; background: none;
+}
+.v2-flag .ms { font-size: 16px; color: #B5B5B5; }
+.v2-flag.flagged .ms { color: #D32F2F; }
+
+/* Condition sheet (bottom overlay) */
+.v2-sheet {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: #fff;
+  border-top: 1px solid #E2E2E2;
+  z-index: 10;
+  display: none;
+}
+.v2-sheet.open { display: block; }
+.v2-sheet-handle {
+  width: 36px; height: 4px; background: #E2E2E2;
+  margin: 12px auto 0;
+}
+.v2-sheet-title {
+  padding: 12px 16px 8px;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.6px; text-transform: uppercase;
+  color: #878787;
+  border-bottom: 1px solid #E2E2E2;
+}
+.v2-cond-opt {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 16px;
+  border-bottom: 1px solid #F0F0F0;
+  cursor: pointer; background: none; border-left: none; border-right: none; width: 100%;
+  font-family: 'Switzer',sans-serif; text-align: left;
+}
+.v2-cond-opt:last-child { border-bottom: none; }
+.v2-cond-opt:active { background: #F7F7F7; }
+.v2-cond-dot { width: 10px; height: 10px; flex-shrink: 0; }
+.v2-cond-label { font-size: 14px; font-weight: 500; color: #111; }
+.v2-cond-sub { font-size: 12px; color: #878787; margin-top: 1px; }
+
+/* Review screen */
+.v2-review-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 11px 14px;
+  border-bottom: 1px solid #E2E2E2;
+}
+.v2-review-name { font-size: 13px; font-weight: 500; color: #111; }
+.v2-review-detail { font-size: 12px; color: #878787; margin-top: 2px; }
+.v2-disc { font-size: 12px; font-weight: 600; padding: 1px 6px; }
+.v2-disc.over  { background: #FDF5E0; color: #9A6800; }
+.v2-disc.under { background: #FEF2F2; color: #D32F2F; }
+.v2-disc.ok    { background: #E6F4EC; color: #1B8A4A; }
+.v2-disc.dmg   { background: #FEF2F2; color: #D32F2F; }
+
+/* Done screen */
+.v2-done {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 32px 24px; text-align: center; background: #fff;
+}
+.v2-done-icon {
+  width: 56px; height: 56px;
+  background: #E6F4EC;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+}
+
+/* Info bar */
+.v2-infobar {
+  padding: 10px 14px;
+  background: #F7F7F7;
+  border-bottom: 1px solid #E2E2E2;
+  display: flex; align-items: center; gap: 8px;
+  flex-shrink: 0;
+}
+
+/* disc summary bar */
+.v2-disc-bar {
+  padding: 10px 14px;
+  background: #FFFBEF;
+  border-bottom: 1px solid #E2E2E2;
+  display: flex; align-items: center; gap: 6px;
+  flex-shrink: 0;
+}
+</style>
+
+<div class="v2-divider">
+  <div class="v2-eyebrow">V2 — Scope informed</div>
+  <div class="v2-title">Revised wireframes based on desktop audit</div>
+  <div class="v2-sub">
+    After mapping every desktop feature against the yard worker's actual job, the scope narrowed to products only — no consumables, no billing items, no creating shipments. These three options explore how to design the complete confirmed flow.
+  </div>
+  <div class="v2-changes">
+    <span class="v2-chip">Products only — no billing tabs</span>
+    <span class="v2-chip">Condition flagging on returns</span>
+    <span class="v2-chip">Review screen before confirm</span>
+    <span class="v2-chip">0px border-radius</span>
+    <span class="v2-chip">Full flow: list → detail → count → review → done</span>
+  </div>
+</div>
+
+<div class="phones-grid">
+
+<!-- ═══════════════════════════════════════════
+     OPTION F — Direct count, inline flags
+     Philosophy: get to counting immediately.
+     Condition flagged per row. Review at end.
+════════════════════════════════════════════ -->
+<div class="opt-wrap" style="flex-shrink:0">
+  <div class="opt-pill">Option F</div>
+  <div class="v2phone" id="phoneF">
+
+    <!-- LIST -->
+    <div class="v2screen active" id="sF-list">
+      <div class="sb"><span class="sb-time">9:41</span><div class="sb-icons"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+      <div class="navbar">
+        <div style="width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <div style="width:26px;height:26px;background:#0A3EFF;display:flex;align-items:center;justify-content:center"><img src="/quantify-logo.svg" width="18" height="18"></div>
+        </div>
+        <span class="nav-title">Today's jobs<span class="nav-sub">Mon Apr 7 · 5 shipments</span></span>
+      </div>
+      <div class="content">
+        <div class="sec-label">Deliveries · 3</div>
+        <button class="row" onclick="vShow('F','detail','Smith Construction','DEL','#4821','Mike T')">
+          <div class="row-icon del"><span class="ms sm">local_shipping</span></div>
+          <div class="row-body"><div class="row-title">Smith Construction</div><div class="row-meta">DEL #4821 · 5 products · 8:00 AM</div></div>
+          <span class="ms chev">chevron_right</span>
+        </button>
+        <button class="row" onclick="vShow('F','detail','Delta Builders','DEL','#4822','Sarah K')">
+          <div class="row-icon del"><span class="ms sm">local_shipping</span></div>
+          <div class="row-body"><div class="row-title">Delta Builders</div><div class="row-meta">DEL #4822 · 5 products · 10:30 AM</div></div>
+          <span class="ms chev">chevron_right</span>
+        </button>
+        <button class="row" onclick="vShow('F','detail','Metro Infrastructure','DEL','#4823','Mike T')">
+          <div class="row-icon del"><span class="ms sm">local_shipping</span></div>
+          <div class="row-body"><div class="row-title">Metro Infrastructure</div><div class="row-meta">DEL #4823 · 5 products · 2:00 PM</div></div>
+          <span class="ms chev">chevron_right</span>
+        </button>
+        <div class="sec-label">Returns · 2</div>
+        <button class="row" onclick="vShow('F','detail','Westside Scaffolding','RET','#2341','—')">
+          <div class="row-icon ret"><span class="ms sm">reply</span></div>
+          <div class="row-body"><div class="row-title">Westside Scaffolding</div><div class="row-meta">RET #2341 · 5 products · 11:00 AM</div></div>
+          <span class="ms chev">chevron_right</span>
+        </button>
+        <button class="row" onclick="vShow('F','detail','Harbor View Co.','RET','#2342','—')">
+          <div class="row-icon ret"><span class="ms sm">reply</span></div>
+          <div class="row-body"><div class="row-title">Harbor View Co.</div><div class="row-meta">RET #2342 · 5 products · 3:30 PM</div></div>
+          <span class="ms chev">chevron_right</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- DETAIL -->
+    <div class="v2screen" id="sF-detail">
+      <div class="sb"><span class="sb-time">9:41</span><div class="sb-icons"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+      <div class="navbar">
+        <button class="nav-btn" onclick="vShow('F','list')"><span class="ms">arrow_back</span></button>
+        <span class="nav-title" id="sF-detail-title" style="font-size:15px">Smith Construction<span class="nav-sub">DEL #4821</span></span>
+      </div>
+      <div class="content">
+        <div class="v2-detail-header">
+          <div id="sF-detail-tag" class="v2-detail-tag del">DEL</div>
+          <div id="sF-detail-name" class="v2-detail-title">Smith Construction</div>
+          <div id="sF-detail-meta" class="v2-detail-meta">Truck 2 · Driver: Mike T · Apr 7, 8:00 AM</div>
+        </div>
+        <div class="sec-label" style="background:#fff">Products · 5 items</div>
+        <div class="v2-prod-row"><span class="v2-prod-name">Ledger Board 8ft</span><span class="v2-prod-qty">Exp: 24</span></div>
+        <div class="v2-prod-row"><span class="v2-prod-name">Standard 6ft</span><span class="v2-prod-qty">Exp: 32</span></div>
+        <div class="v2-prod-row"><span class="v2-prod-name">Diagonal Brace</span><span class="v2-prod-qty">Exp: 16</span></div>
+        <div class="v2-prod-row"><span class="v2-prod-name">Sole Board</span><span class="v2-prod-qty">Exp: 12</span></div>
+        <div class="v2-prod-row" style="border-bottom:none"><span class="v2-prod-name">Base Collar</span><span class="v2-prod-qty">Exp: 8</span></div>
+        <div style="padding:6px 14px 0;font-size:12px;color:#878787">Consumables and charges handled by desktop</div>
+      </div>
+      <div style="padding:12px 14px 24px;background:#fff;border-top:1px solid #E2E2E2;flex-shrink:0">
+        <button class="v2-btn-fill" onclick="vStartCount('F')">
+          <span class="ms sm">edit</span>
+          Start counting
+        </button>
+      </div>
+    </div>
+
+    <!-- COUNT -->
+    <div class="v2screen" id="sF-count">
+      <!-- populated by JS -->
+    </div>
+
+    <!-- REVIEW -->
+    <div class="v2screen" id="sF-review">
+      <!-- populated by JS -->
+    </div>
+
+    <!-- DONE -->
+    <div class="v2screen" id="sF-done">
+      <!-- populated by JS -->
+    </div>
+
+    <!-- CONDITION SHEET (overlay) -->
+    <div class="v2-sheet" id="sF-sheet">
+      <div class="v2-sheet-handle"></div>
+      <div class="v2-sheet-title" id="sF-sheet-title">Flag condition</div>
+      <button class="v2-cond-opt" onclick="vSetCond('F',0)">
+        <div class="v2-cond-dot" style="background:#1B8A4A"></div>
+        <div><div class="v2-cond-label">Normal</div><div class="v2-cond-sub">Goes back to available stock</div></div>
+      </button>
+      <button class="v2-cond-opt" onclick="vSetCond('F',1)">
+        <div class="v2-cond-dot" style="background:#E6A817"></div>
+        <div><div class="v2-cond-label">To Be Serviced</div><div class="v2-cond-sub">Needs inspection before reuse</div></div>
+      </button>
+      <button class="v2-cond-opt" onclick="vSetCond('F',2)">
+        <div class="v2-cond-dot" style="background:#D32F2F"></div>
+        <div><div class="v2-cond-label">Damaged</div><div class="v2-cond-sub">Goes to out-of-service queue</div></div>
+      </button>
+      <button class="v2-cond-opt" onclick="vSetCond('F',3)">
+        <div class="v2-cond-dot" style="background:#111"></div>
+        <div><div class="v2-cond-label">Scrapped</div><div class="v2-cond-sub">Written off permanently</div></div>
+      </button>
+    </div>
+  </div>
+  <div class="opt-label">
+    <h3>F — Detail first, inline flags</h3>
+    <p>Shows shipment summary before counting. Condition flags appear per row on returns. Review discrepancies before confirming.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     OPTION G — Count only, no detail screen
+     Philosophy: fastest path to counting.
+     Skip the detail screen entirely.
+     Flag conditions after counting.
+════════════════════════════════════════════ -->
+<div class="opt-wrap" style="flex-shrink:0">
+  <div class="opt-pill">Option G</div>
+  <div class="v2phone" id="phoneG">
+
+    <div class="v2screen active" id="sG-list">
+      <div class="sb"><span class="sb-time">9:41</span><div class="sb-icons"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+      <div class="navbar">
+        <div style="width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <div style="width:26px;height:26px;background:#0A3EFF;display:flex;align-items:center;justify-content:center"><img src="/quantify-logo.svg" width="18" height="18"></div>
+        </div>
+        <span class="nav-title">Today's jobs<span class="nav-sub">Mon Apr 7 · 5 shipments</span></span>
+      </div>
+      <div class="content">
+        <div class="sec-label">Deliveries · 3</div>
+        <button class="row" onclick="vStartCountDirect('G','Smith Construction','DEL','#4821','Mike T')">
+          <div class="row-icon del"><span class="ms sm">local_shipping</span></div>
+          <div class="row-body"><div class="row-title">Smith Construction</div><div class="row-meta">DEL #4821 · 5 products · 8:00 AM</div></div>
+          <div style="font-size:11px;font-weight:600;color:#1B8A4A;margin-right:6px">OPEN</div>
+          <span class="ms chev">chevron_right</span>
+        </button>
+        <button class="row" onclick="vStartCountDirect('G','Delta Builders','DEL','#4822','Sarah K')">
+          <div class="row-icon del"><span class="ms sm">local_shipping</span></div>
+          <div class="row-body"><div class="row-title">Delta Builders</div><div class="row-meta">DEL #4822 · 5 products · 10:30 AM</div></div>
+          <span class="ms chev">chevron_right</span>
+        </button>
+        <button class="row" onclick="vStartCountDirect('G','Metro Infrastructure','DEL','#4823','Mike T')">
+          <div class="row-icon del"><span class="ms sm">local_shipping</span></div>
+          <div class="row-body"><div class="row-title">Metro Infrastructure</div><div class="row-meta">DEL #4823 · 5 products · 2:00 PM</div></div>
+          <span class="ms chev">chevron_right</span>
+        </button>
+        <div class="sec-label">Returns · 2</div>
+        <button class="row" onclick="vStartCountDirect('G','Westside Scaffolding','RET','#2341','—')">
+          <div class="row-icon ret"><span class="ms sm">reply</span></div>
+          <div class="row-body"><div class="row-title">Westside Scaffolding</div><div class="row-meta">RET #2341 · 5 products · 11:00 AM</div></div>
+          <span class="ms chev">chevron_right</span>
+        </button>
+        <button class="row" onclick="vStartCountDirect('G','Harbor View Co.','RET','#2342','—')">
+          <div class="row-icon ret"><span class="ms sm">reply</span></div>
+          <div class="row-body"><div class="row-title">Harbor View Co.</div><div class="row-meta">RET #2342 · 5 products · 3:30 PM</div></div>
+          <span class="ms chev">chevron_right</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="v2screen" id="sG-count"></div>
+    <div class="v2screen" id="sG-review"></div>
+    <div class="v2screen" id="sG-done"></div>
+    <div class="v2-sheet" id="sG-sheet">
+      <div class="v2-sheet-handle"></div>
+      <div class="v2-sheet-title" id="sG-sheet-title">Flag condition</div>
+      <button class="v2-cond-opt" onclick="vSetCond('G',0)"><div class="v2-cond-dot" style="background:#1B8A4A"></div><div><div class="v2-cond-label">Normal</div><div class="v2-cond-sub">Goes back to available stock</div></div></button>
+      <button class="v2-cond-opt" onclick="vSetCond('G',1)"><div class="v2-cond-dot" style="background:#E6A817"></div><div><div class="v2-cond-label">To Be Serviced</div><div class="v2-cond-sub">Needs inspection before reuse</div></div></button>
+      <button class="v2-cond-opt" onclick="vSetCond('G',2)"><div class="v2-cond-dot" style="background:#D32F2F"></div><div><div class="v2-cond-label">Damaged</div><div class="v2-cond-sub">Goes to out-of-service queue</div></div></button>
+      <button class="v2-cond-opt" onclick="vSetCond('G',3)"><div class="v2-cond-dot" style="background:#111"></div><div><div class="v2-cond-label">Scrapped</div><div class="v2-cond-sub">Written off permanently</div></div></button>
+    </div>
+  </div>
+  <div class="opt-label">
+    <h3>G — Skip detail, count immediately</h3>
+    <p>Tapping a shipment goes straight to counting. Fastest path. Shipment info shown in the count header instead of a separate screen.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     OPTION H — Return focused, condition-after
+     Philosophy: count first, then flag damage
+     separately. Two distinct steps.
+════════════════════════════════════════════ -->
+<div class="opt-wrap" style="flex-shrink:0">
+  <div class="opt-pill">Option H</div>
+  <div class="v2phone" id="phoneH">
+
+    <div class="v2screen active" id="sH-list">
+      <div class="sb"><span class="sb-time">9:41</span><div class="sb-icons"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+      <div class="navbar">
+        <div style="width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <div style="width:26px;height:26px;background:#0A3EFF;display:flex;align-items:center;justify-content:center"><img src="/quantify-logo.svg" width="18" height="18"></div>
+        </div>
+        <span class="nav-title">Today's jobs<span class="nav-sub">Mon Apr 7 · 5 shipments</span></span>
+      </div>
+      <!-- Step indicator -->
+      <div style="display:flex;align-items:center;padding:10px 14px;gap:0;background:#fff;border-bottom:1px solid #E2E2E2;flex-shrink:0">
+        <div style="flex:1;height:3px;background:#0A3EFF"></div>
+        <div style="width:8px;height:8px;background:#0A3EFF;flex-shrink:0"></div>
+        <div style="flex:1;height:3px;background:#E2E2E2"></div>
+        <div style="width:8px;height:8px;background:#E2E2E2;flex-shrink:0"></div>
+        <div style="flex:1;height:3px;background:#E2E2E2"></div>
+        <div style="width:8px;height:8px;background:#E2E2E2;flex-shrink:0"></div>
+        <div style="flex:1;height:3px;background:#E2E2E2"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:4px 14px 8px;background:#fff;border-bottom:1px solid #E2E2E2;flex-shrink:0">
+        <span style="font-size:10px;font-weight:600;color:#0A3EFF">SELECT</span>
+        <span style="font-size:10px;color:#878787">COUNT</span>
+        <span style="font-size:10px;color:#878787">CONDITIONS</span>
+        <span style="font-size:10px;color:#878787">CONFIRM</span>
+      </div>
+      <div class="content">
+        <div class="sec-label">Deliveries · 3</div>
+        <button class="row" onclick="vStartCountH('Smith Construction','DEL','#4821')">
+          <div class="row-icon del"><span class="ms sm">local_shipping</span></div>
+          <div class="row-body"><div class="row-title">Smith Construction</div><div class="row-meta">DEL #4821 · 5 products · 8:00 AM</div></div>
+          <span class="ms chev">chevron_right</span>
+        </button>
+        <button class="row" onclick="vStartCountH('Delta Builders','DEL','#4822')">
+          <div class="row-icon del"><span class="ms sm">local_shipping</span></div>
+          <div class="row-body"><div class="row-title">Delta Builders</div><div class="row-meta">DEL #4822 · 5 products · 10:30 AM</div></div>
+          <span class="ms chev">chevron_right</span>
+        </button>
+        <div class="sec-label">Returns · 2</div>
+        <button class="row" onclick="vStartCountH('Westside Scaffolding','RET','#2341')">
+          <div class="row-icon ret"><span class="ms sm">reply</span></div>
+          <div class="row-body"><div class="row-title">Westside Scaffolding</div><div class="row-meta">RET #2341 · 5 products · 11:00 AM</div></div>
+          <span class="ms chev">chevron_right</span>
+        </button>
+        <button class="row" onclick="vStartCountH('Harbor View Co.','RET','#2342')">
+          <div class="row-icon ret"><span class="ms sm">reply</span></div>
+          <div class="row-body"><div class="row-title">Harbor View Co.</div><div class="row-meta">RET #2342 · 5 products · 3:30 PM</div></div>
+          <span class="ms chev">chevron_right</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="v2screen" id="sH-count"></div>
+    <div class="v2screen" id="sH-conditions"></div>
+    <div class="v2screen" id="sH-done"></div>
+  </div>
+  <div class="opt-label">
+    <h3>H — Two-step: count then conditions</h3>
+    <p>Counting and condition flagging are separate steps. Count everything first, then review and flag any damage. Cleaner separation of tasks.</p>
+  </div>
+</div>
+
+</div><!-- end phones-grid -->
+
+<script>
+// ── V2 shared data ──
+const V2_ITEMS = [
+  { name: 'Ledger Board 8ft', exp: 24 },
+  { name: 'Standard 6ft',     exp: 32 },
+  { name: 'Diagonal Brace',   exp: 16 },
+  { name: 'Sole Board',       exp: 12 },
+  { name: 'Base Collar',      exp: 8  },
+];
+const COND_LABELS = ['Normal','To Be Serviced','Damaged','Scrapped'];
+const COND_COLORS = ['#1B8A4A','#E6A817','#D32F2F','#111'];
+
+// per-phone state
+const VS = {
+  F: { vals: [], conds: [], type: 'DEL', site: '', num: '', driver: '', sheetItem: -1 },
+  G: { vals: [], conds: [], type: 'DEL', site: '', num: '', driver: '', sheetItem: -1 },
+  H: { vals: [], conds: [], type: 'DEL', site: '', num: '', sheetItem: -1 },
+};
+
+function vShow(opt, screen) {
+  ['list','detail','count','review','done','conditions'].forEach(s => {
+    const el = document.getElementById('s'+opt+'-'+s);
+    if (el) { el.classList.toggle('active', s === screen); }
+  });
+  const sheet = document.getElementById('s'+opt+'-sheet');
+  if (sheet) sheet.classList.remove('open');
+}
+
+// ── Option F: detail → count ──
+function vShow(opt, screen, site, type, num, driver) {
+  ['list','detail','count','review','done'].forEach(s => {
+    const el = document.getElementById('s'+opt+'-'+s);
+    if (el) el.classList.toggle('active', s === screen);
+  });
+  const sheet = document.getElementById('s'+opt+'-sheet');
+  if (sheet) sheet.classList.remove('open');
+
+  if (screen === 'detail' && site) {
+    const isDel = type === 'DEL';
+    VS[opt].site = site; VS[opt].type = type; VS[opt].num = num; VS[opt].driver = driver;
+    const tag = document.getElementById('s'+opt+'-detail-tag');
+    const title = document.getElementById('s'+opt+'-detail-title');
+    const meta = document.getElementById('s'+opt+'-detail-meta');
+    const navt = document.getElementById('s'+opt+'-detail-title');
+    if (tag) { tag.textContent = type; tag.className = 'v2-detail-tag '+(isDel?'del':'ret'); }
+    if (title) title.textContent = site;
+    if (meta) meta.textContent = isDel ? `Truck 2 · Driver: ${driver} · Apr 7, 8:00 AM` : `Pre-return · Apr 7 · Expected quantities shown`;
+  }
+}
+
+function vStartCount(opt) {
+  const s = VS[opt];
+  s.vals = V2_ITEMS.map(i => i.exp);
+  s.conds = V2_ITEMS.map(() => 0);
+  s.sheetItem = -1;
+  const isRet = s.type === 'RET';
+  vRenderCount(opt);
+  ['list','detail','review','done'].forEach(n => {
+    const el = document.getElementById('s'+opt+'-'+n);
+    if (el) el.classList.remove('active');
+  });
+  document.getElementById('s'+opt+'-count').classList.add('active');
+}
+
+function vStartCountDirect(opt, site, type, num, driver) {
+  VS[opt].site = site; VS[opt].type = type; VS[opt].num = num; VS[opt].driver = driver;
+  VS[opt].vals = V2_ITEMS.map(i => i.exp);
+  VS[opt].conds = V2_ITEMS.map(() => 0);
+  VS[opt].sheetItem = -1;
+  vRenderCount(opt);
+  ['list','detail','review','done'].forEach(n => {
+    const el = document.getElementById('s'+opt+'-'+n);
+    if (el) el.classList.remove('active');
+  });
+  document.getElementById('s'+opt+'-count').classList.add('active');
+}
+
+function vRenderCount(opt) {
+  const s = VS[opt];
+  const isRet = s.type === 'RET';
+  const el = document.getElementById('s'+opt+'-count');
+  el.innerHTML = `
+    <div class="sb"><span class="sb-time">9:41</span><div class="sb-icons"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+    <div class="navbar">
+      <button class="nav-btn" onclick="vShow('${opt}','list')"><span class="ms">arrow_back</span></button>
+      <span class="nav-title" style="font-size:15px">${s.site}<span class="nav-sub">${s.type} ${s.num}</span></span>
+    </div>
+    <div class="v2-infobar">
+      <span class="badge ${s.type.toLowerCase()}">${s.type}</span>
+      <span style="font-size:12px;color:#555">Apr 7 · 5 products only</span>
+    </div>
+    <div class="content" id="v2-rows-${opt}">
+      ${V2_ITEMS.map((item,i) => `
+        <div class="v2-count-row" id="v2-row-${opt}-${i}">
+          <div style="flex:1;min-width:0">
+            <div class="v2-c-name">${item.name}</div>
+            <div class="v2-c-exp">Expected: ${item.exp}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px">
+            <button class="v2-c-btn" onclick="vAdj('${opt}',${i},-1)">−</button>
+            <div class="v2-c-val" id="v2-cv-${opt}-${i}">${item.exp}</div>
+            <button class="v2-c-btn" onclick="vAdj('${opt}',${i},1)">+</button>
+            ${isRet ? `<button class="v2-flag" id="v2-flag-${opt}-${i}" onclick="vOpenSheet('${opt}',${i})"><span class="ms">flag</span></button>` : ''}
+          </div>
+        </div>
+      `).join('')}
+      <div style="height:8px"></div>
+    </div>
+    <div id="v2-disc-bar-${opt}" style="display:none" class="v2-disc-bar">
+      <span class="ms sm" style="color:#E6A817;font-size:16px">warning</span>
+      <span style="font-size:12px;color:#555" id="v2-disc-text-${opt}"></span>
+    </div>
+    <div style="padding:12px 14px 24px;background:#fff;border-top:1px solid #E2E2E2;flex-shrink:0">
+      <button class="v2-btn-fill" onclick="vShowReview('${opt}')">
+        <span class="ms sm">check</span>
+        Review &amp; confirm
+      </button>
+    </div>
+  `;
+}
+
+function vAdj(opt, i, d) {
+  const s = VS[opt];
+  s.vals[i] = Math.max(0, s.vals[i] + d);
+  const el = document.getElementById('v2-cv-'+opt+'-'+i);
+  if (el) {
+    el.textContent = s.vals[i];
+    el.className = 'v2-c-val' + (s.vals[i] !== V2_ITEMS[i].exp ? ' diff' : '');
+  }
+  const row = document.getElementById('v2-row-'+opt+'-'+i);
+  if (row) row.className = 'v2-count-row' + (s.vals[i] !== V2_ITEMS[i].exp ? ' changed' : '');
+  // update disc bar
+  const diffs = s.vals.filter((v,j) => v !== V2_ITEMS[j].exp).length;
+  const bar = document.getElementById('v2-disc-bar-'+opt);
+  const txt = document.getElementById('v2-disc-text-'+opt);
+  if (bar && txt) {
+    if (diffs > 0) { bar.style.display = 'flex'; txt.textContent = diffs+' item'+(diffs>1?'s':'')+' differ from expected'; }
+    else { bar.style.display = 'none'; }
+  }
+}
+
+function vOpenSheet(opt, i) {
+  VS[opt].sheetItem = i;
+  const sheet = document.getElementById('s'+opt+'-sheet');
+  const title = document.getElementById('s'+opt+'-sheet-title');
+  if (sheet) sheet.classList.add('open');
+  if (title) title.textContent = 'Condition — '+V2_ITEMS[i].name;
+}
+
+function vSetCond(opt, condIdx) {
+  const s = VS[opt];
+  const i = s.sheetItem;
+  if (i < 0) return;
+  s.conds[i] = condIdx;
+  const flagBtn = document.getElementById('v2-flag-'+opt+'-'+i);
+  if (flagBtn) {
+    flagBtn.className = condIdx > 0 ? 'v2-flag flagged' : 'v2-flag';
+    flagBtn.querySelector('.ms').style.color = condIdx > 0 ? COND_COLORS[condIdx] : '#B5B5B5';
+  }
+  const sheet = document.getElementById('s'+opt+'-sheet');
+  if (sheet) sheet.classList.remove('open');
+}
+
+function vShowReview(opt) {
+  const s = VS[opt];
+  const el = document.getElementById('s'+opt+'-review');
+  const isRet = s.type === 'RET';
+  const anyDisc = s.vals.some((v,i) => v !== V2_ITEMS[i].exp);
+  const anyDmg = s.conds.some(c => c > 0);
+
+  el.innerHTML = `
+    <div class="sb"><span class="sb-time">9:41</span><div class="sb-icons"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+    <div class="navbar">
+      <button class="nav-btn" onclick="vShow('${opt}','count'); vRenderCount('${opt}')"><span class="ms">arrow_back</span></button>
+      <span class="nav-title" style="font-size:15px">Review<span class="nav-sub">${s.site} · ${s.type} ${s.num}</span></span>
+    </div>
+    ${anyDisc ? `<div class="v2-disc-bar"><span class="ms sm" style="color:#E6A817">warning</span><span style="font-size:12px;color:#555">Some quantities differ from expected</span></div>` : `<div style="padding:8px 14px;background:#E6F4EC;border-bottom:1px solid #E2E2E2;font-size:12px;color:#1B8A4A;font-weight:500;flex-shrink:0">All quantities match</div>`}
+    <div class="content">
+      ${V2_ITEMS.map((item,i) => {
+        const diff = s.vals[i] - item.exp;
+        const cond = s.conds[i];
+        let discHtml = '';
+        if (diff > 0) discHtml = `<span class="v2-disc over">+${diff}</span>`;
+        else if (diff < 0) discHtml = `<span class="v2-disc under">${diff}</span>`;
+        else discHtml = `<span class="v2-disc ok">✓</span>`;
+        const condHtml = (isRet && cond > 0) ? `<span class="v2-disc dmg" style="background:${COND_COLORS[cond]}1a;color:${COND_COLORS[cond]}">${COND_LABELS[cond]}</span>` : '';
+        return `<div class="v2-review-row">
+          <div style="flex:1">
+            <div class="v2-review-name">${item.name}</div>
+            <div class="v2-review-detail">Expected ${item.exp} · Counted ${s.vals[i]}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">${discHtml}${condHtml}</div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div style="padding:12px 14px 24px;background:#fff;border-top:1px solid #E2E2E2;flex-shrink:0">
+      <button class="v2-btn-fill" onclick="vDone('${opt}')">
+        <span class="ms sm">check</span>
+        ${s.type === 'DEL' ? 'Confirm delivery' : 'Confirm return'}
+      </button>
+      <div style="height:8px"></div>
+      ${anyDisc ? `<div style="font-size:11px;color:#878787;text-align:center">Discrepancies flagged — desktop will review</div>` : ''}
+    </div>
+  `;
+  vShow(opt, 'review');
+}
+
+function vDone(opt) {
+  const s = VS[opt];
+  const el = document.getElementById('s'+opt+'-done');
+  el.innerHTML = `
+    <div class="v2-done">
+      <div class="v2-done-icon"><span class="ms f" style="color:#1B8A4A;font-size:32px">check_circle</span></div>
+      <div style="font-size:18px;font-weight:600;color:#111;margin-bottom:6px">${s.type==='DEL'?'Delivery confirmed':'Return confirmed'}</div>
+      <div style="font-size:14px;color:#555;margin-bottom:4px">${s.site}</div>
+      <div style="font-size:13px;color:#878787;margin-bottom:2px">${s.type} ${s.num}</div>
+      <div style="font-size:12px;color:#878787;margin-top:8px">Syncing to Quantify…</div>
+      <div style="height:32px"></div>
+      <button class="v2-btn-fill ghost" onclick="vShow('${opt}','list')">Back to today's jobs</button>
+    </div>
+  `;
+  vShow(opt, 'done');
+}
+
+// ── Option H: two-step count then conditions ──
+const VH = { vals: V2_ITEMS.map(i=>i.exp), site:'', type:'DEL', num:'' };
+
+function vStartCountH(site, type, num) {
+  VH.site = site; VH.type = type; VH.num = num;
+  VH.vals = V2_ITEMS.map(i => i.exp);
+  const isRet = type === 'RET';
+  const el = document.getElementById('sH-count');
+  el.innerHTML = `
+    <div class="sb"><span class="sb-time">9:41</span><div class="sb-icons"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+    <div class="navbar">
+      <button class="nav-btn" onclick="vShowH('list')"><span class="ms">arrow_back</span></button>
+      <span class="nav-title" style="font-size:15px">${site}<span class="nav-sub">${type} ${num} · Step 2 of ${isRet?4:3}</span></span>
+    </div>
+    <div style="display:flex;align-items:center;padding:10px 14px;gap:0;background:#fff;border-bottom:1px solid #E2E2E2;flex-shrink:0">
+      <div style="flex:1;height:3px;background:#0A3EFF"></div><div style="width:8px;height:8px;background:#0A3EFF;flex-shrink:0"></div>
+      <div style="flex:1;height:3px;background:#0A3EFF"></div><div style="width:8px;height:8px;background:#0A3EFF;flex-shrink:0"></div>
+      <div style="flex:1;height:3px;background:#E2E2E2"></div><div style="width:8px;height:8px;background:#E2E2E2;flex-shrink:0"></div>
+      <div style="flex:1;height:3px;background:#E2E2E2"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding:4px 14px 8px;background:#fff;border-bottom:1px solid #E2E2E2;flex-shrink:0">
+      <span style="font-size:10px;color:#878787">SELECT</span>
+      <span style="font-size:10px;font-weight:600;color:#0A3EFF">COUNT</span>
+      ${isRet ? '<span style="font-size:10px;color:#878787">CONDITIONS</span>' : ''}
+      <span style="font-size:10px;color:#878787">CONFIRM</span>
+    </div>
+    <div class="content">
+      ${V2_ITEMS.map((item,i) => `
+        <div class="v2-count-row" id="vh-row-${i}">
+          <div style="flex:1;min-width:0"><div class="v2-c-name">${item.name}</div><div class="v2-c-exp">Expected: ${item.exp}</div></div>
+          <div style="display:flex;align-items:center;gap:4px">
+            <button class="v2-c-btn" onclick="vAdjH(${i},-1)">−</button>
+            <div class="v2-c-val" id="vh-cv-${i}">${item.exp}</div>
+            <button class="v2-c-btn" onclick="vAdjH(${i},1)">+</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <div style="padding:12px 14px 24px;background:#fff;border-top:1px solid #E2E2E2;flex-shrink:0">
+      <button class="v2-btn-fill" onclick="${isRet ? "vShowConditions()" : "vDoneH()"}">
+        ${isRet ? 'Next: flag conditions' : 'Review & confirm'}
+        <span class="ms sm">arrow_forward</span>
+      </button>
+    </div>
+  `;
+  vShowH('count');
+}
+
+function vAdjH(i, d) {
+  VH.vals[i] = Math.max(0, VH.vals[i]+d);
+  const el = document.getElementById('vh-cv-'+i);
+  const row = document.getElementById('vh-row-'+i);
+  if (el) { el.textContent = VH.vals[i]; el.className = 'v2-c-val'+(VH.vals[i]!==V2_ITEMS[i].exp?' diff':''); }
+  if (row) row.className = 'v2-count-row'+(VH.vals[i]!==V2_ITEMS[i].exp?' changed':'');
+}
+
+function vShowConditions() {
+  const el = document.getElementById('sH-conditions');
+  el.innerHTML = `
+    <div class="sb"><span class="sb-time">9:41</span><div class="sb-icons"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+    <div class="navbar">
+      <button class="nav-btn" onclick="vShowH('count')"><span class="ms">arrow_back</span></button>
+      <span class="nav-title" style="font-size:15px">Any damage?<span class="nav-sub">${VH.site} · Step 3 of 4</span></span>
+    </div>
+    <div style="display:flex;align-items:center;padding:10px 14px;gap:0;background:#fff;border-bottom:1px solid #E2E2E2;flex-shrink:0">
+      <div style="flex:1;height:3px;background:#0A3EFF"></div><div style="width:8px;height:8px;background:#0A3EFF;flex-shrink:0"></div>
+      <div style="flex:1;height:3px;background:#0A3EFF"></div><div style="width:8px;height:8px;background:#0A3EFF;flex-shrink:0"></div>
+      <div style="flex:1;height:3px;background:#0A3EFF"></div><div style="width:8px;height:8px;background:#0A3EFF;flex-shrink:0"></div>
+      <div style="flex:1;height:3px;background:#E2E2E2"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding:4px 14px 8px;background:#fff;border-bottom:1px solid #E2E2E2;flex-shrink:0">
+      <span style="font-size:10px;color:#878787">SELECT</span>
+      <span style="font-size:10px;color:#878787">COUNT</span>
+      <span style="font-size:10px;font-weight:600;color:#0A3EFF">CONDITIONS</span>
+      <span style="font-size:10px;color:#878787">CONFIRM</span>
+    </div>
+    <div style="padding:10px 14px 8px;background:#F7F7F7;border-bottom:1px solid #E2E2E2;font-size:12px;color:#555;flex-shrink:0">
+      Tap any item to flag a condition. Leave as Normal if undamaged.
+    </div>
+    <div class="content">
+      ${V2_ITEMS.map((item,i) => `
+        <button class="row" id="vh-cond-btn-${i}" onclick="vToggleCondH(${i})" style="min-height:56px">
+          <div class="row-body"><div class="row-title">${item.name}</div><div class="row-meta">Counted: ${VH.vals[i]}</div></div>
+          <span id="vh-cond-label-${i}" style="font-size:12px;font-weight:600;color:#1B8A4A">Normal</span>
+          <span class="ms chev">chevron_right</span>
+        </button>
+      `).join('')}
+    </div>
+    <div style="padding:12px 14px 24px;background:#fff;border-top:1px solid #E2E2E2;flex-shrink:0">
+      <button class="v2-btn-fill" onclick="vDoneH()">Review &amp; confirm <span class="ms sm">arrow_forward</span></button>
+    </div>
+  `;
+  vShowH('conditions');
+}
+
+const VH_CONDS = [0,0,0,0,0];
+const VH_COND_CYCLE = [0,1,2,3];
+function vToggleCondH(i) {
+  VH_CONDS[i] = (VH_CONDS[i]+1) % 4;
+  const lbl = document.getElementById('vh-cond-label-'+i);
+  if (lbl) { lbl.textContent = COND_LABELS[VH_CONDS[i]]; lbl.style.color = COND_COLORS[VH_CONDS[i]]; }
+}
+
+function vDoneH() {
+  const el = document.getElementById('sH-done');
+  el.innerHTML = `
+    <div class="v2-done">
+      <div class="v2-done-icon"><span class="ms f" style="color:#1B8A4A;font-size:32px">check_circle</span></div>
+      <div style="font-size:18px;font-weight:600;color:#111;margin-bottom:6px">${VH.type==='DEL'?'Delivery confirmed':'Return confirmed'}</div>
+      <div style="font-size:14px;color:#555;margin-bottom:4px">${VH.site}</div>
+      <div style="font-size:13px;color:#878787;margin-bottom:2px">${VH.type} ${VH.num}</div>
+      <div style="font-size:12px;color:#878787;margin-top:8px">Syncing to Quantify…</div>
+      <div style="height:32px"></div>
+      <button class="v2-btn-fill ghost" onclick="vShowH('list')">Back to today's jobs</button>
+    </div>
+  `;
+  vShowH('done');
+}
+
+function vShowH(screen) {
+  ['list','count','conditions','done'].forEach(s => {
+    const el = document.getElementById('sH-'+s);
+    if (el) el.classList.toggle('active', s === screen);
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PP-7722 — Sidebar Menu Icons Fix</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
+    background: #ffffff;
+    color: #111;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 24px 64px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 40px;
+  }
+
+  /* Screen frame — flat, no rounded corners */
+  .phone-frame {
+    width: 375px;
+    height: 812px;
+    background: #1C1C1E;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    flex-shrink: 0;
+    border: 1px solid #e0e0e0;
+  }
+
+  /* ===== iOS Status Bar ===== */
+  .ios-status-bar {
+    height: 54px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 24px 8px;
+    flex-shrink: 0;
+  }
+
+  .ios-status-bar .time {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .status-right {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .signal-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 1.5px;
+    height: 11px;
+  }
+  .signal-bars .bar {
+    width: 3px;
+    border-radius: 1px;
+    background: #fff;
+  }
+  .signal-bars .bar:nth-child(1) { height: 3px; }
+  .signal-bars .bar:nth-child(2) { height: 5px; }
+  .signal-bars .bar:nth-child(3) { height: 8px; }
+  .signal-bars .bar:nth-child(4) { height: 11px; }
+
+  .battery-pct {
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    margin-left: 2px;
+  }
+
+  .battery-icon {
+    display: flex;
+    align-items: center;
+    margin-left: 1px;
+  }
+  .battery-body {
+    width: 22px;
+    height: 11px;
+    border: 1.5px solid rgba(255,255,255,0.4);
+    border-radius: 2.5px;
+    padding: 1.5px;
+  }
+  .battery-fill {
+    width: 80%;
+    height: 100%;
+    background: #30D158;
+    border-radius: 1px;
+  }
+  .battery-tip {
+    width: 2px;
+    height: 4px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 0 1px 1px 0;
+  }
+
+  /* ===== Screen body: sidebar + map ===== */
+  .screen-body {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 72%;
+    background: #1C1C1E;
+    display: flex;
+    flex-direction: column;
+    padding-top: 6px;
+  }
+
+  .menu-items-top { flex: 1; }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 48px;
+    padding: 0 18px;
+  }
+
+  .menu-item .icon {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .menu-item .icon svg {
+    width: 22px;
+    height: 22px;
+    color: #fff;
+    stroke-width: 1.6;
+  }
+
+  .menu-item .text {
+    font-size: 16px;
+    font-weight: 400;
+    color: #fff;
+  }
+
+  .menu-bottom {
+    padding-bottom: 34px;
+  }
+
+  /* ===== Map peek ===== */
+  .map-peek {
+    flex: 1;
+    background: #1a2e1a;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .map-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 40%, #2a3d28 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 60%, #1f3520 0%, transparent 40%),
+      linear-gradient(180deg, #253825 0%, #1e3020 40%, #1a2c1a 100%);
+  }
+
+  .map-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.1;
+    background-image:
+      linear-gradient(0deg, rgba(200,200,180,0.5) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,200,180,0.5) 1px, transparent 1px);
+    background-size: 40px 50px;
+  }
+
+  .map-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+  }
+
+  .map-float-btn {
+    position: absolute;
+    z-index: 2;
+    width: 32px;
+    height: 32px;
+    background: rgba(40,40,40,0.85);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .map-float-btn svg {
+    width: 16px;
+    height: 16px;
+    color: #fff;
+    stroke-width: 1.5;
+  }
+
+  .btn-layers { top: 8px; right: 6px; }
+  .btn-gps { top: 46px; right: 6px; }
+
+  .map-marker {
+    position: absolute;
+    z-index: 2;
+    background: #007AFF;
+    border: 1.5px solid #fff;
+    border-radius: 3px;
+    padding: 1px 4px;
+    font-size: 6px;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .m1 { top: 38%; right: 10px; }
+  .m2 { top: 52%; right: 5px; }
+  .m3 { top: 65%; right: 14px; }
+
+  .map-label {
+    position: absolute;
+    bottom: 40px;
+    right: 6px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .map-label-circle {
+    width: 36px;
+    height: 36px;
+    background: rgba(40,40,40,0.85);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .map-label-circle svg {
+    width: 18px;
+    height: 18px;
+    color: #fff;
+    stroke-width: 1.5;
+  }
+
+  .map-label-text {
+    font-size: 8px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* ===== Fix description ===== */
+  .fix-info {
+    margin-top: 32px;
+    max-width: 375px;
+    width: 100%;
+    background: #f5f5f5;
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .fix-info h2 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #30A14E;
+    margin-bottom: 8px;
+  }
+
+  .fix-info p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #555;
+  }
+
+  .fix-info strong { color: #111; }
+
+  .fix-info code {
+    background: #e8e8e8;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-family: 'SF Mono', monospace;
+  }
+
+  .root-cause {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e0e0e0;
+    font-size: 12px;
+    color: #888;
+  }
+
+  .root-cause strong { color: #666; }
+</style>
+</head>
+<body>
+
+  <h1>PP-7722 — Sidebar Icons Fix</h1>
+  <p class="subtitle">Side hamburger menu icons without white background</p>
+
+  <!-- Phone mockup showing the fixed sidebar -->
+  <div class="phone-frame">
+
+    <!-- iOS Status Bar -->
+    <div class="ios-status-bar">
+      <span class="time">12:38</span>
+      <div class="status-right">
+        <div class="signal-bars">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+        <svg width="15" height="11" viewBox="0 0 15 11" fill="none">
+          <path d="M0.5 3C3 0.5 5.5 0 7.5 0s4.5 0.5 7 3" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/>
+          <path d="M3 5.8C4.5 4.3 6 3.8 7.5 3.8s3 0.5 4.5 2" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/>
+          <circle cx="7.5" cy="9" r="1.3" fill="#fff"/>
+        </svg>
+        <span class="battery-pct">81</span>
+        <div class="battery-icon">
+          <div class="battery-body"><div class="battery-fill"></div></div>
+          <div class="battery-tip"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: sidebar + map -->
+    <div class="screen-body">
+
+      <div class="sidebar">
+        <div class="menu-items-top">
+          <div class="menu-item">
+            <div class="icon"><i data-lucide="circle-user-round"></i></div>
+            <span class="text">Admin</span>
+          </div>
+          <div class="menu-item">
+            <div class="icon"><i data-lucide="bell"></i></div>
+            <span class="text">Notifications</span>
+          </div>
+          <div class="menu-item">
+            <div class="icon"><i data-lucide="user-round-cog"></i></div>
+            <span class="text">My Settings</span>
+          </div>
+          <div class="menu-item">
+            <div class="icon"><i data-lucide="qr-code"></i></div>
+            <span class="text">Scan QR Code</span>
+          </div>
+          <div class="menu-item">
+            <div class="icon"><i data-lucide="info"></i></div>
+            <span class="text">About</span>
+          </div>
+          <div class="menu-item">
+            <div class="icon"><i data-lucide="sparkles"></i></div>
+            <span class="text">AI Dashboard</span>
+          </div>
+        </div>
+
+        <div class="menu-bottom">
+          <div class="menu-item">
+            <div class="icon"><i data-lucide="log-out"></i></div>
+            <span class="text">Sign Out</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="map-peek">
+        <div class="map-bg"></div>
+        <div class="map-grid"></div>
+        <div class="map-overlay"></div>
+        <div class="map-float-btn btn-layers"><i data-lucide="layers"></i></div>
+        <div class="map-float-btn btn-gps"><i data-lucide="navigation"></i></div>
+        <div class="map-marker m1">R-00</div>
+        <div class="map-marker m2">R-000002</div>
+        <div class="map-marker m3">R-000026</div>
+        <div class="map-label">
+          <div class="map-label-circle"><i data-lucide="map-pin"></i></div>
+          <span class="map-label-text">Map</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Fix explanation -->
+  <div class="fix-info">
+    <h2>Fix Applied</h2>
+    <p>Removed the white background box behind <strong>Admin</strong>, <strong>Notifications</strong>, and <strong>My Settings</strong> icons. All icons now render with transparent backgrounds.</p>
+    <p class="root-cause">
+      <strong>Root cause:</strong> These icons used bitmap assets with opaque white backgrounds. Replace with transparent SVGs or set background to <code>Color.Transparent</code>.
+    </p>
+  </div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

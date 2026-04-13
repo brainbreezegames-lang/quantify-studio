@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantify Mobile — Controls</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+<style>
+@font-face { font-family:'Switzer'; src:url('https://cdn.fontshare.com/wf/ZALDQ5GZAJ7WP3WDNTYGSM3ONVSA4OHR/UYIJILXMZ45X3NMFQYXIN5DLMJXY4NHT/YIZDEFD5HV4KXLH5LTOZGNZ7NHLSMFAL.woff2') format('woff2'); font-weight:400; }
+@font-face { font-family:'Switzer'; src:url('https://cdn.fontshare.com/wf/ZALDQ5GZAJ7WP3WDNTYGSM3ONVSA4OHR/5BWXRJQPXCHM7IUKFWSGZPFP5GMJUGTF/M7R7V4OFJ7BHPOLNHQF6F4NMPUICJFSR.woff2') format('woff2'); font-weight:500; }
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --primary: #0A3EFF;
+  --navy: #10296E;
+  --ink: #111;
+  --sub: #555;
+  --muted: #878787;
+  --outline: #B5B5B5;
+  --div: #E2E2E2;
+  --bg: #F5F5F5;
+  --surface: #fff;
+  --ok: #1B8A4A;
+  --warn: #E6A817;
+  --err: #D32F2F;
+}
+
+html, body {
+  font-family: 'Switzer', sans-serif;
+  background: #F5F5F5;
+  color: #111;
+  -webkit-font-smoothing: antialiased;
+}
+.ms {
+  font-family: 'Material Symbols Sharp';
+  font-size: 24px; font-weight: 400; font-style: normal; line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+  user-select: none;
+}
+.ms.f { font-variation-settings: 'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; }
+.ms.sm { font-size:18px; font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20; }
+
+/* ── Page header ── */
+.page-head { padding: 44px 48px 32px; border-bottom: 1px solid #E2E2E2; margin-bottom: 0; }
+.page-eyebrow { font-size:11px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:#0A3EFF; margin-bottom:8px; }
+.page-title { font-size:22px; font-weight:600; color:#111; margin-bottom:6px; }
+.page-sub { font-size:14px; color:#555; line-height:1.6; max-width:560px; }
+
+/* ── Section ── */
+.section { padding: 40px 48px 56px; border-bottom: 1px solid #E2E2E2; }
+.section:last-child { border-bottom: none; }
+
+.section-head { margin-bottom: 8px; }
+.section-num { font-size:11px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:#0A3EFF; }
+.section-title { font-size:18px; font-weight:600; color:#111; margin-bottom:4px; }
+.section-desc { font-size:14px; color:#555; line-height:1.6; max-width:600px; margin-bottom:28px; }
+
+/* ── Decision callout ── */
+.decision {
+  display: inline-flex; align-items: flex-start; gap: 10px;
+  background: #FFFBEF; border: 1px solid #E6A817;
+  padding: 10px 14px; font-size:13px; color:#555;
+  margin-bottom: 28px; max-width: 600px;
+}
+.decision strong { color: #111; }
+.decision .ms { font-size:16px; color:#E6A817; flex-shrink:0; margin-top:1px; }
+
+/* ── Phones row ── */
+.phones-row { display:flex; flex-wrap:wrap; gap:40px; align-items:flex-start; }
+
+/* ── Option wrap ── */
+.opt-wrap { display:flex; flex-direction:column; gap:0; }
+.opt-tag {
+  display: inline-block; font-size:10px; font-weight:700; letter-spacing:0.6px;
+  text-transform:uppercase; color:#555; background:#E8E8E8;
+  padding:4px 10px; margin-bottom:12px; align-self:flex-start;
+}
+.opt-caption {
+  margin-top: 14px;
+  max-width: 280px;
+}
+.opt-caption .label { font-size:13px; font-weight:600; color:#111; margin-bottom:3px; }
+.opt-caption .what { font-size:13px; color:#555; line-height:1.5; margin-bottom:4px; }
+.opt-caption .why { font-size:12px; color:#878787; line-height:1.5; font-style: italic; }
+
+/* ── Phone frame ── */
+.phone {
+  width:280px; height:608px;
+  background: var(--surface);
+  border-radius: 8px; overflow:hidden; position:relative;
+  box-shadow: 0 0 0 1px #D0D0D0, 0 8px 32px rgba(0,0,0,0.12);
+}
+
+/* ── Screens ── */
+.scr {
+  position:absolute; inset:0; display:flex; flex-direction:column;
+  background: var(--surface); opacity:0; pointer-events:none; transition:opacity 0.15s;
+}
+.scr.on { opacity:1; pointer-events:all; }
+
+/* ── Status bar ── */
+.sb { height:36px; padding:8px 16px 0; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; background:#fff; }
+.sb-t { font-size:13px; font-weight:600; color:var(--ink); }
+.sb-i { display:flex; align-items:center; gap:3px; }
+.sb-i .ms { font-size:13px; color:var(--ink); }
+
+/* ── Navbar ── */
+.nav { height:52px; background:var(--surface); display:flex; align-items:center; padding:0 4px; gap:2px; flex-shrink:0; border-bottom:1px solid var(--div); }
+.nbtn { width:40px; height:40px; border:none; background:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--ink); flex-shrink:0; }
+.nbtn:active { background:rgba(0,0,0,0.05); }
+.ntitle { flex:1; font-size:16px; font-weight:400; color:var(--ink); padding-left:4px; line-height:1.2; }
+.nsub { display:block; font-size:11px; color:var(--muted); font-weight:400; margin-top:1px; }
+
+/* ── Content scroll area ── */
+.content { flex:1; overflow-y:auto; background:var(--bg); }
+
+/* ── Buttons ── */
+.btn-fill { width:100%; height:50px; background:var(--primary); color:#fff; border:none; font-family:'Switzer',sans-serif; font-size:14px; font-weight:500; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; }
+.btn-fill:active { background:#0835D4; }
+.btn-ghost { width:100%; height:50px; background:none; color:var(--ink); border:1.5px solid var(--outline); font-family:'Switzer',sans-serif; font-size:14px; font-weight:500; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; }
+.btn-ghost:active { background:var(--bg); }
+
+/* ── Count row ── */
+.crow { display:flex; align-items:center; padding:0 12px; height:62px; background:var(--surface); border-bottom:1px solid var(--div); gap:8px; }
+.cn { font-size:13px; font-weight:500; color:var(--ink); }
+.ce { font-size:11px; color:var(--muted); margin-top:2px; }
+.cbtn { width:34px; height:34px; border:1.5px solid var(--outline); background:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:19px; color:var(--ink); font-family:'Switzer',sans-serif; }
+.cbtn:active { background:var(--bg); }
+.cval { width:36px; text-align:center; font-size:16px; font-weight:600; color:var(--ink); }
+
+/* ── Infobar ── */
+.infobar { padding:9px 12px; background:var(--surface); border-bottom:1px solid var(--div); display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.badge { display:inline-flex; align-items:center; padding:2px 6px; font-size:10px; font-weight:700; letter-spacing:0.4px; }
+.badge.del { background:#EEF2FF; color:var(--primary); }
+.badge.ret { background:#FFF3E0; color:#E65100; }
+
+/* ── Bottom bar ── */
+.bot { padding:10px 12px 16px; background:var(--surface); border-top:1px solid var(--div); flex-shrink:0; }
+
+/* ── List row ── */
+.row { display:flex; align-items:center; padding:0 12px; min-height:58px; background:var(--surface); border:none; width:100%; text-align:left; gap:10px; border-bottom:1px solid var(--div); }
+.row.tap { cursor:pointer; }
+.row.tap:active { background:#F8F8F8; }
+.row-icon { width:34px; height:34px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.row-icon.del { background:#EEF2FF; color:var(--primary); }
+.row-icon.ret { background:#FFF3E0; color:#E65100; }
+.row-body { flex:1; min-width:0; }
+.row-title { font-size:13px; font-weight:500; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.row-meta { font-size:11px; color:var(--muted); margin-top:1px; }
+.chev { color:var(--outline); flex-shrink:0; }
+.sec-label { padding:10px 12px 5px; font-size:10px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:var(--muted); background:var(--bg); }
+
+/* ── Offline bars ── */
+.offline-bar { padding:8px 12px; background:#1A1A1A; display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.offline-bar .ms { font-size:15px; color:var(--warn); }
+.offline-bar span { font-size:12px; font-weight:500; color:var(--warn); }
+.online-bar { padding:8px 12px; background:#E6F4EC; display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.online-bar .ms { font-size:15px; color:var(--ok); }
+.online-bar span { font-size:12px; font-weight:500; color:var(--ok); }
+
+/* ── Queued badge ── */
+.queued { font-size:10px; font-weight:700; color:#fff; background:#555; padding:2px 7px; letter-spacing:0.3px; flex-shrink:0; }
+
+/* ── Success ── */
+.done { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:28px 20px; text-align:center; background:#fff; }
+.done-icon { width:52px; height:52px; background:#E6F4EC; display:flex; align-items:center; justify-content:center; margin-bottom:18px; }
+
+/* ── Notes ── */
+.notes-area { width:100%; padding:12px; border:none; font-family:'Switzer',sans-serif; font-size:14px; color:var(--ink); background:var(--surface); resize:none; outline:none; min-height:90px; }
+.notes-area::placeholder { color:var(--muted); }
+
+/* ── Signature canvas ── */
+canvas { display:block; width:100%; touch-action:none; cursor:crosshair; background:#FAFAFA; }
+.sig-label { padding:9px 12px 6px; font-size:10px; font-weight:600; letter-spacing:0.5px; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--div); background:#fff; }
+.sig-clear { font-size:12px; font-weight:500; color:var(--primary); background:none; border:none; cursor:pointer; font-family:'Switzer',sans-serif; }
+
+/* ── User badge ── */
+.user-badge { display:flex; align-items:center; gap:10px; padding:12px; background:var(--bg); border-bottom:1px solid var(--div); }
+.user-avatar { width:34px; height:34px; background:var(--navy); color:#fff; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.user-name { font-size:13px; font-weight:500; color:var(--ink); }
+.user-role { font-size:11px; color:var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <div class="page-eyebrow">Quantify Mobile · Open controls</div>
+  <div class="page-title">3 things to decide before building</div>
+  <div class="page-sub">Each section shows two design options. Pick one per section — these decisions affect the dev scope directly.</div>
+</div>
+
+<!-- ══════════════════════════════
+     1. SIGNATURE
+══════════════════════════════ -->
+<div class="section">
+  <div class="section-head">
+    <div class="section-num">01</div>
+    <div class="section-title">Signature</div>
+  </div>
+  <div class="section-desc">
+    Right now, paper pick tickets have a "Received by" signature line. On mobile, we need to decide: do we require the driver or yard worker to physically draw a signature, or is tapping "Confirm" while logged in enough proof that they did the job?
+  </div>
+  <div class="decision">
+    <span class="ms">help</span>
+    <div><strong>Decision needed:</strong> Does your business need a drawn signature for legal or dispute reasons, or is a timestamped user record good enough?</div>
+  </div>
+
+  <div class="phones-row">
+
+    <!-- A: Drawn -->
+    <div class="opt-wrap">
+      <div class="opt-tag">Option A — Draw to confirm</div>
+      <div class="phone">
+        <div class="scr on" id="sA1">
+          <div class="sb"><span class="sb-t">9:41</span><div class="sb-i"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+          <div class="nav"><button class="nbtn"><span class="ms">arrow_back</span></button><span class="ntitle" style="font-size:14px">Smith Construction<span class="nsub">DEL #4821 · 5 products</span></span></div>
+          <div class="infobar"><span class="badge del">DEL</span><span style="font-size:11px;color:var(--muted)">Apr 7 · All quantities match</span></div>
+          <div class="content">
+            <div class="crow"><div style="flex:1"><div class="cn">Ledger Board 8ft</div><div class="ce">Expected 24</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">24</div><button class="cbtn">+</button></div></div>
+            <div class="crow"><div style="flex:1"><div class="cn">Standard 6ft</div><div class="ce">Expected 32</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">32</div><button class="cbtn">+</button></div></div>
+            <div class="crow"><div style="flex:1"><div class="cn">Diagonal Brace</div><div class="ce">Expected 16</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">16</div><button class="cbtn">+</button></div></div>
+            <div class="crow"><div style="flex:1"><div class="cn">Sole Board</div><div class="ce">Expected 12</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">12</div><button class="cbtn">+</button></div></div>
+            <div class="crow" style="border-bottom:none"><div style="flex:1"><div class="cn">Base Collar</div><div class="ce">Expected 8</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">8</div><button class="cbtn">+</button></div></div>
+          </div>
+          <div class="bot"><button class="btn-fill" onclick="go('sA1','sA2')"><span class="ms sm">draw</span>Continue to signature</button></div>
+        </div>
+
+        <div class="scr" id="sA2">
+          <div class="sb"><span class="sb-t">9:41</span><div class="sb-i"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+          <div class="nav"><button class="nbtn" onclick="go('sA2','sA1')"><span class="ms">arrow_back</span></button><span class="ntitle" style="font-size:14px">Driver signature<span class="nsub">DEL #4821 · Smith Construction</span></span></div>
+          <div style="padding:10px 12px;background:#E6F4EC;border-bottom:1px solid var(--div);font-size:12px;color:var(--ok);font-weight:500;flex-shrink:0">All 5 items matched</div>
+          <div style="padding:12px;font-size:13px;color:var(--sub);border-bottom:1px solid var(--div);background:#fff;flex-shrink:0">By signing you confirm the quantities above are correct and the delivery is complete.</div>
+          <div style="background:#fff;flex-shrink:0">
+            <div class="sig-label">Sign below<button class="sig-clear" onclick="clearC()">Clear</button></div>
+            <canvas id="sigCanvas" width="280" height="160" style="height:160px;border-bottom:1px solid var(--div)"></canvas>
+          </div>
+          <div style="padding:8px 12px;font-size:11px;color:var(--muted);background:#fff;border-bottom:1px solid var(--div);flex-shrink:0">Sign with your finger</div>
+          <div style="flex:1;background:#fff"></div>
+          <div class="bot">
+            <button class="btn-fill" id="sigBtn" onclick="go('sA2','sA3')" style="opacity:0.35;pointer-events:none"><span class="ms sm">check</span>Confirm delivery</button>
+          </div>
+        </div>
+
+        <div class="scr" id="sA3">
+          <div class="sb"><span class="sb-t">9:41</span><div class="sb-i"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+          <div class="done">
+            <div class="done-icon"><span class="ms f" style="color:var(--ok);font-size:30px">check_circle</span></div>
+            <div style="font-size:17px;font-weight:600;color:var(--ink);margin-bottom:5px">Delivery confirmed</div>
+            <div style="font-size:13px;color:var(--sub);margin-bottom:3px">Smith Construction · DEL #4821</div>
+            <div style="font-size:12px;color:var(--muted)">Signed by driver · Syncing…</div>
+            <div style="height:28px"></div>
+            <button class="btn-ghost" onclick="go('sA3','sA1')">Back to list</button>
+          </div>
+        </div>
+      </div>
+      <div class="opt-caption">
+        <div class="label">Requires a drawn signature</div>
+        <div class="what">After counting, a signature screen appears. The confirm button is locked until something is drawn. The signature is saved with the shipment record.</div>
+        <div class="why">Choose this if customers or drivers need to physically sign off — useful for dispute resolution.</div>
+      </div>
+    </div>
+
+    <!-- B: Login only -->
+    <div class="opt-wrap">
+      <div class="opt-tag">Option B — Login is enough</div>
+      <div class="phone">
+        <div class="scr on" id="sB1">
+          <div class="sb"><span class="sb-t">9:41</span><div class="sb-i"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+          <div class="nav"><button class="nbtn"><span class="ms">arrow_back</span></button><span class="ntitle" style="font-size:14px">Smith Construction<span class="nsub">DEL #4821 · 5 products</span></span></div>
+          <div class="infobar"><span class="badge del">DEL</span><span style="font-size:11px;color:var(--muted)">Apr 7 · All quantities match</span></div>
+          <div class="content">
+            <div class="crow"><div style="flex:1"><div class="cn">Ledger Board 8ft</div><div class="ce">Expected 24</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">24</div><button class="cbtn">+</button></div></div>
+            <div class="crow"><div style="flex:1"><div class="cn">Standard 6ft</div><div class="ce">Expected 32</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">32</div><button class="cbtn">+</button></div></div>
+            <div class="crow"><div style="flex:1"><div class="cn">Diagonal Brace</div><div class="ce">Expected 16</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">16</div><button class="cbtn">+</button></div></div>
+            <div class="crow"><div style="flex:1"><div class="cn">Sole Board</div><div class="ce">Expected 12</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">12</div><button class="cbtn">+</button></div></div>
+            <div class="crow" style="border-bottom:none"><div style="flex:1"><div class="cn">Base Collar</div><div class="ce">Expected 8</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">8</div><button class="cbtn">+</button></div></div>
+          </div>
+          <div class="bot"><button class="btn-fill" onclick="go('sB1','sB2')">Review &amp; confirm</button></div>
+        </div>
+
+        <div class="scr" id="sB2">
+          <div class="sb"><span class="sb-t">9:41</span><div class="sb-i"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+          <div class="nav"><button class="nbtn" onclick="go('sB2','sB1')"><span class="ms">arrow_back</span></button><span class="ntitle" style="font-size:14px">Confirm delivery<span class="nsub">DEL #4821</span></span></div>
+          <div style="padding:9px 12px;background:#E6F4EC;border-bottom:1px solid var(--div);font-size:12px;color:var(--ok);font-weight:500;flex-shrink:0">All 5 items matched</div>
+          <div style="background:#fff;flex:1">
+            <div style="padding:10px 12px 5px;font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted)">Confirmed by</div>
+            <div class="user-badge">
+              <div class="user-avatar">MT</div>
+              <div><div class="user-name">Mike Torres</div><div class="user-role">Yard Worker · Branch 1</div></div>
+              <span class="ms f" style="color:var(--ok);margin-left:auto;font-size:20px">verified</span>
+            </div>
+            <div style="padding:10px 12px;font-size:12px;color:var(--sub);border-bottom:1px solid var(--div)">Your name and the timestamp will be recorded against this delivery. No drawn signature required.</div>
+            <div style="padding:10px 12px 5px;font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted)">Summary</div>
+            <div style="padding:0 12px 10px;font-size:13px;color:var(--sub)">5 products · 92 items · All matched</div>
+          </div>
+          <div class="bot"><button class="btn-fill" onclick="go('sB2','sB3')"><span class="ms sm">check</span>Confirm delivery</button></div>
+        </div>
+
+        <div class="scr" id="sB3">
+          <div class="sb"><span class="sb-t">9:41</span><div class="sb-i"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+          <div class="done">
+            <div class="done-icon"><span class="ms f" style="color:var(--ok);font-size:30px">check_circle</span></div>
+            <div style="font-size:17px;font-weight:600;color:var(--ink);margin-bottom:5px">Delivery confirmed</div>
+            <div style="font-size:13px;color:var(--sub);margin-bottom:3px">Smith Construction · DEL #4821</div>
+            <div style="font-size:12px;color:var(--muted)">Recorded by Mike Torres · Syncing…</div>
+            <div style="height:28px"></div>
+            <button class="btn-ghost" onclick="go('sB3','sB1')">Back to list</button>
+          </div>
+        </div>
+      </div>
+      <div class="opt-caption">
+        <div class="label">Login = the record</div>
+        <div class="what">No drawing needed. The review screen shows who is logged in, and tapping Confirm records their name, role, and timestamp against the shipment.</div>
+        <div class="why">Choose this if you trust your login system and don't need a physical signature — simpler and faster for the yard worker.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     2. NOTES
+══════════════════════════════ -->
+<div class="section">
+  <div class="section-head">
+    <div class="section-num">02</div>
+    <div class="section-title">Notes field</div>
+  </div>
+  <div class="section-desc">
+    Sometimes the worker needs to say something: the truck arrived late, 2 items were already on site, the customer wasn't present. Where does that note live? On the count screen, or only when reviewing before confirming?
+  </div>
+  <div class="decision">
+    <span class="ms">help</span>
+    <div><strong>Decision needed:</strong> Is a notes field needed at all? If yes — does it belong on the count screen (always visible) or on the review screen (less distracting)?</div>
+  </div>
+
+  <div class="phones-row">
+
+    <!-- A: Inline on count -->
+    <div class="opt-wrap">
+      <div class="opt-tag">Option A — Always visible</div>
+      <div class="phone">
+        <div class="scr on" id="nA1">
+          <div class="sb"><span class="sb-t">9:41</span><div class="sb-i"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+          <div class="nav"><button class="nbtn"><span class="ms">arrow_back</span></button><span class="ntitle" style="font-size:14px">Smith Construction<span class="nsub">DEL #4821</span></span></div>
+          <div class="infobar"><span class="badge del">DEL</span><span style="font-size:11px;color:var(--muted)">Apr 7 · 5 products</span></div>
+          <div class="content">
+            <div class="crow"><div style="flex:1"><div class="cn">Ledger Board 8ft</div><div class="ce">Expected 24</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">24</div><button class="cbtn">+</button></div></div>
+            <div class="crow"><div style="flex:1"><div class="cn">Standard 6ft</div><div class="ce">Expected 32</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">32</div><button class="cbtn">+</button></div></div>
+            <div class="crow"><div style="flex:1"><div class="cn">Diagonal Brace</div><div class="ce">Expected 16</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">16</div><button class="cbtn">+</button></div></div>
+            <div class="crow"><div style="flex:1"><div class="cn">Sole Board</div><div class="ce">Expected 12</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">12</div><button class="cbtn">+</button></div></div>
+            <div class="crow"><div style="flex:1"><div class="cn">Base Collar</div><div class="ce">Expected 8</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">8</div><button class="cbtn">+</button></div></div>
+            <div style="background:var(--surface);padding:10px 12px 5px;font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--div)">Notes — optional</div>
+            <textarea class="notes-area" placeholder="e.g. Truck arrived 20 min late, customer not present…" rows="3"></textarea>
+          </div>
+          <div class="bot"><button class="btn-fill">Review &amp; confirm</button></div>
+        </div>
+      </div>
+      <div class="opt-caption">
+        <div class="label">Notes on the count screen</div>
+        <div class="what">A text field sits at the bottom of the count screen, below the items list. Optional — the worker can ignore it or fill it in.</div>
+        <div class="why">Good if workers often have something to say while they're counting. More visible but adds clutter to the main task screen.</div>
+      </div>
+    </div>
+
+    <!-- B: On review screen only -->
+    <div class="opt-wrap">
+      <div class="opt-tag">Option B — Only when reviewing</div>
+      <div class="phone">
+        <div class="scr on" id="nB1">
+          <div class="sb"><span class="sb-t">9:41</span><div class="sb-i"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+          <div class="nav"><button class="nbtn"><span class="ms">arrow_back</span></button><span class="ntitle" style="font-size:14px">Review<span class="nsub">DEL #4821 · Smith Construction</span></span></div>
+          <div style="padding:9px 12px;background:#E6F4EC;border-bottom:1px solid var(--div);font-size:12px;color:var(--ok);font-weight:500;flex-shrink:0">All 5 items matched</div>
+          <div style="background:#fff;flex:1;overflow-y:auto">
+            <div style="padding:10px 12px 5px;font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted)">Summary</div>
+            <div style="padding:0 12px 10px;font-size:13px;color:var(--sub);border-bottom:1px solid var(--div)">5 products · 92 items · All matched expected</div>
+            <div style="padding:10px 12px 5px;font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted)">Add a note <span style="color:var(--muted);font-weight:400;letter-spacing:0;text-transform:none">— optional</span></div>
+            <textarea class="notes-area" placeholder="e.g. Truck arrived late, customer not on site…" style="border-top:1px solid var(--div)"></textarea>
+            <div style="padding:8px 12px;font-size:11px;color:var(--muted);border-top:1px solid var(--div)">Note will be attached to DEL #4821 in Quantify</div>
+          </div>
+          <div class="bot"><button class="btn-fill"><span class="ms sm">check</span>Confirm delivery</button></div>
+        </div>
+      </div>
+      <div class="opt-caption">
+        <div class="label">Notes on the review screen</div>
+        <div class="what">The count screen stays clean — items only. After counting, the review screen shows the summary and offers a notes field before the final confirm.</div>
+        <div class="why">Good if notes are rare. Doesn't distract from counting. Worker only sees it if they scroll down on the review screen.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     3. OFFLINE
+══════════════════════════════ -->
+<div class="section">
+  <div class="section-head">
+    <div class="section-num">03</div>
+    <div class="section-title">Offline behaviour</div>
+  </div>
+  <div class="section-desc">
+    Yard workers often have no signal inside warehouse buildings. The question is: can they still count and confirm a shipment without internet, and have it sync when they walk back into signal range? These three screens show the full offline journey — no signal, counting offline, and syncing when signal returns.
+  </div>
+  <div class="decision">
+    <span class="ms">help</span>
+    <div><strong>Decision needed:</strong> Does the app need to work offline, or can we require a connection to confirm? Offline support is significantly more work to build — worth confirming with the dev team.</div>
+  </div>
+
+  <div class="phones-row">
+
+    <!-- No signal -->
+    <div class="opt-wrap">
+      <div class="opt-tag">State 1 — No signal</div>
+      <div class="phone">
+        <div class="scr on" id="off1">
+          <div class="sb" style="background:#1A1A1A"><span class="sb-t" style="color:#fff">9:41</span><div class="sb-i"><span class="ms sm" style="color:#555">signal_cellular_off</span><span class="ms sm" style="color:#555">wifi_off</span><span class="ms sm" style="color:#ccc">battery_5_bar</span></div></div>
+          <div class="nav" style="background:#fff">
+            <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><div style="width:24px;height:24px;background:#0A3EFF;display:flex;align-items:center;justify-content:center"><img src="/quantify-logo.svg" width="16" height="16"></div></div>
+            <span class="ntitle" style="font-size:14px">Today's jobs<span class="nsub">Mon Apr 7 · 5 shipments</span></span>
+          </div>
+          <div class="offline-bar"><span class="ms sm">wifi_off</span><span>No signal — showing cached list</span></div>
+          <div class="content">
+            <div class="sec-label">Deliveries · 3</div>
+            <button class="row tap" onclick="go('off1','off2')">
+              <div class="row-icon del"><span class="ms sm">local_shipping</span></div>
+              <div class="row-body"><div class="row-title">Smith Construction</div><div class="row-meta">DEL #4821 · 5 products · 8:00 AM</div></div>
+              <span class="ms chev">chevron_right</span>
+            </button>
+            <div class="row">
+              <div class="row-icon del"><span class="ms sm">local_shipping</span></div>
+              <div class="row-body"><div class="row-title">Delta Builders</div><div class="row-meta">DEL #4822 · 5 products · 10:30 AM</div></div>
+              <span class="ms chev">chevron_right</span>
+            </div>
+            <div class="sec-label">Returns · 2</div>
+            <div class="row">
+              <div class="row-icon ret"><span class="ms sm">reply</span></div>
+              <div class="row-body"><div class="row-title">Westside Scaffolding</div><div class="row-meta">RET #2341 · Confirmed · Waiting to sync</div></div>
+              <span class="queued">QUEUED</span>
+            </div>
+            <div class="row">
+              <div class="row-icon ret"><span class="ms sm">reply</span></div>
+              <div class="row-body"><div class="row-title">Harbor View Co.</div><div class="row-meta">RET #2342 · 5 products · 3:30 PM</div></div>
+              <span class="ms chev">chevron_right</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="opt-caption">
+        <div class="label">No signal — worker can still see jobs</div>
+        <div class="what">The list loads from data cached the last time the app had signal. An amber banner says "No signal." One job (RET #2341) was already confirmed while offline — it shows "QUEUED" until it syncs.</div>
+      </div>
+    </div>
+
+    <!-- Counting offline -->
+    <div class="opt-wrap">
+      <div class="opt-tag">State 2 — Counting offline</div>
+      <div class="phone">
+        <div class="scr on" id="off2">
+          <div class="sb" style="background:#1A1A1A"><span class="sb-t" style="color:#fff">9:41</span><div class="sb-i"><span class="ms sm" style="color:#555">signal_cellular_off</span><span class="ms sm" style="color:#555">wifi_off</span><span class="ms sm" style="color:#ccc">battery_5_bar</span></div></div>
+          <div class="nav"><button class="nbtn" onclick="go('off2','off1')"><span class="ms">arrow_back</span></button><span class="ntitle" style="font-size:14px">Smith Construction<span class="nsub">DEL #4821</span></span></div>
+          <div class="offline-bar"><span class="ms sm">wifi_off</span><span>Offline — will sync when connected</span></div>
+          <div class="content">
+            <div class="crow"><div style="flex:1"><div class="cn">Ledger Board 8ft</div><div class="ce">Expected 24</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">24</div><button class="cbtn">+</button></div></div>
+            <div class="crow"><div style="flex:1"><div class="cn">Standard 6ft</div><div class="ce">Expected 32</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">32</div><button class="cbtn">+</button></div></div>
+            <div class="crow"><div style="flex:1"><div class="cn">Diagonal Brace</div><div class="ce">Expected 16</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">16</div><button class="cbtn">+</button></div></div>
+            <div class="crow"><div style="flex:1"><div class="cn">Sole Board</div><div class="ce">Expected 12</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">12</div><button class="cbtn">+</button></div></div>
+            <div class="crow" style="border-bottom:none"><div style="flex:1"><div class="cn">Base Collar</div><div class="ce">Expected 8</div></div><div style="display:flex;align-items:center;gap:3px"><button class="cbtn">−</button><div class="cval">8</div><button class="cbtn">+</button></div></div>
+          </div>
+          <div class="bot">
+            <button class="btn-fill" onclick="go('off2','off3')"><span class="ms sm">schedule</span>Confirm &amp; queue for sync</button>
+          </div>
+        </div>
+      </div>
+      <div class="opt-caption">
+        <div class="label">Counting works normally without signal</div>
+        <div class="what">The worker counts exactly as normal. The only difference is the confirm button says "Confirm & queue for sync" instead of just "Confirm" — so they know it won't reach the office instantly.</div>
+      </div>
+    </div>
+
+    <!-- Back online -->
+    <div class="opt-wrap">
+      <div class="opt-tag">State 3 — Back online</div>
+      <div class="phone">
+        <div class="scr on" id="off3">
+          <div class="sb"><span class="sb-t">9:41</span><div class="sb-i"><span class="ms sm">signal_cellular_alt</span><span class="ms sm">wifi</span><span class="ms sm">battery_5_bar</span></div></div>
+          <div class="nav">
+            <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><div style="width:24px;height:24px;background:#0A3EFF;display:flex;align-items:center;justify-content:center"><img src="/quantify-logo.svg" width="16" height="16"></div></div>
+            <span class="ntitle" style="font-size:14px">Today's jobs<span class="nsub">Mon Apr 7 · 5 shipments</span></span>
+          </div>
+          <div class="online-bar"><span class="ms sm">sync</span><span>Back online — syncing 1 confirmation…</span></div>
+          <div class="content">
+            <div class="sec-label">Deliveries · 3</div>
+            <div class="row">
+              <div class="row-icon del"><span class="ms sm">local_shipping</span></div>
+              <div class="row-body"><div class="row-title">Smith Construction</div><div class="row-meta">DEL #4821 · Confirmed · Syncing to office…</div></div>
+              <span class="ms f" style="color:var(--ok);font-size:20px;flex-shrink:0">check_circle</span>
+            </div>
+            <div class="row">
+              <div class="row-icon del"><span class="ms sm">local_shipping</span></div>
+              <div class="row-body"><div class="row-title">Delta Builders</div><div class="row-meta">DEL #4822 · 5 products · 10:30 AM</div></div>
+              <span class="ms chev">chevron_right</span>
+            </div>
+            <div class="sec-label">Returns · 2</div>
+            <div class="row">
+              <div class="row-icon ret"><span class="ms sm">reply</span></div>
+              <div class="row-body"><div class="row-title">Westside Scaffolding</div><div class="row-meta">RET #2341 · 5 products · 11:00 AM</div></div>
+              <span class="ms chev">chevron_right</span>
+            </div>
+            <div class="row">
+              <div class="row-icon ret"><span class="ms sm">reply</span></div>
+              <div class="row-body"><div class="row-title">Harbor View Co.</div><div class="row-meta">RET #2342 · 5 products · 3:30 PM</div></div>
+              <span class="ms chev">chevron_right</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="opt-caption">
+        <div class="label">Signal returns — syncs automatically</div>
+        <div class="what">When the worker walks back outside and gets signal, the queued confirmation uploads on its own. Green banner, checkmark on the row. The worker doesn't need to do anything.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function go(from, to) {
+  document.getElementById(from).classList.remove('on');
+  document.getElementById(to).classList.add('on');
+}
+
+// Signature canvas
+(function() {
+  const c = document.getElementById('sigCanvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  let drawing = false, hasDrawn = false;
+  ctx.strokeStyle = '#111'; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+
+  function pos(e) {
+    const r = c.getBoundingClientRect();
+    const s = e.touches ? e.touches[0] : e;
+    return { x: (s.clientX - r.left) * (c.width / r.width), y: (s.clientY - r.top) * (c.height / r.height) };
+  }
+  function start(e) { e.preventDefault(); drawing = true; const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }
+  function move(e) {
+    e.preventDefault();
+    if (!drawing) return;
+    const p = pos(e);
+    ctx.lineTo(p.x, p.y); ctx.stroke();
+    if (!hasDrawn) {
+      hasDrawn = true;
+      const btn = document.getElementById('sigBtn');
+      if (btn) { btn.style.opacity = '1'; btn.style.pointerEvents = 'all'; }
+    }
+  }
+  function end(e) { e.preventDefault(); drawing = false; }
+  c.addEventListener('mousedown', start); c.addEventListener('mousemove', move); c.addEventListener('mouseup', end);
+  c.addEventListener('touchstart', start, {passive:false}); c.addEventListener('touchmove', move, {passive:false}); c.addEventListener('touchend', end, {passive:false});
+})();
+
+function clearC() {
+  const c = document.getElementById('sigCanvas');
+  if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height);
+  const btn = document.getElementById('sigBtn');
+  if (btn) { btn.style.opacity = '0.35'; btn.style.pointerEvents = 'none'; }
+}
+</script>
+</body>
+</html>

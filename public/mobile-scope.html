@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantify Mobile — Scope v1</title>
+<link href="https://fonts.googleapis.com/css2?family=Switzer:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #0A3EFF;
+    --navy: #10296E;
+    --text: #111;
+    --secondary: #555;
+    --muted: #878787;
+    --border: #E2E2E2;
+    --surface: #F7F7F7;
+    --error: #D32F2F;
+    --warning: #E6A817;
+    --success: #1B8A4A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Switzer', sans-serif;
+    color: var(--text);
+    background: #fff;
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 56px 32px 80px;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+  .subtitle { font-size: 15px; color: var(--secondary); margin-bottom: 40px; }
+
+  h2 {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 40px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  p { color: var(--secondary); font-size: 14px; margin-bottom: 12px; }
+
+  /* Audit table */
+  .audit {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+  .audit th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .audit td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--secondary);
+  }
+  .audit td:first-child { font-weight: 500; color: var(--text); width: 200px; }
+  .audit tr:last-child td { border-bottom: none; }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 7px;
+    margin-right: 4px;
+    white-space: nowrap;
+  }
+  .in    { background: #E6F4EC; color: var(--success); }
+  .out   { background: #F7F7F7; color: var(--muted); }
+  .later { background: #FDF5E0; color: #9A6800; }
+
+  /* In / Out scope lists */
+  .scope-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .scope-col {
+    border: 1px solid var(--border);
+    padding: 16px 18px;
+  }
+  .scope-col-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .scope-col-title.green { color: var(--success); }
+  .scope-col-title.gray  { color: var(--muted); }
+  .scope-col-title.amber { color: #9A6800; }
+  .scope-item {
+    font-size: 13px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--secondary);
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+  }
+  .scope-item:last-child { border-bottom: none; }
+  .scope-item::before { content: '·'; color: var(--muted); flex-shrink: 0; }
+
+  /* Screen list */
+  .screen {
+    display: flex;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .screen:last-child { border-bottom: none; }
+  .screen-num {
+    width: 28px;
+    height: 28px;
+    background: var(--navy);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .screen-name { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+  .screen-desc { font-size: 13px; color: var(--secondary); }
+  .screen-from { font-size: 12px; color: var(--muted); margin-top: 5px; }
+
+  /* Insight blocks */
+  .insight {
+    border-left: 3px solid var(--primary);
+    padding: 12px 16px;
+    background: #F0F3FF;
+    margin-bottom: 10px;
+  }
+  .insight p { color: var(--text); font-size: 13px; margin: 0; }
+  .insight strong { color: var(--text); }
+
+  .warn-block {
+    border-left: 3px solid var(--warning);
+    padding: 12px 16px;
+    background: #FFFBEF;
+    margin-bottom: 10px;
+  }
+  .warn-block p { color: var(--text); font-size: 13px; margin: 0; }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  footer { font-size: 12px; color: var(--muted); margin-top: 40px; }
+
+  @media (max-width: 600px) {
+    body { padding: 32px 20px 60px; }
+    .scope-grid { grid-template-columns: 1fr; }
+    .audit td:first-child { width: 140px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="eyebrow">Quantify Mobile · Phase 1</div>
+<h1>Mobile Scope</h1>
+<p class="subtitle">What goes on the mobile app, what stays on desktop, and why — based on the full Quantify desktop feature set.</p>
+
+<!-- ── The core insight ── -->
+<h2>Starting point</h2>
+
+<div class="insight">
+  <p>Desktop Quantify has 14 modules, 6-tab shipment dialogs, 30+ reports, billing, invoicing, pivot tables, and custom properties per company. A new employee takes months to learn it. <strong>The mobile app is not a smaller version of this. It is one job: confirm what goes on and off the truck.</strong></p>
+</div>
+
+<div class="insight">
+  <p>The client said it directly: <strong>"To me, when I think of a mobile app, I see somebody with a tablet in the yard confirming what went."</strong> Every design decision should be tested against that sentence.</p>
+</div>
+
+<!-- ── Desktop audit ── -->
+<h2>Desktop audit — what exists, what it means for mobile</h2>
+
+<table class="audit">
+  <thead>
+    <tr>
+      <th>Desktop feature</th>
+      <th>What it does</th>
+      <th>Mobile?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Straight shipment (Way 1)</td>
+      <td>Office creates a DEL instantly with no verification step. Rent starts immediately.</td>
+      <td><span class="tag out">Out</span> Office-only action. No counting involved.</td>
+    </tr>
+    <tr>
+      <td>Reservation → Release (Way 2)</td>
+      <td>Office creates reservation → yard worker counts what goes on truck → office releases.</td>
+      <td><span class="tag in">In</span> The counting step is the core mobile job.</td>
+    </tr>
+    <tr>
+      <td>Reservation → Release → Customer confirmation (Way 3)</td>
+      <td>After office releases, customer at job site counts what arrived and confirms independently.</td>
+      <td><span class="tag later">Later</span> Valid mobile use case but adds complexity. Phase 2.</td>
+    </tr>
+    <tr>
+      <td>Pre-Return counting</td>
+      <td>Office schedules expected return → truck arrives → yard worker counts items off truck.</td>
+      <td><span class="tag in">In</span> Same counting job as delivery, opposite direction.</td>
+    </tr>
+    <tr>
+      <td>Straight return (no pre-return)</td>
+      <td>Right-click → Return → type quantities → done. No scheduling.</td>
+      <td><span class="tag later">Later</span> Requires creating a return on mobile, which means more fields. Start with pre-returns only.</td>
+    </tr>
+    <tr>
+      <td>Equipment condition flagging</td>
+      <td>On return: mark items Normal / To Be Serviced / Damaged / Scrapped / Lost.</td>
+      <td><span class="tag in">In</span> Yard worker catches this in the moment. Valuable in v1.</td>
+    </tr>
+    <tr>
+      <td>Over-returns (negative balances)</td>
+      <td>Worker returns more than expected. System allows it — creates negative balance.</td>
+      <td><span class="tag in">In</span> Must handle this. Count screen must allow adding items not on the original shipment.</td>
+    </tr>
+    <tr>
+      <td>Barcode / kit scanning</td>
+      <td>Scan individual items or a kit barcode that expands to full product list automatically.</td>
+      <td><span class="tag later">Later</span> Tablet cameras are inconsistent. Design for manual counting first. Add scanning in phase 2.</td>
+    </tr>
+    <tr>
+      <td>Shipment Properties tab</td>
+      <td>Custom fields per company configured in Global Options (e.g. PO number, driver name).</td>
+      <td><span class="tag out">Out</span> Read-only reference at most. Not a yard worker concern.</td>
+    </tr>
+    <tr>
+      <td>Products tab (line items)</td>
+      <td>The list of scaffold equipment on the shipment with quantities.</td>
+      <td><span class="tag in">In</span> The entire count screen. This is the job.</td>
+    </tr>
+    <tr>
+      <td>Consumables tab</td>
+      <td>One-way items that don't come back (netting, sheeting, plastic ties).</td>
+      <td><span class="tag out">Out</span> Consumables are set by office. Yard worker doesn't count these — they're buried on site.</td>
+    </tr>
+    <tr>
+      <td>Additional Charges tab</td>
+      <td>One-off fees: erection charge, transport, dismantle fee.</td>
+      <td><span class="tag out">Out</span> Office billing detail. Zero relevance to yard worker.</td>
+    </tr>
+    <tr>
+      <td>Recurring Charges tab</td>
+      <td>Fixed fee billed every 28 days. Sent out "like a product."</td>
+      <td><span class="tag out">Out</span> Billing only. Not something a yard worker touches.</td>
+    </tr>
+    <tr>
+      <td>Attachments tab</td>
+      <td>Files attached to the shipment.</td>
+      <td><span class="tag out">Out</span> Maybe photo-of-damage in phase 2.</td>
+    </tr>
+    <tr>
+      <td>Pick ticket printing</td>
+      <td>Printed document with expected quantities and 1–3 signature lines.</td>
+      <td><span class="tag out">Out</span> The mobile app replaces this. No printing needed.</td>
+    </tr>
+    <tr>
+      <td>Discrepancy resolution</td>
+      <td>Office decides: customer's fault or company's fault. Adjusts quantities accordingly.</td>
+      <td><span class="tag out">Out</span> Office decision on desktop. Mobile only flags the discrepancy.</td>
+    </tr>
+    <tr>
+      <td>Transfer (TRF)</td>
+      <td>Equipment moves between two yard/branch locations.</td>
+      <td><span class="tag later">Later</span> Same counting job. Include in phase 2 once delivery/return is stable.</td>
+    </tr>
+    <tr>
+      <td>Reservation (RSV) creation</td>
+      <td>Future-dated hold created by office staff.</td>
+      <td><span class="tag out">Out</span> Office creates these on desktop. Mobile only consumes them.</td>
+    </tr>
+    <tr>
+      <td>Invoicing / billing</td>
+      <td>Invoice generation, rate profiles, billing methods, accounting exports.</td>
+      <td><span class="tag out">Out</span> Entirely office domain. Never show billing data to yard workers.</td>
+    </tr>
+    <tr>
+      <td>Reports / pivots</td>
+      <td>30+ report types. Product history, forecasting, inventory counts.</td>
+      <td><span class="tag out">Out</span> Desktop only. Not field work.</td>
+    </tr>
+    <tr>
+      <td>Inventory states</td>
+      <td>Available / On Rent / Reserved / In Transit / To Be Serviced / Out of Service.</td>
+      <td><span class="tag in">Partial</span> Worker sees "In Transit" and "On Rent" as confirmation feedback. They don't manage states — the system changes them automatically on confirm.</td>
+    </tr>
+    <tr>
+      <td>Equipment requests portal</td>
+      <td>Field / customer user requests materials via Quantify Web.</td>
+      <td><span class="tag later">Later</span> Different user persona (site supervisor, not yard worker). Separate flow.</td>
+    </tr>
+    <tr>
+      <td>Scaffold Register / activities</td>
+      <td>Full scaffold lifecycle — build, inspect, modify, dismantle.</td>
+      <td><span class="tag out">Out</span> Separate product area entirely. Not in shipments scope.</td>
+    </tr>
+    <tr>
+      <td>QR code scanning (scaffold tags)</td>
+      <td>Anyone scans a QR tag to view scaffold details.</td>
+      <td><span class="tag out">Out</span> Scaffold register feature, not shipments.</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ── In / Out / Later ── -->
+<h2>Summary — v1 scope</h2>
+
+<div class="scope-grid">
+  <div class="scope-col">
+    <div class="scope-col-title green">In — build this</div>
+    <div class="scope-item">Today's delivery list (DEL)</div>
+    <div class="scope-item">Today's return list (RET)</div>
+    <div class="scope-item">Count screen — products only</div>
+    <div class="scope-item">Actual vs expected quantity per item</div>
+    <div class="scope-item">Add items not on original shipment</div>
+    <div class="scope-item">Condition flagging on returns</div>
+    <div class="scope-item">Confirm and submit</div>
+    <div class="scope-item">Discrepancy visible before confirm</div>
+    <div class="scope-item">Sign in + connection settings</div>
+  </div>
+  <div class="scope-col">
+    <div class="scope-col-title gray">Out — desktop only</div>
+    <div class="scope-item">Creating shipments from scratch</div>
+    <div class="scope-item">Consumables, additional charges</div>
+    <div class="scope-item">Recurring charges, billing</div>
+    <div class="scope-item">Invoicing and rate profiles</div>
+    <div class="scope-item">Reports and pivot tables</div>
+    <div class="scope-item">Discrepancy resolution</div>
+    <div class="scope-item">Reservation creation</div>
+    <div class="scope-item">Shipment properties / custom fields</div>
+    <div class="scope-item">Pick ticket printing</div>
+    <div class="scope-item">Scaffold register, QR scanning</div>
+  </div>
+</div>
+<div class="scope-grid">
+  <div class="scope-col">
+    <div class="scope-col-title amber">Later — phase 2</div>
+    <div class="scope-item">Customer confirmation (Way 3)</div>
+    <div class="scope-item">Straight returns (no pre-return)</div>
+    <div class="scope-item">Barcode / kit scanning</div>
+    <div class="scope-item">Transfers (TRF)</div>
+    <div class="scope-item">Equipment request portal</div>
+    <div class="scope-item">Photo attachments (damage)</div>
+  </div>
+</div>
+
+<!-- ── Screens ── -->
+<h2>Screens — v1</h2>
+<p>Everything the mobile app needs. Nothing more.</p>
+
+<div class="screen">
+  <div class="screen-num">1</div>
+  <div>
+    <div class="screen-name">Sign In</div>
+    <div class="screen-desc">Username + password. Microsoft SSO option. Server URL in footer. Connection settings modal.</div>
+    <div class="screen-from">From desktop: standard Quantify / Entra ID auth — same credentials</div>
+  </div>
+</div>
+<div class="screen">
+  <div class="screen-num">2</div>
+  <div>
+    <div class="screen-name">Shipments List</div>
+    <div class="screen-desc">Today's deliveries and returns for this branch. Shipment number, job site name, type (DEL/RET), item count, scheduled time. Tap to open.</div>
+    <div class="screen-from">From desktop: Shipments tab filtered to today + this branch</div>
+  </div>
+</div>
+<div class="screen">
+  <div class="screen-num">3</div>
+  <div>
+    <div class="screen-name">Shipment Detail</div>
+    <div class="screen-desc">Job site name, type, date, driver/vehicle if set. List of products with expected quantities. One tap to start counting.</div>
+    <div class="screen-from">From desktop: Shipment header fields + Products tab line items only</div>
+  </div>
+</div>
+<div class="screen">
+  <div class="screen-num">4</div>
+  <div>
+    <div class="screen-name">Count Screen</div>
+    <div class="screen-desc">One row per product. Expected quantity shown. Worker taps +/− to enter actual count. Changed rows highlighted. Items not on list can be added. Running discrepancy total visible.</div>
+    <div class="screen-from">From desktop: Products tab quantities — the part that was previously done on paper (pick ticket)</div>
+  </div>
+</div>
+<div class="screen">
+  <div class="screen-num">5</div>
+  <div>
+    <div class="screen-name">Condition Flag (returns only)</div>
+    <div class="screen-desc">Appears inline per item on returns. Options: Normal / To Be Serviced / Damaged / Scrapped / Lost. Default is Normal — worker only taps if something is wrong.</div>
+    <div class="screen-from">From desktop: Product condition dropdown on return dialog</div>
+  </div>
+</div>
+<div class="screen">
+  <div class="screen-num">6</div>
+  <div>
+    <div class="screen-name">Confirm Screen</div>
+    <div class="screen-desc">Summary before submitting. Shows any discrepancies clearly. If all match: green. If not: amber with item-level breakdown. Worker confirms or goes back to adjust.</div>
+    <div class="screen-from">From desktop: the review step before releasing a shipment</div>
+  </div>
+</div>
+<div class="screen">
+  <div class="screen-num">7</div>
+  <div>
+    <div class="screen-name">Success</div>
+    <div class="screen-desc">Clear confirmation. Shipment number. What just happened in one line (e.g. "24 items confirmed — DEL #4821 released"). Back to list.</div>
+    <div class="screen-from">New — desktop has no equivalent mobile success state</div>
+  </div>
+</div>
+
+<!-- ── Decisions ── -->
+<h2>Design decisions this scope forces</h2>
+
+<div class="warn-block">
+  <p><strong>No creating shipments on mobile.</strong> The yard worker only sees shipments the office already created. If a truck arrives without a pre-return set up, the worker cannot create it on mobile. They call the office. This is a constraint to confirm with Brian.</p>
+</div>
+
+<div class="warn-block">
+  <p><strong>Products only — no consumables, charges, or recurring items.</strong> The count screen shows scaffold equipment (tubes, boards, couplers) only. Consumables and billing items are invisible to yard workers. They don't affect what goes on the truck in a countable way.</p>
+</div>
+
+<div class="warn-block">
+  <p><strong>Condition flagging applies to the whole row, not a split quantity.</strong> This matches the current desktop limitation: you can't mark 2 out of 18 couplers as damaged and 16 as normal on the same return. The client described this as "very annoying." Do not design around this limitation in v1 — confirm with Brian if it should be solved.</p>
+</div>
+
+<hr>
+
+<footer>
+  Quantify Mobile — Scope v1 · April 2026 · Based on quantify-docs-reference.md<br>
+  Confirm open questions with Brian Webb before designing screens 2–7.
+</footer>
+
+</body>
+</html>

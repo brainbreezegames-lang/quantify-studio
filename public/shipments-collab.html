@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantify Mobile — Shipments Design Doc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Switzer:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #0A3EFF;
+    --navy: #10296E;
+    --text: #111111;
+    --secondary: #555555;
+    --muted: #878787;
+    --outline: #B5B5B5;
+    --surface: #F7F7F7;
+    --border: #E2E2E2;
+    --error: #D32F2F;
+    --warning: #E6A817;
+    --success: #1B8A4A;
+    --white: #FFFFFF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Switzer', -apple-system, sans-serif;
+    color: var(--text);
+    background: var(--white);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── Top nav ─────────────────────────────────── */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+    padding: 0 32px;
+  }
+  .topnav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+  }
+  .topnav-brand img { width: 28px; height: 28px; }
+  .topnav-meta {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 400;
+  }
+  .topnav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .topnav-links a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 6px 12px;
+    transition: color 0.15s;
+  }
+  .topnav-links a:hover { color: white; }
+
+  /* ── Layout ──────────────────────────────────── */
+  .page {
+    display: flex;
+    min-height: calc(100vh - 52px);
+  }
+
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    position: sticky;
+    top: 52px;
+    height: calc(100vh - 52px);
+    overflow-y: auto;
+  }
+  .sidebar-section {
+    padding: 0 16px 16px;
+  }
+  .sidebar-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 8px 16px 6px;
+  }
+  .sidebar a {
+    display: block;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: var(--secondary);
+    text-decoration: none;
+    transition: color 0.1s, background 0.1s;
+    border-left: 2px solid transparent;
+  }
+  .sidebar a:hover {
+    color: var(--text);
+    background: var(--surface);
+  }
+  .sidebar a.active {
+    color: var(--primary);
+    border-left-color: var(--primary);
+    background: #EFF3FF;
+  }
+
+  .main {
+    flex: 1;
+    padding: 40px 48px;
+    max-width: 820px;
+  }
+
+  /* ── Sections ────────────────────────────────── */
+  section {
+    margin-bottom: 56px;
+    scroll-margin-top: 72px;
+  }
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 20px 0 8px;
+  }
+  p { margin-bottom: 12px; color: var(--text); }
+  p:last-child { margin-bottom: 0; }
+
+  .subtitle {
+    font-size: 16px;
+    color: var(--secondary);
+    margin-bottom: 32px;
+  }
+
+  /* ── Cards ───────────────────────────────────── */
+  .card {
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    background: var(--white);
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .card-body {
+    font-size: 14px;
+    color: var(--secondary);
+    line-height: 1.6;
+  }
+  .card-row {
+    display: flex;
+    gap: 12px;
+  }
+  .card-row .card { flex: 1; }
+
+  /* ── Status badges ───────────────────────────── */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    letter-spacing: 0.3px;
+    vertical-align: middle;
+  }
+  .badge-blue    { background: #E8EEFF; color: var(--primary); }
+  .badge-navy    { background: #E4E9F5; color: var(--navy); }
+  .badge-green   { background: #E6F4EC; color: var(--success); }
+  .badge-yellow  { background: #FDF5E0; color: #9A6800; }
+  .badge-red     { background: #FDECEA; color: var(--error); }
+  .badge-gray    { background: var(--surface); color: var(--secondary); }
+
+  /* ── Screen table ────────────────────────────── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  .td-name { font-weight: 500; }
+  .td-desc { color: var(--secondary); font-size: 13px; }
+
+  /* ── Flow steps ──────────────────────────────── */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 16px 0;
+  }
+  .flow-step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .flow-step-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 32px;
+    flex-shrink: 0;
+  }
+  .flow-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .flow-line {
+    width: 1px;
+    flex: 1;
+    min-height: 20px;
+    background: var(--border);
+    margin: 2px 0;
+  }
+  .flow-content {
+    padding: 4px 0 20px;
+    flex: 1;
+  }
+  .flow-content strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .flow-content p {
+    font-size: 13px;
+    color: var(--secondary);
+    margin: 0;
+  }
+  .flow-content .who {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 1px 7px;
+    margin-top: 6px;
+  }
+
+  /* ── Questions ───────────────────────────────── */
+  .question-block {
+    border-left: 3px solid var(--warning);
+    padding: 14px 18px;
+    background: #FFFBEF;
+    margin-bottom: 12px;
+  }
+  .question-block .q {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .question-block .context {
+    font-size: 13px;
+    color: var(--secondary);
+    margin-bottom: 0;
+  }
+  .question-block .ask {
+    font-size: 11px;
+    font-weight: 600;
+    color: #9A6800;
+    margin-top: 8px;
+  }
+
+  /* ── Design rules ────────────────────────────── */
+  .rule {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .rule:last-child { border-bottom: none; }
+  .rule-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+  .rule-body { flex: 1; }
+  .rule-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .rule-desc {
+    font-size: 13px;
+    color: var(--secondary);
+  }
+
+  /* ── Color swatches ──────────────────────────── */
+  .swatches {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+  }
+  .swatch {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+  }
+  .swatch-color {
+    width: 48px;
+    height: 48px;
+    border: 1px solid var(--border);
+  }
+  .swatch-name {
+    font-size: 11px;
+    color: var(--secondary);
+    font-weight: 500;
+    text-align: center;
+  }
+  .swatch-hex {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── Callout ─────────────────────────────────── */
+  .callout {
+    padding: 16px 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    margin-bottom: 16px;
+  }
+  .callout.info { border-left: 3px solid var(--primary); background: #F0F3FF; }
+  .callout.warn { border-left: 3px solid var(--warning); background: #FFFBEF; }
+  .callout.success { border-left: 3px solid var(--success); background: #F0F8F4; }
+  .callout p { font-size: 14px; margin-bottom: 0; }
+  .callout strong { color: var(--text); }
+
+  /* ── Wireframe links ─────────────────────────── */
+  .wireframe-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 16px 0;
+  }
+  .wireframe-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .wireframe-link:hover {
+    border-color: var(--primary);
+    background: #F0F3FF;
+  }
+  .wireframe-link-left { display: flex; align-items: center; gap: 12px; }
+  .wireframe-option {
+    width: 32px;
+    height: 32px;
+    background: var(--navy);
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .wireframe-name { font-size: 14px; font-weight: 500; }
+  .wireframe-desc { font-size: 12px; color: var(--muted); }
+  .wireframe-arrow { color: var(--muted); font-size: 18px; }
+
+  /* ── Persona ─────────────────────────────────── */
+  .persona {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+    align-items: flex-start;
+  }
+  .persona-avatar {
+    width: 52px;
+    height: 52px;
+    background: var(--navy);
+    color: white;
+    font-size: 22px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .persona-name { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .persona-role { font-size: 12px; font-weight: 600; letter-spacing: 0.4px; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; }
+  .persona-facts { font-size: 13px; color: var(--secondary); }
+  .persona-facts li { margin-bottom: 4px; padding-left: 14px; position: relative; }
+  .persona-facts li::before { content: '–'; position: absolute; left: 0; color: var(--muted); }
+
+  /* ── Util ────────────────────────────────────── */
+  ul { padding-left: 0; list-style: none; }
+  ul li { padding: 3px 0 3px 16px; position: relative; font-size: 14px; }
+  ul li::before { content: '·'; position: absolute; left: 4px; color: var(--muted); }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+  code {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 12px;
+    background: var(--surface);
+    padding: 1px 5px;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .main { padding: 24px 20px; }
+    .card-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top Nav -->
+<nav class="topnav">
+  <a class="topnav-brand" href="#">
+    <img src="/quantify-logo.svg" alt="Quantify">
+    Quantify Mobile
+  </a>
+  <span class="topnav-meta">Design Collaboration Doc · Shipments v0.1</span>
+  <div class="topnav-links">
+    <a href="/shipments-wireframes.html" target="_blank">View Wireframes →</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-label">Overview</div>
+    <a href="#overview" class="active">What We're Building</a>
+    <a href="#users">The Users</a>
+
+    <div class="sidebar-label">Design</div>
+    <a href="#flows">Core Flows</a>
+    <a href="#screens">Screens</a>
+    <a href="#wireframes">Wireframe Options</a>
+
+    <div class="sidebar-label">For Devs</div>
+    <a href="#rules">Design Rules</a>
+    <a href="#tokens">Tokens & Colors</a>
+
+    <div class="sidebar-label">Team</div>
+    <a href="#questions">Open Questions</a>
+    <a href="#glossary">Glossary</a>
+  </nav>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- Header -->
+    <section id="overview">
+      <h1>Quantify Mobile — Shipments</h1>
+      <p class="subtitle">Design collaboration doc for Brian, Blake, and Zino. Last updated April 2026.</p>
+
+      <div class="callout info">
+        <p><strong>What this doc is for:</strong> a shared reference so the whole team is aligned on what we're designing, who uses it, and why. Add your notes, questions, and feedback directly. Nothing here is final.</p>
+      </div>
+
+      <h2>What We're Building</h2>
+
+      <p>Yard workers at scaffolding companies spend their days loading and unloading trucks. Today, most of that counting happens on paper — a printed pick ticket with expected quantities. The worker checks off items, notes discrepancies by hand, and the office re-enters everything into Quantify later.</p>
+
+      <p>The mobile app replaces the paper step. Instead of a pick ticket, the worker picks up a tablet, opens the shipment, counts the equipment directly on screen, and confirms what actually went on (or came off) the truck. The office sees the real numbers instantly, no re-entry needed.</p>
+
+      <div class="card-row">
+        <div class="card">
+          <div class="card-title">The core job</div>
+          <div class="card-body">Count what goes on and off the truck. Confirm it's right. Flag discrepancies.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">What changes</div>
+          <div class="card-body">Paper pick tickets → digital count screen. No double entry. No lost paperwork.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Who benefits</div>
+          <div class="card-body">Yard workers save 20–40 min per shipment. Office staff stop chasing paperwork.</div>
+        </div>
+      </div>
+
+      <h3>Two main transaction types</h3>
+      <p>Everything we're designing is about these two things:</p>
+
+      <div class="card-row">
+        <div class="card">
+          <div class="card-title"><span class="badge badge-blue">DEL</span> Delivery</div>
+          <div class="card-body">Equipment leaves the yard and goes to a job site. Rent starts the moment it's confirmed. The yard worker counts what goes on the truck before it leaves.</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="badge badge-navy">RET</span> Return</div>
+          <div class="card-body">Equipment comes back from a job site to the yard. Rent stops when it's confirmed received. The yard worker counts what comes off the truck.</div>
+        </div>
+      </div>
+
+      <p>There are also <strong>Transfers</strong> (equipment moves between two locations, not to a job site) and <strong>Reservations</strong> (future-dated holds). We are not designing those in this phase.</p>
+    </section>
+
+    <!-- Users -->
+    <section id="users">
+      <h2>The Users</h2>
+      <p>Three types of people touch this flow. The yard worker is our primary focus for the mobile app.</p>
+
+      <div class="persona">
+        <div class="persona-avatar">Y</div>
+        <div>
+          <div class="persona-name">Yard Worker <span class="badge badge-blue" style="margin-left:8px">Primary user</span></div>
+          <div class="persona-role">Loads & unloads trucks at the yard</div>
+          <ul class="persona-facts">
+            <li>Works outdoors — sunlight glare, dusty hands, work gloves</li>
+            <li>Tablet is often shared with 2–3 other workers</li>
+            <li>Not a tech person — needs obvious, direct UI with no jargon</li>
+            <li>Counting quickly under pressure (truck is waiting)</li>
+            <li>May have limited English</li>
+            <li>Does not use desktop Quantify at all</li>
+            <li>Checks expected quantities, adjusts actuals, hits confirm</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="persona">
+        <div class="persona-avatar">O</div>
+        <div>
+          <div class="persona-name">Office Staff</div>
+          <div class="persona-role">Creates shipments in desktop Quantify, handles disputes</div>
+          <ul class="persona-facts">
+            <li>Creates deliveries and pre-returns in desktop Quantify</li>
+            <li>Sets the expected quantities the yard worker will see</li>
+            <li>Sees confirmation results in real-time on desktop</li>
+            <li>Resolves discrepancies — decides if missing item is customer's fault or company's</li>
+            <li>Not a mobile user (desktop only in this phase)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="persona">
+        <div class="persona-avatar">C</div>
+        <div>
+          <div class="persona-name">Customer / Site Contact</div>
+          <div class="persona-role">Receives equipment at the job site (sometimes)</div>
+          <ul class="persona-facts">
+            <li>Only involved in Way 3 (customer confirmation workflow) — not in scope for phase 1</li>
+            <li>Counts what arrived at the job site and confirms independently</li>
+            <li>May access Quantify Web on their own device</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Flows -->
+    <section id="flows">
+      <h2>Core Flows</h2>
+      <p>Two workflows. Both follow the same pattern — open a shipment, count the items, confirm. The difference is direction.</p>
+
+      <h3>Delivery Flow (Yard Worker)</h3>
+      <p>Office creates a reservation in advance. Yard worker sees it on their tablet, counts what goes on the truck, confirms. Equipment is now "on rent."</p>
+
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-step-left">
+            <div class="flow-num">1</div>
+            <div class="flow-line"></div>
+          </div>
+          <div class="flow-content">
+            <strong>Office creates reservation</strong>
+            <p>Office staff creates a delivery in desktop Quantify: picks the job site, adds expected products and quantities, sets the planned date.</p>
+            <span class="who badge badge-gray">Office — desktop</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-left">
+            <div class="flow-num">2</div>
+            <div class="flow-line"></div>
+          </div>
+          <div class="flow-content">
+            <strong>Yard worker opens today's shipments</strong>
+            <p>The worker sees a list of today's deliveries and returns. They tap the shipment they're loading now.</p>
+            <span class="who badge badge-blue">Yard worker — mobile</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-left">
+            <div class="flow-num">3</div>
+            <div class="flow-line"></div>
+          </div>
+          <div class="flow-content">
+            <strong>Count items</strong>
+            <p>The count screen shows each product with its expected quantity. Worker taps + or − to enter the actual count. Items that differ from expected are highlighted.</p>
+            <span class="who badge badge-blue">Yard worker — mobile</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-left">
+            <div class="flow-num">4</div>
+            <div class="flow-line"></div>
+          </div>
+          <div class="flow-content">
+            <strong>Confirm shipment</strong>
+            <p>Worker taps "Confirm." System releases the shipment — equipment is now on rent. Office sees the confirmed quantities immediately in desktop.</p>
+            <span class="who badge badge-blue">Yard worker — mobile</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-left">
+            <div class="flow-num">5</div>
+          </div>
+          <div class="flow-content">
+            <strong>Discrepancy (if any)</strong>
+            <p>If actual ≠ expected, office staff resolves it in desktop. They decide: customer's fault (customer pays) or company's fault (goes back to stock).</p>
+            <span class="who badge badge-gray">Office — desktop</span>
+          </div>
+        </div>
+      </div>
+
+      <h3>Return Flow (Yard Worker)</h3>
+      <p>Office creates a pre-return with expected quantities. Truck arrives at the yard. Worker counts what comes off the truck, confirms. Rent stops.</p>
+
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-step-left">
+            <div class="flow-num">1</div>
+            <div class="flow-line"></div>
+          </div>
+          <div class="flow-content">
+            <strong>Office creates pre-return</strong>
+            <p>Office sets the expected return date and expected quantities per product. A pick ticket can be printed and sent to the job site crew.</p>
+            <span class="who badge badge-gray">Office — desktop</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-left">
+            <div class="flow-num">2</div>
+            <div class="flow-line"></div>
+          </div>
+          <div class="flow-content">
+            <strong>Truck arrives at yard</strong>
+            <p>Worker sees the pre-return in their list. Taps it.</p>
+            <span class="who badge badge-blue">Yard worker — mobile</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-left">
+            <div class="flow-num">3</div>
+            <div class="flow-line"></div>
+          </div>
+          <div class="flow-content">
+            <strong>Count items off the truck</strong>
+            <p>Same count screen as delivery. Worker enters actual quantities as items come off. Equipment not on the original shipment can also be added — "over-returns" are allowed.</p>
+            <span class="who badge badge-blue">Yard worker — mobile</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-left">
+            <div class="flow-num">4</div>
+            <div class="flow-line"></div>
+          </div>
+          <div class="flow-content">
+            <strong>Flag condition (optional)</strong>
+            <p>Worker can flag items as damaged, scrapped, or to-be-serviced. Normal items go straight to available stock. Damaged items go to the out-of-service queue.</p>
+            <span class="who badge badge-blue">Yard worker — mobile</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-left">
+            <div class="flow-num">5</div>
+          </div>
+          <div class="flow-content">
+            <strong>Confirm return</strong>
+            <p>Worker confirms. Rent stops immediately. Equipment enters the appropriate inventory state.</p>
+            <span class="who badge badge-blue">Yard worker — mobile</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <p><strong>Edge case to design for:</strong> A worker might count more items than went out (e.g., a 10ft tube was cut into two 5ft tubes on site — both come back, only one went out). The system allows "negative balances." The count screen must let workers enter items beyond the expected quantity.</p>
+      </div>
+    </section>
+
+    <!-- Screens -->
+    <section id="screens">
+      <h2>Screens</h2>
+      <p>Every screen we need to build for the mobile shipments flow. This is the full scope for phase 1.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Screen</th>
+            <th>Purpose</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="td-name">Sign In</div>
+              <div class="td-desc">Username/password + Microsoft SSO. Server URL in footer.</div>
+            </td>
+            <td><div class="td-desc">Entry point — authenticates yard worker to their branch</div></td>
+            <td><span class="badge badge-green">Done</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="td-name">Shipments List</div>
+              <div class="td-desc">Today's deliveries + returns. Filtered to logged-in branch.</div>
+            </td>
+            <td><div class="td-desc">The worker's starting point — see what needs to be done today</div></td>
+            <td><span class="badge badge-yellow">In Design</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="td-name">Count Screen</div>
+              <div class="td-desc">One item per row. Expected vs actual. +/− buttons. Changed items highlighted.</div>
+            </td>
+            <td><div class="td-desc">Core task — counting equipment going on or off the truck</div></td>
+            <td><span class="badge badge-yellow">In Design</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="td-name">Confirm Screen</div>
+              <div class="td-desc">Summary of what was confirmed. Discrepancy warning if any.</div>
+            </td>
+            <td><div class="td-desc">Final check before committing — shows any mismatches</div></td>
+            <td><span class="badge badge-yellow">In Design</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="td-name">Success / Receipt</div>
+              <div class="td-desc">Green confirmation state. Shipment number. Option to print.</div>
+            </td>
+            <td><div class="td-desc">Clear feedback that the shipment was submitted successfully</div></td>
+            <td><span class="badge badge-yellow">In Design</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="td-name">Item Condition (Returns)</div>
+              <div class="td-desc">Flag item as: Normal / To Be Serviced / Damaged / Scrapped / Lost</div>
+            </td>
+            <td><div class="td-desc">Only shown during returns. Lets worker flag damaged equipment.</div></td>
+            <td><span class="badge badge-gray">Not Started</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="td-name">Connection Settings</div>
+              <div class="td-desc">Server URL input. Protocol toggle. SSL toggle. Test connection.</div>
+            </td>
+            <td><div class="td-desc">First-time setup when pointing app at a specific Quantify server</div></td>
+            <td><span class="badge badge-green">Done</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <p><strong>Out of scope (phase 1):</strong> Barcode / QR scanning, customer confirmation workflow, transfers (TRF), reservations (RSV), equipment requests portal, scaffold register activities.</p>
+      </div>
+    </section>
+
+    <!-- Wireframes -->
+    <section id="wireframes">
+      <h2>Wireframe Options</h2>
+      <p>Five directions for the Shipments List screen — the first screen workers see after logging in. Each has a different mental model for how to show and prioritize today's work.</p>
+      <p>The Count Screen and Confirm flow are consistent across all options. What changes is only how you browse and choose which shipment to start.</p>
+
+      <div class="wireframe-grid">
+        <a class="wireframe-link" href="/shipments-wireframes.html#optA" target="_blank">
+          <div class="wireframe-link-left">
+            <div class="wireframe-option">A</div>
+            <div>
+              <div class="wireframe-name">Timeline</div>
+              <div class="wireframe-desc">Shipments grouped by scheduled time (8AM, 9:30AM…). When does each truck arrive?</div>
+            </div>
+          </div>
+          <div class="wireframe-arrow">→</div>
+        </a>
+        <a class="wireframe-link" href="/shipments-wireframes.html#optB" target="_blank">
+          <div class="wireframe-link-left">
+            <div class="wireframe-option">B</div>
+            <div>
+              <div class="wireframe-name">DEL / RET Tabs</div>
+              <div class="wireframe-desc">Two tabs: Deliveries | Returns. Clear separation by transaction type.</div>
+            </div>
+          </div>
+          <div class="wireframe-arrow">→</div>
+        </a>
+        <a class="wireframe-link" href="/shipments-wireframes.html#optC" target="_blank">
+          <div class="wireframe-link-left">
+            <div class="wireframe-option">C</div>
+            <div>
+              <div class="wireframe-name">Status Board</div>
+              <div class="wireframe-desc">To Do / In Progress / Done sections. Task management style — know what's left.</div>
+            </div>
+          </div>
+          <div class="wireframe-arrow">→</div>
+        </a>
+        <a class="wireframe-link" href="/shipments-wireframes.html#optD" target="_blank">
+          <div class="wireframe-link-left">
+            <div class="wireframe-option">D</div>
+            <div>
+              <div class="wireframe-name">Dashboard + Featured</div>
+              <div class="wireframe-desc">Stats at the top (3 DEL, 2 RET, 1 Overdue), featured urgent card, compact list below.</div>
+            </div>
+          </div>
+          <div class="wireframe-arrow">→</div>
+        </a>
+        <a class="wireframe-link" href="/shipments-wireframes.html#optE" target="_blank">
+          <div class="wireframe-link-left">
+            <div class="wireframe-option">E</div>
+            <div>
+              <div class="wireframe-name">Next Up Sequential</div>
+              <div class="wireframe-desc">One big hero card for the next job. Collapsed queue below. One thing at a time.</div>
+            </div>
+          </div>
+          <div class="wireframe-arrow">→</div>
+        </a>
+      </div>
+
+      <div class="callout info">
+        <p><strong>How to give feedback:</strong> Look at all 5 options and note which one feels most natural for a yard worker who's in a hurry. What information do they need first? What's missing? What feels cluttered? There are no wrong answers — pick what matches how your teams actually work.</p>
+      </div>
+    </section>
+
+    <!-- Design Rules -->
+    <section id="rules">
+      <h2>Design Rules</h2>
+      <p>Rules the dev team must follow when building from these designs. These exist because mobile field workers have different needs than office software users.</p>
+
+      <div class="rule">
+        <div class="rule-icon">👆</div>
+        <div class="rule-body">
+          <div class="rule-title">Minimum 56px touch targets</div>
+          <div class="rule-desc">Every tappable element — buttons, list rows, +/− controls — must be at least 56px tall. Smaller targets cause mis-taps when wearing gloves or working in a hurry. Never reduce this for "cleaner" layouts.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-icon">☀️</div>
+        <div class="rule-body">
+          <div class="rule-title">High contrast text — no light grays</div>
+          <div class="rule-desc">Primary text: <code>#111111</code>. Secondary text: <code>#555555</code>. Minimum. Workers read screens in direct sunlight. Never use grays lighter than <code>#555</code> for readable text. Don't use <code>#999</code>, <code>#AAA</code>, or anything that looks "subtle" on a monitor — it's unreadable in a yard.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-icon">📐</div>
+        <div class="rule-body">
+          <div class="rule-title">Zero border-radius</div>
+          <div class="rule-desc">All buttons, cards, inputs, and modals have <code>border-radius: 0</code>. This is a Quantify brand rule (Probe design language). No rounded corners, anywhere, ever. If you add <code>rounded</code> Tailwind classes they will be reverted.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-icon">🔤</div>
+        <div class="rule-body">
+          <div class="rule-title">Switzer font, 16px body minimum</div>
+          <div class="rule-desc">Font family is Switzer (Google Fonts). Body text minimum 16px. Labels minimum 14px. Nothing smaller. On a tablet held at arm's length in sunlight, 14px is already pushing it.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-icon">🔵</div>
+        <div class="rule-body">
+          <div class="rule-title">Only one primary blue</div>
+          <div class="rule-desc">Primary action color is <code>#0A3EFF</code>. Brand / nav color is <code>#10296E</code> (navy). Never use both on the same screen as interactive elements — this confused users in early prototypes. Use navy for headers/structure only.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-icon">📶</div>
+        <div class="rule-body">
+          <div class="rule-title">Design for offline-first</div>
+          <div class="rule-desc">Many yard workers have poor cellular coverage inside warehouse structures. The app must work with a locally cached shipment list and sync when connection is available. Never design UI that assumes real-time connectivity. Always show a connection status indicator.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-icon">🌑</div>
+        <div class="rule-body">
+          <div class="rule-title">Light mode only for mobile</div>
+          <div class="rule-desc">Do not implement dark mode for the mobile app. High contrast white background + dark text is significantly more readable in outdoor sunlight than dark mode. This was validated in feedback from the client.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tokens -->
+    <section id="tokens">
+      <h2>Tokens &amp; Colors</h2>
+      <p>The full Quantify color system. Use these exact hex values — no variations.</p>
+
+      <h3>Brand colors</h3>
+      <div class="swatches">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#0A3EFF"></div>
+          <div class="swatch-name">Primary</div>
+          <div class="swatch-hex">#0A3EFF</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#10296E"></div>
+          <div class="swatch-name">Navy</div>
+          <div class="swatch-hex">#10296E</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#111111; border-color:#333"></div>
+          <div class="swatch-name">Text</div>
+          <div class="swatch-hex">#111111</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#555555"></div>
+          <div class="swatch-name">Secondary</div>
+          <div class="swatch-hex">#555555</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#878787"></div>
+          <div class="swatch-name">Muted</div>
+          <div class="swatch-hex">#878787</div>
+        </div>
+      </div>
+
+      <h3>Semantic colors</h3>
+      <div class="swatches">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#1B8A4A"></div>
+          <div class="swatch-name">Success</div>
+          <div class="swatch-hex">#1B8A4A</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#D32F2F"></div>
+          <div class="swatch-name">Error</div>
+          <div class="swatch-hex">#D32F2F</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#E6A817"></div>
+          <div class="swatch-name">Warning</div>
+          <div class="swatch-hex">#E6A817</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#B5B5B5"></div>
+          <div class="swatch-name">Outline</div>
+          <div class="swatch-hex">#B5B5B5</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#E2E2E2"></div>
+          <div class="swatch-name">Border</div>
+          <div class="swatch-hex">#E2E2E2</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#F7F7F7"></div>
+          <div class="swatch-name">Surface</div>
+          <div class="swatch-hex">#F7F7F7</div>
+        </div>
+      </div>
+
+      <h3>Scaffold tag colors (Scaffold Register only)</h3>
+      <div class="swatches">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#1976D2"></div>
+          <div class="swatch-name">Blue tag</div>
+          <div class="swatch-hex">Not built yet</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#D32F2F"></div>
+          <div class="swatch-name">Red tag</div>
+          <div class="swatch-hex">Cannot use</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#2E7D32"></div>
+          <div class="swatch-name">Green tag</div>
+          <div class="swatch-hex">Safe to use</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#F9A825"></div>
+          <div class="swatch-name">Yellow tag</div>
+          <div class="swatch-hex">Use with care</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Questions -->
+    <section id="questions">
+      <h2>Open Questions</h2>
+      <p>Things we need Brian or Blake to answer before we can finalize the designs. These are not design questions — they're business logic questions.</p>
+
+      <div class="question-block">
+        <div class="q">1. Does the yard worker see ALL shipments for their branch, or only the ones assigned to them?</div>
+        <div class="context">If a branch has 12 deliveries today and only 2 workers are on the tablet, should each worker see all 12 or only "their" shipments? Is there an assignment step, or do workers just grab whatever's next?</div>
+        <div class="ask">Ask: Brian Webb</div>
+      </div>
+
+      <div class="question-block">
+        <div class="q">2. Can a worker start a shipment that hasn't been created yet in desktop Quantify?</div>
+        <div class="context">Sometimes trucks arrive unannounced. If the office hasn't created the return yet, does the yard worker wait, or can they start a count and the office confirms later? Is "ad hoc" counting in scope?</div>
+        <div class="ask">Ask: Brian Webb</div>
+      </div>
+
+      <div class="question-block">
+        <div class="q">3. When a worker flags an item as "damaged" — do they need to enter a reason or quantity?</div>
+        <div class="context">In the current design, condition flagging is per-item (whole row = one condition). But what if 2 out of 18 ledger boards are damaged? Can the worker split one line? The current Quantify desktop limitation prevents splitting the same product into two conditions on the same return.</div>
+        <div class="ask">Ask: Brian Webb</div>
+      </div>
+
+      <div class="question-block">
+        <div class="q">4. Does the confirmation require a signature?</div>
+        <div class="context">Desktop pick tickets have 1–3 signature lines (Prepared by / Delivered by / Received by). Does the mobile confirmation need a digital signature, or is tapping "Confirm" with a logged-in user enough for audit purposes?</div>
+        <div class="ask">Ask: Brian Webb, Blake Whittington</div>
+      </div>
+
+      <div class="question-block">
+        <div class="q">5. What does the worker see if they're offline?</div>
+        <div class="context">Warehouses often have no signal. Should the app load shipment data when connected and allow counting offline, then sync when signal returns? Or is always-on connectivity a hard requirement? This changes the architecture significantly.</div>
+        <div class="ask">Ask: Brian Webb</div>
+      </div>
+
+      <div class="question-block">
+        <div class="q">6. How far ahead do reservations appear in the list?</div>
+        <div class="context">If today is Monday and a delivery is scheduled for Wednesday, does it appear in Monday's list? Or do workers only see today's shipments? Does this vary by company or is it fixed?</div>
+        <div class="ask">Ask: Brian Webb</div>
+      </div>
+
+      <div class="question-block">
+        <div class="q">7. Is the app Uno Platform (Windows/mobile unified) or a separate React Native / web app?</div>
+        <div class="context">This is a product/engineering decision that affects everything. Uno gives you one codebase for Windows + iOS + Android but adds complexity. A web app (this prototype) is faster to ship but has platform limitations. What's the final answer?</div>
+        <div class="ask">Ask: Blake Whittington, Brian Webb</div>
+      </div>
+    </section>
+
+    <!-- Glossary -->
+    <section id="glossary">
+      <h2>Glossary</h2>
+      <p>Scaffolding industry and Quantify terms. Non-designers: these are the words you'll hear in every meeting.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width:140px">Term</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-blue">DEL</span></td>
+            <td>Delivery — equipment leaves the yard and goes to a job site. Rent starts.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-navy">RET</span></td>
+            <td>Return — equipment comes back from the job site. Rent stops.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-gray">TRF</span></td>
+            <td>Transfer — equipment moves between two yard/branch locations. Not to a job site.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-gray">RSV</span></td>
+            <td>Reservation — future-dated hold. Removes stock from "available" but hasn't shipped yet.</td>
+          </tr>
+          <tr>
+            <td><strong>Pre-Return</strong></td>
+            <td>A scheduled return with expected quantities set in advance. Lets the yard know what's coming off a truck before it arrives.</td>
+          </tr>
+          <tr>
+            <td><strong>Pick Ticket</strong></td>
+            <td>Printed document showing what to load/unload. 1–3 signature lines. What the mobile app replaces.</td>
+          </tr>
+          <tr>
+            <td><strong>On Rent</strong></td>
+            <td>Equipment is at a job site and billing is active.</td>
+          </tr>
+          <tr>
+            <td><strong>In Transit</strong></td>
+            <td>Delivery was released by office but not yet confirmed received. Rent not yet started.</td>
+          </tr>
+          <tr>
+            <td><strong>Discrepancy</strong></td>
+            <td>Difference between expected quantity (from shipment) and actual quantity (from counting).</td>
+          </tr>
+          <tr>
+            <td><strong>Branch Office</strong></td>
+            <td>The main yard / stocking location. Where all equipment lives when not on a job site.</td>
+          </tr>
+          <tr>
+            <td><strong>Job Site</strong></td>
+            <td>An active rental location. Equipment is "on rent" here. Has a customer, billing method, and rate profile.</td>
+          </tr>
+          <tr>
+            <td><strong>Staging Area</strong></td>
+            <td>A free holding zone — equipment sits here without billing. Used at large industrial sites.</td>
+          </tr>
+          <tr>
+            <td><strong>To Be Serviced</strong></td>
+            <td>Equipment returned but not ready for stock — needs inspection or repair first.</td>
+          </tr>
+          <tr>
+            <td><strong>Rate Profile</strong></td>
+            <td>The pricing schedule assigned to a job site. Sets how much each product costs per rental period.</td>
+          </tr>
+          <tr>
+            <td><strong>FATA</strong></td>
+            <td>First Advance Then Arrears. A billing method where the first invoice is pre-paid, then billing runs on arrears cycle.</td>
+          </tr>
+          <tr>
+            <td><strong>Scaffold Tag</strong></td>
+            <td>Physical colored tag attached to a scaffold structure. Blue = not built, Red = cannot use, Green = safe, Yellow = use with caution.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <hr>
+      <p style="font-size:13px; color:var(--muted);">
+        Quantify Mobile — Shipments Design Doc v0.1 · Avontus / Quantify Studio · April 2026<br>
+        For questions: contact Zino (design), Blake Whittington (product), Brian Webb (domain)
+      </p>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // Highlight active sidebar link on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const sidebarLinks = document.querySelectorAll('.sidebar a');
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        sidebarLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { threshold: 0.3, rootMargin: '-52px 0px -60% 0px' });
+
+  sections.forEach(s => obs.observe(s));
+</script>
+
+</body>
+</html>
