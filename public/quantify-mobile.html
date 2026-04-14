@@ -290,7 +290,9 @@ body::after {
 .cr-body { flex: 1; min-width: 0; }
 .cr-name { font-size: 14px; font-weight: 600; color: var(--ink); letter-spacing: -0.1px; }
 .cr-expected { font-size: 12px; color: var(--muted); margin-top: 2px; font-weight: 500; font-family: 'JetBrains Mono', ui-monospace, monospace; letter-spacing: 0.2px; }
-.cr-flag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; background: var(--warn-bg); color: var(--warn); font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; margin-top: 4px; }
+.cr-flag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 7px; background: var(--warn-bg); color: var(--warn); font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; margin-top: 4px; cursor: pointer; border: none; -webkit-tap-highlight-color: transparent; transition: all 140ms var(--ease-out); }
+.cr-flag:hover { background: var(--warn); color: white; }
+.cr-flag:active { transform: scale(0.96); }
 .cr-flag .icon { width: 9px; height: 9px; stroke-width: 2.5; }
 
 /* NEW QTY CELL — tappable to open keypad */
@@ -489,26 +491,40 @@ body::after {
 .rev-driver-value.empty::after { content: ' →'; color: var(--blue); }
 
 /* ═══ SCENE 6: SUBMITTED ═══ */
-.done-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 32px; text-align: center; background: var(--surface); }
-.done-mark { width: 84px; height: 84px; background: var(--blue); display: flex; align-items: center; justify-content: center; margin-bottom: 32px; position: relative; }
-.done-mark .icon { width: 40px; height: 40px; stroke-width: 2; color: white; }
-.done-eyebrow { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; color: var(--text); font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--surface-2); }
+.done-screen { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 36px 28px 28px; text-align: center; background: var(--surface); overflow-y: auto; }
+.done-mark { width: 72px; height: 72px; background: var(--blue); display: flex; align-items: center; justify-content: center; margin-bottom: 22px; position: relative; }
+.done-mark .icon { width: 36px; height: 36px; stroke-width: 2.25; color: white; }
+.done-eyebrow { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; color: var(--text); font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 14px; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--surface-2); }
 .done-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); display: inline-block; animation: pulse 1.6s ease-in-out infinite; }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-.done-headline { font-size: 28px; font-weight: 600; color: var(--ink); letter-spacing: -0.9px; line-height: 1.08; margin-bottom: 14px; max-width: 290px; }
-.done-meta { font-size: 14px; color: var(--text); line-height: 1.55; max-width: 280px; margin-bottom: 26px; font-weight: 500; }
+.done-headline { font-size: 26px; font-weight: 600; color: var(--ink); letter-spacing: -0.85px; line-height: 1.1; margin-bottom: 12px; max-width: 290px; }
+.done-meta { font-size: 13.5px; color: var(--text); line-height: 1.55; max-width: 290px; margin-bottom: 24px; font-weight: 500; }
 .done-meta strong { color: var(--ink); font-weight: 600; }
 
-.done-stats { display: flex; gap: 0; background: var(--surface-2); padding: 16px 0; margin: 0 -32px 28px; width: calc(100% + 64px); }
+/* Three-stage progress: yard → office → site */
+.done-stages { display: flex; align-items: stretch; gap: 0; width: 100%; margin-bottom: 24px; padding: 16px 4px; background: var(--surface-2); }
+.done-stage { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative; padding: 0 4px; }
+.done-stage-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 200ms var(--ease-out); }
+.done-stage-icon.done { background: var(--ok); color: white; }
+.done-stage-icon.active { background: var(--blue); color: white; box-shadow: 0 0 0 4px rgba(10, 62, 255, 0.18); }
+.done-stage-icon.pending { background: var(--surface); border: 1.5px solid var(--line-strong); color: var(--dim); }
+.done-stage-icon .icon { width: 14px; height: 14px; stroke-width: 2.75; }
+.done-stage-label { font-size: 10px; font-weight: 700; color: var(--text); letter-spacing: 0.4px; text-transform: uppercase; line-height: 1.3; }
+.done-stage-sub { font-size: 10px; color: var(--muted); font-weight: 500; line-height: 1.3; max-width: 84px; }
+.done-stage-line { position: absolute; top: 16px; left: 60%; right: -40%; height: 1.5px; background: var(--line-strong); z-index: -1; }
+.done-stage:last-child .done-stage-line { display: none; }
+.done-stage-line.complete { background: var(--ok); }
+
+.done-stats { display: flex; gap: 0; background: var(--surface-2); padding: 14px 0; margin: 0 -28px 22px; width: calc(100% + 56px); }
 .done-stat { flex: 1; text-align: center; border-right: 1px solid var(--line); }
 .done-stat:last-child { border-right: none; }
-.ds-num { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 20px; font-weight: 700; color: var(--ink); line-height: 1; }
-.ds-label { font-size: 10px; font-weight: 700; color: var(--text); letter-spacing: 0.7px; text-transform: uppercase; margin-top: 6px; }
+.ds-num { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 18px; font-weight: 700; color: var(--ink); line-height: 1; }
+.ds-label { font-size: 10px; font-weight: 700; color: var(--text); letter-spacing: 0.6px; text-transform: uppercase; margin-top: 6px; }
 
-.done-actions { display: flex; flex-direction: column; gap: 8px; width: 100%; }
-.done-btn-prim { width: 100%; height: 54px; background: var(--blue); color: white; border: none; font-family: 'Switzer', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 200ms var(--ease-out); }
+.done-actions { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: auto; }
+.done-btn-prim { width: 100%; height: 52px; background: var(--blue); color: white; border: none; font-family: 'Switzer', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 200ms var(--ease-out); }
 .done-btn-prim:hover { background: var(--blue-dark); }
-.done-btn-text { background: none; border: none; color: var(--text); font-family: 'Switzer', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; padding: 10px; }
+.done-btn-text { background: none; border: none; color: var(--text); font-family: 'Switzer', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; padding: 8px; }
 .done-btn-text:hover { color: var(--blue); }
 
 /* ANIMATIONS */
@@ -1013,10 +1029,19 @@ body::after {
             </div>
 
             <div class="rev-attach">
-              <div class="rev-attach-icon"><i data-lucide="paperclip" class="icon"></i></div>
+              <div class="rev-attach-icon"><i data-lucide="image" class="icon"></i></div>
               <div class="rev-attach-body">
-                <div class="rev-attach-title">Attached</div>
-                <div class="rev-attach-meta">2 photos · 1 note on LVL Plank 2.5m</div>
+                <div class="rev-attach-title">Wagon photos</div>
+                <div class="rev-attach-meta">2 of the loaded truck</div>
+              </div>
+              <button class="rev-attach-edit">Add</button>
+            </div>
+
+            <div class="rev-attach" style="margin-top: 0; border-top: 0;">
+              <div class="rev-attach-icon"><i data-lucide="alert-triangle" class="icon"></i></div>
+              <div class="rev-attach-body">
+                <div class="rev-attach-title">Damage evidence</div>
+                <div class="rev-attach-meta">1 photo · 1 note on LVL Plank 2.5m</div>
               </div>
               <button class="rev-attach-edit" onclick="goTo(4)">Edit</button>
             </div>
@@ -1042,28 +1067,48 @@ body::after {
 
           <div class="done-screen">
             <div class="done-mark"><i data-lucide="check" class="icon"></i></div>
-            <div class="done-eyebrow"><span class="done-eyebrow-dot"></span>DEL-2401 · AWAITING OFFICE</div>
-            <div class="done-headline">Submitted to the office.</div>
-            <div class="done-meta">Atlanta sees what you loaded, the damage note, and the photo. They confirm, then the shipment moves to <strong>In Transit</strong>. Rent activates when Sweeny receives.</div>
+            <div class="done-eyebrow"><span class="done-eyebrow-dot"></span>DEL-2401 · AWAITING OFFICE APPROVAL</div>
+            <div class="done-headline">Counts sent.<br>Office reviews next.</div>
+            <div class="done-meta">Atlanta gets your counts, photos, and damage note. <strong>Rent doesn't start yet</strong> — it activates after office confirms and the truck reaches Sweeny.</div>
+
+            <div class="done-stages">
+              <div class="done-stage">
+                <div class="done-stage-icon done"><i data-lucide="check" class="icon"></i></div>
+                <div class="done-stage-label">You</div>
+                <div class="done-stage-sub">Counted &amp; sent</div>
+                <div class="done-stage-line complete"></div>
+              </div>
+              <div class="done-stage">
+                <div class="done-stage-icon active"><i data-lucide="loader" class="icon"></i></div>
+                <div class="done-stage-label">Office</div>
+                <div class="done-stage-sub">Confirming on desktop</div>
+                <div class="done-stage-line"></div>
+              </div>
+              <div class="done-stage">
+                <div class="done-stage-icon pending"><i data-lucide="truck" class="icon"></i></div>
+                <div class="done-stage-label">In transit</div>
+                <div class="done-stage-sub">Rent starts at delivery</div>
+              </div>
+            </div>
 
             <div class="done-stats">
               <div class="done-stat">
                 <div class="ds-num">10:04</div>
-                <div class="ds-label">SUBMITTED</div>
+                <div class="ds-label">Sent</div>
               </div>
               <div class="done-stat">
-                <div class="ds-num">13</div>
-                <div class="ds-label">MIN TOTAL</div>
+                <div class="ds-num">13 min</div>
+                <div class="ds-label">To load</div>
               </div>
               <div class="done-stat">
                 <div class="ds-num">3</div>
-                <div class="ds-label">TRUCKS LEFT</div>
+                <div class="ds-label">Trucks left</div>
               </div>
             </div>
 
             <div class="done-actions">
               <button class="done-btn-prim" onclick="goTo(1)">Next shipment</button>
-              <button class="done-btn-text" onclick="goTo(1)">Back to today</button>
+              <button class="done-btn-text" onclick="goTo(1)">Back to today's list</button>
             </div>
           </div>
         </div>
@@ -1121,11 +1166,11 @@ const scenes = [
   },
   {
     title: "Split a line",
-    desc: "When a line isn't all clean — damage, scrap, lost — the yard splits the quantity across four destinations. Office decides disposition later (repair, scrap, charge).",
+    desc: "Same UI for damaged-during-loading and damaged-on-return. Yard splits the line quantity across four destinations and adds photo evidence. Office decides disposition (repair, scrap, charge to customer) on desktop later.",
     callouts: [
-      { num: "01", text: "<span>Four destinations per line:</span> load, damage, scrap, lost-missing. Quantities can split across all four." },
-      { num: "02", text: "<span>Photos are born linked</span> to this specific line on this specific shipment. No renaming, no SharePoint." },
-      { num: "03", text: "<span>Yard captures, ops decides.</span> Mobile doesn't choose repair vs scrap — that's a desktop action." }
+      { num: "01", text: "<span>Four destinations:</span> load, damage, scrap, lost-missing. Quantities split across all four. Same flow for delivery loading and pre-return counting." },
+      { num: "02", text: "<span>Photos born linked</span> to this line on this shipment. AT-PAC's current pain (rename, upload, manually attach) disappears." },
+      { num: "03", text: "<span>Yard captures, office decides.</span> Mobile flags the issue with evidence; repair vs scrap vs charge stays on desktop." }
     ]
   },
   {
@@ -1138,12 +1183,12 @@ const scenes = [
     ]
   },
   {
-    title: "Awaiting office",
-    desc: "Status transitions to the official Quantify state. Rent doesn't start here. The office confirms, then the shipment moves to In Transit. Preserves the two-stage trust model.",
+    title: "Awaiting office approval",
+    desc: "The two-stage trust model that Lee and Michelle called out as missing — now visualized. You finished, office reviews, then the shipment goes In Transit. Rent doesn't start when you tap Send; it starts when office confirms and the truck arrives.",
     callouts: [
-      { num: "01", text: "<span>No 'In Transit' yet.</span> That status only applies after office confirmation — this preserves the existing trust model." },
-      { num: "02", text: "<span>Backorder clearly flagged:</span> 3 trucks remaining on this reservation. Yard knows this isn't done." },
-      { num: "03", text: "<span>Two taps back to today's list.</span> The yard worker is ready for the next truck." }
+      { num: "01", text: "<span>Three-stage progress</span> makes the trust model literal: yard ✓, office confirming, in transit pending. No ambiguity about what happens next." },
+      { num: "02", text: "<span>Rent doesn't start on submit.</span> It activates after office confirms and the truck reaches the customer site. Reduces yard worker anxiety about 'did I just send the bill'." },
+      { num: "03", text: "<span>3 trucks remaining on this reservation.</span> Quantify auto-creates the backorder for the rest. Yard knows there's more coming." }
     ]
   }
 ];
@@ -1281,7 +1326,7 @@ function buildCountList() {
       numClass = 'over';
     }
     const flagChip = it.flag
-      ? `<div class="cr-flag"><i data-lucide="alert-triangle" class="icon"></i>2 DAMAGED</div>`
+      ? `<button class="cr-flag" onclick="event.stopPropagation(); openSplit(${it.id})"><i data-lucide="alert-triangle" class="icon"></i>2 DAMAGED · TAP TO EDIT</button>`
       : '';
     return `
       <div class="count-row ${rowClass}" data-id="${it.id}">
