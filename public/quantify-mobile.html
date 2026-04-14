@@ -3,59 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quantify Mobile — Shipments Prototype</title>
+<title>Quantify Mobile — Yard Prototype</title>
 <link rel="preconnect" href="https://api.fontshare.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
 
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
 :root {
-  /* Quantify PROBE palette — sun-readable, AAA contrast */
   --blue: #0A3EFF;
   --blue-dark: #0832CC;
   --blue-tint: #DCE5FF;
   --navy: #10296E;
-  --ink: #0A0C18;          /* 19.7:1 on white */
-  --text: #1A1D24;         /* 16.6:1 on white */
-  --muted: #3F434B;        /* 10.4:1 on white — was 6B6F7B at 4.9:1 */
-  --dim: #5A5E68;          /* 7.3:1 on white — was 9CA3AF at 3.0:1 (FAIL) */
-  --line: rgba(10, 30, 80, 0.18);        /* visible in sunlight */
-  --line-strong: rgba(10, 30, 80, 0.32);
+  --ink: #0A0C18;
+  --text: #1A1D24;
+  --muted: #3F434B;
+  --dim: #5A5E68;
+  --line: rgba(10, 30, 80, 0.14);
+  --line-strong: rgba(10, 30, 80, 0.28);
   --surface: #FFFFFF;
   --surface-2: #F4F5F8;
   --surface-3: #E7E9EF;
-  --ok: #146B36;           /* darker green for AAA */
+  --ok: #146B36;
   --ok-bg: #DCEFE3;
-  --warn: #92400E;         /* darker amber for AAA */
+  --warn: #92400E;
   --warn-bg: #FDEBC8;
   --err: #991B1B;
   --err-bg: #FCDADA;
 
-  /* Stage backdrop */
   --stage-bg: #F4F5F8;
-  --stage-text: #0A0C18;
-  --stage-muted: #3F434B;
-
-  /* Easing — Emil's signature */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 html, body {
   font-family: 'Switzer', -apple-system, system-ui, sans-serif;
   background: var(--stage-bg);
-  color: var(--stage-text);
+  color: var(--ink);
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* ─── Subtle film grain ─── */
 body::before {
   content: '';
   position: fixed;
@@ -65,8 +57,6 @@ body::before {
   opacity: 0.025;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-
-/* Subtle ambient glow behind phone */
 body::after {
   content: '';
   position: fixed;
@@ -80,25 +70,13 @@ body::after {
   z-index: 0;
 }
 
-/* Lucide icons — sharp, monoline, matches PROBE identity */
-.icon {
-  width: 20px;
-  height: 20px;
-  stroke-width: 1.75;
-  flex-shrink: 0;
-  display: inline-block;
-  vertical-align: middle;
-}
+.icon { width: 20px; height: 20px; stroke-width: 1.75; flex-shrink: 0; display: inline-block; vertical-align: middle; }
 .icon-xs { width: 14px; height: 14px; stroke-width: 2; }
 .icon-sm { width: 16px; height: 16px; stroke-width: 1.75; }
 .icon-md { width: 22px; height: 22px; stroke-width: 1.75; }
 .icon-lg { width: 28px; height: 28px; stroke-width: 1.75; }
-.icon-xl { width: 48px; height: 48px; stroke-width: 1.5; }
 
-/* ════════════════════════════════════════════════════════
-   STAGE LAYOUT
-════════════════════════════════════════════════════════ */
-
+/* STAGE */
 .stage {
   position: relative;
   z-index: 1;
@@ -106,195 +84,46 @@ body::after {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   grid-template-rows: auto 1fr auto;
-  gap: 0;
 }
-
-/* Top bar */
 .top-bar {
   grid-column: 1 / -1;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 32px 56px;
+  padding: 28px 56px;
 }
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-.brand-mark {
-  width: 24px;
-  height: 24px;
-  background: var(--blue);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.brand-mark::after {
-  content: '';
-  width: 8px;
-  height: 8px;
-  background: white;
-}
-.brand-text {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--stage-text);
-  letter-spacing: -0.1px;
-}
-.brand-text span {
-  color: var(--stage-muted);
-  font-weight: 400;
-}
-.top-meta {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--stage-muted);
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-}
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand-mark { width: 24px; height: 24px; background: var(--blue); display: flex; align-items: center; justify-content: center; }
+.brand-mark::after { content: ''; width: 8px; height: 8px; background: white; }
+.brand-text { font-size: 13px; font-weight: 500; color: var(--ink); letter-spacing: -0.1px; }
+.brand-text span { color: var(--muted); font-weight: 400; }
+.top-meta { font-size: 11px; font-weight: 500; color: var(--muted); letter-spacing: 0.6px; text-transform: uppercase; }
 
-/* Left context panel */
-.context-left {
-  padding: 60px 56px 60px 56px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  max-width: 380px;
-}
-.scene-num {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--blue);
-  letter-spacing: 0.8px;
-  margin-bottom: 14px;
-}
-.scene-title {
-  font-size: 32px;
-  font-weight: 500;
-  color: var(--stage-text);
-  letter-spacing: -1px;
-  line-height: 1.05;
-  margin-bottom: 16px;
-  transition: opacity 240ms var(--ease-out);
-}
-.scene-desc {
-  font-size: 14px;
-  color: var(--stage-muted);
-  line-height: 1.6;
-  max-width: 320px;
-  transition: opacity 240ms var(--ease-out);
-}
+.context-left { padding: 60px 56px; display: flex; flex-direction: column; justify-content: center; max-width: 380px; }
+.scene-num { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; font-weight: 600; color: var(--blue); letter-spacing: 0.8px; margin-bottom: 14px; }
+.scene-title { font-size: 32px; font-weight: 500; color: var(--ink); letter-spacing: -1px; line-height: 1.05; margin-bottom: 16px; transition: opacity 240ms var(--ease-out); }
+.scene-desc { font-size: 14px; color: var(--muted); line-height: 1.6; max-width: 320px; transition: opacity 240ms var(--ease-out); }
 
-/* Phone column (center) */
-.phone-col {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 30px 0 60px;
-}
+.phone-col { display: flex; align-items: center; justify-content: center; padding: 20px 0 60px; }
 
-/* Right context panel */
-.context-right {
-  padding: 60px 56px 60px 56px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  max-width: 380px;
-}
-.callouts {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-.callout {
-  border-left: 2px solid var(--blue);
-  padding-left: 16px;
-}
-.callout-num {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 10px;
-  color: var(--blue);
-  font-weight: 500;
-  letter-spacing: 0.8px;
-  margin-bottom: 6px;
-}
-.callout-text {
-  font-size: 13px;
-  color: var(--stage-text);
-  line-height: 1.5;
-  font-weight: 500;
-}
-.callout-text span {
-  color: var(--stage-muted);
-  font-weight: 400;
-}
+.context-right { padding: 60px 56px; display: flex; flex-direction: column; justify-content: center; max-width: 380px; }
+.callouts { display: flex; flex-direction: column; gap: 24px; }
+.callout { border-left: 2px solid var(--blue); padding-left: 16px; }
+.callout-num { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; color: var(--blue); font-weight: 500; letter-spacing: 0.8px; margin-bottom: 6px; }
+.callout-text { font-size: 13px; color: var(--ink); line-height: 1.5; font-weight: 500; }
+.callout-text span { color: var(--muted); font-weight: 400; }
 
-/* Scene navigation */
-.bottom-bar {
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 24px 56px 40px;
-}
-.scene-dots {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-.scene-dot {
-  width: 28px;
-  height: 4px;
-  background: rgba(10, 30, 80, 0.12);
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  transition: background 200ms ease;
-}
-.scene-dot:hover { background: rgba(10, 30, 80, 0.22); }
+.bottom-bar { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; padding: 24px 56px 40px; }
+.scene-dots { display: flex; gap: 8px; align-items: center; }
+.scene-dot { width: 28px; height: 4px; background: rgba(10,30,80,0.12); border: none; cursor: pointer; padding: 0; transition: background 200ms ease; }
+.scene-dot:hover { background: rgba(10,30,80,0.22); }
 .scene-dot.active { background: var(--blue); }
-.scene-dot.passed { background: rgba(10, 62, 255, 0.4); }
-.bottom-controls {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-  font-size: 11px;
-  color: var(--stage-muted);
-  letter-spacing: 0.4px;
-}
-.kbd {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 22px;
-  height: 22px;
-  padding: 0 6px;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--stage-text);
-  background: white;
-  border: 1px solid var(--line-strong);
-  border-bottom-width: 2px;
-  margin: 0 4px;
-}
-.reset-btn {
-  background: none;
-  border: none;
-  color: var(--blue);
-  font-family: 'Switzer', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 4px 0;
-}
+.scene-dot.passed { background: rgba(10,62,255,0.4); }
+.bottom-controls { display: flex; gap: 4px; align-items: center; font-size: 11px; color: var(--muted); letter-spacing: 0.4px; }
+.kbd { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 6px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; font-weight: 500; color: var(--ink); background: white; border: 1px solid var(--line-strong); border-bottom-width: 2px; margin: 0 4px; }
+.reset-btn { background: none; border: none; color: var(--blue); font-family: 'Switzer', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; padding: 4px 0; }
 
-/* ════════════════════════════════════════════════════════
-   PHONE
-════════════════════════════════════════════════════════ */
-
+/* PHONE */
 .phone {
   width: 372px;
   height: 780px;
@@ -310,7 +139,6 @@ body::after {
   position: relative;
   flex-shrink: 0;
 }
-
 .phone-screen {
   width: 100%;
   height: 100%;
@@ -319,8 +147,6 @@ body::after {
   overflow: hidden;
   position: relative;
 }
-
-/* iPhone notch */
 .phone-screen::before {
   content: '';
   position: absolute;
@@ -334,39 +160,13 @@ body::after {
   z-index: 100;
 }
 
-/* ════════════════════════════════════════════════════════
-   APP — STATUS BAR
-════════════════════════════════════════════════════════ */
-
-.sb {
-  height: 50px;
-  padding: 16px 28px 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 10;
-}
-.sb-time {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -0.2px;
-  margin-left: -8px;
-}
-.sb-icons {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-right: -4px;
-}
+/* STATUS BAR */
+.sb { height: 50px; padding: 16px 28px 0; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; position: relative; z-index: 10; }
+.sb-time { font-size: 14px; font-weight: 600; color: var(--ink); letter-spacing: -0.2px; margin-left: -8px; }
+.sb-icons { display: flex; align-items: center; gap: 6px; margin-right: -4px; }
 .sb-icons .icon { color: var(--ink); }
 
-/* ════════════════════════════════════════════════════════
-   SCREENS
-════════════════════════════════════════════════════════ */
-
+/* SCREEN */
 .screen {
   position: absolute;
   inset: 0;
@@ -378,1303 +178,274 @@ body::after {
   transform: scale(0.985);
   transition: opacity 220ms var(--ease-out), transform 280ms var(--ease-out);
 }
-.screen.active {
-  opacity: 1;
-  pointer-events: all;
-  transform: scale(1);
-}
+.screen.active { opacity: 1; pointer-events: all; transform: scale(1); }
 
-/* Common: nav header */
-.nav {
-  display: flex;
-  align-items: center;
-  padding: 4px 16px 14px;
-  gap: 8px;
-  flex-shrink: 0;
-  background: var(--surface);
-}
-.nav-btn {
-  width: 44px;
-  height: 44px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--ink);
-  -webkit-tap-highlight-color: transparent;
-  transition: background 160ms ease, transform 120ms var(--ease-out);
-  margin-left: -10px;
-}
-.nav-btn .icon { width: 24px; height: 24px; stroke-width: 2; }
-.nav-btn:active {
-  background: var(--surface-3);
-  transform: scale(0.92);
-}
-.nav-title {
-  flex: 1;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -0.2px;
-}
-.nav-sub {
-  display: block;
-  font-size: 13px;
-  color: var(--muted);
-  font-weight: 500;
-  margin-top: 2px;
-  letter-spacing: 0.1px;
-}
+/* NAV */
+.nav { display: flex; align-items: center; padding: 4px 16px 12px; gap: 6px; flex-shrink: 0; background: var(--surface); }
+.nav-btn { width: 40px; height: 40px; border: none; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--ink); -webkit-tap-highlight-color: transparent; transition: background 160ms ease, transform 120ms var(--ease-out); margin-left: -8px; }
+.nav-btn .icon { width: 22px; height: 22px; stroke-width: 2; }
+.nav-btn:active { background: var(--surface-3); transform: scale(0.92); }
+.nav-title { flex: 1; font-size: 17px; font-weight: 600; color: var(--ink); letter-spacing: -0.2px; }
+.nav-sub { display: block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; color: var(--muted); font-weight: 600; margin-top: 2px; letter-spacing: 0.3px; }
 
-.content {
-  flex: 1;
-  overflow-y: auto;
-  background: var(--surface-2);
-  -webkit-overflow-scrolling: touch;
-}
+.content { flex: 1; overflow-y: auto; background: var(--surface-2); -webkit-overflow-scrolling: touch; }
 .content::-webkit-scrollbar { width: 0; }
 
-/* ─── SCREEN 1: TODAY ─── */
+/* ═══ SCENE 1: TODAY ═══ */
+.today-hero { padding: 6px 24px 22px; background: var(--surface); }
+.hero-eyebrow { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; color: var(--blue); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+.hero-headline { font-size: 36px; font-weight: 600; color: var(--ink); letter-spacing: -1.3px; line-height: 1; margin-bottom: 16px; }
+.hero-stats { display: flex; align-items: baseline; gap: 18px; font-size: 14px; color: var(--text); font-weight: 500; }
+.hero-stats strong { color: var(--ink); font-weight: 700; font-size: 15px; margin-right: 3px; }
+.hero-stats .sep { width: 3px; height: 3px; background: var(--dim); border-radius: 50%; display: inline-block; }
 
-.today-hero {
-  padding: 6px 24px 26px;
-  background: var(--surface);
-}
-.hero-eyebrow {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 12px;
-  color: var(--blue);
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-.hero-headline {
-  font-size: 36px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -1.3px;
-  line-height: 1;
-  margin-bottom: 16px;
-}
-.hero-stat-row {
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
-  font-size: 15px;
-  color: var(--text);
-  font-weight: 500;
-}
-.hero-stat-row strong {
-  color: var(--ink);
-  font-weight: 500;
-}
-.hero-stat-row .sep {
-  width: 3px;
-  height: 3px;
-  background: var(--dim);
-  border-radius: 50%;
-  display: inline-block;
-}
+.group-label { display: flex; align-items: center; justify-content: space-between; padding: 22px 24px 10px; font-size: 11px; font-weight: 700; color: var(--text); letter-spacing: 1px; text-transform: uppercase; }
+.group-label .count { font-family: 'JetBrains Mono', ui-monospace, monospace; color: var(--muted); font-weight: 600; letter-spacing: 0.3px; }
 
-.section-label {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 24px 24px 12px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-.section-label .count {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  color: var(--muted);
-  font-weight: 600;
-}
-
-.ship-card {
-  background: var(--surface);
-  margin: 0 16px 8px;
-  padding: 18px;
-  border: 1px solid var(--line);
-  cursor: pointer;
-  transition: transform 160ms var(--ease-out), border-color 160ms ease;
-  -webkit-tap-highlight-color: transparent;
-}
-.ship-card:active {
-  transform: scale(0.985);
-  border-color: var(--line-strong);
-}
-.ship-card.featured {
-  border-left: 3px solid var(--blue);
-  padding-left: 17px;
-}
-.ship-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
-}
-.ship-tag {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  padding: 4px 8px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
-.ship-tag.del {
-  background: var(--blue-tint);
-  color: var(--blue);
-}
-.ship-tag.ret {
-  background: var(--warn-bg);
-  color: var(--warn);
-}
-.tag-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: currentColor;
-  display: inline-block;
-  flex-shrink: 0;
-}
-.ship-time {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 13px;
-  color: var(--text);
-  font-weight: 600;
-}
-.ship-name {
-  font-size: 19px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -0.3px;
-  margin-bottom: 6px;
-}
-.ship-site {
-  font-size: 14px;
-  color: var(--muted);
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 500;
-}
+.ship-card { background: var(--surface); margin: 0 16px 8px; padding: 16px 18px; border: 1px solid var(--line); cursor: pointer; transition: transform 160ms var(--ease-out), border-color 160ms ease; -webkit-tap-highlight-color: transparent; }
+.ship-card:active { transform: scale(0.985); border-color: var(--line-strong); }
+.ship-card.featured { border-left: 3px solid var(--blue); padding-left: 17px; }
+.ship-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.pill { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.7px; padding: 4px 8px; display: inline-flex; align-items: center; gap: 5px; }
+.pill.reserved { background: var(--blue-tint); color: var(--blue); }
+.pill.prereturn { background: var(--warn-bg); color: var(--warn); }
+.pill.intransit { background: var(--surface-3); color: var(--text); }
+.pill.completed { background: var(--ok-bg); color: var(--ok); }
+.pill-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; display: inline-block; flex-shrink: 0; }
+.ship-time { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; color: var(--text); font-weight: 700; }
+.ship-name { font-size: 18px; font-weight: 600; color: var(--ink); letter-spacing: -0.3px; margin-bottom: 5px; line-height: 1.15; }
+.ship-site { font-size: 13px; color: var(--muted); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; font-weight: 500; }
 .ship-site .icon { color: var(--dim); }
-.ship-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 12px;
-  border-top: 1px solid var(--line);
-}
-.ship-stat {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  font-size: 14px;
-  color: var(--muted);
-  font-weight: 500;
-}
-.ship-stat strong {
-  color: var(--ink);
-  font-weight: 600;
-}
-.ship-arrow {
-  color: var(--text);
-}
+.ship-foot { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--line); }
+.ship-meta { display: flex; align-items: center; gap: 10px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 0.3px; }
+.ship-meta .sep { width: 3px; height: 3px; background: var(--dim); border-radius: 50%; }
+.ship-arrow { color: var(--ink); }
 
-/* ─── SCREEN 2: SHIPMENT DETAIL ─── */
+/* ═══ SCENE 2: RESERVATION DETAIL ═══ */
+.resv-hero { padding: 6px 24px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.resv-top { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.resv-id { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 13px; color: var(--muted); font-weight: 600; }
+.resv-name { font-size: 26px; font-weight: 600; color: var(--ink); letter-spacing: -0.7px; line-height: 1.1; margin-bottom: 8px; }
+.resv-site { font-size: 14px; color: var(--muted); display: flex; align-items: center; gap: 6px; font-weight: 500; }
 
-.detail-hero {
-  padding: 4px 24px 22px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
-}
-.detail-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-.detail-eyebrow .ship-tag { padding: 3px 8px; }
-.detail-id {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 13px;
-  color: var(--muted);
-  font-weight: 600;
-}
-.detail-name {
-  font-size: 28px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -0.8px;
-  line-height: 1.05;
-  margin-bottom: 8px;
-}
-.detail-site {
-  font-size: 15px;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 18px;
-  font-weight: 500;
-}
-.detail-site .icon { color: var(--text); }
-.detail-meta-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 0;
-  margin: 0 -24px -22px;
-  padding: 18px 24px;
-  background: var(--surface-2);
-  border-top: 1px solid var(--line);
-}
-.dm-col {
-  border-right: 1px solid var(--line);
-  padding-right: 12px;
-}
-.dm-col:last-child { border-right: none; padding-left: 14px; padding-right: 0; }
-.dm-col:nth-child(2) { padding-left: 14px; }
-.dm-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--muted);
-  letter-spacing: 0.7px;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-.dm-value {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -0.3px;
-}
+.resv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; background: var(--surface); }
+.resv-col { padding: 16px 24px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.resv-col:nth-child(2n) { border-right: none; }
+.resv-col:nth-last-child(-n+2) { border-bottom: none; }
+.resv-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.7px; text-transform: uppercase; margin-bottom: 6px; }
+.resv-value { font-size: 16px; font-weight: 600; color: var(--ink); letter-spacing: -0.2px; }
+.resv-value .icon-inline { color: var(--blue); vertical-align: -2px; margin-right: 2px; }
 
-.items-section { padding: 0 0 16px; }
-.items-label {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 22px 24px 12px;
-}
-.items-label-text {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-.items-label-count {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 13px;
-  color: var(--blue);
-  font-weight: 700;
-}
+.resv-items-label { padding: 24px 24px 10px; display: flex; align-items: center; justify-content: space-between; }
+.resv-items-text { font-size: 11px; font-weight: 700; color: var(--text); letter-spacing: 1px; text-transform: uppercase; }
+.resv-items-count { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; color: var(--blue); font-weight: 700; }
 
-.item-row {
-  display: flex;
-  align-items: center;
-  padding: 16px 24px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
-  gap: 14px;
-}
-.item-num {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 12px;
-  color: var(--muted);
-  font-weight: 600;
-  width: 22px;
-}
-.item-body { flex: 1; min-width: 0; }
-.item-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -0.1px;
-}
-.item-spec {
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 2px;
-  font-weight: 500;
-}
-.item-qty {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--ink);
-}
-.item-qty span {
-  color: var(--muted);
-  font-weight: 500;
-  font-size: 12px;
-  margin-left: 3px;
-}
+.resv-preview { background: var(--surface); }
+.resv-preview-row { display: flex; align-items: center; padding: 12px 24px; border-bottom: 1px solid var(--line); gap: 14px; }
+.resv-preview-num { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; color: var(--muted); font-weight: 600; width: 22px; }
+.resv-preview-body { flex: 1; min-width: 0; }
+.resv-preview-name { font-size: 14px; font-weight: 600; color: var(--ink); letter-spacing: -0.1px; }
+.resv-preview-spec { font-size: 12px; color: var(--muted); margin-top: 1px; font-weight: 500; }
+.resv-preview-qty { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 14px; font-weight: 700; color: var(--ink); }
+.resv-preview-qty span { color: var(--muted); font-weight: 500; font-size: 11px; margin-left: 3px; }
+.resv-more { text-align: center; padding: 14px 24px 22px; font-size: 13px; color: var(--muted); font-weight: 500; }
+.resv-more strong { color: var(--blue); font-weight: 600; }
 
-/* ─── SCREEN 3: COUNTING ─── */
-
-.count-header {
-  padding: 4px 24px 18px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
-}
-.count-progress-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-.count-progress-text {
-  font-size: 26px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -0.6px;
-}
+/* ═══ SCENE 3: LOADING COUNT ═══ */
+.count-header { background: var(--surface); border-bottom: 1px solid var(--line); }
+.count-progress { padding: 4px 24px 14px; }
+.count-progress-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
+.count-progress-text { font-size: 22px; font-weight: 600; color: var(--ink); letter-spacing: -0.5px; }
 .count-progress-text strong { color: var(--blue); }
-.count-progress-meta {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 13px;
-  color: var(--text);
-  font-weight: 600;
-}
-.progress-bar {
-  height: 6px;
-  background: var(--surface-3);
-  position: relative;
-  overflow: hidden;
-}
-.progress-fill {
-  position: absolute;
-  inset: 0 25% 0 0;
-  background: var(--blue);
-  transition: right 400ms var(--ease-out);
-}
+.count-progress-meta { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; color: var(--text); font-weight: 700; letter-spacing: 0.3px; }
+.progress-bar { height: 4px; background: var(--surface-3); position: relative; overflow: hidden; }
+.progress-fill { position: absolute; inset: 0 100% 0 0; background: var(--blue); transition: right 400ms var(--ease-out); }
 
-.count-list { padding: 8px 0 16px; }
-.count-row {
-  display: flex;
-  align-items: center;
-  padding: 16px 24px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
-  gap: 14px;
-  transition: background 200ms ease;
-}
-.count-row.matched { background: #F5FBF7; }
-.count-row.diff { background: #FFF8EC; }
-.cr-check {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 2px solid var(--line-strong);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: all 200ms var(--ease-out);
-}
-.cr-check.on {
-  background: var(--ok);
-  border-color: var(--ok);
-  color: white;
-}
-.cr-check.diff-on {
-  background: var(--warn);
-  border-color: var(--warn);
-  color: white;
-}
-.cr-check .icon { color: inherit; width: 16px; height: 16px; stroke-width: 2.75; }
+.cat-tabs { display: flex; gap: 6px; padding: 12px 16px; overflow-x: auto; scrollbar-width: none; background: var(--surface); border-bottom: 1px solid var(--line); }
+.cat-tabs::-webkit-scrollbar { display: none; }
+.cat-tab { flex-shrink: 0; padding: 7px 12px; border: 1.5px solid var(--line); background: var(--surface); font-family: 'Switzer', sans-serif; font-size: 12px; font-weight: 600; color: var(--text); cursor: pointer; letter-spacing: -0.1px; transition: all 160ms var(--ease-out); -webkit-tap-highlight-color: transparent; white-space: nowrap; }
+.cat-tab.active { background: var(--ink); border-color: var(--ink); color: white; }
+.cat-tab .cat-count { color: var(--muted); font-weight: 500; margin-left: 4px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; }
+.cat-tab.active .cat-count { color: rgba(255,255,255,0.7); }
+
+.search-box { display: flex; align-items: center; gap: 8px; margin: 10px 16px; padding: 10px 14px; background: var(--surface); border: 1.5px solid var(--line); }
+.search-box .icon { color: var(--muted); }
+.search-input { flex: 1; border: 0; outline: 0; background: transparent; font-family: 'Switzer', sans-serif; font-size: 14px; font-weight: 500; color: var(--ink); min-width: 0; }
+.search-input::placeholder { color: var(--muted); }
+
+.count-list { padding-bottom: 12px; }
+.count-row { display: flex; align-items: center; padding: 12px 16px 12px 24px; background: var(--surface); border-bottom: 1px solid var(--line); gap: 10px; transition: background 200ms ease; }
+.count-row.partial { background: #FCFDFF; }
+.count-row.flagged { background: #FFF8EC; }
+.cr-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line-strong); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 200ms var(--ease-out); }
+.cr-check.done { background: var(--ok); border-color: var(--ok); color: white; }
+.cr-check.partial { background: var(--blue); border-color: var(--blue); color: white; }
+.cr-check.flagged { background: var(--warn); border-color: var(--warn); color: white; }
+.cr-check .icon { color: inherit; width: 12px; height: 12px; stroke-width: 3; }
 .cr-body { flex: 1; min-width: 0; }
-.cr-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -0.1px;
-}
-.cr-expected {
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 2px;
-  font-weight: 500;
-}
-.cr-counter {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-}
-.cnt-btn {
-  width: 48px;
-  height: 48px;
-  border: 2px solid var(--line-strong);
-  background: var(--surface);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  color: var(--ink);
-  font-family: 'Switzer', sans-serif;
-  font-weight: 600;
-  -webkit-tap-highlight-color: transparent;
-  transition: all 140ms var(--ease-out);
-  user-select: none;
-}
+.cr-name { font-size: 14px; font-weight: 600; color: var(--ink); letter-spacing: -0.1px; }
+.cr-expected { font-size: 12px; color: var(--muted); margin-top: 2px; font-weight: 500; font-family: 'JetBrains Mono', ui-monospace, monospace; letter-spacing: 0.2px; }
+.cr-flag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; background: var(--warn-bg); color: var(--warn); font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; margin-top: 4px; }
+.cr-flag .icon { width: 9px; height: 9px; stroke-width: 2.5; }
+.cr-counter { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.cnt-btn { width: 42px; height: 42px; border: 2px solid var(--line-strong); background: var(--surface); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--ink); font-family: 'Switzer', sans-serif; font-weight: 600; -webkit-tap-highlight-color: transparent; transition: all 140ms var(--ease-out); user-select: none; }
 .cnt-btn:hover { border-color: var(--blue); color: var(--blue); }
-.cnt-btn:active {
-  transform: scale(0.9);
-  background: var(--blue-tint);
-  border-color: var(--blue);
-}
-.cnt-val {
-  width: 44px;
-  text-align: center;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--ink);
-  transition: color 200ms ease;
-}
-.cnt-val.diff { color: var(--warn); }
+.cnt-btn:active { transform: scale(0.9); background: var(--blue-tint); border-color: var(--blue); }
+.cnt-val { width: 38px; text-align: center; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 17px; font-weight: 700; color: var(--ink); transition: color 200ms ease; }
+.cnt-val.zero { color: var(--dim); }
+.cnt-val.short { color: var(--warn); }
+.cnt-val.done { color: var(--ok); }
+
+.cr-more { padding: 4px 8px; background: none; border: none; color: var(--muted); cursor: pointer; display: flex; align-items: center; flex-shrink: 0; }
+.cr-more:hover { color: var(--blue); }
+.cr-more .icon { width: 18px; height: 18px; }
 
 /* Bottom action bar */
-.bot-action {
-  padding: 16px 20px 28px;
-  background: var(--surface);
-  border-top: 1px solid var(--line);
-  flex-shrink: 0;
-}
-.btn-primary {
-  width: 100%;
-  height: 56px;
-  background: var(--blue);
-  color: white;
-  border: none;
-  font-family: 'Switzer', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  letter-spacing: 0.1px;
-  transition: all 200ms var(--ease-out);
-  -webkit-tap-highlight-color: transparent;
-}
+.bot-action { padding: 14px 16px 26px; background: var(--surface); border-top: 1px solid var(--line); flex-shrink: 0; display: flex; gap: 10px; }
+.bot-photo-btn { width: 56px; height: 56px; background: var(--surface); border: 1.5px solid var(--line-strong); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; position: relative; transition: all 140ms var(--ease-out); -webkit-tap-highlight-color: transparent; }
+.bot-photo-btn:hover { border-color: var(--blue); color: var(--blue); }
+.bot-photo-btn:active { transform: scale(0.94); }
+.bot-photo-btn .icon { width: 24px; height: 24px; color: var(--ink); }
+.bot-photo-btn:hover .icon { color: var(--blue); }
+.bot-photo-count { position: absolute; top: -6px; right: -6px; min-width: 20px; height: 20px; padding: 0 5px; background: var(--blue); color: white; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; border-radius: 10px; border: 2px solid var(--surface); }
+.btn-primary { flex: 1; height: 56px; background: var(--blue); color: white; border: none; font-family: 'Switzer', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; letter-spacing: 0.1px; transition: all 200ms var(--ease-out); -webkit-tap-highlight-color: transparent; }
 .btn-primary:hover { background: var(--blue-dark); }
-.btn-primary:active {
-  transform: scale(0.985);
-  background: var(--blue-dark);
-}
-.btn-primary.disabled {
-  background: var(--surface-3);
-  color: var(--dim);
-  pointer-events: none;
-}
-.btn-secondary {
-  width: 100%;
-  height: 52px;
-  background: var(--surface);
-  color: var(--ink);
-  border: 1.5px solid var(--line-strong);
-  font-family: 'Switzer', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 200ms var(--ease-out);
-  margin-top: 10px;
-}
-.btn-secondary:hover { border-color: var(--blue); color: var(--blue); }
-.btn-secondary:active { transform: scale(0.985); }
+.btn-primary:active { transform: scale(0.985); background: var(--blue-dark); }
+.btn-primary .icon { color: white; }
 
-/* ─── SCREEN 4: DISCREPANCY ─── */
+/* ═══ SCENE 4: FLAG DAMAGE ═══ */
+.flag-hero { padding: 6px 24px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.flag-headline { font-size: 22px; font-weight: 600; color: var(--ink); letter-spacing: -0.5px; line-height: 1.15; margin-bottom: 6px; }
+.flag-sub { font-size: 13px; color: var(--muted); font-weight: 500; line-height: 1.5; }
+.flag-sub strong { color: var(--text); font-weight: 600; }
 
-.disc-screen { background: var(--surface); }
-.disc-banner {
-  padding: 18px 24px;
-  background: var(--warn-bg);
-  border-bottom: 1px solid #DDB872;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-.disc-banner-icon {
-  width: 40px;
-  height: 40px;
-  background: var(--warn);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.disc-banner-icon .icon { width: 22px; height: 22px; stroke-width: 2.5; }
-.disc-banner-body {
-  flex: 1;
-}
-.disc-banner-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--warn);
-  margin-bottom: 3px;
-}
-.disc-banner-text {
-  font-size: 13px;
-  color: #6B3508;
-  font-weight: 500;
-}
+.split-grid { background: var(--surface); padding: 16px 0 0; }
+.split-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 10px; align-items: center; padding: 14px 24px; border-bottom: 1px solid var(--line); }
+.split-row.head { padding: 8px 24px; border-bottom: 1.5px solid var(--line-strong); background: var(--surface-2); }
+.split-col-label { font-size: 11px; font-weight: 700; color: var(--text); letter-spacing: 0.7px; text-transform: uppercase; }
+.split-col-label.center { text-align: center; }
+.split-row-label { font-size: 14px; font-weight: 600; color: var(--ink); letter-spacing: -0.1px; }
+.split-row-label .chip-dot { display: inline-block; width: 8px; height: 8px; margin-right: 8px; vertical-align: 0px; }
+.dot-ok { background: var(--ok); }
+.dot-damage { background: var(--warn); }
+.dot-scrap { background: var(--err); }
+.dot-lost { background: var(--dim); }
+.split-btn { width: 38px; height: 38px; border: 1.5px solid var(--line-strong); background: var(--surface); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--ink); font-family: 'Switzer', sans-serif; font-weight: 600; -webkit-tap-highlight-color: transparent; transition: all 140ms var(--ease-out); user-select: none; }
+.split-btn:active { transform: scale(0.9); background: var(--blue-tint); border-color: var(--blue); }
+.split-val { width: 36px; text-align: center; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 16px; font-weight: 700; color: var(--ink); }
+.split-val.zero { color: var(--dim); }
+.split-val.active { color: var(--ink); }
 
-.disc-item-card {
-  margin: 24px 24px 0;
-  padding: 22px;
-  background: var(--surface-2);
-  border-left: 4px solid var(--warn);
-}
-.disc-item-name {
-  font-size: 19px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -0.3px;
-  margin-bottom: 6px;
-}
-.disc-item-spec {
-  font-size: 14px;
-  color: var(--muted);
-  margin-bottom: 18px;
-  font-weight: 500;
-}
-.disc-numbers {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 0;
-  background: var(--surface);
-  padding: 14px 0;
-}
-.disc-num-col {
-  text-align: center;
-  border-right: 1px solid var(--line);
-}
-.disc-num-col:last-child { border-right: none; }
-.dn-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 0.7px;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-.dn-value {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--ink);
-  line-height: 1;
-}
-.dn-value.warn { color: var(--warn); }
-.dn-value.minus { color: var(--err); }
-
-.photo-section {
-  padding: 26px 24px 0;
-}
-.photo-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 0.7px;
-  text-transform: uppercase;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.photo-label .ph-count {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  color: var(--muted);
-  font-weight: 600;
-}
-.photo-row {
-  display: flex;
-  gap: 10px;
-}
-.photo-tile {
-  width: 84px;
-  height: 84px;
-  background: var(--surface-2);
-  border: 2px dashed var(--line-strong);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  cursor: pointer;
-  color: var(--muted);
-  transition: all 160ms ease;
-  -webkit-tap-highlight-color: transparent;
-  position: relative;
-  overflow: hidden;
-}
-.photo-tile:hover {
-  border-color: var(--blue);
-  color: var(--blue);
-  background: var(--blue-tint);
-}
-.photo-tile:active {
-  transform: scale(0.95);
-}
-.photo-tile .icon { width: 24px; height: 24px; stroke-width: 1.75; }
-.photo-tile-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-}
-.photo-tile.filled {
-  border: 2px solid var(--ok);
-  padding: 0;
-}
-.photo-tile.filled img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.photo-tile.filled .photo-check {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--ok);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-}
-.photo-tile.filled .photo-check svg {
-  width: 12px;
-  height: 12px;
-  stroke-width: 3.5;
-}
+.flag-photos { padding: 22px 24px 0; background: var(--surface); }
+.flag-photos-label { font-size: 11px; font-weight: 700; color: var(--text); letter-spacing: 0.7px; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+.flag-photos-label .ph-count { font-family: 'JetBrains Mono', ui-monospace, monospace; color: var(--muted); font-weight: 600; }
+.photo-row { display: flex; gap: 8px; }
+.photo-tile { width: 72px; height: 72px; background: var(--surface-2); border: 2px dashed var(--line-strong); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; color: var(--muted); transition: all 160ms ease; -webkit-tap-highlight-color: transparent; position: relative; overflow: hidden; }
+.photo-tile:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-tint); }
+.photo-tile:active { transform: scale(0.95); }
+.photo-tile .icon { width: 22px; height: 22px; stroke-width: 1.75; }
+.photo-tile-label { font-size: 9px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; }
+.photo-tile.filled { border: 2px solid var(--ok); padding: 0; }
+.photo-tile.filled img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo-tile.filled .photo-check { position: absolute; top: 3px; right: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--ok); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+.photo-tile.filled .photo-check svg { width: 10px; height: 10px; stroke-width: 3.5; }
 .photo-input { display: none; }
 
-.note-section {
-  padding: 22px 24px 0;
-}
-.note-input {
-  width: 100%;
-  height: 80px;
-  border: 2px solid var(--line);
-  background: var(--surface-2);
-  padding: 14px 16px;
-  font-family: 'Switzer', sans-serif;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--ink);
-  resize: none;
-  outline: none;
-  transition: border-color 160ms ease;
-  line-height: 1.45;
-}
-.note-input:focus { border-color: var(--blue); background: white; }
-.note-input::placeholder { color: var(--muted); font-weight: 500; }
+.flag-notes { padding: 18px 24px 0; background: var(--surface); }
+.flag-notes textarea { width: 100%; height: 80px; border: 1.5px solid var(--line); background: var(--surface-2); padding: 12px 14px; font-family: 'Switzer', sans-serif; font-size: 14px; font-weight: 500; color: var(--ink); resize: none; outline: none; transition: border-color 160ms ease; line-height: 1.45; }
+.flag-notes textarea:focus { border-color: var(--blue); background: white; }
+.flag-notes textarea::placeholder { color: var(--muted); font-weight: 500; }
 
-/* ─── SCREEN 5: CONFIRM ─── */
+/* ═══ SCENE 5: REVIEW ═══ */
+.rev-hero { padding: 6px 24px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.rev-eyebrow { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; color: var(--blue); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+.rev-headline { font-size: 24px; font-weight: 600; color: var(--ink); letter-spacing: -0.6px; line-height: 1.15; margin-bottom: 6px; }
+.rev-sub { font-size: 13px; color: var(--muted); font-weight: 500; line-height: 1.5; }
+.rev-sub strong { color: var(--text); font-weight: 600; }
 
-.conf-summary {
-  padding: 6px 24px 22px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
-}
-.conf-headline {
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -0.6px;
-  line-height: 1.15;
-  margin-bottom: 16px;
-}
-.conf-summary-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  background: var(--surface-2);
-  padding: 18px;
-  margin: 0 -2px;
-}
-.cs-item { padding: 0 14px; border-right: 1px solid var(--line); }
-.cs-item:last-child { border-right: none; }
-.cs-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 0.7px;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-.cs-value {
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--ink);
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-.cs-value.ok { color: var(--ok); }
-.cs-value.warn { color: var(--warn); }
-.cs-value .icon { color: inherit; }
+.rev-numbers { display: grid; grid-template-columns: 1fr 1fr 1fr; background: var(--surface-2); padding: 18px 0; }
+.rn-col { text-align: center; border-right: 1px solid var(--line); }
+.rn-col:last-child { border-right: none; }
+.rn-label { font-size: 10px; font-weight: 700; color: var(--text); letter-spacing: 0.7px; text-transform: uppercase; margin-bottom: 6px; }
+.rn-value { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 24px; font-weight: 700; color: var(--ink); line-height: 1; }
+.rn-value.warn { color: var(--warn); }
+.rn-value.ok { color: var(--ok); }
 
-.sig-section {
-  padding: 22px 24px 0;
-  background: var(--surface);
-}
-.sig-label {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-.sig-label-text {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 0.7px;
-  text-transform: uppercase;
-}
-.sig-clear {
-  font-size: 13px;
-  color: var(--blue);
-  font-weight: 600;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: 'Switzer', sans-serif;
-  padding: 4px 8px;
-}
-.sig-pad {
-  width: 100%;
-  height: 140px;
-  border: 2px solid var(--line);
-  background: var(--surface-2);
-  position: relative;
-  cursor: crosshair;
-  touch-action: none;
-}
-.sig-pad svg { width: 100%; height: 100%; display: block; }
-.sig-hint {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--muted);
-  pointer-events: none;
-  letter-spacing: 0.3px;
-  font-style: italic;
-  font-family: 'DM Serif Display', serif;
-  font-size: 16px;
-}
-.sig-pad.has-sig .sig-hint { display: none; }
-.sig-line {
-  position: absolute;
-  bottom: 12px;
-  left: 14px;
-  right: 14px;
-  height: 1px;
-  background: var(--line-strong);
-}
-.sig-line::after {
-  content: '×';
-  position: absolute;
-  bottom: 6px;
-  left: 0;
-  font-size: 12px;
-  color: var(--dim);
-}
+.rev-group { padding: 22px 24px 10px; display: flex; align-items: center; justify-content: space-between; }
+.rev-group-title { font-size: 11px; font-weight: 700; color: var(--text); letter-spacing: 1px; text-transform: uppercase; }
+.rev-group-count { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: 0.3px; }
 
-.sig-name-section {
-  padding: 16px 24px 8px;
-  background: var(--surface);
-}
-.sig-name-input {
-  width: 100%;
-  height: 48px;
-  border: none;
-  border-bottom: 2px solid var(--line);
-  background: transparent;
-  padding: 0 0 8px;
-  font-family: 'Switzer', sans-serif;
-  font-size: 16px;
-  color: var(--ink);
-  outline: none;
-  font-weight: 600;
-  transition: border-color 160ms ease;
-}
-.sig-name-input:focus { border-color: var(--blue); }
-.sig-name-input::placeholder { color: var(--muted); font-weight: 500; }
+.rev-line { display: flex; align-items: center; padding: 14px 24px; background: var(--surface); border-bottom: 1px solid var(--line); gap: 12px; }
+.rev-line.warn { background: #FFF8EC; }
+.rl-dot { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.rl-dot.ok { background: var(--ok-bg); color: var(--ok); }
+.rl-dot.warn { background: var(--warn-bg); color: var(--warn); }
+.rl-dot .icon { width: 12px; height: 12px; stroke-width: 3; }
+.rl-body { flex: 1; min-width: 0; }
+.rl-name { font-size: 14px; font-weight: 600; color: var(--ink); letter-spacing: -0.1px; }
+.rl-meta { font-size: 12px; color: var(--muted); margin-top: 2px; font-weight: 500; font-family: 'JetBrains Mono', ui-monospace, monospace; letter-spacing: 0.2px; }
+.rl-qty { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 14px; font-weight: 700; color: var(--ink); }
+.rl-qty.warn { color: var(--warn); }
 
-/* ─── SCREEN 6: DONE ─── */
+.rev-attach { padding: 18px 24px; background: var(--surface); display: flex; align-items: center; gap: 12px; border-top: 1px solid var(--line); margin-top: 10px; }
+.rev-attach-icon { width: 38px; height: 38px; background: var(--blue-tint); color: var(--blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.rev-attach-body { flex: 1; }
+.rev-attach-title { font-size: 13px; font-weight: 600; color: var(--ink); }
+.rev-attach-meta { font-size: 11px; color: var(--muted); margin-top: 1px; font-weight: 500; letter-spacing: 0.2px; }
+.rev-attach-edit { color: var(--blue); font-size: 12px; font-weight: 600; cursor: pointer; padding: 6px 10px; background: none; border: 1px solid var(--blue); font-family: 'Switzer', sans-serif; }
 
-.done-screen {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 32px;
-  text-align: center;
-  background: var(--surface);
-}
-.done-mark {
-  width: 88px;
-  height: 88px;
-  background: var(--blue);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 36px;
-  position: relative;
-}
-.done-mark .icon {
-  width: 44px;
-  height: 44px;
-  stroke-width: 2;
-  color: white;
-}
-.done-eyebrow {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 12px;
-  color: var(--ok);
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  margin-bottom: 14px;
-}
-.done-headline {
-  font-size: 32px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -1px;
-  line-height: 1.05;
-  margin-bottom: 16px;
-  max-width: 290px;
-}
-.done-meta {
-  font-size: 15px;
-  color: var(--text);
-  line-height: 1.55;
-  max-width: 280px;
-  margin-bottom: 30px;
-  font-weight: 500;
-}
+/* ═══ SCENE 6: SUBMITTED ═══ */
+.done-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 32px; text-align: center; background: var(--surface); }
+.done-mark { width: 84px; height: 84px; background: var(--blue); display: flex; align-items: center; justify-content: center; margin-bottom: 32px; position: relative; }
+.done-mark .icon { width: 40px; height: 40px; stroke-width: 2; color: white; }
+.done-eyebrow { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; color: var(--text); font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--surface-2); }
+.done-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); display: inline-block; animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.done-headline { font-size: 28px; font-weight: 600; color: var(--ink); letter-spacing: -0.9px; line-height: 1.08; margin-bottom: 14px; max-width: 290px; }
+.done-meta { font-size: 14px; color: var(--text); line-height: 1.55; max-width: 280px; margin-bottom: 26px; font-weight: 500; }
 .done-meta strong { color: var(--ink); font-weight: 600; }
-.done-stats {
-  display: flex;
-  gap: 0;
-  background: var(--surface-2);
-  padding: 18px 0;
-  margin: 0 -32px 32px;
-  width: calc(100% + 64px);
-}
-.done-stat {
-  flex: 1;
-  text-align: center;
-  border-right: 1px solid var(--line);
-}
+
+.done-stats { display: flex; gap: 0; background: var(--surface-2); padding: 16px 0; margin: 0 -32px 28px; width: calc(100% + 64px); }
+.done-stat { flex: 1; text-align: center; border-right: 1px solid var(--line); }
 .done-stat:last-child { border-right: none; }
-.ds-num {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--ink);
-  line-height: 1;
-}
-.ds-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 0.7px;
-  text-transform: uppercase;
-  margin-top: 7px;
-}
-.done-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-}
-.done-btn-prim {
-  width: 100%;
-  height: 56px;
-  background: var(--blue);
-  color: white;
-  border: none;
-  font-family: 'Switzer', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 200ms var(--ease-out);
-}
+.ds-num { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 20px; font-weight: 700; color: var(--ink); line-height: 1; }
+.ds-label { font-size: 10px; font-weight: 700; color: var(--text); letter-spacing: 0.7px; text-transform: uppercase; margin-top: 6px; }
+
+.done-actions { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+.done-btn-prim { width: 100%; height: 54px; background: var(--blue); color: white; border: none; font-family: 'Switzer', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 200ms var(--ease-out); }
 .done-btn-prim:hover { background: var(--blue-dark); }
-.done-btn-prim:active { transform: scale(0.985); }
-.done-btn-text {
-  background: none;
-  border: none;
-  color: var(--text);
-  font-family: 'Switzer', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 10px;
-}
+.done-btn-text { background: none; border: none; color: var(--text); font-family: 'Switzer', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; padding: 10px; }
 .done-btn-text:hover { color: var(--blue); }
 
-/* ─── ANIMATIONS ─── */
-
-@keyframes successScale {
-  0% { transform: scale(0.4); opacity: 0; }
-  60% { transform: scale(1.08); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
-}
-.screen.active .done-mark {
-  animation: successScale 480ms var(--ease-out) both;
-}
-
-@keyframes rowSlide {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+/* ANIMATIONS */
+@keyframes successScale { 0% { transform: scale(0.4); opacity: 0; } 60% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+.screen.active .done-mark { animation: successScale 480ms var(--ease-out) both; }
+@keyframes rowSlide { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 .screen.active .ship-card { animation: rowSlide 320ms var(--ease-out) both; }
 .screen.active .ship-card:nth-child(1) { animation-delay: 60ms; }
 .screen.active .ship-card:nth-child(2) { animation-delay: 100ms; }
 .screen.active .ship-card:nth-child(3) { animation-delay: 140ms; }
 .screen.active .ship-card:nth-child(4) { animation-delay: 180ms; }
 
-/* ─── RESPONSIVE ─── */
-
+/* RESPONSIVE */
 @media (max-width: 1240px) {
   .stage { grid-template-columns: 1fr auto 1fr; }
   .context-left, .context-right { padding: 40px 32px; max-width: 300px; }
 }
-
 @media (max-width: 980px) {
   .stage { grid-template-columns: 1fr; grid-template-rows: auto auto auto auto auto; }
-  .context-left, .context-right {
-    grid-column: 1;
-    max-width: 100%;
-    padding: 20px 32px;
-    text-align: center;
-    align-items: center;
-  }
+  .context-left, .context-right { grid-column: 1; max-width: 100%; padding: 20px 32px; text-align: center; align-items: center; }
   .scene-title { font-size: 22px; }
   .callouts { display: none; }
   .top-bar, .bottom-bar { padding: 20px 24px; }
   .phone-col { padding: 20px 0 30px; }
 }
-
 @media (max-width: 480px) {
   .phone { width: 320px; height: 680px; }
   .scene-title { font-size: 18px; }
 }
-
-/* ─── CATEGORY TABS ─── */
-.cat-tabs {
-  display: flex;
-  gap: 6px;
-  padding: 14px 16px 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.cat-tabs::-webkit-scrollbar { display: none; }
-.cat-tab {
-  flex-shrink: 0;
-  padding: 8px 14px;
-  border: 1.5px solid var(--line);
-  background: var(--surface);
-  font-family: 'Switzer', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-  cursor: pointer;
-  letter-spacing: -0.1px;
-  transition: all 160ms var(--ease-out);
-  -webkit-tap-highlight-color: transparent;
-  white-space: nowrap;
-}
-.cat-tab:hover { border-color: var(--line-strong); }
-.cat-tab.active {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: white;
-}
-.cat-tab .cat-count {
-  color: var(--muted);
-  font-weight: 500;
-  margin-left: 4px;
-}
-.cat-tab.active .cat-count { color: rgba(255,255,255,0.7); }
-
-/* ─── SEARCH ─── */
-.count-search {
-  padding: 12px 16px 8px;
-  background: var(--surface-2);
-}
-.count-search-box {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--surface);
-  padding: 10px 14px;
-  border: 1.5px solid var(--line);
-}
-.count-search-box .icon { color: var(--muted); }
-.search-input {
-  flex: 1;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  font-family: 'Switzer', sans-serif;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--ink);
-  min-width: 0;
-}
-.search-input::placeholder { color: var(--muted); }
-
-/* ─── STATUS PILL VARIANTS ─── */
-.ship-tag.res {
-  background: var(--blue-tint);
-  color: var(--blue);
-}
-.ship-tag.prer {
-  background: var(--warn-bg);
-  color: var(--warn);
-}
-.ship-tag.transit {
-  background: #E7E9EF;
-  color: var(--text);
-}
-
-/* ─── MONO SHIPMENT META ─── */
-.ship-foot-compact {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 12px;
-  color: var(--muted);
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
-.ship-foot-compact .sep {
-  width: 3px;
-  height: 3px;
-  background: var(--dim);
-  border-radius: 50%;
-}
-
-/* ─── DAMAGE FLAG (on count row) ─── */
-.cr-flag {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 6px;
-  background: var(--warn-bg);
-  color: var(--warn);
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  margin-top: 4px;
-}
-.cr-flag .icon { width: 10px; height: 10px; stroke-width: 2.5; }
-
-/* ─── REVIEW SCREEN ─── */
-.review-hero {
-  padding: 6px 24px 22px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
-}
-.review-headline {
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -0.6px;
-  line-height: 1.15;
-  margin-bottom: 6px;
-}
-.review-sub {
-  font-size: 14px;
-  color: var(--muted);
-  font-weight: 500;
-  line-height: 1.5;
-  margin-bottom: 18px;
-}
-.review-numbers {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  background: var(--surface-2);
-  padding: 16px 0;
-}
-.rn-col {
-  text-align: center;
-  border-right: 1px solid var(--line);
-}
-.rn-col:last-child { border-right: none; }
-.rn-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 0.7px;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-.rn-value {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--ink);
-  line-height: 1;
-}
-.rn-value.warn { color: var(--warn); }
-.rn-value.ok { color: var(--ok); }
-
-.review-divider {
-  padding: 22px 24px 10px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.review-divider .div-count {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  color: var(--muted);
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
-
-.review-line {
-  display: flex;
-  align-items: center;
-  padding: 14px 24px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
-  gap: 14px;
-}
-.review-line.short { background: #FFF8EC; }
-.rl-status {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.rl-status.ok { background: var(--ok-bg); color: var(--ok); }
-.rl-status.short { background: var(--warn-bg); color: var(--warn); }
-.rl-status .icon { width: 14px; height: 14px; stroke-width: 2.5; }
-.rl-body { flex: 1; min-width: 0; }
-.rl-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -0.1px;
-}
-.rl-meta {
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 2px;
-  font-weight: 500;
-}
-.rl-qty {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--ink);
-  letter-spacing: -0.2px;
-}
-.rl-qty.short { color: var(--warn); }
-
-/* ─── ATTACH PANEL (scene 4) ─── */
-.attach-hero {
-  padding: 6px 24px 20px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
-}
-.attach-headline {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -0.5px;
-  line-height: 1.15;
-  margin-bottom: 6px;
-}
-.attach-sub {
-  font-size: 13px;
-  color: var(--muted);
-  font-weight: 500;
-  line-height: 1.5;
-}
-.attach-sub strong { color: var(--text); font-weight: 600; }
-
-.damage-card {
-  margin: 16px 16px 0;
-  padding: 16px;
-  background: var(--surface);
-  border-left: 3px solid var(--warn);
-}
-.damage-card-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-.damage-card-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -0.1px;
-}
-.damage-card-qty {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 13px;
-  color: var(--warn);
-  font-weight: 700;
-}
-.damage-card-reason {
-  font-size: 13px;
-  color: var(--muted);
-  font-weight: 500;
-  line-height: 1.5;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
 </style>
 </head>
@@ -1682,34 +453,31 @@ body::after {
 
 <div class="stage">
 
-  <!-- Top bar -->
   <div class="top-bar">
     <div class="brand">
       <div class="brand-mark"></div>
-      <div class="brand-text">Quantify Mobile <span>· AT-PAC Shipments</span></div>
+      <div class="brand-text">Quantify Mobile <span>· Yard prototype</span></div>
     </div>
-    <div class="top-meta">Internal preview · For AT-PAC team</div>
+    <div class="top-meta">v0.2 · Internal preview</div>
   </div>
 
-  <!-- Left context -->
   <div class="context-left">
     <div class="scene-num" id="sceneNum">SCENE 01 / 06</div>
-    <div class="scene-title" id="sceneTitle">Today's shipments</div>
-    <div class="scene-desc" id="sceneDesc">Yard worker opens the app. Sees what's scheduled for today, in priority order. The next pending delivery is featured at the top.</div>
+    <div class="scene-title" id="sceneTitle">Today's work</div>
+    <div class="scene-desc" id="sceneDesc">Unified feed of everything scheduled for today — deliveries going out and pre-returns coming in — sorted by time.</div>
   </div>
 
-  <!-- Phone -->
   <div class="phone-col">
     <div class="phone">
       <div class="phone-screen">
 
-        <!-- ─── SCREEN 1: TODAY ─── -->
+        <!-- ─── SCENE 1: TODAY ─── -->
         <div class="screen active" data-screen="1">
           <div class="sb">
             <div class="sb-time">9:42</div>
             <div class="sb-icons">
               <i data-lucide="signal" class="icon icon-xs"></i>
-              <i data-lucide="wifi" class="icon icon-xs"></i>
+              <i data-lucide="wifi-off" class="icon icon-xs"></i>
               <i data-lucide="battery-full" class="icon icon-xs"></i>
             </div>
           </div>
@@ -1718,97 +486,67 @@ body::after {
             <div class="today-hero">
               <div class="hero-eyebrow">MONDAY · APR 14</div>
               <div class="hero-headline">Today</div>
-              <div class="hero-stat-row">
-                <span><strong>4</strong> shipments</span>
+              <div class="hero-stats">
+                <span><strong>4</strong>shipments</span>
                 <span class="sep"></span>
-                <span><strong>2</strong> out</span>
+                <span><strong>2</strong>out</span>
                 <span class="sep"></span>
-                <span><strong>2</strong> in</span>
+                <span><strong>2</strong>in</span>
               </div>
             </div>
 
-            <div class="section-label">
-              <span>NOW</span>
-              <span class="count">09:00 — 12:00</span>
-            </div>
+            <div class="group-label"><span>NOW</span><span class="count">09:00 — 12:00</span></div>
 
             <div class="ship-card featured" onclick="goTo(2)">
               <div class="ship-top">
-                <div class="ship-tag res"><span class="tag-dot"></span>RESERVED · TO BE SENT</div>
+                <div class="pill reserved"><span class="pill-dot"></span>RESERVED · TO BE SENT</div>
                 <div class="ship-time">09:42</div>
               </div>
               <div class="ship-name">Phillips 66 Sweeny Refinery</div>
               <div class="ship-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Old Ocean, TX · Unit 14 turnaround</div>
               <div class="ship-foot">
-                <div class="ship-foot-compact">
-                  <span>DEL-2401</span>
-                  <span class="sep"></span>
-                  <span>48 items · 342 parts</span>
-                  <span class="sep"></span>
-                  <span>Truck 1 of 4</span>
-                </div>
+                <div class="ship-meta"><span>DEL-2401</span><span class="sep"></span><span>48 items · 342 parts</span><span class="sep"></span><span>Truck 1 of 4</span></div>
                 <i data-lucide="arrow-right" class="icon icon-sm ship-arrow"></i>
               </div>
             </div>
 
             <div class="ship-card">
               <div class="ship-top">
-                <div class="ship-tag res"><span class="tag-dot"></span>RESERVED · TO BE SENT</div>
+                <div class="pill reserved"><span class="pill-dot"></span>RESERVED · TO BE SENT</div>
                 <div class="ship-time">11:00</div>
               </div>
               <div class="ship-name">ExxonMobil Beaumont</div>
               <div class="ship-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Beaumont, TX · Coker 2 platform</div>
               <div class="ship-foot">
-                <div class="ship-foot-compact">
-                  <span>DEL-2402</span>
-                  <span class="sep"></span>
-                  <span>21 items · 96 parts</span>
-                  <span class="sep"></span>
-                  <span>Truck 1 of 1</span>
-                </div>
+                <div class="ship-meta"><span>DEL-2402</span><span class="sep"></span><span>21 items · 96 parts</span><span class="sep"></span><span>Truck 1 of 1</span></div>
                 <i data-lucide="arrow-right" class="icon icon-sm ship-arrow"></i>
               </div>
             </div>
 
-            <div class="section-label">
-              <span>LATER</span>
-              <span class="count">13:00 — 17:00</span>
-            </div>
+            <div class="group-label"><span>LATER</span><span class="count">13:00 — 17:00</span></div>
 
             <div class="ship-card">
               <div class="ship-top">
-                <div class="ship-tag prer"><span class="tag-dot"></span>PRE-RETURN · AWAITING COUNT</div>
+                <div class="pill prereturn"><span class="pill-dot"></span>PRE-RETURN · AWAITING COUNT</div>
                 <div class="ship-time">13:30</div>
               </div>
               <div class="ship-name">Marathon Galveston Bay</div>
               <div class="ship-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Texas City, TX · FCC unit return</div>
               <div class="ship-foot">
-                <div class="ship-foot-compact">
-                  <span>RET-1187</span>
-                  <span class="sep"></span>
-                  <span>Est. 68 parts</span>
-                  <span class="sep"></span>
-                  <span>Truck arriving</span>
-                </div>
+                <div class="ship-meta"><span>RET-1187</span><span class="sep"></span><span>Est. 68 parts</span><span class="sep"></span><span>Truck arriving</span></div>
                 <i data-lucide="arrow-right" class="icon icon-sm ship-arrow"></i>
               </div>
             </div>
 
             <div class="ship-card">
               <div class="ship-top">
-                <div class="ship-tag prer"><span class="tag-dot"></span>PRE-RETURN · AWAITING COUNT</div>
+                <div class="pill prereturn"><span class="pill-dot"></span>PRE-RETURN · AWAITING COUNT</div>
                 <div class="ship-time">15:00</div>
               </div>
               <div class="ship-name">Dow Freeport</div>
               <div class="ship-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Freeport, TX · Plant B-3 partial return</div>
               <div class="ship-foot">
-                <div class="ship-foot-compact">
-                  <span>RET-1188</span>
-                  <span class="sep"></span>
-                  <span>Est. 42 parts</span>
-                  <span class="sep"></span>
-                  <span>Truck arriving</span>
-                </div>
+                <div class="ship-meta"><span>RET-1188</span><span class="sep"></span><span>Est. 42 parts</span><span class="sep"></span><span>Truck arriving</span></div>
                 <i data-lucide="arrow-right" class="icon icon-sm ship-arrow"></i>
               </div>
             </div>
@@ -1817,207 +555,198 @@ body::after {
           </div>
         </div>
 
-        <!-- ─── SCREEN 2: SHIPMENT DETAIL ─── -->
+        <!-- ─── SCENE 2: RESERVATION DETAIL ─── -->
         <div class="screen" data-screen="2">
           <div class="sb">
             <div class="sb-time">9:43</div>
             <div class="sb-icons">
               <i data-lucide="signal" class="icon icon-xs"></i>
-              <i data-lucide="wifi" class="icon icon-xs"></i>
+              <i data-lucide="wifi-off" class="icon icon-xs"></i>
               <i data-lucide="battery-full" class="icon icon-xs"></i>
             </div>
           </div>
 
           <div class="nav">
             <button class="nav-btn" onclick="goTo(1)" aria-label="Back"><i data-lucide="arrow-left" class="icon"></i></button>
-            <div class="nav-title">Shipment<span class="nav-sub">Reservation · awaiting load</span></div>
+            <div class="nav-title">Reservation<span class="nav-sub">DEL-2401 · RESERVED</span></div>
             <button class="nav-btn" aria-label="More"><i data-lucide="more-horizontal" class="icon"></i></button>
           </div>
 
           <div class="content">
-            <div class="detail-hero">
-              <div class="detail-eyebrow">
-                <span class="ship-tag del"><span class="tag-dot"></span>DELIVERY</span>
-                <span class="detail-id">RESERVATION #2401</span>
+            <div class="resv-hero">
+              <div class="resv-top">
+                <div class="pill reserved"><span class="pill-dot"></span>RESERVED · TO BE SENT</div>
               </div>
-              <div class="detail-name">Phillips 66 Sweeny Refinery</div>
-              <div class="detail-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Old Ocean, TX · Unit 14 turnaround</div>
-              <div class="detail-meta-grid">
-                <div class="dm-col">
-                  <div class="dm-label">SCHEDULED</div>
-                  <div class="dm-value">09:42</div>
-                </div>
-                <div class="dm-col">
-                  <div class="dm-label">ITEMS</div>
-                  <div class="dm-value">8</div>
-                </div>
-                <div class="dm-col">
-                  <div class="dm-label">UNITS</div>
-                  <div class="dm-value">342</div>
-                </div>
+              <div class="resv-name">Phillips 66 Sweeny Refinery</div>
+              <div class="resv-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Old Ocean, TX · Unit 14 turnaround</div>
+            </div>
+
+            <div class="resv-grid">
+              <div class="resv-col">
+                <div class="resv-label">From</div>
+                <div class="resv-value">Beaumont Branch</div>
+              </div>
+              <div class="resv-col">
+                <div class="resv-label">To</div>
+                <div class="resv-value">Phillips 66 Sweeny</div>
+              </div>
+              <div class="resv-col">
+                <div class="resv-label">Rent start</div>
+                <div class="resv-value"><i data-lucide="calendar" class="icon icon-xs icon-inline"></i>Today</div>
+              </div>
+              <div class="resv-col">
+                <div class="resv-label">Truck</div>
+                <div class="resv-value">1 of 4 planned</div>
               </div>
             </div>
 
-            <div class="items-section">
-              <div class="items-label">
-                <span class="items-label-text">RESERVED QUANTITIES</span>
-                <span class="items-label-count">8 LINES</span>
-              </div>
+            <div class="resv-items-label">
+              <span class="resv-items-text">Planned for this truck</span>
+              <span class="resv-items-count">18 lines · 180 parts</span>
+            </div>
 
-              <div class="item-row">
-                <div class="item-num">01</div>
-                <div class="item-body">
-                  <div class="item-name">Cuplok Standard 2.0m</div>
-                  <div class="item-spec">Vertical · 4 cup welded</div>
+            <div class="resv-preview">
+              <div class="resv-preview-row">
+                <div class="resv-preview-num">01</div>
+                <div class="resv-preview-body">
+                  <div class="resv-preview-name">Cuplok Standard 2.0m</div>
+                  <div class="resv-preview-spec">Vertical · 4 cup welded</div>
                 </div>
-                <div class="item-qty">48<span> units</span></div>
+                <div class="resv-preview-qty">48<span>parts</span></div>
               </div>
-              <div class="item-row">
-                <div class="item-num">02</div>
-                <div class="item-body">
-                  <div class="item-name">Cuplok Ledger 2.5m</div>
-                  <div class="item-spec">Horizontal · galvanized</div>
+              <div class="resv-preview-row">
+                <div class="resv-preview-num">02</div>
+                <div class="resv-preview-body">
+                  <div class="resv-preview-name">Cuplok Ledger 2.5m</div>
+                  <div class="resv-preview-spec">Horizontal · galvanized</div>
                 </div>
-                <div class="item-qty">96<span> units</span></div>
+                <div class="resv-preview-qty">96<span>parts</span></div>
               </div>
-              <div class="item-row">
-                <div class="item-num">03</div>
-                <div class="item-body">
-                  <div class="item-name">Cuplok Transom 1.2m</div>
-                  <div class="item-spec">Intermediate · galvanized</div>
+              <div class="resv-preview-row">
+                <div class="resv-preview-num">03</div>
+                <div class="resv-preview-body">
+                  <div class="resv-preview-name">Cuplok Transom 1.2m</div>
+                  <div class="resv-preview-spec">Intermediate · galvanized</div>
                 </div>
-                <div class="item-qty">48<span> units</span></div>
+                <div class="resv-preview-qty">36<span>parts</span></div>
               </div>
-              <div class="item-row">
-                <div class="item-num">04</div>
-                <div class="item-body">
-                  <div class="item-name">LVL Plank 2.5m</div>
-                  <div class="item-spec">Laminated veneer · OSHA grade</div>
-                </div>
-                <div class="item-qty">60<span> units</span></div>
-              </div>
-              <div class="item-row">
-                <div class="item-num">05</div>
-                <div class="item-body">
-                  <div class="item-name">Cuplok Toe Board 2.5m</div>
-                  <div class="item-spec">Edge protection · steel</div>
-                </div>
-                <div class="item-qty">24<span> units</span></div>
-              </div>
-              <div class="item-row">
-                <div class="item-num">06</div>
-                <div class="item-body">
-                  <div class="item-name">Cuplok Spigot</div>
-                  <div class="item-spec">Vertical joint connector</div>
-                </div>
-                <div class="item-qty">24<span> units</span></div>
-              </div>
-              <div class="item-row">
-                <div class="item-num">07</div>
-                <div class="item-body">
-                  <div class="item-name">Base Jack 600mm</div>
-                  <div class="item-spec">Adjustable · 38mm thread</div>
-                </div>
-                <div class="item-qty">24<span> units</span></div>
-              </div>
-              <div class="item-row">
-                <div class="item-num">08</div>
-                <div class="item-body">
-                  <div class="item-name">Cuplok Guardrail 2.5m</div>
-                  <div class="item-spec">Top rail · galvanized</div>
-                </div>
-                <div class="item-qty">18<span> units</span></div>
-              </div>
+              <div class="resv-more"><strong>+ 15 more items</strong> · see all in the loading screen</div>
             </div>
           </div>
 
           <div class="bot-action">
-            <button class="btn-primary" onclick="goTo(3)">Start loading <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
+            <button class="btn-primary" onclick="goTo(3)">Start loading Truck 1 <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
           </div>
         </div>
 
-        <!-- ─── SCREEN 3: COUNTING ─── -->
+        <!-- ─── SCENE 3: LOADING COUNT ─── -->
         <div class="screen" data-screen="3">
           <div class="sb">
-            <div class="sb-time">9:48</div>
+            <div class="sb-time">9:51</div>
             <div class="sb-icons">
               <i data-lucide="signal" class="icon icon-xs"></i>
-              <i data-lucide="wifi" class="icon icon-xs"></i>
+              <i data-lucide="wifi-off" class="icon icon-xs"></i>
               <i data-lucide="battery-full" class="icon icon-xs"></i>
             </div>
           </div>
 
           <div class="nav">
             <button class="nav-btn" onclick="goTo(2)" aria-label="Back"><i data-lucide="arrow-left" class="icon"></i></button>
-            <div class="nav-title">Load items<span class="nav-sub">Phillips 66 Sweeny · #2401</span></div>
-            <button class="nav-btn" id="navCameraBtn" aria-label="Take photo"><i data-lucide="camera" class="icon"></i></button>
+            <div class="nav-title">Load items<span class="nav-sub">DEL-2401 · Truck 1 of 4</span></div>
+            <button class="nav-btn" aria-label="Scan"><i data-lucide="scan-line" class="icon"></i></button>
           </div>
 
           <div class="count-header">
-            <div class="count-progress-row">
-              <div class="count-progress-text"><strong id="countDone">8</strong> of <span id="countTotal">8</span> loaded</div>
-              <div class="count-progress-meta"><span id="countOk">7</span> FULL · <span id="countDiff">1</span> SHORT</div>
+            <div class="count-progress">
+              <div class="count-progress-row">
+                <div class="count-progress-text"><strong id="countDone">0</strong> <span style="color:var(--muted); font-weight:500;">of <span id="countTotal">18</span> items loaded</span></div>
+                <div class="count-progress-meta"><span id="countParts">0</span> / 180</div>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" id="progressFill" style="right: 100%;"></div></div>
             </div>
-            <div class="progress-bar"><div class="progress-fill" id="progressFill" style="right: 0%;"></div></div>
+            <div class="cat-tabs" id="catTabs"></div>
           </div>
 
           <div class="content">
+            <div class="search-box">
+              <i data-lucide="search" class="icon icon-sm"></i>
+              <input type="text" class="search-input" id="searchInput" placeholder="Search items or part numbers...">
+            </div>
             <div class="count-list" id="countList"></div>
           </div>
 
           <div class="bot-action">
-            <button class="btn-primary" onclick="goTo(4)">Note short load <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
+            <button class="bot-photo-btn" id="genPhotoBtn" aria-label="Attach photo">
+              <i data-lucide="camera" class="icon"></i>
+              <span class="bot-photo-count" id="photoTotal" style="display:none;">0</span>
+            </button>
+            <button class="btn-primary" onclick="goTo(5)">Review <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
           </div>
         </div>
 
-        <!-- ─── SCREEN 4: SHORTAGE NOTE ─── -->
+        <!-- ─── SCENE 4: FLAG DAMAGE / SPLIT ─── -->
         <div class="screen" data-screen="4">
           <div class="sb">
-            <div class="sb-time">9:51</div>
+            <div class="sb-time">9:57</div>
             <div class="sb-icons">
               <i data-lucide="signal" class="icon icon-xs"></i>
-              <i data-lucide="wifi" class="icon icon-xs"></i>
+              <i data-lucide="wifi-off" class="icon icon-xs"></i>
               <i data-lucide="battery-full" class="icon icon-xs"></i>
             </div>
           </div>
 
           <div class="nav">
             <button class="nav-btn" onclick="goTo(3)" aria-label="Back"><i data-lucide="arrow-left" class="icon"></i></button>
-            <div class="nav-title">Note for office<span class="nav-sub">1 short item · before marking loaded</span></div>
+            <div class="nav-title">LVL Plank 2.5m<span class="nav-sub">DEL-2401 · Line 09</span></div>
           </div>
 
-          <div class="content disc-screen">
-            <div class="disc-banner">
-              <div class="disc-banner-icon"><i data-lucide="alert-triangle" class="icon icon-sm"></i></div>
-              <div class="disc-banner-body">
-                <div class="disc-banner-title">Loading 58 of 60 LVL Plank</div>
-                <div class="disc-banner-text">Add a reason and a photo so the office knows</div>
+          <div class="content">
+            <div class="flag-hero">
+              <div class="flag-headline">2 planks are split</div>
+              <div class="flag-sub">Splitting the line across <strong>load, damage, scrap, and lost-missing</strong> sends the right state to the office. Office confirms disposition later.</div>
+            </div>
+
+            <div class="split-grid">
+              <div class="split-row head">
+                <div class="split-col-label">Destination</div>
+                <div class="split-col-label center">−</div>
+                <div class="split-col-label center">Qty</div>
+                <div class="split-col-label center">+</div>
+              </div>
+
+              <div class="split-row">
+                <div class="split-row-label"><span class="chip-dot dot-ok"></span>To ship · load</div>
+                <button class="split-btn" onclick="splitAdjust('load', -1)">−</button>
+                <div class="split-val active" id="splitLoad">58</div>
+                <button class="split-btn" onclick="splitAdjust('load', 1)">+</button>
+              </div>
+
+              <div class="split-row">
+                <div class="split-row-label"><span class="chip-dot dot-damage"></span>Damage</div>
+                <button class="split-btn" onclick="splitAdjust('damage', -1)">−</button>
+                <div class="split-val active" id="splitDamage">2</div>
+                <button class="split-btn" onclick="splitAdjust('damage', 1)">+</button>
+              </div>
+
+              <div class="split-row">
+                <div class="split-row-label"><span class="chip-dot dot-scrap"></span>Scrap</div>
+                <button class="split-btn" onclick="splitAdjust('scrap', -1)">−</button>
+                <div class="split-val zero" id="splitScrap">0</div>
+                <button class="split-btn" onclick="splitAdjust('scrap', 1)">+</button>
+              </div>
+
+              <div class="split-row">
+                <div class="split-row-label"><span class="chip-dot dot-lost"></span>Lost / missing</div>
+                <button class="split-btn" onclick="splitAdjust('lost', -1)">−</button>
+                <div class="split-val zero" id="splitLost">0</div>
+                <button class="split-btn" onclick="splitAdjust('lost', 1)">+</button>
               </div>
             </div>
 
-            <div class="disc-item-card">
-              <div class="disc-item-name">LVL Plank 2.5m</div>
-              <div class="disc-item-spec">Laminated veneer · OSHA grade · line 04</div>
-              <div class="disc-numbers">
-                <div class="disc-num-col">
-                  <div class="dn-label">RESERVED</div>
-                  <div class="dn-value">60</div>
-                </div>
-                <div class="disc-num-col">
-                  <div class="dn-label">LOADED</div>
-                  <div class="dn-value warn">58</div>
-                </div>
-                <div class="disc-num-col">
-                  <div class="dn-label">SHORT</div>
-                  <div class="dn-value minus">−2</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="photo-section">
-              <div class="photo-label">
-                <span>PHOTO EVIDENCE</span>
-                <span class="ph-count" id="photoCount">0 OF 3</span>
+            <div class="flag-photos">
+              <div class="flag-photos-label">
+                <span>Photo evidence</span>
+                <span class="ph-count" id="flagPhotoCount">0 of 3</span>
               </div>
               <div class="photo-row" id="photoRow">
                 <button type="button" class="photo-tile" data-slot="0">
@@ -2036,101 +765,133 @@ body::after {
               <input type="file" accept="image/*" capture="environment" class="photo-input" id="photoInput">
             </div>
 
-            <div class="note-section">
-              <div class="photo-label"><span>NOTE FOR OFFICE</span></div>
-              <textarea class="note-input" placeholder="Add note for the office">2 LVL planks split at the bottom of the bundle — pulled from the load and kept in the Sweeny return rack for inspection.</textarea>
+            <div class="flag-notes">
+              <div class="flag-photos-label"><span>Note for office</span></div>
+              <textarea placeholder="What the office needs to know">2 planks split at the base of the bundle — pulled from load. Staged in the Sweeny return rack for inspection.</textarea>
             </div>
 
             <div style="height: 24px;"></div>
           </div>
 
           <div class="bot-action">
-            <button class="btn-primary" onclick="goTo(5)">Continue to sign-off <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
+            <button class="btn-primary" onclick="goTo(3)">Save and back to loading <i data-lucide="check" class="icon icon-sm"></i></button>
           </div>
         </div>
 
-        <!-- ─── SCREEN 5: PREPARED-BY SIGN-OFF ─── -->
+        <!-- ─── SCENE 5: REVIEW ─── -->
         <div class="screen" data-screen="5">
           <div class="sb">
-            <div class="sb-time">9:54</div>
+            <div class="sb-time">10:04</div>
             <div class="sb-icons">
               <i data-lucide="signal" class="icon icon-xs"></i>
-              <i data-lucide="wifi" class="icon icon-xs"></i>
+              <i data-lucide="wifi-off" class="icon icon-xs"></i>
               <i data-lucide="battery-full" class="icon icon-xs"></i>
             </div>
           </div>
 
           <div class="nav">
-            <button class="nav-btn" onclick="goTo(4)" aria-label="Back"><i data-lucide="arrow-left" class="icon"></i></button>
-            <div class="nav-title">Sign off the load<span class="nav-sub">Phillips 66 Sweeny · #2401</span></div>
+            <button class="nav-btn" onclick="goTo(3)" aria-label="Back"><i data-lucide="arrow-left" class="icon"></i></button>
+            <div class="nav-title">Review<span class="nav-sub">DEL-2401 · Truck 1 of 4</span></div>
           </div>
 
-          <div class="content" style="background: var(--surface);">
-            <div class="conf-summary">
-              <div class="conf-headline">Confirm the load.<br>Driver picks up next.</div>
-              <div class="conf-summary-grid">
-                <div class="cs-item">
-                  <div class="cs-label">LOADED IN FULL</div>
-                  <div class="cs-value ok"><i data-lucide="check-circle-2" class="icon icon-sm"></i>7 of 8</div>
-                </div>
-                <div class="cs-item">
-                  <div class="cs-label">SHORT</div>
-                  <div class="cs-value warn"><i data-lucide="alert-triangle" class="icon icon-sm"></i>1 noted</div>
-                </div>
+          <div class="content">
+            <div class="rev-hero">
+              <div class="rev-eyebrow">READY TO SUBMIT</div>
+              <div class="rev-headline">18 lines counted.<br>1 flagged, 0 substitutions.</div>
+              <div class="rev-sub">Office confirms the final counts and transitions the shipment. <strong>Rent starts</strong> after their confirmation, not on this submit.</div>
+            </div>
+
+            <div class="rev-numbers">
+              <div class="rn-col">
+                <div class="rn-label">FULL</div>
+                <div class="rn-value ok">17</div>
+              </div>
+              <div class="rn-col">
+                <div class="rn-label">SHORT</div>
+                <div class="rn-value warn">1</div>
+              </div>
+              <div class="rn-col">
+                <div class="rn-label">DAMAGED</div>
+                <div class="rn-value warn">2</div>
               </div>
             </div>
 
-            <div class="sig-section">
-              <div class="sig-label">
-                <span class="sig-label-text">PREPARED BY · YARD</span>
-                <button class="sig-clear" onclick="clearSig()">Clear</button>
+            <div class="rev-group"><span class="rev-group-title">Needs office attention</span><span class="rev-group-count">1 LINE</span></div>
+
+            <div class="rev-line warn">
+              <div class="rl-dot warn"><i data-lucide="alert-triangle" class="icon"></i></div>
+              <div class="rl-body">
+                <div class="rl-name">LVL Plank 2.5m</div>
+                <div class="rl-meta">60 reserved · 58 load · 2 damage</div>
               </div>
-              <div class="sig-pad" id="sigPad">
-                <svg id="sigSvg"></svg>
-                <div class="sig-line"></div>
-                <div class="sig-hint">Sign here</div>
+              <div class="rl-qty warn">−2</div>
+            </div>
+
+            <div class="rev-group"><span class="rev-group-title">Loaded in full</span><span class="rev-group-count">17 LINES</span></div>
+
+            <div class="rev-line">
+              <div class="rl-dot ok"><i data-lucide="check" class="icon"></i></div>
+              <div class="rl-body">
+                <div class="rl-name">Cuplok Standard 2.0m</div>
+                <div class="rl-meta">48 reserved · 48 loaded</div>
               </div>
+              <div class="rl-qty">48</div>
+            </div>
+            <div class="rev-line">
+              <div class="rl-dot ok"><i data-lucide="check" class="icon"></i></div>
+              <div class="rl-body">
+                <div class="rl-name">Cuplok Ledger 2.5m</div>
+                <div class="rl-meta">96 reserved · 96 loaded</div>
+              </div>
+              <div class="rl-qty">96</div>
+            </div>
+            <div class="rev-line">
+              <div class="rl-dot ok"><i data-lucide="check" class="icon"></i></div>
+              <div class="rl-body">
+                <div class="rl-name">Cuplok Transom 1.2m</div>
+                <div class="rl-meta">36 reserved · 36 loaded</div>
+              </div>
+              <div class="rl-qty">36</div>
             </div>
 
-            <div class="sig-name-section">
-              <input type="text" class="sig-name-input" placeholder="Yard worker name (printed)" value="Daniel Reyes · Yard supervisor">
+            <div class="rev-attach">
+              <div class="rev-attach-icon"><i data-lucide="paperclip" class="icon"></i></div>
+              <div class="rev-attach-body">
+                <div class="rev-attach-title">Attachments</div>
+                <div class="rev-attach-meta">0 photos · 1 note on LVL Plank</div>
+              </div>
+              <button class="rev-attach-edit" onclick="goTo(4)">Edit</button>
             </div>
 
-            <div style="padding: 16px 24px 4px;">
-              <p style="font-size: 12px; color: var(--muted); font-weight: 500; line-height: 1.5;">
-                Driver and customer rep signatures captured at delivery. The shipment moves to <strong style="color: var(--text);">In Transit</strong> when marked loaded.
-              </p>
-            </div>
-
-            <div style="height: 16px;"></div>
+            <div style="height: 24px;"></div>
           </div>
 
           <div class="bot-action">
-            <button class="btn-primary" onclick="goTo(6)">Mark as loaded <i data-lucide="check" class="icon icon-sm"></i></button>
+            <button class="btn-primary" onclick="goTo(6)">Submit for office confirmation <i data-lucide="send" class="icon icon-sm"></i></button>
           </div>
         </div>
 
-        <!-- ─── SCREEN 6: DONE ─── -->
+        <!-- ─── SCENE 6: SUBMITTED ─── -->
         <div class="screen" data-screen="6">
           <div class="sb">
-            <div class="sb-time">9:55</div>
+            <div class="sb-time">10:05</div>
             <div class="sb-icons">
               <i data-lucide="signal" class="icon icon-xs"></i>
-              <i data-lucide="wifi" class="icon icon-xs"></i>
+              <i data-lucide="wifi-off" class="icon icon-xs"></i>
               <i data-lucide="battery-full" class="icon icon-xs"></i>
             </div>
           </div>
 
           <div class="done-screen">
             <div class="done-mark"><i data-lucide="check" class="icon"></i></div>
-            <div class="done-eyebrow">#2401 · IN TRANSIT</div>
-            <div class="done-headline">Loaded and dispatched.</div>
-            <div class="done-meta">The Atlanta office sees the shipment as <strong>In Transit</strong>. Rent activates when Sweeny confirms receipt. The 2 short LVL planks stay on the reservation for follow-up.</div>
+            <div class="done-eyebrow"><span class="done-eyebrow-dot"></span>DEL-2401 · AWAITING OFFICE</div>
+            <div class="done-headline">Submitted to the office.</div>
+            <div class="done-meta">Atlanta sees what you loaded, the damage note, and the photo. They confirm, then the shipment moves to <strong>In Transit</strong>. Rent activates when Sweeny receives.</div>
 
             <div class="done-stats">
               <div class="done-stat">
-                <div class="ds-num">9:55</div>
-                <div class="ds-label">LOADED</div>
+                <div class="ds-num">10:04</div>
+                <div class="ds-label">SUBMITTED</div>
               </div>
               <div class="done-stat">
                 <div class="ds-num">13</div>
@@ -2138,13 +899,13 @@ body::after {
               </div>
               <div class="done-stat">
                 <div class="ds-num">3</div>
-                <div class="ds-label">REMAINING</div>
+                <div class="ds-label">TRUCKS LEFT</div>
               </div>
             </div>
 
             <div class="done-actions">
-              <button class="done-btn-prim" onclick="goTo(1)">Next shipment <i data-lucide="arrow-right" class="icon icon-sm" style="margin-left:6px;"></i></button>
-              <button class="done-btn-text" onclick="goTo(1)">Back to today's list</button>
+              <button class="done-btn-prim" onclick="goTo(1)">Next shipment</button>
+              <button class="done-btn-text" onclick="goTo(1)">Back to today</button>
             </div>
           </div>
         </div>
@@ -2153,12 +914,10 @@ body::after {
     </div>
   </div>
 
-  <!-- Right context (callouts) -->
   <div class="context-right">
     <div class="callouts" id="callouts"></div>
   </div>
 
-  <!-- Bottom bar -->
   <div class="bottom-bar">
     <div class="scene-dots" id="sceneDots"></div>
     <div class="bottom-controls">
@@ -2172,193 +931,349 @@ body::after {
 </div>
 
 <script>
+// ═══ SCENE METADATA ═══
 const scenes = [
   null,
   {
-    title: "Today's shipments",
-    desc: "An AT-PAC yard worker opens the app and sees what's scheduled for today — Sweeny, Beaumont, Galveston Bay, Freeport. Deliveries to load and Pre-Returns to unload, in time order.",
+    title: "Today's work",
+    desc: "Unified feed — deliveries going out and pre-returns coming in, sorted by time. Status pills match Quantify desktop's official vocabulary.",
     callouts: [
-      { num: "01", text: "<span>One scrollable list — </span>no menus, no filters by default." },
-      { num: "02", text: "<span>The active shipment is </span>visually featured first<span> — no decision-making at the start of the day.</span>" },
-      { num: "03", text: "<span>Each row shows what matters in the yard: </span>job site, scheduled time, line and unit count<span>.</span>" }
+      { num: "01", text: "<span>Status vocabulary matches desktop:</span> RESERVED · TO BE SENT, PRE-RETURN · AWAITING COUNT<span>. No invented labels.</span>" },
+      { num: "02", text: "<span>Each row shows what matters:</span> DEL/RET number, item and parts count, truck of N<span>.</span>" },
+      { num: "03", text: "<span>One scrollable list.</span> Deliveries and returns aren't separate screens — the yard thinks in time, not type." }
     ]
   },
   {
     title: "Reservation detail",
-    desc: "Tapping the shipment opens the reservation — every Cuplok line and the reserved quantities. The yard worker reviews before loading begins. This screen replaces the printed pick ticket.",
+    desc: "The yard opens an existing reservation. No one 'creates a delivery' here — this is a state transition on a record the office already created.",
     callouts: [
-      { num: "01", text: "<span>This is the reservation — </span>replaces the printed pick ticket<span>. Same info, no paper.</span>" },
-      { num: "02", text: "<span>Status: </span>Reserved · awaiting load<span>. Will move to In Transit when loaded.</span>" },
-      { num: "03", text: "<span>One CTA: </span>Start loading<span>. No detours, no settings.</span>" }
+      { num: "01", text: "<span>Reservation and DEL are the same record</span> in different statuses. The app never creates a new shipment from scratch in v1." },
+      { num: "02", text: "<span>Truck 1 of 4</span> framing: one reservation spans multiple loading sessions. Backorder tickets auto-generate for what doesn't fit." },
+      { num: "03", text: "<span>One primary action:</span> Start loading Truck 1. No detours, no settings." }
     ]
   },
   {
-    title: "Loading items",
-    desc: "Each Cuplok line is counted as it goes on the truck. The worker confirms the loaded qty matches the reserved qty, or marks a short. Rows highlight amber when they don't match.",
+    title: "Load items",
+    desc: "Counters default to zero. Variance is the signal the office needs, so the system never assumes the reserved quantity. Category tabs and search keep 50+ line items usable under gloves.",
     callouts: [
-      { num: "01", text: "<span>Line by line — </span>+/− with 56px tap targets<span>. Designed for gloves and sun glare.</span>" },
-      { num: "02", text: "<span>Short rows </span>auto-highlight in amber<span> — no extra step to flag them.</span>" },
-      { num: "03", text: "<span>Progress and counts stay </span>visible at all times<span> at the top.</span>" }
+      { num: "01", text: "<span>Counters default to zero.</span> If 60 were reserved and 58 were loaded, the number stays 58. The variance is the point." },
+      { num: "02", text: "<span>Category tabs + search</span> are required at real scale — 50 distinct items, 300–400 parts per shipment." },
+      { num: "03", text: "<span>Item names are pickers</span>, never free text. The 3-dot menu opens the damage split per line." }
     ]
   },
   {
-    title: "Note the short load",
-    desc: "Two LVL planks couldn't be loaded — they're damaged. The yard worker captures a photo and a note. The Atlanta office sees it in real time. No discrepancy status fires yet — that only happens if the customer also disputes the count at delivery.",
+    title: "Split a line",
+    desc: "When a line isn't all clean — damage, scrap, lost — the yard splits the quantity across four destinations. Office decides disposition later (repair, scrap, charge).",
     callouts: [
-      { num: "01", text: "<span>Notes attach to the shipment </span>before it leaves the yard<span> — Atlanta sees them live.</span>" },
-      { num: "02", text: "<span>Photo capture is </span>front and center<span>. Visual proof beats a phone call.</span>" },
-      { num: "03", text: "<span>The 2 short LVL planks </span>stay on the reservation<span> — they can be filled by a follow-up shipment.</span>" }
+      { num: "01", text: "<span>Four destinations per line:</span> load, damage, scrap, lost-missing. Quantities can split across all four." },
+      { num: "02", text: "<span>Photos are born linked</span> to this specific line on this specific shipment. No renaming, no SharePoint." },
+      { num: "03", text: "<span>Yard captures, ops decides.</span> Mobile doesn't choose repair vs scrap — that's a desktop action." }
     ]
   },
   {
-    title: "Sign off the load",
-    desc: "The yard preparer signs to confirm what was loaded. This is the 'Prepared by' signature on the pick ticket. Driver and customer signatures are captured later, at delivery.",
+    title: "Review before submit",
+    desc: "Summary of what was counted, what was short, what was flagged. The yard sees exactly what goes to the office. No surprises after submit.",
     callouts: [
-      { num: "01", text: "<span>This is the </span>Prepared by signature<span> — proves who counted the load. Customer rep signs at delivery.</span>" },
-      { num: "02", text: "<span>Summary above the pad: </span>7 loaded in full, 1 short<span>. No surprises before signing.</span>" },
-      { num: "03", text: "<span>Open question for AT-PAC: </span>Quantify desktop currently uses a typed-name field. Should mobile match, or upgrade to drawn signatures?<span></span>" }
+      { num: "01", text: "<span>Three-number summary:</span> full, short, damaged. Matches the variance language the office uses." },
+      { num: "02", text: "<span>Flagged lines float to the top</span> so they're reviewed first. Full-loaded lines are collapsible." },
+      { num: "03", text: "<span>CTA reads 'Submit for office confirmation'</span> — never 'mark as loaded'. Yard submits, ops confirms." }
     ]
   },
   {
-    title: "Marked In Transit",
-    desc: "The shipment status changes from Reserved to In Transit. The Atlanta office sees the loaded quantities, the short note, and the photo. Rent activates only when the customer confirms receipt at Sweeny.",
+    title: "Awaiting office",
+    desc: "Status transitions to the official Quantify state. Rent doesn't start here. The office confirms, then the shipment moves to In Transit. Preserves the two-stage trust model.",
     callouts: [
-      { num: "01", text: "<span>Status: </span>In Transit<span> — not yet On Rent. Rent starts when Sweeny confirms receipt.</span>" },
-      { num: "02", text: "<span>The 2 short LVL planks </span>stay on the reservation<span> for follow-up — not lost.</span>" },
-      { num: "03", text: "<span>Real-time sync to Atlanta means </span>no re-entry<span>. The yard worker is back to today's list in two taps.</span>" }
+      { num: "01", text: "<span>No 'In Transit' yet.</span> That status only applies after office confirmation — this preserves the existing trust model." },
+      { num: "02", text: "<span>Backorder clearly flagged:</span> 3 trucks remaining on this reservation. Yard knows this isn't done." },
+      { num: "03", text: "<span>Two taps back to today's list.</span> The yard worker is ready for the next truck." }
     ]
   }
 ];
 
-// ───── ITEM DATA + COUNTER LOGIC ─────
+// ═══ ITEMS DATA ═══
+const CAT = {
+  CUPLOK: 'Cuplok',
+  BOARDS: 'Boards',
+  ACCESS: 'Accessories'
+};
+
 const items = [
-  { name: "Cuplok Standard 2.0m", expected: 48, counted: 48 },
-  { name: "Cuplok Ledger 2.5m",   expected: 96, counted: 96 },
-  { name: "Cuplok Transom 1.2m",  expected: 48, counted: 48 },
-  { name: "LVL Plank 2.5m",       expected: 60, counted: 58 },
-  { name: "Cuplok Toe Board 2.5m",expected: 24, counted: 24 },
-  { name: "Cuplok Spigot",        expected: 24, counted: 24 },
-  { name: "Base Jack 600mm",      expected: 24, counted: 24 },
-  { name: "Cuplok Guardrail 2.5m",expected: 18, counted: 18 }
+  { id: 1, name: "Cuplok Standard 2.0m",    spec: "Vertical · 4 cup welded",    cat: CAT.CUPLOK,  reserved: 48, counted: 0, flag: false },
+  { id: 2, name: "Cuplok Standard 2.5m",    spec: "Vertical · 4 cup welded",    cat: CAT.CUPLOK,  reserved: 24, counted: 0, flag: false },
+  { id: 3, name: "Cuplok Standard 3.0m",    spec: "Vertical · 4 cup welded",    cat: CAT.CUPLOK,  reserved: 12, counted: 0, flag: false },
+  { id: 4, name: "Cuplok Ledger 2.5m",      spec: "Horizontal · galvanized",    cat: CAT.CUPLOK,  reserved: 96, counted: 0, flag: false },
+  { id: 5, name: "Cuplok Ledger 1.8m",      spec: "Horizontal · galvanized",    cat: CAT.CUPLOK,  reserved: 48, counted: 0, flag: false },
+  { id: 6, name: "Cuplok Ledger 1.2m",      spec: "Horizontal · galvanized",    cat: CAT.CUPLOK,  reserved: 24, counted: 0, flag: false },
+  { id: 7, name: "Cuplok Transom 1.2m",     spec: "Intermediate · galvanized",  cat: CAT.CUPLOK,  reserved: 36, counted: 0, flag: false },
+  { id: 8, name: "Cuplok Transom 0.7m",     spec: "Intermediate · galvanized",  cat: CAT.CUPLOK,  reserved: 18, counted: 0, flag: false },
+  { id: 9, name: "LVL Plank 2.5m",          spec: "Laminated veneer · OSHA",    cat: CAT.BOARDS,  reserved: 60, counted: 0, flag: false, splittable: true },
+  { id: 10, name: "LVL Plank 1.8m",         spec: "Laminated veneer · OSHA",    cat: CAT.BOARDS,  reserved: 24, counted: 0, flag: false },
+  { id: 11, name: "Steel Toe Board 2.5m",   spec: "Edge protection · steel",    cat: CAT.BOARDS,  reserved: 24, counted: 0, flag: false },
+  { id: 12, name: "Steel Toe Board 1.8m",   spec: "Edge protection · steel",    cat: CAT.BOARDS,  reserved: 12, counted: 0, flag: false },
+  { id: 13, name: "Cuplok Guardrail 2.5m",  spec: "Top rail · galvanized",      cat: CAT.CUPLOK,  reserved: 18, counted: 0, flag: false },
+  { id: 14, name: "Cuplok Guardrail 1.8m",  spec: "Top rail · galvanized",      cat: CAT.CUPLOK,  reserved: 12, counted: 0, flag: false },
+  { id: 15, name: "Cuplok Spigot",          spec: "Vertical joint connector",   cat: CAT.CUPLOK,  reserved: 24, counted: 0, flag: false },
+  { id: 16, name: "Base Jack 600mm",        spec: "Adjustable · 38mm thread",   cat: CAT.ACCESS,  reserved: 24, counted: 0, flag: false },
+  { id: 17, name: "Base Jack 450mm",        spec: "Adjustable · 38mm thread",   cat: CAT.ACCESS,  reserved: 12, counted: 0, flag: false },
+  { id: 18, name: "Ladder 2.0m",            spec: "Aluminum · OSHA rated",      cat: CAT.ACCESS,  reserved: 4,  counted: 0, flag: false }
 ];
+
+// Pre-fill some to simulate in-progress counting for the scene
+items[0].counted = 48;
+items[1].counted = 24;
+items[2].counted = 12;
+items[3].counted = 96;
+items[4].counted = 48;
+items[5].counted = 24;
+items[6].counted = 36;
+items[7].counted = 18;
+items[8].counted = 58; items[8].flag = true;  // LVL Plank 2.5m flagged with damage
+items[9].counted = 24;
+items[10].counted = 24;
+items[11].counted = 12;
+items[12].counted = 18;
+items[13].counted = 12;
+items[14].counted = 24;
+items[15].counted = 24;
+items[16].counted = 12;
+items[17].counted = 4;
+
+// ═══ STATE ═══
+let activeCat = 'ALL';
+let searchQuery = '';
+let splitState = { load: 58, damage: 2, scrap: 0, lost: 0 };
+let photoSlots = { 0: null, 1: null, 2: null };
+let activePhotoSlot = null;
+
+// ═══ CATEGORY TABS ═══
+function renderCatTabs() {
+  const el = document.getElementById('catTabs');
+  if (!el) return;
+  const counts = {
+    ALL: items.length,
+    [CAT.CUPLOK]: items.filter(i => i.cat === CAT.CUPLOK).length,
+    [CAT.BOARDS]: items.filter(i => i.cat === CAT.BOARDS).length,
+    [CAT.ACCESS]: items.filter(i => i.cat === CAT.ACCESS).length
+  };
+  const tabs = [
+    { key: 'ALL', label: 'All' },
+    { key: CAT.CUPLOK, label: 'Cuplok' },
+    { key: CAT.BOARDS, label: 'Boards' },
+    { key: CAT.ACCESS, label: 'Access' }
+  ];
+  el.innerHTML = tabs.map(t => `
+    <button class="cat-tab ${activeCat === t.key ? 'active' : ''}" data-cat="${t.key}">
+      ${t.label}<span class="cat-count">${counts[t.key]}</span>
+    </button>
+  `).join('');
+  el.querySelectorAll('.cat-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeCat = btn.dataset.cat;
+      renderCatTabs();
+      buildCountList();
+    });
+  });
+}
+
+// ═══ COUNT LIST ═══
+function filteredItems() {
+  let f = items;
+  if (activeCat !== 'ALL') f = f.filter(i => i.cat === activeCat);
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    f = f.filter(i => i.name.toLowerCase().includes(q) || i.spec.toLowerCase().includes(q));
+  }
+  return f;
+}
 
 function buildCountList() {
   const list = document.getElementById('countList');
   if (!list) return;
-  list.innerHTML = items.map((it, i) => {
-    const diff = it.counted - it.expected;
-    const status = diff === 0 ? 'matched' : 'diff';
-    const checkClass = diff === 0 ? 'on' : 'diff-on';
-    const iconName = diff === 0 ? 'check' : 'alert-triangle';
-    const expectedText = diff === 0
-      ? `Reserved ${it.expected}`
-      : (diff < 0
-          ? `Reserved ${it.expected} · Short by ${Math.abs(diff)}`
-          : `Reserved ${it.expected} · Over by ${diff}`);
-    const valClass = diff === 0 ? '' : 'diff';
+  const filtered = filteredItems();
+  if (filtered.length === 0) {
+    list.innerHTML = `<div style="padding: 32px 24px; text-align:center; color: var(--muted); font-size: 14px; font-weight: 500;">No items match</div>`;
+    return;
+  }
+  list.innerHTML = filtered.map(it => {
+    const counted = it.counted;
+    const reserved = it.reserved;
+    const diff = counted - reserved;
+    let rowClass = '';
+    let checkClass = '';
+    let checkIcon = 'circle';
+    let valClass = 'zero';
+    if (counted === 0) {
+      rowClass = '';
+      checkClass = '';
+      checkIcon = 'circle';
+      valClass = 'zero';
+    } else if (it.flag) {
+      rowClass = 'flagged';
+      checkClass = 'flagged';
+      checkIcon = 'alert-triangle';
+      valClass = 'short';
+    } else if (counted === reserved) {
+      rowClass = 'partial';
+      checkClass = 'done';
+      checkIcon = 'check';
+      valClass = 'done';
+    } else if (counted < reserved) {
+      rowClass = 'partial';
+      checkClass = 'partial';
+      checkIcon = 'minus';
+      valClass = 'short';
+    } else {
+      rowClass = 'partial';
+      checkClass = 'partial';
+      checkIcon = 'plus';
+      valClass = 'done';
+    }
+    const flagChip = it.flag
+      ? `<div class="cr-flag"><i data-lucide="alert-triangle" class="icon"></i>2 DAMAGED</div>`
+      : '';
     return `
-      <div class="count-row ${status}" data-line="${i}">
-        <div class="cr-check ${checkClass}"><i data-lucide="${iconName}" class="icon icon-xs"></i></div>
+      <div class="count-row ${rowClass}" data-id="${it.id}">
+        <div class="cr-check ${checkClass}">
+          ${counted > 0 ? `<i data-lucide="${checkIcon}" class="icon"></i>` : ''}
+        </div>
         <div class="cr-body">
           <div class="cr-name">${it.name}</div>
-          <div class="cr-expected">${expectedText}</div>
+          <div class="cr-expected">Reserved ${reserved}${flagChip ? '' : ''}</div>
+          ${flagChip}
         </div>
         <div class="cr-counter">
-          <button class="cnt-btn" onclick="adjust(${i}, -1)" aria-label="Subtract">−</button>
-          <div class="cnt-val ${valClass}">${it.counted}</div>
-          <button class="cnt-btn" onclick="adjust(${i}, 1)" aria-label="Add">+</button>
+          <button class="cnt-btn" onclick="adjust(${it.id}, -1)" aria-label="Subtract">−</button>
+          <div class="cnt-val ${valClass}">${counted}</div>
+          <button class="cnt-btn" onclick="adjust(${it.id}, 1)" aria-label="Add">+</button>
         </div>
+        <button class="cr-more" onclick="openSplit(${it.id})" aria-label="More">
+          <i data-lucide="more-vertical" class="icon"></i>
+        </button>
       </div>`;
   }).join('');
   if (window.lucide) lucide.createIcons();
-  updateCountHeader();
+  updateProgress();
 }
 
-function adjust(i, delta) {
-  items[i].counted = Math.max(0, items[i].counted + delta);
+function adjust(id, delta) {
+  const it = items.find(i => i.id === id);
+  if (!it) return;
+  it.counted = Math.max(0, it.counted + delta);
   buildCountList();
 }
 
-function updateCountHeader() {
-  const total = items.length;
-  const ok = items.filter(i => i.counted === i.expected).length;
-  const diff = total - ok;
-  const counted = items.filter(i => i.counted > 0 || i.expected === 0).length;
+function openSplit(id) {
+  const it = items.find(i => i.id === id);
+  if (!it) return;
+  goTo(4);
+}
 
-  const okEl = document.getElementById('countOk');
-  const diffEl = document.getElementById('countDiff');
-  const doneEl = document.getElementById('countDone');
-  const totalEl = document.getElementById('countTotal');
-  const fillEl = document.getElementById('progressFill');
-  if (okEl) okEl.textContent = ok;
-  if (diffEl) diffEl.textContent = diff;
-  if (doneEl) doneEl.textContent = counted;
-  if (totalEl) totalEl.textContent = total;
-  if (fillEl) {
-    const pct = Math.round((counted / total) * 100);
-    fillEl.style.right = (100 - pct) + '%';
+function updateProgress() {
+  const total = items.length;
+  const counted = items.filter(i => i.counted > 0).length;
+  const totalParts = items.reduce((sum, i) => sum + i.reserved, 0);
+  const loadedParts = items.reduce((sum, i) => sum + i.counted, 0);
+
+  const done = document.getElementById('countDone');
+  const tot = document.getElementById('countTotal');
+  const parts = document.getElementById('countParts');
+  const fill = document.getElementById('progressFill');
+  if (done) done.textContent = counted;
+  if (tot) tot.textContent = total;
+  if (parts) parts.textContent = loadedParts;
+  if (fill) {
+    const pct = total === 0 ? 0 : Math.round((counted / total) * 100);
+    fill.style.right = (100 - pct) + '%';
   }
 }
 
-// ───── PHOTO CAPTURE LOGIC ─────
-let activeSlot = null;
+// ═══ SEARCH ═══
+function setupSearch() {
+  const input = document.getElementById('searchInput');
+  if (!input) return;
+  input.addEventListener('input', (e) => {
+    searchQuery = e.target.value;
+    buildCountList();
+  });
+}
 
+// ═══ DAMAGE SPLIT ═══
+function splitAdjust(key, delta) {
+  splitState[key] = Math.max(0, splitState[key] + delta);
+  const map = { load: 'splitLoad', damage: 'splitDamage', scrap: 'splitScrap', lost: 'splitLost' };
+  const el = document.getElementById(map[key]);
+  if (el) {
+    el.textContent = splitState[key];
+    if (splitState[key] === 0) {
+      el.classList.add('zero'); el.classList.remove('active');
+    } else {
+      el.classList.remove('zero'); el.classList.add('active');
+    }
+  }
+}
+
+// ═══ PHOTO CAPTURE ═══
 function setupPhotos() {
   const input = document.getElementById('photoInput');
   if (!input) return;
-
-  // Photo evidence slots
   document.querySelectorAll('#photoRow .photo-tile').forEach(tile => {
     tile.addEventListener('click', () => {
-      activeSlot = parseInt(tile.dataset.slot, 10);
+      activePhotoSlot = parseInt(tile.dataset.slot, 10);
       input.value = '';
       input.click();
     });
   });
-
-  // Nav camera button — adds to next empty slot
-  const navBtn = document.getElementById('navCameraBtn');
-  if (navBtn) {
-    navBtn.addEventListener('click', () => {
-      // Jump to discrepancy screen if not there yet, then add photo
+  const genBtn = document.getElementById('genPhotoBtn');
+  if (genBtn) {
+    genBtn.addEventListener('click', () => {
       if (current !== 4) goTo(4);
       setTimeout(() => {
         const empty = document.querySelector('#photoRow .photo-tile:not(.filled)');
         if (empty) {
-          activeSlot = parseInt(empty.dataset.slot, 10);
+          activePhotoSlot = parseInt(empty.dataset.slot, 10);
           input.value = '';
           input.click();
         }
-      }, 250);
+      }, 260);
     });
   }
-
   input.addEventListener('change', (e) => {
     const file = e.target.files && e.target.files[0];
-    if (!file || activeSlot === null) return;
+    if (!file || activePhotoSlot === null) return;
     const reader = new FileReader();
     reader.onload = (ev) => {
-      const tile = document.querySelector(`#photoRow .photo-tile[data-slot="${activeSlot}"]`);
+      const tile = document.querySelector(`#photoRow .photo-tile[data-slot="${activePhotoSlot}"]`);
       if (!tile) return;
+      photoSlots[activePhotoSlot] = ev.target.result;
       tile.classList.add('filled');
       tile.innerHTML = `
         <img src="${ev.target.result}" alt="Photo evidence">
         <div class="photo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg></div>
       `;
       updatePhotoCount();
-      activeSlot = null;
+      activePhotoSlot = null;
     };
     reader.readAsDataURL(file);
   });
 }
 
 function updatePhotoCount() {
-  const filled = document.querySelectorAll('#photoRow .photo-tile.filled').length;
-  const total = document.querySelectorAll('#photoRow .photo-tile').length;
-  const el = document.getElementById('photoCount');
-  if (el) el.textContent = `${filled} OF ${total}`;
+  const filled = Object.values(photoSlots).filter(Boolean).length;
+  const total = 3;
+  const el = document.getElementById('flagPhotoCount');
+  if (el) el.textContent = `${filled} of ${total}`;
+  const badge = document.getElementById('photoTotal');
+  if (badge) {
+    if (filled > 0) {
+      badge.style.display = 'flex';
+      badge.textContent = filled;
+    } else {
+      badge.style.display = 'none';
+    }
+  }
 }
 
+// ═══ NAVIGATION ═══
 let current = 1;
 const total = 6;
 
@@ -2391,7 +1306,6 @@ function render() {
     calloutsEl.style.opacity = '1';
   }, 140);
 
-  // Update dots
   document.querySelectorAll('.scene-dot').forEach((d, i) => {
     d.classList.remove('active', 'passed');
     if (i + 1 === current) d.classList.add('active');
@@ -2405,7 +1319,6 @@ function goTo(n) {
   render();
 }
 
-// Build dots
 const dotsEl = document.getElementById('sceneDots');
 for (let i = 1; i <= total; i++) {
   const b = document.createElement('button');
@@ -2414,75 +1327,19 @@ for (let i = 1; i <= total; i++) {
   dotsEl.appendChild(b);
 }
 
-// Keyboard nav
 document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
   if (e.key === 'ArrowRight') goTo(current + 1);
   if (e.key === 'ArrowLeft') goTo(current - 1);
   if (e.key === 'Home' || e.key === 'r') goTo(1);
 });
 
-// Signature pad — minimal SVG drawing
-const sigPad = document.getElementById('sigPad');
-const sigSvg = document.getElementById('sigSvg');
-let drawing = false, points = [], paths = [];
-
-function svgPoint(e) {
-  const rect = sigPad.getBoundingClientRect();
-  const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-  const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
-  return { x, y };
-}
-
-function startDraw(e) {
-  e.preventDefault();
-  drawing = true;
-  points = [svgPoint(e)];
-  sigPad.classList.add('has-sig');
-}
-function moveDraw(e) {
-  if (!drawing) return;
-  e.preventDefault();
-  points.push(svgPoint(e));
-  redrawSig();
-}
-function endDraw() {
-  if (!drawing) return;
-  drawing = false;
-  if (points.length > 1) paths.push(points.slice());
-  points = [];
-}
-function redrawSig() {
-  let d = '';
-  const drawPath = (pts) => {
-    if (pts.length < 2) return '';
-    let p = `M ${pts[0].x} ${pts[0].y}`;
-    for (let i = 1; i < pts.length; i++) p += ` L ${pts[i].x} ${pts[i].y}`;
-    return p;
-  };
-  let allPaths = paths.map(drawPath).join(' ');
-  if (points.length > 1) allPaths += ' ' + drawPath(points);
-  sigSvg.innerHTML = `<path d="${allPaths}" stroke="#0A0C18" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
-}
-function clearSig() {
-  paths = []; points = [];
-  sigSvg.innerHTML = '';
-  sigPad.classList.remove('has-sig');
-}
-sigPad.addEventListener('mousedown', startDraw);
-sigPad.addEventListener('mousemove', moveDraw);
-window.addEventListener('mouseup', endDraw);
-sigPad.addEventListener('touchstart', startDraw);
-sigPad.addEventListener('touchmove', moveDraw);
-sigPad.addEventListener('touchend', endDraw);
-
-// Render Lucide icons
-function initIcons() {
-  if (window.lucide) lucide.createIcons();
-}
-
+// ═══ INIT ═══
 function init() {
-  initIcons();
+  if (window.lucide) lucide.createIcons();
+  renderCatTabs();
   buildCountList();
+  setupSearch();
   setupPhotos();
   render();
 }
