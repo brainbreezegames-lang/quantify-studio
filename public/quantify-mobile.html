@@ -248,35 +248,43 @@ body::after {
 .resv-more strong { color: var(--blue); font-weight: 600; }
 
 /* ═══ SCENE 3: LOADING COUNT ═══ */
-.count-header { background: var(--surface); border-bottom: 1px solid var(--line); }
-.count-progress { padding: 4px 24px 14px; }
-.count-progress-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
-.count-progress-text { font-size: 22px; font-weight: 600; color: var(--ink); letter-spacing: -0.5px; }
-.count-progress-text strong { color: var(--blue); }
-.count-progress-meta { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; color: var(--text); font-weight: 700; letter-spacing: 0.3px; }
-.progress-bar { height: 4px; background: var(--surface-3); position: relative; overflow: hidden; }
+.count-header { background: var(--surface); }
+.count-summary { display: flex; align-items: center; justify-content: space-between; padding: 4px 20px 10px; gap: 12px; }
+.count-summary-text { font-size: 14px; color: var(--ink); font-weight: 500; letter-spacing: -0.1px; }
+.count-summary-text strong { color: var(--ink); font-weight: 700; }
+.count-summary-text .muted { color: var(--muted); }
+.count-summary-meta { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: 0.2px; flex-shrink: 0; white-space: nowrap; }
+.progress-bar { height: 3px; background: var(--surface-3); position: relative; overflow: hidden; }
 .progress-fill { position: absolute; inset: 0 100% 0 0; background: var(--blue); transition: right 400ms var(--ease-out); }
 
-.cat-tabs { display: flex; gap: 6px; padding: 12px 16px; overflow-x: auto; scrollbar-width: none; background: var(--surface); border-bottom: 1px solid var(--line); }
+/* Filter row: chips + search icon inline */
+.filter-row { display: flex; align-items: center; gap: 8px; padding: 10px 16px 12px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.cat-tabs { display: flex; gap: 6px; flex: 1; overflow-x: auto; scrollbar-width: none; min-width: 0; }
 .cat-tabs::-webkit-scrollbar { display: none; }
-.cat-tab { flex-shrink: 0; padding: 7px 12px; border: 1.5px solid var(--line); background: var(--surface); font-family: 'Switzer', sans-serif; font-size: 12px; font-weight: 600; color: var(--text); cursor: pointer; letter-spacing: -0.1px; transition: all 160ms var(--ease-out); -webkit-tap-highlight-color: transparent; white-space: nowrap; }
+.cat-tab { flex-shrink: 0; padding: 6px 11px; border: 1.5px solid var(--line); background: var(--surface); font-family: 'Switzer', sans-serif; font-size: 12px; font-weight: 600; color: var(--text); cursor: pointer; letter-spacing: -0.1px; transition: all 160ms var(--ease-out); -webkit-tap-highlight-color: transparent; white-space: nowrap; }
 .cat-tab.active { background: var(--ink); border-color: var(--ink); color: white; }
 .cat-tab .cat-count { color: var(--muted); font-weight: 500; margin-left: 4px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; }
 .cat-tab.active .cat-count { color: rgba(255,255,255,0.7); }
+.filter-search-btn { flex-shrink: 0; width: 36px; height: 32px; border: 1.5px solid var(--line); background: var(--surface); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text); -webkit-tap-highlight-color: transparent; transition: all 140ms var(--ease-out); }
+.filter-search-btn:hover { border-color: var(--blue); color: var(--blue); }
+.filter-search-btn.active { background: var(--ink); border-color: var(--ink); color: white; }
+.filter-search-btn .icon { width: 16px; height: 16px; }
 
-.search-box { display: flex; align-items: center; gap: 8px; margin: 10px 16px; padding: 10px 14px; background: var(--surface); border: 1.5px solid var(--line); }
-.search-box .icon { color: var(--muted); }
+/* Search bar — only visible when toggled */
+.search-bar { display: none; align-items: center; gap: 8px; padding: 10px 16px; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+.search-bar.open { display: flex; }
+.search-bar-box { flex: 1; display: flex; align-items: center; gap: 8px; background: var(--surface); padding: 9px 12px; border: 1.5px solid var(--line); }
+.search-bar-box .icon { color: var(--muted); flex-shrink: 0; }
 .search-input { flex: 1; border: 0; outline: 0; background: transparent; font-family: 'Switzer', sans-serif; font-size: 14px; font-weight: 500; color: var(--ink); min-width: 0; }
 .search-input::placeholder { color: var(--muted); }
+.search-close { width: 32px; height: 32px; background: none; border: none; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; }
 
-/* BULK ACTION STRIP */
-.bulk-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: var(--surface-2); border-bottom: 1px solid var(--line); }
-.bulk-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; background: var(--surface); border: 1.5px solid var(--line); color: var(--ink); font-family: 'Switzer', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: all 140ms var(--ease-out); letter-spacing: -0.1px; }
-.bulk-btn:hover { border-color: var(--blue); color: var(--blue); }
-.bulk-btn:active { transform: scale(0.96); }
-.bulk-btn .icon { width: 14px; height: 14px; stroke-width: 2.25; }
-.bulk-scan { background: var(--ink); color: white; border-color: var(--ink); }
-.bulk-scan:hover { background: var(--blue-dark); border-color: var(--blue-dark); color: white; }
+/* Subtle copy-all link, top of list */
+.list-actions { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; background: var(--surface-2); }
+.list-action-btn { background: none; border: none; color: var(--blue); font-family: 'Switzer', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; padding: 4px 0; -webkit-tap-highlight-color: transparent; letter-spacing: -0.1px; }
+.list-action-btn:active { opacity: 0.6; }
+.list-action-btn .icon { width: 12px; height: 12px; stroke-width: 2.25; }
+.list-action-meta { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 0.2px; }
 
 .count-list { padding-bottom: 12px; }
 .count-row { display: flex; align-items: center; padding: 14px 12px 14px 20px; background: var(--surface); border-bottom: 1px solid var(--line); gap: 10px; transition: background 200ms ease; }
@@ -313,12 +321,6 @@ body::after {
 .cr-more { padding: 4px 6px; background: none; border: none; color: var(--muted); cursor: pointer; display: flex; align-items: center; flex-shrink: 0; }
 .cr-more:hover { color: var(--blue); }
 .cr-more .icon { width: 18px; height: 18px; }
-
-/* ADD SUBSTITUTE */
-.add-sub { margin: 14px 16px; padding: 16px; background: var(--surface); border: 1.5px dashed var(--line-strong); display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; color: var(--muted); font-family: 'Switzer', sans-serif; font-size: 13px; font-weight: 600; -webkit-tap-highlight-color: transparent; transition: all 140ms var(--ease-out); letter-spacing: -0.1px; }
-.add-sub:hover { border-color: var(--blue); color: var(--blue); background: rgba(10, 62, 255, 0.02); }
-.add-sub:active { transform: scale(0.98); }
-.add-sub .icon { width: 14px; height: 14px; stroke-width: 2.25; }
 
 /* KEYPAD SHEET */
 .keypad-overlay {
@@ -761,34 +763,40 @@ body::after {
           </div>
 
           <div class="count-header">
-            <div class="count-progress">
-              <div class="count-progress-row">
-                <div class="count-progress-text"><strong id="countDone">0</strong> <span style="color:var(--muted); font-weight:500;">of <span id="countTotal">13</span> lines counted</span></div>
-                <div class="count-progress-meta"><span id="countParts">0</span> / 180 parts</div>
+            <div class="count-summary">
+              <div class="count-summary-text">
+                <strong id="countDone">0</strong><span class="muted"> of </span><strong id="countTotal">13</strong><span class="muted"> lines</span>
               </div>
-              <div class="progress-bar"><div class="progress-fill" id="progressFill" style="right: 100%;"></div></div>
+              <div class="count-summary-meta"><span id="countParts">0</span> / 180 parts</div>
             </div>
-            <div class="cat-tabs" id="catTabs"></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill" style="right: 100%;"></div></div>
           </div>
 
-          <div class="bulk-bar">
-            <button class="bulk-btn" onclick="matchAllReserved()">
-              <i data-lucide="check-check" class="icon"></i>Copy reserved → loaded
+          <div class="filter-row">
+            <div class="cat-tabs" id="catTabs"></div>
+            <button class="filter-search-btn" id="searchToggle" aria-label="Search">
+              <i data-lucide="search" class="icon"></i>
             </button>
-            <button class="bulk-btn bulk-scan" onclick="simulateScan()">
-              <i data-lucide="scan-line" class="icon"></i>Scan barcode
+          </div>
+
+          <div class="search-bar" id="searchBar">
+            <div class="search-bar-box">
+              <i data-lucide="search" class="icon icon-sm"></i>
+              <input type="text" class="search-input" id="searchInput" placeholder="Search line or part number">
+            </div>
+            <button class="search-close" id="searchClose" aria-label="Close search">
+              <i data-lucide="x" class="icon icon-sm"></i>
             </button>
           </div>
 
           <div class="content">
-            <div class="search-box">
-              <i data-lucide="search" class="icon icon-sm"></i>
-              <input type="text" class="search-input" id="searchInput" placeholder="Search line or part number">
+            <div class="list-actions">
+              <button class="list-action-btn" onclick="matchAllReserved()">
+                <i data-lucide="check-check" class="icon"></i>Copy reserved to loaded
+              </button>
+              <span class="list-action-meta">Tap a number to edit</span>
             </div>
             <div class="count-list" id="countList"></div>
-            <button class="add-sub" onclick="addSubstituteToast()">
-              <i data-lucide="plus" class="icon"></i>Add a substitute or extra item
-            </button>
             <div style="height: 16px;"></div>
           </div>
 
@@ -1157,11 +1165,11 @@ const scenes = [
   },
   {
     title: "Load items",
-    desc: "Tap the number to type big quantities fast. +/− for fine tuning. Match reserved for one-tap bulk fill. Scan for barcode flows. Keypad handles 96 in two taps, not 96. Real shipments are 50 items / 300–400 parts.",
+    desc: "List dominates the screen. Compact stats and progress on top, filter chips when needed, search hidden behind an icon. Tap a number to type big quantities; ± for fine-tuning. Real shipments are 50 lines, 300–400 parts.",
     callouts: [
-      { num: "01", text: "<span>Tap the number to open a keypad</span> — type 96 in two taps, not ninety-six. Match reserved is one shortcut away." },
-      { num: "02", text: "<span>±1 micro-adjust</span> on each side for fine-tuning, not as primary input. Brian called out that +/− alone fails at real scale." },
-      { num: "03", text: "<span>Match all reserved</span> and Scan at the top for bulk actions. Add substitute or new item handles on-the-fly swaps." }
+      { num: "01", text: "<span>The list is the interface.</span> Chrome compressed: stats + progress in one line, filter and search collapsed until needed." },
+      { num: "02", text: "<span>Tap the number to type</span> in the keypad sheet — 96 in two taps, not ninety-six. ± buttons are for fine-tuning only." },
+      { num: "03", text: "<span>Copy reserved to loaded</span> as a subtle shortcut at the top of the list, not a heavy bulk-action bar. Scan stays in the nav." }
     ]
   },
   {
@@ -1445,22 +1453,6 @@ function matchAllReserved() {
   buildCountList();
 }
 
-function simulateScan() {
-  // Visual demo: find first 0-count item and increment by reserved (simulate kit scan)
-  const target = items.find(i => i.counted === 0);
-  if (target) {
-    target.counted = target.reserved;
-    buildCountList();
-  }
-}
-
-function addSubstituteToast() {
-  const btn = event.currentTarget;
-  const original = btn.innerHTML;
-  btn.innerHTML = '<i data-lucide="check" class="icon"></i>Coming in v2';
-  if (window.lucide) lucide.createIcons();
-  setTimeout(() => { btn.innerHTML = original; if (window.lucide) lucide.createIcons(); }, 1200);
-}
 
 function updateProgress() {
   const total = items.length;
@@ -1484,11 +1476,34 @@ function updateProgress() {
 // ═══ SEARCH ═══
 function setupSearch() {
   const input = document.getElementById('searchInput');
-  if (!input) return;
-  input.addEventListener('input', (e) => {
-    searchQuery = e.target.value;
-    buildCountList();
-  });
+  const toggle = document.getElementById('searchToggle');
+  const bar = document.getElementById('searchBar');
+  const close = document.getElementById('searchClose');
+
+  if (toggle && bar) {
+    toggle.addEventListener('click', () => {
+      const isOpen = bar.classList.toggle('open');
+      toggle.classList.toggle('active', isOpen);
+      if (isOpen && input) setTimeout(() => input.focus(), 50);
+    });
+  }
+  if (close && bar) {
+    close.addEventListener('click', () => {
+      bar.classList.remove('open');
+      if (toggle) toggle.classList.remove('active');
+      if (input) {
+        input.value = '';
+        searchQuery = '';
+        buildCountList();
+      }
+    });
+  }
+  if (input) {
+    input.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      buildCountList();
+    });
+  }
 }
 
 // ═══ DAMAGE SPLIT ═══
