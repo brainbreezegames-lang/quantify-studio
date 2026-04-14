@@ -273,8 +273,17 @@ body::after {
 .search-input { flex: 1; border: 0; outline: 0; background: transparent; font-family: 'Switzer', sans-serif; font-size: 14px; font-weight: 500; color: var(--ink); min-width: 0; }
 .search-input::placeholder { color: var(--muted); }
 
+/* BULK ACTION STRIP */
+.bulk-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+.bulk-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; background: var(--surface); border: 1.5px solid var(--line); color: var(--ink); font-family: 'Switzer', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: all 140ms var(--ease-out); letter-spacing: -0.1px; }
+.bulk-btn:hover { border-color: var(--blue); color: var(--blue); }
+.bulk-btn:active { transform: scale(0.96); }
+.bulk-btn .icon { width: 14px; height: 14px; stroke-width: 2.25; }
+.bulk-scan { background: var(--ink); color: white; border-color: var(--ink); }
+.bulk-scan:hover { background: var(--blue-dark); border-color: var(--blue-dark); color: white; }
+
 .count-list { padding-bottom: 12px; }
-.count-row { display: flex; align-items: center; padding: 12px 16px 12px 24px; background: var(--surface); border-bottom: 1px solid var(--line); gap: 10px; transition: background 200ms ease; }
+.count-row { display: flex; align-items: center; padding: 14px 12px 14px 20px; background: var(--surface); border-bottom: 1px solid var(--line); gap: 10px; transition: background 200ms ease; }
 .count-row.partial { background: #FCFDFF; }
 .count-row.flagged { background: #FFF8EC; }
 .cr-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line-strong); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 200ms var(--ease-out); }
@@ -287,18 +296,94 @@ body::after {
 .cr-expected { font-size: 12px; color: var(--muted); margin-top: 2px; font-weight: 500; font-family: 'JetBrains Mono', ui-monospace, monospace; letter-spacing: 0.2px; }
 .cr-flag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; background: var(--warn-bg); color: var(--warn); font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; margin-top: 4px; }
 .cr-flag .icon { width: 9px; height: 9px; stroke-width: 2.5; }
-.cr-counter { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
-.cnt-btn { width: 42px; height: 42px; border: 2px solid var(--line-strong); background: var(--surface); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--ink); font-family: 'Switzer', sans-serif; font-weight: 600; -webkit-tap-highlight-color: transparent; transition: all 140ms var(--ease-out); user-select: none; }
-.cnt-btn:hover { border-color: var(--blue); color: var(--blue); }
-.cnt-btn:active { transform: scale(0.9); background: var(--blue-tint); border-color: var(--blue); }
-.cnt-val { width: 38px; text-align: center; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 17px; font-weight: 700; color: var(--ink); transition: color 200ms ease; }
-.cnt-val.zero { color: var(--dim); }
-.cnt-val.short { color: var(--warn); }
-.cnt-val.done { color: var(--ok); }
 
-.cr-more { padding: 4px 8px; background: none; border: none; color: var(--muted); cursor: pointer; display: flex; align-items: center; flex-shrink: 0; }
+/* NEW QTY CELL — tappable to open keypad */
+.qty-cell { display: flex; align-items: stretch; flex-shrink: 0; border: 1.5px solid var(--line-strong); background: var(--surface); overflow: hidden; }
+.qty-cell:hover { border-color: var(--blue); }
+.qty-mini { width: 36px; height: 46px; border: none; background: transparent; color: var(--text); font-family: 'Switzer', sans-serif; font-size: 20px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; transition: all 140ms var(--ease-out); user-select: none; border-right: 1px solid var(--line); }
+.qty-mini:last-child { border-right: none; border-left: 1px solid var(--line); }
+.qty-mini:active { background: var(--blue-tint); color: var(--blue); }
+.qty-main { min-width: 60px; height: 46px; padding: 0 10px; background: var(--surface); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; transition: background 140ms var(--ease-out); }
+.qty-main:active { background: var(--blue-tint); }
+.qty-num { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 19px; font-weight: 700; color: var(--ink); line-height: 1; letter-spacing: -0.3px; }
+.qty-num.zero { color: var(--dim); font-weight: 500; }
+.qty-num.short { color: var(--warn); }
+.qty-num.done { color: var(--ok); }
+.qty-num.over { color: var(--blue); }
+.qty-of { font-size: 9px; font-family: 'JetBrains Mono', ui-monospace, monospace; color: var(--muted); font-weight: 600; margin-top: 2px; letter-spacing: 0.4px; }
+
+.cr-more { padding: 4px 6px; background: none; border: none; color: var(--muted); cursor: pointer; display: flex; align-items: center; flex-shrink: 0; }
 .cr-more:hover { color: var(--blue); }
 .cr-more .icon { width: 18px; height: 18px; }
+
+/* ADD SUBSTITUTE */
+.add-sub { margin: 14px 16px; padding: 16px; background: var(--surface); border: 1.5px dashed var(--line-strong); display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; color: var(--muted); font-family: 'Switzer', sans-serif; font-size: 13px; font-weight: 600; -webkit-tap-highlight-color: transparent; transition: all 140ms var(--ease-out); letter-spacing: -0.1px; }
+.add-sub:hover { border-color: var(--blue); color: var(--blue); background: rgba(10, 62, 255, 0.02); }
+.add-sub:active { transform: scale(0.98); }
+.add-sub .icon { width: 14px; height: 14px; stroke-width: 2.25; }
+
+/* KEYPAD SHEET */
+.keypad-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 12, 24, 0.48);
+  z-index: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms var(--ease-out);
+}
+.keypad-overlay.open { opacity: 1; pointer-events: all; }
+.keypad-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--surface);
+  z-index: 510;
+  transform: translateY(100%);
+  transition: transform 280ms var(--ease-out);
+  max-height: 92%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px 18px 0 0;
+  overflow: hidden;
+}
+.keypad-overlay.open .keypad-sheet { transform: translateY(0); }
+.kp-handle { width: 36px; height: 4px; background: var(--line-strong); margin: 10px auto 4px; border-radius: 2px; }
+
+.kp-head { padding: 10px 20px 14px; border-bottom: 1px solid var(--line); }
+.kp-head-name { font-size: 15px; font-weight: 600; color: var(--ink); letter-spacing: -0.2px; }
+.kp-head-meta { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; color: var(--muted); margin-top: 3px; font-weight: 600; letter-spacing: 0.3px; }
+
+.kp-display { padding: 22px 20px 16px; background: var(--surface-2); display: flex; align-items: baseline; justify-content: center; gap: 10px; }
+.kp-num { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 44px; font-weight: 700; color: var(--ink); line-height: 1; letter-spacing: -1.5px; }
+.kp-num.short { color: var(--warn); }
+.kp-num.done { color: var(--ok); }
+.kp-num.over { color: var(--blue); }
+.kp-suffix { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 14px; color: var(--muted); font-weight: 600; letter-spacing: 0.2px; }
+
+.kp-shortcuts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; padding: 10px 12px 0; }
+.kp-short { background: var(--surface); border: 1.5px solid var(--line); padding: 10px 6px; font-family: 'Switzer', sans-serif; font-size: 12px; font-weight: 600; color: var(--ink); cursor: pointer; -webkit-tap-highlight-color: transparent; transition: all 140ms var(--ease-out); letter-spacing: -0.1px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.kp-short:hover { border-color: var(--blue); color: var(--blue); }
+.kp-short:active { transform: scale(0.96); background: var(--blue-tint); }
+.kp-short-sub { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 0.2px; }
+.kp-short .kp-short-sub { color: inherit; opacity: 0.6; }
+
+.kp-pad { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; padding: 10px 12px; }
+.kp-key { height: 52px; background: var(--surface); border: 1.5px solid var(--line); font-family: 'Switzer', sans-serif; font-size: 22px; font-weight: 600; color: var(--ink); cursor: pointer; -webkit-tap-highlight-color: transparent; transition: all 100ms var(--ease-out); display: flex; align-items: center; justify-content: center; user-select: none; }
+.kp-key:active { transform: scale(0.94); background: var(--blue-tint); border-color: var(--blue); }
+.kp-key.util { background: var(--surface-2); font-size: 18px; }
+.kp-key .icon { width: 20px; height: 20px; stroke-width: 2; }
+
+.kp-done { margin: 4px 12px 14px; height: 52px; background: var(--blue); color: white; border: none; font-family: 'Switzer', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; -webkit-tap-highlight-color: transparent; transition: all 200ms var(--ease-out); }
+.kp-done:hover { background: var(--blue-dark); }
+.kp-done:active { transform: scale(0.98); }
+.kp-done .icon { color: white; }
+
+.kp-split-link { padding: 10px 12px 8px; background: var(--surface); border-top: 1px solid var(--line); text-align: center; }
+.kp-split-btn { background: none; border: none; color: var(--warn); font-family: 'Switzer', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; padding: 8px 12px; display: inline-flex; align-items: center; gap: 6px; -webkit-tap-highlight-color: transparent; letter-spacing: -0.1px; }
+.kp-split-btn:hover { color: var(--err); }
+.kp-split-btn .icon { width: 12px; height: 12px; stroke-width: 2.5; }
 
 /* Bottom action bar */
 .bot-action { padding: 14px 16px 26px; background: var(--surface); border-top: 1px solid var(--line); flex-shrink: 0; display: flex; gap: 10px; }
@@ -667,12 +752,25 @@ body::after {
             <div class="cat-tabs" id="catTabs"></div>
           </div>
 
+          <div class="bulk-bar">
+            <button class="bulk-btn" onclick="matchAllReserved()">
+              <i data-lucide="check-check" class="icon"></i>Match all reserved
+            </button>
+            <button class="bulk-btn bulk-scan" onclick="simulateScan()">
+              <i data-lucide="scan-line" class="icon"></i>Scan
+            </button>
+          </div>
+
           <div class="content">
             <div class="search-box">
               <i data-lucide="search" class="icon icon-sm"></i>
               <input type="text" class="search-input" id="searchInput" placeholder="Search items or part numbers...">
             </div>
             <div class="count-list" id="countList"></div>
+            <button class="add-sub" onclick="addSubstituteToast()">
+              <i data-lucide="plus" class="icon"></i>Add substitute or new item
+            </button>
+            <div style="height: 16px;"></div>
           </div>
 
           <div class="bot-action">
@@ -681,6 +779,44 @@ body::after {
               <span class="bot-photo-count" id="photoTotal" style="display:none;">0</span>
             </button>
             <button class="btn-primary" onclick="goTo(5)">Review <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
+          </div>
+
+          <!-- KEYPAD SHEET -->
+          <div class="keypad-overlay" id="keypadOverlay" onclick="closeKeypad(event)">
+            <div class="keypad-sheet" onclick="event.stopPropagation()">
+              <div class="kp-handle"></div>
+              <div class="kp-head">
+                <div class="kp-head-name" id="kpName">Cuplok Standard 2.0m</div>
+                <div class="kp-head-meta" id="kpMeta">Reserved 48 · Vertical · 4 cup welded</div>
+              </div>
+              <div class="kp-display">
+                <span class="kp-num" id="kpNum">0</span>
+                <span class="kp-suffix" id="kpSuffix">of 48</span>
+              </div>
+              <div class="kp-shortcuts">
+                <button class="kp-short" onclick="kpMatchReserved()">Match<span class="kp-short-sub" id="kpMatchSub">48</span></button>
+                <button class="kp-short" onclick="kpAdjust(-1)">−1<span class="kp-short-sub">tune</span></button>
+                <button class="kp-short" onclick="kpAdjust(1)">+1<span class="kp-short-sub">tune</span></button>
+              </div>
+              <div class="kp-pad">
+                <button class="kp-key" onclick="kpDigit('1')">1</button>
+                <button class="kp-key" onclick="kpDigit('2')">2</button>
+                <button class="kp-key" onclick="kpDigit('3')">3</button>
+                <button class="kp-key" onclick="kpDigit('4')">4</button>
+                <button class="kp-key" onclick="kpDigit('5')">5</button>
+                <button class="kp-key" onclick="kpDigit('6')">6</button>
+                <button class="kp-key" onclick="kpDigit('7')">7</button>
+                <button class="kp-key" onclick="kpDigit('8')">8</button>
+                <button class="kp-key" onclick="kpDigit('9')">9</button>
+                <button class="kp-key util" onclick="kpClear()">Clear</button>
+                <button class="kp-key" onclick="kpDigit('0')">0</button>
+                <button class="kp-key util" onclick="kpBackspace()"><i data-lucide="delete" class="icon"></i></button>
+              </div>
+              <div class="kp-split-link">
+                <button class="kp-split-btn" onclick="kpGoSplit()"><i data-lucide="git-fork" class="icon"></i>Split this line (damage, scrap, lost)</button>
+              </div>
+              <button class="kp-done" onclick="kpDone()"><i data-lucide="check" class="icon icon-sm"></i>Done</button>
+            </div>
           </div>
         </div>
 
@@ -954,11 +1090,11 @@ const scenes = [
   },
   {
     title: "Load items",
-    desc: "Counters default to zero. Variance is the signal the office needs, so the system never assumes the reserved quantity. Category tabs and search keep 50+ line items usable under gloves.",
+    desc: "Tap the number to type big quantities fast. +/− for fine tuning. Match reserved for one-tap bulk fill. Scan for barcode flows. Keypad handles 96 in two taps, not 96. Real shipments are 50 items / 300–400 parts.",
     callouts: [
-      { num: "01", text: "<span>Counters default to zero.</span> If 60 were reserved and 58 were loaded, the number stays 58. The variance is the point." },
-      { num: "02", text: "<span>Category tabs + search</span> are required at real scale — 50 distinct items, 300–400 parts per shipment." },
-      { num: "03", text: "<span>Item names are pickers</span>, never free text. The 3-dot menu opens the damage split per line." }
+      { num: "01", text: "<span>Tap the number to open a keypad</span> — type 96 in two taps, not ninety-six. Match reserved is one shortcut away." },
+      { num: "02", text: "<span>±1 micro-adjust</span> on each side for fine-tuning, not as primary input. Brian called out that +/− alone fails at real scale." },
+      { num: "03", text: "<span>Match all reserved</span> and Scan at the top for bulk actions. Add substitute or new item handles on-the-fly swaps." }
     ]
   },
   {
@@ -1097,36 +1233,35 @@ function buildCountList() {
   list.innerHTML = filtered.map(it => {
     const counted = it.counted;
     const reserved = it.reserved;
-    const diff = counted - reserved;
     let rowClass = '';
     let checkClass = '';
     let checkIcon = 'circle';
-    let valClass = 'zero';
+    let numClass = 'zero';
     if (counted === 0) {
       rowClass = '';
       checkClass = '';
       checkIcon = 'circle';
-      valClass = 'zero';
+      numClass = 'zero';
     } else if (it.flag) {
       rowClass = 'flagged';
       checkClass = 'flagged';
       checkIcon = 'alert-triangle';
-      valClass = 'short';
+      numClass = 'short';
     } else if (counted === reserved) {
       rowClass = 'partial';
       checkClass = 'done';
       checkIcon = 'check';
-      valClass = 'done';
+      numClass = 'done';
     } else if (counted < reserved) {
       rowClass = 'partial';
       checkClass = 'partial';
       checkIcon = 'minus';
-      valClass = 'short';
+      numClass = 'short';
     } else {
       rowClass = 'partial';
       checkClass = 'partial';
       checkIcon = 'plus';
-      valClass = 'done';
+      numClass = 'over';
     }
     const flagChip = it.flag
       ? `<div class="cr-flag"><i data-lucide="alert-triangle" class="icon"></i>2 DAMAGED</div>`
@@ -1138,17 +1273,17 @@ function buildCountList() {
         </div>
         <div class="cr-body">
           <div class="cr-name">${it.name}</div>
-          <div class="cr-expected">Reserved ${reserved}${flagChip ? '' : ''}</div>
+          <div class="cr-expected">Reserved ${reserved} · ${it.cat}</div>
           ${flagChip}
         </div>
-        <div class="cr-counter">
-          <button class="cnt-btn" onclick="adjust(${it.id}, -1)" aria-label="Subtract">−</button>
-          <div class="cnt-val ${valClass}">${counted}</div>
-          <button class="cnt-btn" onclick="adjust(${it.id}, 1)" aria-label="Add">+</button>
+        <div class="qty-cell">
+          <button class="qty-mini" onclick="adjust(${it.id}, -1)" aria-label="Subtract one">−</button>
+          <div class="qty-main" onclick="openKeypad(${it.id})" aria-label="Edit quantity">
+            <div class="qty-num ${numClass}">${counted}</div>
+            <div class="qty-of">of ${reserved}</div>
+          </div>
+          <button class="qty-mini" onclick="adjust(${it.id}, 1)" aria-label="Add one">+</button>
         </div>
-        <button class="cr-more" onclick="openSplit(${it.id})" aria-label="More">
-          <i data-lucide="more-vertical" class="icon"></i>
-        </button>
       </div>`;
   }).join('');
   if (window.lucide) lucide.createIcons();
@@ -1162,10 +1297,107 @@ function adjust(id, delta) {
   buildCountList();
 }
 
-function openSplit(id) {
+// ═══ KEYPAD ═══
+let kpItemId = null;
+let kpValue = '';
+
+function openKeypad(id) {
   const it = items.find(i => i.id === id);
   if (!it) return;
+  kpItemId = id;
+  kpValue = String(it.counted);
+  const nameEl = document.getElementById('kpName');
+  const metaEl = document.getElementById('kpMeta');
+  const matchSub = document.getElementById('kpMatchSub');
+  if (nameEl) nameEl.textContent = it.name;
+  if (metaEl) metaEl.textContent = `Reserved ${it.reserved} · ${it.spec}`;
+  if (matchSub) matchSub.textContent = it.reserved;
+  renderKeypadDisplay();
+  document.getElementById('keypadOverlay').classList.add('open');
+}
+
+function closeKeypad(e) {
+  if (e && e.target && !e.target.classList.contains('keypad-overlay')) return;
+  document.getElementById('keypadOverlay').classList.remove('open');
+  kpItemId = null;
+}
+
+function renderKeypadDisplay() {
+  const it = items.find(i => i.id === kpItemId);
+  if (!it) return;
+  const num = parseInt(kpValue || '0', 10);
+  const numEl = document.getElementById('kpNum');
+  const suffixEl = document.getElementById('kpSuffix');
+  if (!numEl) return;
+  numEl.textContent = num;
+  numEl.className = 'kp-num';
+  if (num === 0) numEl.classList.add('zero');
+  else if (num === it.reserved) numEl.classList.add('done');
+  else if (num > it.reserved) numEl.classList.add('over');
+  else numEl.classList.add('short');
+  if (suffixEl) {
+    if (num > it.reserved) suffixEl.textContent = `+${num - it.reserved} over`;
+    else if (num === it.reserved) suffixEl.textContent = 'full';
+    else suffixEl.textContent = `of ${it.reserved}`;
+  }
+}
+
+function kpDigit(d) {
+  if (kpValue === '0') kpValue = d;
+  else kpValue = (kpValue + d).slice(0, 5);
+  renderKeypadDisplay();
+}
+function kpBackspace() {
+  kpValue = kpValue.slice(0, -1);
+  if (kpValue === '') kpValue = '0';
+  renderKeypadDisplay();
+}
+function kpClear() { kpValue = '0'; renderKeypadDisplay(); }
+function kpAdjust(delta) {
+  let num = parseInt(kpValue || '0', 10) + delta;
+  if (num < 0) num = 0;
+  kpValue = String(num);
+  renderKeypadDisplay();
+}
+function kpMatchReserved() {
+  const it = items.find(i => i.id === kpItemId);
+  if (!it) return;
+  kpValue = String(it.reserved);
+  renderKeypadDisplay();
+}
+function kpDone() {
+  const it = items.find(i => i.id === kpItemId);
+  if (it) it.counted = parseInt(kpValue || '0', 10);
+  document.getElementById('keypadOverlay').classList.remove('open');
+  kpItemId = null;
+  buildCountList();
+}
+function kpGoSplit() {
+  document.getElementById('keypadOverlay').classList.remove('open');
   goTo(4);
+}
+
+// ═══ BULK ACTIONS ═══
+function matchAllReserved() {
+  items.forEach(it => { if (!it.flag) it.counted = it.reserved; });
+  buildCountList();
+}
+
+function simulateScan() {
+  // Visual demo: find first 0-count item and increment by reserved (simulate kit scan)
+  const target = items.find(i => i.counted === 0);
+  if (target) {
+    target.counted = target.reserved;
+    buildCountList();
+  }
+}
+
+function addSubstituteToast() {
+  const btn = event.currentTarget;
+  const original = btn.innerHTML;
+  btn.innerHTML = '<i data-lucide="check" class="icon"></i>Coming in v2';
+  if (window.lucide) lucide.createIcons();
+  setTimeout(() => { btn.innerHTML = original; if (window.lucide) lucide.createIcons(); }, 1200);
 }
 
 function updateProgress() {
