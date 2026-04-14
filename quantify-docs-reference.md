@@ -1801,6 +1801,161 @@ Design review with Brian every two days (Zeno's requested cadence, Brian agreed)
 
 ---
 
+## Workflow Detail — AT-PAC Full Interview, Combined Learnings (2026-04-13 + 2026-04-14)
+
+> Source: complete AT-PAC interview transcript (Andrej, Michelle, Lee, Zeno) plus Lee's process diagram. This section captures everything new the full transcript surfaced beyond the partial first-30-min summary.
+
+### The most important new finding — a missing intermediate status
+
+In my mobile prototype, the yard taps "Send to office" and the shipment goes directly from `Reserved → Completed`. Lee, Michelle, and Andrej explicitly identified this as **a missing intermediate status**. Quoting the transcript:
+
+> Michelle: "It's almost kind of like you need a pre-status, right? Not the converted reservation status, but the 'hey, this is what we've counted. This is what we know we've got in. This is what we're going to be putting on there' kind of stuff. So it's almost kind of like a preliminary, you know, non-converted to a delivery status at that point."
+
+> Andrej: "At this point right now, they've confirmed the 20. Maybe they haven't truly delivered it yet, but they needed to say, hey, I've got this 20, right?"
+
+> Lee: "It's like a final approval stage for this then to be completed is what we're missing from a mobile application side of things."
+
+**Implication for mobile design:** the yard worker's submit action does NOT mark the shipment as sent. It moves to a pre-confirmation state ("Yard has counted, awaiting office approval") and the office finalizes it on desktop. Quantify already supports this via the `To Be Received` status, but only when the destination job site is configured to require counting on receipt. There is also a known Quantify desktop bug where the branch-level "require counting" setting doesn't propagate to job sites under it (see "Known Quantify desktop issues" below).
+
+### Availability check is its own step (jump-a-step warning)
+
+Lee corrected my prototype's flow: between Reservation and Loading there's a step I skipped over.
+
+> Lee: "I think we've kind of jumped a step where this is more reservation is like, let's see what's in yard. Let's see if we've got this kit available kind of thing."
+
+The proper sequence:
+1. Office creates the reservation
+2. Yard manager prints the reservation ticket
+3. **Yard staff physically check what's available** against the reservation
+4. If short → office orders missing parts OR creates a backorder reservation
+5. Pick ticket gets generated for what's actually loadable
+6. THEN loading begins
+
+This matches step 6 in Lee's diagram ("Equipment will be checked in yard to see what is available"). For mobile v1, this could be a quick pre-step before counting begins, or it could stay on the desktop where the office processes the yard's verbal confirmation.
+
+### The dual-system rollout strategy
+
+Andrej described how AT-PAC will actually deploy this app, which has design implications:
+
+> Andrej: "How I've experienced is that the people will properly run a dual system in the interim. For everybody to get comfortable with this. In other words, they will use the app to add in the stuff that they have, but they will proper follow with their own notes in paper, which anything is not caught by the app."
+
+**Design implication:** v1 doesn't need to handle every edge case. Paper backstop exists during transition. We can ship a focused app that does the 80% well and let paper cover the rest, then add coverage in v1.1 / v2 based on what paper notes reveal.
+
+### The 80% rule was explicitly endorsed
+
+> Andrej: "If we develop version one, I don't think we need to try and have all outliners and all take the measures in place to say, hey, how we trust people or what do we want them to block and not block and all of those things. I think we need to have a practical system that just does the basics version one."
+
+Andrej validated the scope philosophy: **practical basics first, edge cases later.**
+
+### Video capture, not just photos
+
+Andrej mentioned that yard workers are already adapting:
+
+> Andrej: "Some guys have reverted to taking videos around the truck so that they can extract that on demand what they want to do."
+
+Mobile v1 should consider video-as-attachment, not photo-only. Same upload pipeline, just allow video MIME types.
+
+### Photos as legal evidence — storage tradeoff
+
+> Andrej: "This is our evidence, you know, our sort of thing that we take to the court of law and say, hey, see, this is the item. Zoom in it. You need to have a good enough quality for that. But you need to realize what is this going to mean for our data storage."
+
+**Design implication:** photo quality must be high enough for evidentiary use (zoom in to read damage detail). Compression should be conservative. No hard cap on photo count, but communicate storage cost considerations to the engineering side.
+
+### Void must NOT be on mobile
+
+Michelle was clear:
+
+> Michelle: "One thing we definitely don't want to have on the mobile app is void. Or it's definitely based on the user's access."
+
+Void / cancel destructive actions stay on desktop. If permission-gated, only specific roles see the option. Default mobile UI: no void.
+
+### Items must be picked from a list, never free text (reinforced)
+
+> Andrej: "If there's more material or other material on there, they can add to this return and say, I also receive this item and this item from a drop down menu and say, receive these items as well, which can again electronically be transferred to the office rather than somebody having to interpret, type out and re-enter everything again."
+
+Already captured in earlier notes; reinforced strongly here. Even when adding new items mid-flow (substitutions, surprise returns), it's a dropdown picker against the product catalog — never typed.
+
+### The CNRL Fort Mac problem expanded
+
+The full transcript adds detail to the multi-sub-site reconciliation problem:
+
+> Andrej: "The truck driver might tell us it came from this one job site or this one project, but in the system, it might be somewhere totally else. So they first have to figure out where does this material belong and how are they going to do the allocations of this return."
+
+> Michelle: "You may have a site, you know, CNRL, right, but under CNRL, there might be so many different units or so many different areas or order numbers that you might have three on there. The truck comes back and says CNRL Fort Mac. Okay, well, but unfortunately, in Quantify, there's going to be three different job sites for that as well, too."
+
+So one logical "site name" maps to multiple Quantify job sites. Mobile must surface ALL related job sites under the parent name as pickable options.
+
+### Known Quantify desktop issues mentioned
+
+Two existing bugs in the desktop product surfaced during the call. Worth flagging because they affect mobile design:
+
+1. **"Require counting on receipt" doesn't propagate from branch to job sites.** Michelle: "We actually have the site itself or the main branch itself marked as 'make sure to have counts to be received portions done', but it doesn't default to the job site. Even though we have it at the top level, it's not going all the way down to the job site level. So we need to get operationally, we need to get that fixed." Avontus engineering should fix this so the per-branch default works.
+
+2. **The pre-return → to-be-received status transition** isn't always firing as expected. Michelle hit this live in the demo and couldn't figure out why. Likely related to the same propagation bug above.
+
+### Andrej's value-prop framing
+
+Andrej explained the business reason for the app from AT-PAC's side:
+
+> Andrej: "There's literally people, you know, Australia organizations planning more people just to be able to capture this data. And that's where the pressure is really coming from where they say, hey, do we need to employ 10 more people just to enter data, or where we want to have a communication to people and say, hey, by the way, this thing is coming. That means that that admin loading is going to drop a bit."
+
+**The product's economic story for customers:** mobile reduces admin headcount needs. AT-PAC was considering hiring 10 more data-entry people. The app prevents that. This should be the headline metric for ROI.
+
+### Andrej's strategic ask (timeline)
+
+Throughout the call Andrej kept returning to one ask: **a date he can communicate internally.**
+
+> Andrej: "We need to have at least a sort of a concrete timeline to say, hey, here is something coming. So we can just align our organization so that everybody doesn't go off on their own tangents and trying to do stuff that you already solved for us now already with your app."
+
+> Andrej: "I do basically just need a, you know, like you say, that sort of horizon say, hey, this is what we can expect."
+
+Lee committed to coming back with a development team estimate. This timeline pressure should drive scope discipline — narrow + soon beats broad + later.
+
+### Internal Avontus connections AT-PAC pointed us to
+
+For follow-up domain knowledge, Andrej and Lee mentioned:
+- **Claire and Tom** at the UK team — process knowledge across regions
+- **Julie** — internal Avontus stakeholder
+- **Richard** — referenced as needing communication loop
+- **Brian** — already in scope
+
+Lee committed to looping these people in via copied communications.
+
+### Combined v1 mobile scope after this transcript + Lee's diagram
+
+Mobile owns yard steps. The complete picture, integrating both sources:
+
+| Step | Action | Where it lives |
+|------|--------|----------------|
+| 1 | Office creates reservation | Quantify desktop |
+| 2 | Office prints pick ticket | Quantify desktop |
+| 3 | Yard checks availability against pick ticket | Mobile (or paper for v1) |
+| 4 | Pick ticket handed to yard staff | Physical |
+| 5 | Yard counts each line as items are picked | **Mobile** |
+| 6 | Driver name + vehicle plate captured | **Mobile** |
+| 7 | Items loaded into stillages, then onto wagon | Physical |
+| 8 | Photos of full wagon and damaged items captured | **Mobile** (born-linked) |
+| 9 | Notes attached for damage / substitutions | **Mobile** |
+| 10 | Yard submits to office for confirmation | **Mobile** (NEW: pre-confirmation status) |
+| 11 | Office reviews on desktop, confirms | Quantify desktop |
+| 12 | Status transitions to Shipment Sent / Completed | Quantify automation |
+| 13 | Backorder reservation auto-created if short | Quantify automation |
+| 14 | Driver delivers, customer receives + signs | Physical / driver paperwork |
+| 15 | Office adds delivery numbers | Quantify desktop |
+| 16 | Confirmation email to customer | Quantify automation |
+
+Mobile owns 5–10. Everything else is desktop or automation. v1 must NOT include void, status overrides, billing changes, or admin actions.
+
+### Open verification items from this transcript
+
+1. Exact name and definition of the "pre-confirmation" status (likely To Be Received, but Michelle/Lee couldn't conclusively reproduce it on the call)
+2. Whether videos should be supported in v1 or v2
+3. Photo quality / compression policy
+4. Whether the yard's availability-check step (#3 above) lives in mobile or stays on desktop for v1
+5. Andrej's timeline ask — Lee committed to coming back with a development estimate
+
+---
+
 ## Workflow Detail — End-to-End AT-PAC Delivery Process (from Lee, 2026-04-14)
 
 > Source: process diagram shared by Lee. This is the canonical end-to-end workflow at AT-PAC for a delivery, from sales order through customer-confirmed delivery and email follow-up. Use this to understand where mobile sits inside the full flow and what touches mobile must respect.
