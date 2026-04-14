@@ -202,53 +202,50 @@ body::after {
 .group-label { display: flex; align-items: center; justify-content: space-between; padding: 22px 24px 10px; font-size: 11px; font-weight: 700; color: var(--text); letter-spacing: 1px; text-transform: uppercase; }
 .group-label .count { font-family: 'JetBrains Mono', ui-monospace, monospace; color: var(--muted); font-weight: 600; letter-spacing: 0.3px; }
 
-.ship-card { background: var(--surface); margin: 0 16px 8px; padding: 16px 18px; border: 1px solid var(--line); cursor: pointer; transition: transform 160ms var(--ease-out), border-color 160ms ease; -webkit-tap-highlight-color: transparent; }
-.ship-card:active { transform: scale(0.985); border-color: var(--line-strong); }
-.ship-card.featured { border-left: 3px solid var(--blue); padding-left: 17px; }
-.ship-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.pill { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.7px; padding: 4px 8px; display: inline-flex; align-items: center; gap: 5px; }
+.ship-card { background: var(--surface); margin: 0 16px 10px; padding: 18px 20px; cursor: pointer; transition: transform 160ms var(--ease-out); -webkit-tap-highlight-color: transparent; border: 1px solid transparent; }
+.ship-card:hover { border-color: var(--line); }
+.ship-card:active { transform: scale(0.97); }
+.ship-card.featured { box-shadow: inset 3px 0 0 var(--blue); padding-left: 22px; }
+.ship-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; gap: 12px; }
+.pill { font-family: 'Switzer', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: -0.05px; padding: 3px 8px; display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; line-height: 1.4; }
 .pill.reserved { background: var(--blue-tint); color: var(--blue); }
 .pill.prereturn { background: var(--warn-bg); color: var(--warn); }
 .pill.intransit { background: var(--surface-3); color: var(--text); }
 .pill.completed { background: var(--ok-bg); color: var(--ok); }
 .pill-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; display: inline-block; flex-shrink: 0; }
-.ship-time { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; color: var(--text); font-weight: 700; }
-.ship-name { font-size: 18px; font-weight: 600; color: var(--ink); letter-spacing: -0.3px; margin-bottom: 5px; line-height: 1.15; }
-.ship-site { font-size: 13px; color: var(--muted); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; font-weight: 500; }
-.ship-site .icon { color: var(--dim); }
-.ship-foot { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--line); }
-.ship-meta { display: flex; align-items: center; gap: 10px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 0.3px; }
-.ship-meta .sep { width: 3px; height: 3px; background: var(--dim); border-radius: 50%; }
-.ship-arrow { color: var(--ink); }
+.ship-time { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: 0.2px; flex-shrink: 0; }
+.ship-name { font-size: 19px; font-weight: 600; color: var(--ink); letter-spacing: -0.4px; margin-bottom: 4px; line-height: 1.2; }
+.ship-site { font-size: 13.5px; color: var(--muted); margin-bottom: 14px; display: flex; align-items: center; gap: 6px; font-weight: 500; letter-spacing: -0.05px; }
+.ship-site .icon { color: var(--dim); flex-shrink: 0; }
+.ship-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ship-meta { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11.5px; color: var(--muted); font-weight: 600; letter-spacing: 0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1; }
+.ship-arrow { color: var(--dim); opacity: 0.7; transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out); flex-shrink: 0; }
+.ship-card:hover .ship-arrow { color: var(--ink); opacity: 1; transform: translateX(2px); }
 
 /* ═══ SCENE 2: RESERVATION DETAIL ═══ */
-.resv-hero { padding: 6px 24px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
-.resv-top { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-.resv-id { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 13px; color: var(--muted); font-weight: 600; }
-.resv-name { font-size: 26px; font-weight: 600; color: var(--ink); letter-spacing: -0.7px; line-height: 1.1; margin-bottom: 8px; }
-.resv-site { font-size: 14px; color: var(--muted); display: flex; align-items: center; gap: 6px; font-weight: 500; }
+.resv-hero { padding: 4px 24px 24px; background: var(--surface); }
+.resv-name { font-size: 28px; font-weight: 600; color: var(--ink); letter-spacing: -0.9px; line-height: 1.08; margin-bottom: 8px; }
+.resv-site { font-size: 14px; color: var(--muted); display: flex; align-items: center; gap: 6px; font-weight: 500; letter-spacing: -0.05px; }
+.resv-site .icon { color: var(--dim); flex-shrink: 0; }
 
-.resv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; background: var(--surface); }
-.resv-col { padding: 16px 24px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.resv-col:nth-child(2n) { border-right: none; }
-.resv-col:nth-last-child(-n+2) { border-bottom: none; }
-.resv-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.7px; text-transform: uppercase; margin-bottom: 6px; }
-.resv-value { font-size: 16px; font-weight: 600; color: var(--ink); letter-spacing: -0.2px; }
-.resv-value .icon-inline { color: var(--blue); vertical-align: -2px; margin-right: 2px; }
+.resv-stats { padding: 0 24px 24px; background: var(--surface); display: flex; flex-wrap: wrap; gap: 22px 28px; }
+.resv-stat { display: flex; flex-direction: column; gap: 3px; }
+.resv-stat-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.2px; }
+.resv-stat-value { font-size: 15px; font-weight: 600; color: var(--ink); letter-spacing: -0.2px; line-height: 1.3; }
 
-.resv-items-label { padding: 24px 24px 10px; display: flex; align-items: center; justify-content: space-between; }
-.resv-items-text { font-size: 11px; font-weight: 700; color: var(--text); letter-spacing: 1px; text-transform: uppercase; }
-.resv-items-count { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; color: var(--blue); font-weight: 700; }
+.resv-divider { height: 1px; background: var(--line); margin: 0 24px; }
 
-.resv-preview { background: var(--surface); }
-.resv-preview-row { display: flex; align-items: center; padding: 12px 24px; border-bottom: 1px solid var(--line); gap: 14px; }
-.resv-preview-num { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; color: var(--muted); font-weight: 600; width: 22px; }
+.resv-items-label { padding: 22px 24px 12px; display: flex; align-items: baseline; justify-content: space-between; background: var(--surface-2); }
+.resv-items-text { font-size: 13px; font-weight: 600; color: var(--ink); letter-spacing: -0.1px; }
+.resv-items-count { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: 0.2px; }
+
+.resv-preview { background: var(--surface-2); padding-bottom: 4px; }
+.resv-preview-row { display: flex; align-items: center; padding: 12px 24px; gap: 16px; }
 .resv-preview-body { flex: 1; min-width: 0; }
-.resv-preview-name { font-size: 14px; font-weight: 600; color: var(--ink); letter-spacing: -0.1px; }
-.resv-preview-spec { font-size: 12px; color: var(--muted); margin-top: 1px; font-weight: 500; }
-.resv-preview-qty { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 14px; font-weight: 700; color: var(--ink); }
-.resv-preview-qty span { color: var(--muted); font-weight: 500; font-size: 11px; margin-left: 3px; }
-.resv-more { text-align: center; padding: 14px 24px 22px; font-size: 13px; color: var(--muted); font-weight: 500; }
+.resv-preview-name { font-size: 14.5px; font-weight: 600; color: var(--ink); letter-spacing: -0.15px; }
+.resv-preview-spec { font-size: 12.5px; color: var(--muted); margin-top: 2px; font-weight: 500; }
+.resv-preview-qty { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 15px; font-weight: 600; color: var(--ink); letter-spacing: -0.2px; }
+.resv-more { padding: 14px 24px 22px; font-size: 13px; color: var(--muted); font-weight: 500; background: var(--surface-2); letter-spacing: -0.05px; }
 .resv-more strong { color: var(--blue); font-weight: 600; }
 
 /* ═══ SCENE 3: LOADING COUNT ═══ */
@@ -572,66 +569,64 @@ body::after {
               <div class="hero-eyebrow">MONDAY · APR 14</div>
               <div class="hero-headline">Today</div>
               <div class="hero-stats">
-                <span><strong>4</strong>shipments</span>
+                <span><strong>2</strong>deliveries</span>
                 <span class="sep"></span>
-                <span><strong>2</strong>out</span>
-                <span class="sep"></span>
-                <span><strong>2</strong>in</span>
+                <span><strong>2</strong>pre-returns</span>
               </div>
             </div>
 
-            <div class="group-label"><span>NOW</span><span class="count">09:00 — 12:00</span></div>
+            <div class="group-label"><span>This morning</span><span class="count">09:00 — 12:00</span></div>
 
             <div class="ship-card featured" onclick="goTo(2)">
               <div class="ship-top">
-                <div class="pill reserved"><span class="pill-dot"></span>RESERVED · TO BE SENT</div>
+                <span class="pill reserved"><span class="pill-dot"></span>Reserved</span>
                 <div class="ship-time">09:42</div>
               </div>
               <div class="ship-name">Phillips 66 Sweeny Refinery</div>
               <div class="ship-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Old Ocean, TX · Unit 14 turnaround</div>
               <div class="ship-foot">
-                <div class="ship-meta"><span>DEL-2401</span><span class="sep"></span><span>48 items · 342 parts</span><span class="sep"></span><span>Truck 1 of 4</span></div>
+                <div class="ship-meta">DEL-2401 · 13 lines · Truck 1/4</div>
                 <i data-lucide="arrow-right" class="icon icon-sm ship-arrow"></i>
               </div>
             </div>
 
-            <div class="ship-card">
+            <div class="ship-card" onclick="goTo(2)">
               <div class="ship-top">
-                <div class="pill reserved"><span class="pill-dot"></span>RESERVED · TO BE SENT</div>
+                <span class="pill reserved"><span class="pill-dot"></span>Reserved</span>
                 <div class="ship-time">11:00</div>
               </div>
               <div class="ship-name">ExxonMobil Beaumont</div>
               <div class="ship-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Beaumont, TX · Coker 2 platform</div>
               <div class="ship-foot">
-                <div class="ship-meta"><span>DEL-2402</span><span class="sep"></span><span>21 items · 96 parts</span><span class="sep"></span><span>Truck 1 of 1</span></div>
+                <div class="ship-meta">DEL-2402 · 21 lines · single truck</div>
                 <i data-lucide="arrow-right" class="icon icon-sm ship-arrow"></i>
               </div>
             </div>
 
-            <div class="group-label"><span>LATER</span><span class="count">13:00 — 17:00</span></div>
+            <div class="group-label"><span>This afternoon</span><span class="count">13:00 — 17:00</span></div>
 
             <div class="ship-card">
               <div class="ship-top">
-                <div class="pill prereturn"><span class="pill-dot"></span>PRE-RETURN · AWAITING COUNT</div>
+                <span class="pill prereturn"><span class="pill-dot"></span>Pre-return</span>
                 <div class="ship-time">13:30</div>
               </div>
               <div class="ship-name">Marathon Galveston Bay</div>
               <div class="ship-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Texas City, TX · FCC unit return</div>
               <div class="ship-foot">
-                <div class="ship-meta"><span>RET-1187</span><span class="sep"></span><span>Est. 68 parts</span><span class="sep"></span><span>Truck arriving</span></div>
+                <div class="ship-meta">RET-1187 · Est. 68 parts</div>
                 <i data-lucide="arrow-right" class="icon icon-sm ship-arrow"></i>
               </div>
             </div>
 
             <div class="ship-card">
               <div class="ship-top">
-                <div class="pill prereturn"><span class="pill-dot"></span>PRE-RETURN · AWAITING COUNT</div>
+                <span class="pill prereturn"><span class="pill-dot"></span>Pre-return</span>
                 <div class="ship-time">15:00</div>
               </div>
               <div class="ship-name">Dow Freeport</div>
               <div class="ship-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Freeport, TX · Plant B-3 partial return</div>
               <div class="ship-foot">
-                <div class="ship-meta"><span>RET-1188</span><span class="sep"></span><span>Est. 42 parts</span><span class="sep"></span><span>Truck arriving</span></div>
+                <div class="ship-meta">RET-1188 · Est. 42 parts</div>
                 <i data-lucide="arrow-right" class="icon icon-sm ship-arrow"></i>
               </div>
             </div>
@@ -653,74 +648,70 @@ body::after {
 
           <div class="nav">
             <button class="nav-btn" onclick="goTo(1)" aria-label="Back"><i data-lucide="arrow-left" class="icon"></i></button>
-            <div class="nav-title">Reservation<span class="nav-sub">DEL-2401 · RESERVED</span></div>
+            <div class="nav-title">DEL-2401<span class="nav-sub">Reserved · Truck 1 of 4</span></div>
             <button class="nav-btn" aria-label="More"><i data-lucide="more-horizontal" class="icon"></i></button>
           </div>
 
           <div class="content">
             <div class="resv-hero">
-              <div class="resv-top">
-                <div class="pill reserved"><span class="pill-dot"></span>RESERVED · TO BE SENT</div>
-              </div>
-              <div class="resv-name">Phillips 66 Sweeny Refinery</div>
+              <div class="resv-name">Phillips 66 Sweeny</div>
               <div class="resv-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Old Ocean, TX · Unit 14 turnaround</div>
             </div>
 
-            <div class="resv-grid">
-              <div class="resv-col">
-                <div class="resv-label">From</div>
-                <div class="resv-value">Beaumont Branch</div>
+            <div class="resv-stats">
+              <div class="resv-stat">
+                <div class="resv-stat-label">From</div>
+                <div class="resv-stat-value">Beaumont Branch</div>
               </div>
-              <div class="resv-col">
-                <div class="resv-label">To</div>
-                <div class="resv-value">Phillips 66 Sweeny</div>
+              <div class="resv-stat">
+                <div class="resv-stat-label">Rent starts</div>
+                <div class="resv-stat-value">Today, when truck leaves</div>
               </div>
-              <div class="resv-col">
-                <div class="resv-label">Rent start</div>
-                <div class="resv-value"><i data-lucide="calendar" class="icon icon-xs icon-inline"></i>Today</div>
+              <div class="resv-stat">
+                <div class="resv-stat-label">This truck</div>
+                <div class="resv-stat-value">13 lines · 180 parts</div>
               </div>
-              <div class="resv-col">
-                <div class="resv-label">Truck</div>
-                <div class="resv-value">1 of 4 planned</div>
+              <div class="resv-stat">
+                <div class="resv-stat-label">Reservation total</div>
+                <div class="resv-stat-value">48 lines across 4 trucks</div>
               </div>
             </div>
 
+            <div class="resv-divider"></div>
+
             <div class="resv-items-label">
-              <span class="resv-items-text">Planned for this truck</span>
-              <span class="resv-items-count">18 lines · 180 parts</span>
+              <span class="resv-items-text">What goes on this truck</span>
+              <span class="resv-items-count">13 lines</span>
             </div>
 
             <div class="resv-preview">
               <div class="resv-preview-row">
-                <div class="resv-preview-num">01</div>
                 <div class="resv-preview-body">
                   <div class="resv-preview-name">Cuplok Standard 2.0m</div>
                   <div class="resv-preview-spec">Vertical · 4 cup welded</div>
                 </div>
-                <div class="resv-preview-qty">48<span>parts</span></div>
+                <div class="resv-preview-qty">36</div>
               </div>
               <div class="resv-preview-row">
-                <div class="resv-preview-num">02</div>
                 <div class="resv-preview-body">
                   <div class="resv-preview-name">Cuplok Ledger 2.5m</div>
                   <div class="resv-preview-spec">Horizontal · galvanized</div>
                 </div>
-                <div class="resv-preview-qty">96<span>parts</span></div>
+                <div class="resv-preview-qty">36</div>
               </div>
               <div class="resv-preview-row">
-                <div class="resv-preview-num">03</div>
                 <div class="resv-preview-body">
-                  <div class="resv-preview-name">Cuplok Transom 1.2m</div>
-                  <div class="resv-preview-spec">Intermediate · galvanized</div>
+                  <div class="resv-preview-name">Cuplok Standard 2.5m</div>
+                  <div class="resv-preview-spec">Vertical · 4 cup welded</div>
                 </div>
-                <div class="resv-preview-qty">36<span>parts</span></div>
+                <div class="resv-preview-qty">18</div>
               </div>
-              <div class="resv-more"><strong>+ 15 more items</strong> · see all in the loading screen</div>
+              <div class="resv-more">+ 10 more lines · open the loading screen to see and count</div>
             </div>
           </div>
 
           <div class="bot-action">
-            <button class="btn-primary" onclick="goTo(3)">Start loading Truck 1 <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
+            <button class="btn-primary" onclick="goTo(3)">Start loading <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
           </div>
         </div>
 
@@ -744,8 +735,8 @@ body::after {
           <div class="count-header">
             <div class="count-progress">
               <div class="count-progress-row">
-                <div class="count-progress-text"><strong id="countDone">0</strong> <span style="color:var(--muted); font-weight:500;">of <span id="countTotal">18</span> items loaded</span></div>
-                <div class="count-progress-meta"><span id="countParts">0</span> / 180</div>
+                <div class="count-progress-text"><strong id="countDone">0</strong> <span style="color:var(--muted); font-weight:500;">of <span id="countTotal">13</span> lines counted</span></div>
+                <div class="count-progress-meta"><span id="countParts">0</span> / 180 parts</div>
               </div>
               <div class="progress-bar"><div class="progress-fill" id="progressFill" style="right: 100%;"></div></div>
             </div>
@@ -754,21 +745,21 @@ body::after {
 
           <div class="bulk-bar">
             <button class="bulk-btn" onclick="matchAllReserved()">
-              <i data-lucide="check-check" class="icon"></i>Match all reserved
+              <i data-lucide="check-check" class="icon"></i>Copy reserved → loaded
             </button>
             <button class="bulk-btn bulk-scan" onclick="simulateScan()">
-              <i data-lucide="scan-line" class="icon"></i>Scan
+              <i data-lucide="scan-line" class="icon"></i>Scan barcode
             </button>
           </div>
 
           <div class="content">
             <div class="search-box">
               <i data-lucide="search" class="icon icon-sm"></i>
-              <input type="text" class="search-input" id="searchInput" placeholder="Search items or part numbers...">
+              <input type="text" class="search-input" id="searchInput" placeholder="Search line or part number">
             </div>
             <div class="count-list" id="countList"></div>
             <button class="add-sub" onclick="addSubstituteToast()">
-              <i data-lucide="plus" class="icon"></i>Add substitute or new item
+              <i data-lucide="plus" class="icon"></i>Add a substitute or extra item
             </button>
             <div style="height: 16px;"></div>
           </div>
@@ -794,9 +785,9 @@ body::after {
                 <span class="kp-suffix" id="kpSuffix">of 48</span>
               </div>
               <div class="kp-shortcuts">
-                <button class="kp-short" onclick="kpMatchReserved()">Match<span class="kp-short-sub" id="kpMatchSub">48</span></button>
-                <button class="kp-short" onclick="kpAdjust(-1)">−1<span class="kp-short-sub">tune</span></button>
-                <button class="kp-short" onclick="kpAdjust(1)">+1<span class="kp-short-sub">tune</span></button>
+                <button class="kp-short" onclick="kpMatchReserved()">Match reserved<span class="kp-short-sub" id="kpMatchSub">48</span></button>
+                <button class="kp-short" onclick="kpAdjust(-1)">−1</button>
+                <button class="kp-short" onclick="kpAdjust(1)">+1</button>
               </div>
               <div class="kp-pad">
                 <button class="kp-key" onclick="kpDigit('1')">1</button>
@@ -813,7 +804,7 @@ body::after {
                 <button class="kp-key util" onclick="kpBackspace()"><i data-lucide="delete" class="icon"></i></button>
               </div>
               <div class="kp-split-link">
-                <button class="kp-split-btn" onclick="kpGoSplit()"><i data-lucide="git-fork" class="icon"></i>Split this line (damage, scrap, lost)</button>
+                <button class="kp-split-btn" onclick="kpGoSplit()"><i data-lucide="git-fork" class="icon"></i>Flag damage, scrap, or lost items</button>
               </div>
               <button class="kp-done" onclick="kpDone()"><i data-lucide="check" class="icon icon-sm"></i>Done</button>
             </div>
@@ -932,69 +923,69 @@ body::after {
 
           <div class="content">
             <div class="rev-hero">
-              <div class="rev-eyebrow">READY TO SUBMIT</div>
-              <div class="rev-headline">18 lines counted.<br>1 flagged, 0 substitutions.</div>
-              <div class="rev-sub">Office confirms the final counts and transitions the shipment. <strong>Rent starts</strong> after their confirmation, not on this submit.</div>
+              <div class="rev-eyebrow">READY TO SEND</div>
+              <div class="rev-headline">13 lines counted.<br>1 line with damage.</div>
+              <div class="rev-sub">Office confirms what you submit. <strong>Rent starts</strong> after their confirmation, not when you tap send.</div>
             </div>
 
             <div class="rev-numbers">
               <div class="rn-col">
-                <div class="rn-label">FULL</div>
-                <div class="rn-value ok">17</div>
+                <div class="rn-label">Matched</div>
+                <div class="rn-value ok">12</div>
               </div>
               <div class="rn-col">
-                <div class="rn-label">SHORT</div>
+                <div class="rn-label">Short</div>
                 <div class="rn-value warn">1</div>
               </div>
               <div class="rn-col">
-                <div class="rn-label">DAMAGED</div>
+                <div class="rn-label">Damaged</div>
                 <div class="rn-value warn">2</div>
               </div>
             </div>
 
-            <div class="rev-group"><span class="rev-group-title">Needs office attention</span><span class="rev-group-count">1 LINE</span></div>
+            <div class="rev-group"><span class="rev-group-title">Needs office attention</span><span class="rev-group-count">1 line</span></div>
 
             <div class="rev-line warn">
               <div class="rl-dot warn"><i data-lucide="alert-triangle" class="icon"></i></div>
               <div class="rl-body">
                 <div class="rl-name">LVL Plank 2.5m</div>
-                <div class="rl-meta">60 reserved · 58 load · 2 damage</div>
+                <div class="rl-meta">12 reserved · 10 loaded · 2 damaged</div>
               </div>
               <div class="rl-qty warn">−2</div>
             </div>
 
-            <div class="rev-group"><span class="rev-group-title">Loaded in full</span><span class="rev-group-count">17 LINES</span></div>
+            <div class="rev-group"><span class="rev-group-title">Loaded in full</span><span class="rev-group-count">12 lines</span></div>
 
             <div class="rev-line">
               <div class="rl-dot ok"><i data-lucide="check" class="icon"></i></div>
               <div class="rl-body">
                 <div class="rl-name">Cuplok Standard 2.0m</div>
-                <div class="rl-meta">48 reserved · 48 loaded</div>
+                <div class="rl-meta">36 reserved · 36 loaded</div>
               </div>
-              <div class="rl-qty">48</div>
+              <div class="rl-qty">36</div>
             </div>
             <div class="rev-line">
               <div class="rl-dot ok"><i data-lucide="check" class="icon"></i></div>
               <div class="rl-body">
                 <div class="rl-name">Cuplok Ledger 2.5m</div>
-                <div class="rl-meta">96 reserved · 96 loaded</div>
+                <div class="rl-meta">36 reserved · 36 loaded</div>
               </div>
-              <div class="rl-qty">96</div>
+              <div class="rl-qty">36</div>
             </div>
             <div class="rev-line">
               <div class="rl-dot ok"><i data-lucide="check" class="icon"></i></div>
               <div class="rl-body">
-                <div class="rl-name">Cuplok Transom 1.2m</div>
-                <div class="rl-meta">36 reserved · 36 loaded</div>
+                <div class="rl-name">Cuplok Standard 2.5m</div>
+                <div class="rl-meta">18 reserved · 18 loaded</div>
               </div>
-              <div class="rl-qty">36</div>
+              <div class="rl-qty">18</div>
             </div>
 
             <div class="rev-attach">
               <div class="rev-attach-icon"><i data-lucide="paperclip" class="icon"></i></div>
               <div class="rev-attach-body">
-                <div class="rev-attach-title">Attachments</div>
-                <div class="rev-attach-meta">0 photos · 1 note on LVL Plank</div>
+                <div class="rev-attach-title">Attached</div>
+                <div class="rev-attach-meta">2 photos · 1 note on LVL Plank 2.5m</div>
               </div>
               <button class="rev-attach-edit" onclick="goTo(4)">Edit</button>
             </div>
@@ -1003,7 +994,7 @@ body::after {
           </div>
 
           <div class="bot-action">
-            <button class="btn-primary" onclick="goTo(6)">Submit for office confirmation <i data-lucide="send" class="icon icon-sm"></i></button>
+            <button class="btn-primary" onclick="goTo(6)">Send to office <i data-lucide="send" class="icon icon-sm"></i></button>
           </div>
         </div>
 
@@ -1133,46 +1124,41 @@ const CAT = {
   ACCESS: 'Accessories'
 };
 
+// Truck 1 of 4 for reservation DEL-2401
+// 13 lines · 180 parts reserved for this truck
+// Story state: yard worker mid-loading; 12 lines matched, 1 line partially short (damage)
 const items = [
-  { id: 1, name: "Cuplok Standard 2.0m",    spec: "Vertical · 4 cup welded",    cat: CAT.CUPLOK,  reserved: 48, counted: 0, flag: false },
-  { id: 2, name: "Cuplok Standard 2.5m",    spec: "Vertical · 4 cup welded",    cat: CAT.CUPLOK,  reserved: 24, counted: 0, flag: false },
-  { id: 3, name: "Cuplok Standard 3.0m",    spec: "Vertical · 4 cup welded",    cat: CAT.CUPLOK,  reserved: 12, counted: 0, flag: false },
-  { id: 4, name: "Cuplok Ledger 2.5m",      spec: "Horizontal · galvanized",    cat: CAT.CUPLOK,  reserved: 96, counted: 0, flag: false },
-  { id: 5, name: "Cuplok Ledger 1.8m",      spec: "Horizontal · galvanized",    cat: CAT.CUPLOK,  reserved: 48, counted: 0, flag: false },
-  { id: 6, name: "Cuplok Ledger 1.2m",      spec: "Horizontal · galvanized",    cat: CAT.CUPLOK,  reserved: 24, counted: 0, flag: false },
-  { id: 7, name: "Cuplok Transom 1.2m",     spec: "Intermediate · galvanized",  cat: CAT.CUPLOK,  reserved: 36, counted: 0, flag: false },
-  { id: 8, name: "Cuplok Transom 0.7m",     spec: "Intermediate · galvanized",  cat: CAT.CUPLOK,  reserved: 18, counted: 0, flag: false },
-  { id: 9, name: "LVL Plank 2.5m",          spec: "Laminated veneer · OSHA",    cat: CAT.BOARDS,  reserved: 60, counted: 0, flag: false, splittable: true },
-  { id: 10, name: "LVL Plank 1.8m",         spec: "Laminated veneer · OSHA",    cat: CAT.BOARDS,  reserved: 24, counted: 0, flag: false },
-  { id: 11, name: "Steel Toe Board 2.5m",   spec: "Edge protection · steel",    cat: CAT.BOARDS,  reserved: 24, counted: 0, flag: false },
-  { id: 12, name: "Steel Toe Board 1.8m",   spec: "Edge protection · steel",    cat: CAT.BOARDS,  reserved: 12, counted: 0, flag: false },
-  { id: 13, name: "Cuplok Guardrail 2.5m",  spec: "Top rail · galvanized",      cat: CAT.CUPLOK,  reserved: 18, counted: 0, flag: false },
-  { id: 14, name: "Cuplok Guardrail 1.8m",  spec: "Top rail · galvanized",      cat: CAT.CUPLOK,  reserved: 12, counted: 0, flag: false },
-  { id: 15, name: "Cuplok Spigot",          spec: "Vertical joint connector",   cat: CAT.CUPLOK,  reserved: 24, counted: 0, flag: false },
-  { id: 16, name: "Base Jack 600mm",        spec: "Adjustable · 38mm thread",   cat: CAT.ACCESS,  reserved: 24, counted: 0, flag: false },
-  { id: 17, name: "Base Jack 450mm",        spec: "Adjustable · 38mm thread",   cat: CAT.ACCESS,  reserved: 12, counted: 0, flag: false },
-  { id: 18, name: "Ladder 2.0m",            spec: "Aluminum · OSHA rated",      cat: CAT.ACCESS,  reserved: 4,  counted: 0, flag: false }
+  { id: 1,  name: "Cuplok Standard 2.0m",   spec: "Vertical · 4 cup welded",   cat: CAT.CUPLOK, reserved: 36, counted: 0, flag: false },
+  { id: 2,  name: "Cuplok Standard 2.5m",   spec: "Vertical · 4 cup welded",   cat: CAT.CUPLOK, reserved: 18, counted: 0, flag: false },
+  { id: 3,  name: "Cuplok Standard 3.0m",   spec: "Vertical · 4 cup welded",   cat: CAT.CUPLOK, reserved: 12, counted: 0, flag: false },
+  { id: 4,  name: "Cuplok Ledger 2.5m",     spec: "Horizontal · galvanized",   cat: CAT.CUPLOK, reserved: 36, counted: 0, flag: false },
+  { id: 5,  name: "Cuplok Ledger 1.8m",     spec: "Horizontal · galvanized",   cat: CAT.CUPLOK, reserved: 12, counted: 0, flag: false },
+  { id: 6,  name: "Cuplok Ledger 1.2m",     spec: "Horizontal · galvanized",   cat: CAT.CUPLOK, reserved: 6,  counted: 0, flag: false },
+  { id: 7,  name: "Cuplok Transom 1.2m",    spec: "Intermediate · galvanized", cat: CAT.CUPLOK, reserved: 12, counted: 0, flag: false },
+  { id: 8,  name: "LVL Plank 2.5m",         spec: "Laminated veneer · OSHA",   cat: CAT.BOARDS, reserved: 12, counted: 0, flag: false, splittable: true },
+  { id: 9,  name: "LVL Plank 1.8m",         spec: "Laminated veneer · OSHA",   cat: CAT.BOARDS, reserved: 6,  counted: 0, flag: false },
+  { id: 10, name: "Steel Toe Board 2.5m",   spec: "Edge protection · steel",   cat: CAT.BOARDS, reserved: 6,  counted: 0, flag: false },
+  { id: 11, name: "Cuplok Guardrail 2.5m",  spec: "Top rail · galvanized",     cat: CAT.CUPLOK, reserved: 8,  counted: 0, flag: false },
+  { id: 12, name: "Base Jack 600mm",        spec: "Adjustable · 38mm thread",  cat: CAT.ACCESS, reserved: 12, counted: 0, flag: false },
+  { id: 13, name: "Ladder 2.0m",            spec: "Aluminum · OSHA rated",     cat: CAT.ACCESS, reserved: 4,  counted: 0, flag: false }
 ];
+// reserved sum: 36+18+12+36+12+6+12+12+6+6+8+12+4 = 180 ✓
 
-// Pre-fill some to simulate in-progress counting for the scene
-items[0].counted = 48;
-items[1].counted = 24;
+// Story state for demo: 12 lines fully matched, 1 line (LVL Plank 2.5m) short by 2 due to damage
+// Loaded parts = 178 of 180; 2 flagged damaged
+items[0].counted = 36;
+items[1].counted = 18;
 items[2].counted = 12;
-items[3].counted = 96;
-items[4].counted = 48;
-items[5].counted = 24;
-items[6].counted = 36;
-items[7].counted = 18;
-items[8].counted = 58; items[8].flag = true;  // LVL Plank 2.5m flagged with damage
-items[9].counted = 24;
-items[10].counted = 24;
+items[3].counted = 36;
+items[4].counted = 12;
+items[5].counted = 6;
+items[6].counted = 12;
+items[7].counted = 10; items[7].flag = true;  // LVL Plank 2.5m: 10 loaded, 2 damaged
+items[8].counted = 6;
+items[9].counted = 6;
+items[10].counted = 8;
 items[11].counted = 12;
-items[12].counted = 18;
-items[13].counted = 12;
-items[14].counted = 24;
-items[15].counted = 24;
-items[16].counted = 12;
-items[17].counted = 4;
+items[12].counted = 4;
 
 // ═══ STATE ═══
 let activeCat = 'ALL';
@@ -1273,7 +1259,7 @@ function buildCountList() {
         </div>
         <div class="cr-body">
           <div class="cr-name">${it.name}</div>
-          <div class="cr-expected">Reserved ${reserved} · ${it.cat}</div>
+          <div class="cr-expected">Reserved ${reserved} · ${it.spec}</div>
           ${flagChip}
         </div>
         <div class="qty-cell">
