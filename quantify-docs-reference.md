@@ -68,7 +68,7 @@ Branch Office (main yard/stocking location — where equipment lives + billing c
 |------|------|-------------|
 | **DEL** | Delivery | Ships to job site; rent starts accruing |
 | **RET** | Return | Returns from job site; rent stops |
-| **TRF** | Transfer | Move between locations |
+| **TRF** | Transfer | Move between locations (branch↔branch or branch↔jobsite; job-to-job transfers exist but excluded from mobile app — fringe case) |
 | **RSV** | Reservation | Future-dated material hold |
 | **Sell** | Sale | Sell products outright |
 
@@ -85,39 +85,43 @@ Branch Office (main yard/stocking location — where equipment lives + billing c
 
 ## The 3 Ways to Send Equipment (from interview — CRITICAL)
 
-### Way 1 — Straight Shipment (instant)
+### Way 1 — Direct Shipment (instant)
 ```
-New Shipment → add products → hit OK → gone immediately
+New Shipment → add products → hit OK → done
 ```
-- Rent starts instantly
+- **Rent start date is configurable**, not always instant: either set explicitly on each shipment, or via a global option that defaults to Today+x days
 - No verification step
-- Done by office staff
+- Done by desktop (or mobile)
 - **Mobile app: probably not needed here**
+- Photos/attachments can be added to any shipment (common when there are discrepancies)
 
-### Way 2 — Reservation → Release
+### Way 2 — Reservation → Confirm
 ```
 Create Reservation → equipment held as "Reserved" (removed from available stock)
 → Yard workers count + load truck
-→ Office enters actual quantities sent → releases
+→ Desktop/Mobile enters actual quantities sent → taps OK
 → Equipment on rent ✓
 ```
 - Reservation "holds" stock so others can't use it
 - Reserved items appear in stock as "Reserved" not "Available"
 - Yard workers can barcode-scan items as they load
+- If shortages found, there's a checkbox to create a new reservation for the short items
 - **Mobile app: yard worker counting + confirming what went on the truck**
 
-### Way 3 — Reservation → Release → Customer Confirmation (most controlled)
+### Way 3 — Reservation → Confirm → Customer Confirmation (most controlled)
 ```
 Create Reservation → Yard counts + loads
-→ Office releases → equipment marked "In Transit" (not yet on rent)
+→ Desktop/Mobile taps OK → equipment marked "In Transit" (not yet on rent)
 → Customer physically counts what arrived → confirms
-→ Discrepancy resolved → on rent ✓
+→ If mismatch: status becomes "Discrepancies" → resolved → on rent ✓
 ```
 - Used when customer disputes quantities
 - Can hide quantities from customer so they must count themselves
-- Discrepancy resolution:
+- **Discrepancy flow**: mismatch creates a "Discrepancies" status; must be resolved before going on rent
   - Customer counted wrong → item goes on rent (customer pays)
   - Company didn't load it → goes back to available stock (company's fault)
+- **Signatures**: delivery driver signs + customer rep signs (freeform text field) on the In Transit delivery
+- Photos/attachments strongly encouraged when discrepancies exist
 - **Mobile app: both yard counting AND customer confirmation steps**
 
 **Client's words:** *"To me, when I think of a mobile app, I see somebody with a tablet in the yard confirming what went."*
@@ -136,7 +140,7 @@ Scanning is available on reservations too — yard workers scan as they load.
 
 ## The 2 Ways to Bring Equipment Back (from interview)
 
-### Way 1 — Straight Return
+### Way 1 — Direct Return (direct shipment from job to branch)
 ```
 Right-click → Return → enter quantities → hit OK → rent stops ✓
 ```
@@ -147,12 +151,11 @@ Right-click → Return → enter quantities → hit OK → rent stops ✓
 ### Way 2 — Pre-Return (client's preferred method)
 ```
 Create Pre-Return (set future date + expected items)
-→ Print pick ticket → goes to yard workers
 → Truck arrives → workers count items off truck
-→ Office confirms actual quantities → rent stops ✓
+→ Desktop/Mobile confirms actual quantities → rent stops ✓
 ```
 - Client prefers this because date is set once and everything aligns
-- Also used for overnight drops: print labels → workers unload into bays → count in the morning
+- Also used for overnight drops: print bin tags (sheet of paper attached to return bins) → workers unload into bays → count in the morning
 - **Mobile app: yard worker counting what comes off the truck**
 
 ---
@@ -216,7 +219,10 @@ Up to 6 tabs:
 - Driver (person responsible) OR Vehicle
 - Rent start date (when billing begins)
 
-**Pick Tickets:** Printable delivery/return documents; 2–5 signature lines configurable. Goes to yard workers showing what to load/unload.
+**Pick Tickets (desktop only):** A pick ticket comes from a reservation — it's a printed report showing expected quantities. Yard workers fill it out by hand (what they actually loaded), then bring it back to the office to enter into Quantify desktop.
+- **Mobile app replaces this**: instead of printing and carrying a pick ticket, yard workers do the "picking" directly in the app (filling out the reservation in real-time). No physical pick ticket is printed when mobile is used.
+- Signature lines appear on the pick ticket when delivering an In Transit shipment: Prepared by / Delivered by / Received by (2–5 lines configurable)
+- Bin tags: separate small printout to attach to return bins (different from pick ticket)
 
 ---
 
@@ -915,3 +921,972 @@ Request ←(1:1)→ Activity ←(many:1)→ Scaffold
 - **Blue**: Not yet built / scheduled for future work (no physical presence)
 - **Red**: Cannot be used — any in-progress work or safety hold
 - **Green**: Standing and safe to use
+
+---
+
+## UX Research — Users & Environment
+
+> Source: quantify-ux-research.md
+
+### Who They Are
+- Yard workers, yard managers, inventory teams
+- Office/billing/dispatch staff (desktop users, directly dependent on mobile)
+- Field/job site workers — foremen, GCs (secondary mobile users)
+
+### Devices
+- iPads and rugged Android tablets in heavy-duty drop-proof cases with hand straps
+- Both iOS and Android required
+
+### Physical Realities
+- **Direct sunlight** causes severe screen glare — workers squint, seek shade, or abandon the app for paper
+- **Thick gloves** (leather, rubber-coated, cut-resistant) are mandatory — small touch targets are unusable
+- **Greasy/dirty hands** — touching the screen requires removing a glove, which they hate
+- **Devices are NOT carried constantly** — loading requires two hands; tablets get balanced on truck tailgates, stacked on materials, or shoved under an armpit
+- Devices are never permanently mounted to vehicles — workers walk the entire yard
+
+---
+
+## UX Research — How They Work Today
+
+### Yard Worker's Shift
+- Check device for incoming equipment requests, outbound orders, unscheduled returns
+- Truck arrives → worker gets pick-list (often still paper on a clipboard)
+- Physically hunt down materials — items are frequently buried under other stacks
+- Pull items, load using forklift or by hand, count, get driver signature
+- Hand paperwork back to office
+
+### The Paper Problem
+- Many yards still use paper pick-tickets because they're easy to fill out on a tailgate
+- When counts don't match, workers cross out the printed number with a Sharpie and write the actual number
+- The office updates the system later — if they remember
+
+### Communication Between Yard and Office
+- Two-way radios (walkie-talkies) are the standard
+- Yelling out the window
+- Calling the yard worker's personal cell phone
+- To check delivery status, the office literally looks out the window to see if the truck is still there
+
+---
+
+## UX Research — Edge Cases & Pain Points
+
+| Pain Point | What Happens |
+|-----------|-------------|
+| **Phantom inventory** | System says 50 pieces in yard — worker is staring at empty dirt. Items moved to another job site, never documented. #1 reason workers walk to the office. |
+| **Phantom transfers** | Scaffolding moves Job Site A → Job Site B without returning to yard. Truck arrives with 300 pieces, system expected 100. |
+| **Undocumented substitutions** | Worker needs 50 items, only finds 45. Throws in 5 of a different size to keep truck moving. Forgets to write it down → corrupted inventory. **#1 mistake the office has to fix.** |
+| **Damaged returns** | Returns come back bent, concrete-covered. Must be flagged so they're not accidentally allocated to the next outgoing truck. Currently no clean way to do this in the flow. |
+| **Buried inventory** | Needed items at the bottom of a massive stack. Workers substitute a different size/type on the fly. |
+| **Unscheduled returns** | Trucks arrive with equipment not tied to any reservation. No paperwork, no advance notice — just a pile of metal. |
+| **Last-minute field requests** | "We're done, come get it tomorrow" — zero planning. Or opposite: pickup scheduled for Friday, work delayed, scaffolding sits 3 extra weeks. |
+
+---
+
+## UX Research — Connectivity & Offline
+
+### The Reality
+- Scaffolding yards are giant Faraday cages — massive stacks of steel/aluminum kill WiFi and cellular signals
+- Dead zones everywhere, especially near metal laydown areas and loading bays
+- Job sites are even worse — basements, parking garages, steel-framed high-rises = zero signal
+
+### Requirements
+- **Full offline mode is non-negotiable** — not offline-capable, offline-FIRST
+- Queue all data locally when connection drops
+- Worker must be able to continue counting seamlessly without interruption
+- Auto-sync in background when connection returns
+- Prioritize critical inventory updates over heavy media (photos)
+- If offline mode fails, workers restart 200-piece counts from scratch — major frustration source
+- **Clear visual confirmation that sync was successful** — worker needs to know the office received their data before moving to the next truck
+
+---
+
+## UX Research — Mobile → Desktop Handoff
+
+- Office **cannot** finalize a shipment, process an invoice, or release billing until the yard worker confirms the physical count
+- Once worker taps "confirm" and device syncs → office sees updated inventory in real-time
+- Automatically triggers: delivery manifests, inventory adjustments, rental billing activation
+- No manual office intervention required after sync
+
+### The Waiting Game
+- Office waits on yard for final load confirmations (so they can run billing or go home)
+- Yard waits on office when a driver shows up unannounced and the pick-ticket isn't approved yet
+- Both sides are frequently blocked by the other
+
+---
+
+## UX Research — Scanning & Input
+
+- **Barcode scanning is primary input — but deeply unreliable**: metal scaffolding gets covered in mud, concrete, rust; barcodes get destroyed
+- Workers on Reddit openly mock barcodes/QR codes in scaffolding yards
+- **Manual quantity entry is an absolute fallback necessity**
+- Workers identify products almost entirely by **sight, size, and muscle memory** — they don't read labels
+- **Group scanning (Feb 2026):** scan one barcode for a predefined bundle (e.g., 50 horizontal braces) → records entire group quantity
+
+---
+
+## UX Research — Key Design Drivers
+
+| Rule | Why |
+|------|-----|
+| **Touch targets 56px+ minimum** | Gloved hands, greasy fingers |
+| **High contrast, sunlight-readable** | Direct sunlight is the default environment |
+| **The app competes with paper** | If slower than clipboard + Sharpie, workers abandon it |
+| **Never block the worker** | Any hard stop (approval gates, connection requirements) kills adoption |
+| **Offline-first** | Not offline-capable — offline-FIRST |
+| **Sync status must be unmistakable** | Worker needs to know office received data before walking to next truck |
+| **Design for substitutions** | Workers WILL change counts without approval — allow it, flag it, don't prevent it |
+| **Returns need the most UX attention** | Messiest workflow — unsorted piles, damage flags, over-returns |
+| **Product images > product numbers** | Workers identify by sight, not by code |
+
+---
+
+## Mobile POC — 5 Core Screens
+
+> Source: "Quantify Mobile App - UNO PoC" client document
+
+### Tech Stack
+- Design System: Figma (Uno Platform Material Toolkit)
+- UI Framework: WinUI 3 (API surface)
+- Cross-Platform: Uno Platform
+- MAUI: excluded unless unavoidable
+
+### Screen 1 — Login
+- Quantify logo/branding
+- Username + Password fields (TextBox Outlined, PasswordBox Outlined)
+- Sign In (Filled button), Connection Settings (Text button)
+- Connection status bar at bottom, version + copyright footer
+- **Validation state:** inline field errors + error banner "Sign in failed"
+
+### Screen 2 — Connection Settings
+- NavigationBar with back/close
+- Remote server TextBox, Protocol row (https://), Use SSL toggle (default On)
+- Test Connection button
+- **Error state:** red banner "Connection failed"
+- **Success state:** green banner "Connected successfully"
+
+### Screen 3 — Home
+- NavigationBar "Home"
+- Welcome card: avatar (initials), name, role
+- Quick Actions: Who Am I, Sample Form, Scan Barcode (MenuItem rows with chevron)
+- Last Scan card (placeholder or result)
+- Version footer
+
+### Screen 4 — Who Am I
+- Avatar, full name, email
+- Detail rows: Role, Permissions, Username (56px height, label/value)
+- Branch offices as Chips (Portland, Chicago, Salt Lake City)
+- Sign Out button
+
+### Screen 5 — Sample Form ("Parent")
+- Scrollable form with card sections: text fields, files, boolean toggles, dropdowns, date fields, numeric fields + calculated result
+- Bottom action bar: Cancel (Outlined) + Save (Filled)
+- **Validation state:** error summary banner + inline errors below each invalid field
+
+---
+
+## Design Feedback — What Works / What Doesn't
+
+> Accumulated from design review sessions with client
+
+### What They Liked
+- Metrics showing real scaffold data (467 green / 703 red / 3,024 requests / 406 active)
+- Topic cards with colored icons
+- Navy blue (#10296E) as the brand color — NOT the bright #0A3EFF
+- Split layout: left 30% overview + right 70% content
+- White/light backgrounds with blue accents only
+
+### What They Hated
+- Multiple blues clashing — pick ONE
+- Dark mode — keep it white/light
+- Generic dashboard cards that look like every other app
+- Broken/hand-drawn SVG icons — use icon libraries or copy exact source
+- Too much text, too colorful, too busy
+- Black anywhere in the UI
+- Box-in-box-in-box nesting
+- Rounded frame/mockup wrappers around the UI
+- Hamburger menus that serve no purpose
+
+### Critical Design Rules
+- **ONE blue only: #10296E** (navy dark blue, not the bright primary #0A3EFF)
+- Never hand-draw SVG icons — use Material Symbols, Lucide, or copy exact source
+- White/light backgrounds — never dark mode
+- Body text 16px minimum, labels 13px minimum
+- All interactive rows 56px+ height
+- Buttons 52px+ tall, full-width for primary actions
+- Always show connection/online status
+- #757575 minimum for secondary text — #9E9E9E only for tertiary (never #ABABAB, fails WCAG AA)
+- Plan the design in detail BEFORE coding — one good build beats 10 quick iterations
+
+---
+
+## Industry Context — The 6 Roles in a Scaffolding Rental Business
+
+> Universal across scaffolding rental companies (AT-PAC, BrandSafway, Altrad, Sunbelt, Apollo, Layher, etc.). Use this to know who you are designing for when someone names a job title.
+
+### 1. Rental Coordinator (a.k.a. Rental Clerk, Rental Admin)
+
+- **Where:** Office. Phone-and-keyboard job.
+- **Day:** Takes rental inquiries, creates reservations, prepares rental agreements, schedules pickups/returns, enters and invoices rental orders, maintains job files, communicates inventory needs to purchasing.
+- **Software:** The rental management system (Quantify, Rentalman, Alert, InTempo, RUX, Baseplan, MCS, Rental360). Rentalman is the incumbent competitor Quantify typically replaces.
+- **Reports to:** Operations Manager or Branch Manager.
+- **Handoffs owned:** Customer phone/email → reservation. Reservation → pick ticket to yard. Returned paperwork → invoice.
+- **Pain:** Customer calls asking "is my stuff there yet?" with no visibility because yard is on paper. Double-entry between rental system and ERP. Quote/price errors.
+- **Vocabulary:** Reservation, quote, rental agreement, pick ticket, invoice, PO, BOL, on-rent, off-rent.
+
+### 2. Yard Supervisor (a.k.a. Yard Manager, Yard Foreman, Warehouse Supervisor)
+
+- **Where:** Half in a yard office, half walking the yard.
+- **Day:** Gets pick tickets from office, directs yard workers on what to load, verifies outbound/inbound counts, inspects for damage, tags components for maintenance, manages 3–15 yard workers, signs BOLs, reports damage/missing parts upstream.
+- **Software:** Historically paper + clipboard + whiteboard. Increasingly a mobile app on rugged tablet. Dispatcher module of the rental system.
+- **Reports to:** Branch Manager.
+- **Reports to them:** Yard workers, forklift operators, sometimes drivers.
+- **Handoffs owned:** Office pick ticket → physical load → driver (BOL signed). Inbound truck → count-in → report to office. Damage → repair queue or write-off.
+- **Pain:** Pick tickets wrong or missing. Damage disputes ("was this broken when it left or came back?"). Counts off by a few items taking 30 min to reconcile. Office promises things that aren't in stock.
+- **Vocabulary:** Kit, pick, load, check-in, check-out, BOL, damaged, missing, short, over-count, returnable, scrap.
+
+### 3. Turnaround / Access Coordinator
+
+- **Where:** At the customer (typically oil & gas refinery). Highest-paid role on this list. Often seconded from an EPC or industrial services firm.
+- **Day:** During an oil refinery shutdown (2–6 weeks, $1M+/day lost revenue for the refinery), owns all scaffold access decisions. Decides where scaffolding goes, how long it stays, whether to use alternatives (rope access, hydraulic platforms, drones, ladders). Prevents duplicate scaffolds from competing contractors. Monitors rental timeouts. Pushes for early removal.
+- **Software:** Spreadsheets. Proprietary turnaround management tools. Sometimes a scaffolding tracking module (Avontus Scaffold Tracker, etc.).
+- **Reports to:** Turnaround Manager at the refinery.
+- **Coordinates with:** Planners, supervisors, multiple scaffolding contractors, safety, welders/painters/insulators ("soft crafts" that use the scaffolding).
+- **Pain:** Field crews refuse to let scaffolds come down ("we might need it again"). Contractors happily leave scaffolds standing because they get paid rental. No single source of truth for "what's up right now." Multiple contractors building overlapping scaffolds for the same pipe rack. Budget blows out quietly.
+- **Vocabulary:** Turnaround (TAR), shutdown, access plan, pre-fab, dismantle schedule, idle scaffold, footprint, cost-per-day, craft, soft-craft, playbook.
+- **Why this role matters for Quantify:** Biggest, most expensive, most under-served customer segment. Everything breaks during a TAR.
+
+### 4. Dispatcher (often combined with Yard Supervisor at smaller branches)
+
+- **Where:** Office, at a dashboard.
+- **Day:** Routes trucks. Assigns drivers. Sequences pickups and deliveries. Reacts to changes (traffic, customer delays, mechanical breakdowns). Communicates with drivers by phone/radio/app.
+- **Software:** Graphical dispatch board (Alert, Rental360, Quantify dispatcher). GPS/telematics. Phone.
+- **Reports to:** Operations Manager.
+- **Handoffs owned:** Reservation → truck slot → driver → customer site. Driver issues → escalation to coordinator/customer.
+- **Pain:** Late cancellations. Driver calls saying customer isn't ready. "Rush this to site X by 2pm" on top of a full day. Re-routes.
+- **Vocabulary:** Route, run, leg, drop, ETA, BOL, POD (proof of delivery), manifest, dead-head.
+
+### 5. Branch Manager
+
+- **Where:** Branch office. Walks the yard daily. Sometimes on customer visits.
+- **Day:** Runs the P&L of one branch. Leads 10–20 people (coordinators + yard crew + drivers). Reviews utilization, revenue, receivables, damages. Handles customer escalations the account manager can't resolve. Hires and fires. Chases late-paying customers.
+- **Software:** BI dashboards, the rental system, email, ERP/finance.
+- **Reports to:** Regional/Operations Director.
+- **KPIs watched daily:**
+  - Utilization % (what portion of inventory is currently on-rent)
+  - Revenue vs. target
+  - DSO (days sales outstanding)
+  - On-rent asset count
+  - Damage rate
+  - Fleet availability
+- **Pain:** "I don't know what's actually on rent right now." Receivables aging. Customer disputes over damage. Competing branches borrowing inventory without telling anyone.
+- **Vocabulary:** Utilization, DSO, on-rent value, fleet, yield, write-off, depreciation, capex, rebill.
+
+### 6. Account Manager (a.k.a. Sales Rep, Business Development)
+
+- **Where:** Road. Customer site. Coffee shops. Occasionally branch.
+- **Day:** Owns the customer relationship. Site surveys. Quotes. Negotiates contracts and long-term rates. Chases late starts, expedites emergencies. Fields escalations. Brings leads in. Cross-sells (scaffold + engineering + labor).
+- **Software:** CRM (Salesforce, HubSpot), quoting tool (often inside the rental system), mobile app for on-site estimates, PowerPoint, Excel.
+- **Reports to:** Sales Director or Branch Manager.
+- **Handoffs owned:** Customer need → quote (loops in estimator for complex jobs). Signed quote → coordinator for reservation. Ongoing relationship → escalation path when things break.
+- **Pain:** Quote took 3 days while competitor quoted same day. Rental rate was wrong. Branch forgot to ship. Customer angry about damage invoice they signed off on themselves.
+- **Vocabulary:** Site survey, quote, bid, RFQ, rate sheet, master service agreement (MSA), long-term hire, expedite, cross-sell, up-sell, account plan.
+
+---
+
+## Industry Context — Communication Web & Pinch Points
+
+### The Universal Flow
+
+```
+    CUSTOMER PROJECT MANAGER  ──▶  ACCOUNT MANAGER
+                                        │
+                                        ▼
+                              RENTAL COORDINATOR
+                                   │        │
+                          pick ticket      invoice ◀── after return
+                                   ▼        │
+                            DISPATCHER ─────┤
+                                   │        │
+                                   ▼        │
+                            YARD SUPERVISOR ◀── count-in
+                                   │        ▲
+                               loads truck  │
+                                   ▼        │
+                               DRIVER ──▶ SITE ──▶ FIELD FOREMAN
+                                                        │
+                                             mod requests / returns
+                                                        │
+                                 (during TAR: ACCESS COORDINATOR owns this leg)
+```
+
+### The 5 Pinch Points — Every Quantify Feature Exists To Fix One
+
+| # | Pinch point | Common failure |
+|---|-------------|----------------|
+| 1 | **Account Manager → Coordinator:** quote-to-reservation | Wrong rate, wrong item, wrong date |
+| 2 | **Coordinator → Yard:** pick ticket hand-off | Paper-based, no live update |
+| 3 | **Yard → Driver → Site:** BOL + proof of delivery | Unsigned, damaged in transit, customer rep disputes |
+| 4 | **Site → Office:** mod requests + ready-for-pickup | Phone tag, no paper trail |
+| 5 | **Yard count-in → Coordinator → Invoice:** damage & missing reconciliation | Delayed billing, disputes |
+
+### The Universal Pain Sentence
+
+> Every paper handoff is a 4-to-24 hour information delay plus an error-entry moment.
+
+That is Quantify's whole value proposition in one line. Memorize it.
+
+---
+
+## Industry Context — Cross-Company Terminology (The 20 Unlock Words)
+
+If you can use these 20 in a sentence correctly, you will stop sounding new in any customer call.
+
+**Commercial:** Reservation · Quote · Rental Agreement · Rate sheet · MSA (Master Service Agreement) · On-rent / Off-rent · Re-rent · Rent day / billable day · 28-day billing · DSO
+
+**Operations:** Pick ticket · BOL (Bill of Lading) · POD (Proof of Delivery) · Kit / BOM (Bill of Materials) · Count-in / Check-in · Damage note · Short / Over · Scrap / Write-off
+
+**Physical:** Yard / Depot · Branch · Standard · Ledger · Transom · Cuplok / System scaffold / Tube-and-clamp
+
+**Field:** Erector / Scaffolder · Erection · Dismantle · Modification (mod) request · Handover · Pre-build / Prefab · Tag (green / yellow / red)
+
+**Customer types:** Turnaround (TAR) · Shutdown · Refinery · Craft / Soft-craft · Footprint · Access plan
+
+---
+
+## Industry Context — Where to Learn More (Sources)
+
+**Job-description aggregators (anonymous, quiet research):**
+- LinkedIn — search "scaffold rental coordinator," "yard supervisor scaffolding," "turnaround coordinator," "scaffold dispatcher," "branch manager scaffold," "scaffold account manager"
+- Indeed / ZipRecruiter / Glassdoor — same searches; the "responsibilities" section of any listing is free organizational anthropology
+
+**Industry-specific:**
+- [NASC Scaffolding Careers — Yard Manager role](https://scaffoldingcareers.com/job-roles/yard-manager-yard-supervisor-yard-foreman/)
+- [BuildStream — Scaffolding Supervisor](https://www.buildstream.co/job-descriptions/scaffolding-supervisor)
+- [Becht — Keeping Your Scaffolding Under Control During a Turnaround](https://becht.com/becht-blog/entry/keeping-your-scaffolding-under-control-during-a-turnaround/) — the best single article on the Access Coordinator role
+- SAIA (Scaffold & Access Industry Association) — trade body, whitepapers, webinars
+- OSHA 29 CFR 1926 Subpart L — the scaffold safety regulations; know it exists, skim the table of contents
+
+**Competitor / peer operators (read their "About" and "Services" pages for plain-English workflow descriptions):**
+- BrandSafway, Altrad, Sunbelt Rentals (Scaffold Services division), Apollo Scaffold Services, Layher, PERI, AT-PAC
+
+**Competitor software (know the incumbents Quantify beats):**
+- Rentalman (the big one — older, clunkier, deeply entrenched)
+- [Alert Rental — Scaffolding solution](https://alertrental.com/industry-solutions/scaffolding/)
+- [RUX Software](https://ruxsoftware.com/industry-technology/scaffolding-rental-management)
+- [InTempo Software](https://www.intemposoftware.com/industries/scaffolding-rental-software)
+- [MCS Rental Software](https://www.mcsrentalsoftware.com/us/industries/construction-rental-software/scaffolding/)
+- [Baseplan](https://baseplan.com/us/scaffolding-rental-management/)
+- [Rental360 by Nexvue](https://rental360software.com/industries/scaffolding/)
+- [Orion Software](https://www.orion-soft.com/solutions/scaffolding-rental-software)
+
+**Unfiltered customer voice:**
+- Reddit — r/Construction, r/scaffolding, r/OilandGasWorkers
+- YouTube — search "day in the life scaffolder," "scaffold yard supervisor ride-along," "refinery turnaround documentary" (not timelapses)
+- Avontus's own YouTube channel — training videos show the workflows in Quantify's framing
+
+**Internal (ask for access):**
+- Support tickets — customers describe problems in their own words
+- Recorded sales demos / discovery calls — one hour of these = a masterclass in how the company positions the domain
+- Avontus customer case studies on avontus.com
+
+---
+
+## Workflow Detail — Return Process (from AT-PAC interview, 2026-04-13)
+
+> Source: AT-PAC customer interview with Andrej (ops), Michelle (Quantify power user), Lee (Avontus PM). First 30 min.
+
+### Current paper-based flow
+
+1. Truck arrives at the yard with material returning from a customer
+2. Yard worker takes photos around the truck with personal phone — raw, unreferenced
+3. Yard worker uses a clipboard to write: part, quantity, part, quantity — comparing against what the driver claims
+4. If the customer sent a delivery note, use it. Otherwise physically count
+5. Material is unpacked in the yard to count properly and identify damage
+6. Clipboard + photos go to the office admin
+7. Admin re-keys everything into Quantify manually
+8. Admin renames each photo laboriously, files them in SharePoint, links them to the return record
+9. Admin figures out which Quantify job site this return belongs to — driver may say "CNRL Fort Mac" but system has 3 job sites under that parent, so they pick
+
+### The "first site" concept (critical mental model)
+
+A return must be identified against a reservation FIRST — before any other action. The yard worker should be able to:
+
+- Pick the expected reservation this return is against
+- See what was delivered (item × quantity)
+- Count what actually came back
+- Escape hatch: if the client claims site X but no deliveries exist for that site, yard raises a hand and opens the return against a different correct site
+
+This is the mobile app's conceptual starting point for returns. It is the "first site" principle.
+
+### Damage sub-flow
+
+- Yard captures: item, damaged flag, quick visual note, photos
+- Yard does NOT decide repair vs scrap vs charge-back — that's operations
+- All damage notes + photos get attached to the return record for ops to review later
+
+---
+
+## Workflow Detail — Delivery Process (from AT-PAC interview, 2026-04-13)
+
+### Current paper-based flow
+
+1. Office creates a **Reservation** in Quantify (this is a DEL in "reserved" status — same record, different status)
+2. Office prints the reservation as a **pick ticket** and gives the paper to the yard
+3. Yard physically **verifies on-hand quantities** outside — the system can't be trusted, stock drifts
+4. Yard reports back to office: "enough stock" or "short on X"
+5. Office uses a **blue sheet** (manual spreadsheet) to break the reservation into truckloads — based on tonnage, customer priorities, and what's available
+6. Yard picks the small components for Truck 1 with pick ticket + blue sheet in hand, stages them
+7. Yard confirms big items are physically ready in the yard
+8. Truck arrives, yard loads big items directly from the yard + small items that were staged
+9. Yard reports back to office what actually loaded
+10. Office keys actual loaded quantities into Quantify → reservation flips to DEL status (complete)
+11. Quantify auto-creates a **backorder ticket** for whatever didn't fit on Truck 1
+12. Repeat for Trucks 2, 3, 4…
+13. Yard takes photos throughout — again unreferenced, re-uploaded + renamed later
+
+### Key principles
+
+- **Reservation and DEL are the same record** in different statuses. Mobile should surface reservations and transition their status, not "create a new delivery."
+- **Reservation quantity is the expectation, NOT the default.** If 1000 were reserved and 800 loaded, the system must stay 800. Variance is normal.
+- **Truckload breakdown (blue sheet) is office-side.** Yard consumes the breakdown, not produces it. Mobile should render the truckload list for the yard to act on.
+- **One reservation = multiple loading sessions over time.** Yard needs to "load another truck against this reservation" — not one-shot completion.
+
+---
+
+## Workflow Detail — Division of Responsibility (critical for mobile design)
+
+| Action | Yard does | Office / Ops does |
+|--------|-----------|-------------------|
+| Photos | Capture, linked to record at moment of capture | Nothing — no more renaming, no more SharePoint filing |
+| Item counts | Estimated actual (enter the number they counted) | Final confirmation in Quantify desktop |
+| Damage | Flag + note + photo | Decide repair / scrap / charge-back |
+| Site reconciliation | Raise hand when truck claim doesn't match any expected return | Resolve allocation and job site assignment |
+| Stock verification | Walk the yard, report on-hand vs reserved | Build the truckload plan (blue sheet) based on yard's feedback |
+| Truckload loading | Load truck, report actual loaded quantities | Confirm in Quantify, generate backorder if needed |
+
+**Design rule:** mobile "complete" actions read as **submit for ops confirmation**, NOT "done." Yard-entered counts stay visibly "pending confirmation" until desktop closes them. This preserves the existing trust model.
+
+---
+
+## Workflow Detail — The CNRL Job-Site Problem (site reconciliation)
+
+A single human-readable site name (e.g. "CNRL Fort Mac") maps to multiple distinct Quantify job sites. The driver or client references the parent name; the yard worker has to identify which child job site.
+
+**Current paper flow:** yard guesses, office corrects later. Common source of re-keying errors.
+
+**Mobile design response:**
+- When yard scans/opens a return, show **recently-delivered reservations at that parent location** as a pickable list
+- Never force the yard to type a job site name
+- If no match, give them the "first site" escape hatch: raise a hand, open against a different site, flag for ops
+
+---
+
+## Workflow Detail — Photo Handling (THE biggest pain + opportunity)
+
+### What's broken today
+
+- Photos taken on personal phones during offload / loading
+- Photos have no reference to any record (the DEL may not even exist yet)
+- Photos uploaded to SharePoint by office staff
+- Office staff **manually renames every photo** to match record IDs
+- Office staff re-uploads into Quantify and links to the DEL
+
+This was called out as "a big pain point for us" by multiple interviewees. It's the clearest example of the double-capture problem.
+
+### Mobile design response
+
+- First action in any flow **opens or creates the record** (pre-return draft, DEL reservation selected)
+- Photos captured in the record are **auto-tagged with the record ID**
+- No renaming, no SharePoint, no re-linking — photos are born attached
+- Photo count visible on the record throughout the flow
+
+---
+
+## Quantify Desktop — Shipping Tab UI Reference (from Avontus Help Docs)
+
+> Source: Avontus Quantify help documentation, Shipping and Logistics section. This is the official reference for how the desktop Shipping tab behaves. Use when designing mobile equivalents so terminology, statuses, and flows match what existing Quantify users expect.
+
+### The Shipping Tab at a Glance
+
+The Shipping tab is **focus-sensitive**: what it shows depends on what's selected in the Organization Tree.
+- Select a Branch Office → shows shipments to and from that branch
+- Select a Job Site → shows shipments for just that job site
+- To see shipments from inactive job sites when focused on a branch, "Inactive Job Sites" must be enabled in My Options
+
+The tab has two areas: a **top grid** of all shipments, and a **bottom detail panel** for the selected shipment.
+
+### Top Grid — Toolbar Actions
+
+| Action | What it does |
+|--------|--------------|
+| **Reports dropdown** | Preview/print/save shipment, shipment with pricing, pick ticket, return pick ticket for job site, return labels for pre-return, shipment pivot, consumables pivot, additional charges pivot, shipment pivot for job site |
+| **Change dropdown** | Change/update Rate Profile on selected shipments; change Order number on a scaffold (only if parent job site is not set to invoice a single order) |
+| **Receive Selected Shipment** button | Receive an incoming shipment (one at a time only) |
+| **Send Selected Shipment** button | Send an outgoing shipment (one at a time only) |
+| **Count Materials for Selected Pre-Return** button | Count a pre-return so Quantify can process it |
+| **Drivers** button | Manage the list of available drivers |
+| **Filter dropdown** | Filter by status: Show All, Reserved (to be sent), To Be Received, Completed, Completed with Discrepancy, Pre-Return, Include Voided Shipments |
+| **Date filter** | Show All Dates, Within Last Month, Within Last Two Months, Within Last Six Months |
+| **Active Scaffolds filter** | "Only Show Shipments from Active Scaffolds" |
+
+### Bottom Detail Panel — Tabs
+
+When a shipment is selected in the grid, the bottom panel shows:
+
+1. **Bill of Materials** — line items for the shipment
+2. **Consumables** — one-way items on the shipment
+3. **Additional Charges** — one-off fees (freight, dismantle, etc.)
+4. **Recurring Charges** — monthly/cyclical charges
+5. **Attachments** — files attached to the shipment (photos, PDFs, etc.)
+6. **Details** — creation date, creator, notes
+7. **History** — Date, User Name, Change type, Item, Old Value, New Value for every edit
+
+The History tab is the audit log. For any shipment, you can see who changed what, when, from what value to what value. This is important for mobile: any mobile-submitted change becomes a history entry.
+
+---
+
+### New Direct Ship Dialog — Six Tabs
+
+Used for creating Deliveries, Returns, Transfers, and Reservations (Pre-Returns have their own similar dialog).
+
+#### Tab 1: Summary
+Configure the high-level shipment metadata:
+
+- **Number** — auto-generated sequential DEL number. Editable only if enabled in Global Options → Shipment and Scaffold Tags → Shipment Permissions
+- **Planned Ship date** — calendar picker
+- **Actual Ship date** — calendar picker
+- **Salesperson** — dropdown; + icon to add new
+- **Driver** — dropdown; click Add button to create new driver with name field
+- **From** radio + dropdown — origin (Branch Office, Sub-Branch, Job Site/Group)
+- **To** radio + dropdown — destination
+- **Rent Start date** — required if destination is billable
+- **Rent Stop date** — optional; if entered, takes precedence over the rent stop date in the Billing for Return section. Used for equipment still remaining on rent
+- **Number of copies to print** — auto-print shipment reports on completion
+
+**Important rule:** once a shipment is created, you cannot edit the To and From fields. You must void and recreate if the destination was wrong.
+
+#### Tab 2: Products
+The heart of the dialog. Shows products stocked at the From location by default.
+
+| Control | What it does |
+|---------|--------------|
+| **Category dropdown** | Filter by Product Category (managed in Product Catalog) |
+| **Filter text field** | Text search on Part Number and Description |
+| **Barcode icon** | Toggle barcode mode; scans go into "To Ship" column |
+| **Filter Options** button | Configure filter behavior |
+| **Copy Available to To Ship** | One-click fill: copies all Available quantities into To Ship |
+| **Prorate Calculator dropdown** | Prorate by Weight and Quantity, or by List and Quantity. Makes rental rates equal a fixed amount. Must be enabled in Global Options → Shipments and Scaffolds |
+| **Delivery Charge / Return Credit Calculator** | Opens a dialog to configure charge + discount/markup |
+| **Change Selected Items dropdown** | Change Rent Calculator, Sell Calculator, Factor; or copy a Rate Profile into selected products |
+| **Import** button | Import from tab-separated file with Part Number + Quantity columns |
+| **Showing dropdown** | Toggle between "All" (all products at branch) and "Parts on Shipment" (just this shipment) |
+
+Grid columns: Part Number, Serial Number (if serialized), Description, Weight, Owner (vendor), Available (current stock), To Ship, Delivery Charge, 28 Day Rate, Return Credit (on returns), List (retail price).
+
+Status bar at bottom shows: Total Pieces, Total Combined Weight, Rent Totals.
+
+#### Tab 3: Consumables
+Similar structure to Products but for one-way items. Extra columns: Sent (not To Ship), Sell (price), Cost Basis (None / Catalog / Average / Last — configured in Global Options → Billing), Catalog Cost, Last Cost, Avg. Cost.
+
+Has a Calculate Sell Price button that opens a Discount/Markup/Profit Margin calculator.
+
+#### Tab 4: Additional Charges
+One-time fees. Columns: Name, Description, Weight, Units (Each, Hour, Linear Foot, etc.), Price/Unit, No. Units, Taxable (checkbox), Total.
+
+#### Tab 5: Recurring Charges
+Only active if destination job site is billable. Columns: Charge name, No. of Units, Charge/Unit. Default values come from Rate Profile. When shipment completes, recurring charges are added to the Product balances at the job site.
+
+#### Tab 6: Shipment Properties
+Custom properties configured in Global Options. Destination-specific.
+
+---
+
+### Editing a Shipment
+
+- Editable until the shipment is invoiced
+- Shipment properties that aren't billing-related are always editable
+- **To and From fields cannot be edited** after creation — must void and recreate
+- If destination branch is configured to require counting AND shipment was received with discrepancies, you cannot edit or void until discrepancies are resolved
+- Click Edit or double-click the shipment to open the Editing Completed dialog
+
+### Voiding a Shipment
+
+- Cannot void a shipment that's been invoiced
+- When voided, quantities are adjusted at both locations
+- Voided shipments disappear from the grid by default; include them via the Filter dropdown
+
+---
+
+### Pre-Returns — Dedicated Workflow
+
+Pre-returns let equipment be returned from a job site and counted later (e.g., overnight drops).
+
+#### Creating a Pre-Return
+1. Click the Job Site, go to Shipping tab
+2. Click "Add Return for Products to be Counted at Another Time" button (or right-click → Pre-Return from this location)
+3. Set the Received date
+4. Pick From (Job Site) and To (Branch Office / Sub-Branch)
+5. Optional: set Driver
+6. Enter number of copies for Return Report and Return Labels
+7. Click OK
+
+**Important:** the pre-return is created **without a Bill of Materials**. The BOM is created when the pre-return is counted.
+
+#### Counting a Pre-Return
+1. Select the pre-return in the Shipping tab
+2. Click "Count Materials for Selected Pre-Return"
+3. Set Planned Ship date and Rent Stop date
+4. In the Products tab, enter actual received quantities in the To Ship column
+5. Complete Additional Charges tab if needed
+6. Click Complete Shipment
+
+Status updates to Completed and the products are added back to inventory.
+
+#### Return Labels
+Separate from reports. Attached to physical return bins so overnight unload teams can drop material into labeled bays. Counted the next morning.
+
+---
+
+### Reservations — Dedicated Workflow
+
+Reservations hold stock for a future shipment. They show in the grid with a reservation book icon.
+
+#### Creating a Reservation
+1. Click location, Shipping tab
+2. Click "Reserve Items to be Shipped at a Later Time" button
+3. Assigned a sequential DEL number with status "New Reservation"
+4. Set From, To, and Rent Start (if To is billable)
+5. Products tab: enter reserved quantities in the Reserved column
+6. Click OK
+
+Stock moves from Available to Reserved. Others can see the reserved quantity in inventory views but can't allocate it to other shipments.
+
+#### Converting Reservation to Delivery
+Ship directly from a reservation without creating a separate shipment. The record stays the same; the status transitions.
+
+#### Voiding a Reservation
+Returns all reserved equipment to inventory. Status becomes "Voided Reservation."
+
+#### Prorating Rent on a Reservation
+Same Prorate options as on a shipment (Weight+Qty or List+Qty). Makes rental rates equal a specific fixed total. Must be enabled in Global Options.
+
+---
+
+### Transfers
+
+Transfers move equipment between two non-billing locations:
+- Branch Office to Branch Office
+- Job Site to Job Site (requires enabling in Global Options → Shipments and Scaffolds → Scaffolds → "Allow scaffold transfers")
+
+Created via the same dialog as shipments, just selecting Job Site or Branch Office radios on both the From and To sides.
+
+---
+
+### Counting on Receipt (Billable Job Sites)
+
+A job site can be configured to **require counting of equipment on receipt**. When enabled:
+- Shipment goes to "To Be Received" status on creation
+- Products show as "In Transit" on the receiving site's Products tab
+- Shipment is **not included in invoicing** until it reaches Completed status
+- Configuration: Job Site dialog → General tab → Receiving Options → two checkboxes (one for transfers, one for deliveries)
+
+#### Completing a To Be Received Shipment
+1. Select the shipment, click "Received Selected Shipment" button
+2. The Receiving dialog opens with the expected equipment listed
+3. Enter actual received quantities in the Received column
+4. Optional: use the Copy button to fill all actuals with expected quantities
+5. Click Receive Shipment
+
+Items are added to inventory and become invoiceable.
+
+---
+
+### Rate Profile Management on Shipments
+
+- Change/update the Rate Profile on one or many shipments at once via Change dropdown → Change/Update Rate Profile on Selected Shipments
+- Changes take effect on invoices created **after** the change; does NOT affect existing invoices
+- If billing for a job site is reset, the current shipment rates are used
+- Returns (RET) do NOT have Rate Profile assignments — attempting to change one triggers an error
+
+---
+
+### Billing Cycle Controls (Global Options)
+
+**Allow Returns in Prior Billing Cycle**
+- Configured in Global Options → Billing tab
+- Allows return rent-stop dates in a prior billing cycle, issuing invoice credits
+- Max 730 days in the past
+- Results in a credit on the next invoice for the difference in rent
+
+**Allow Scaffold Transfers**
+- Configured in Global Options → Shipments and Scaffolds → Scaffolds tab
+- Off by default
+- Must be enabled before job-to-job transfers work
+
+**Prorate Feature**
+- Configured in Global Options → Shipments and Scaffolds tab
+- When enabled, the Prorate button appears on Products tab of New Direct Ship and New Reservation dialogs
+
+---
+
+### Barcode Scanning on Shipments (Official UI)
+
+1. Launch a shipment and complete Summary tab
+2. Go to Products tab
+3. Click the barcode icon to toggle barcode mode (click again to exit)
+4. Scan barcodes — each scan populates the To Ship column
+5. Complete remaining tabs, click Complete Shipment
+
+Barcode scanner connects via USB. Works on both Products and Consumables tabs.
+
+---
+
+### Importing Quantities into a Scaffold Tag (ScaffoldIQ / Industrial edition)
+
+Tab-separated file with Part Number and Quantity columns:
+1. Select a Branch or Job Site, click Scaffold Register
+2. Select a scaffold tag, click Shipping tab
+3. Shipment dropdown → Delivery to Selected Shipment
+4. Set Rent Start date
+5. Click Import, browse to file
+6. Choose: ignore if quantity exists, or overwrite existing
+7. Click Import — parts added to shipment; errors shown if any
+
+---
+
+### Status Vocabulary (official)
+
+| Status | Meaning |
+|--------|---------|
+| **New Reservation** | Just created, stock is reserved |
+| **Reserved (to be sent)** | Active reservation waiting for shipment |
+| **To Be Received** | Shipment sent but not yet counted at destination (only if destination is set to require counting) |
+| **In Transit** | Sub-status showing at receiving location during To Be Received |
+| **Completed** | Fully processed |
+| **Completed with Discrepancy** | Processed but counts didn't match |
+| **Pre-Return** | Scheduled return awaiting count |
+| **Voided Reservation** | Canceled reservation, equipment back in stock |
+| **Voided Shipment** | Canceled shipment, quantities adjusted at both ends |
+
+Mobile app status vocabulary should match this exactly. Do NOT invent new statuses like "Pending Confirmation" if Quantify calls it "To Be Received."
+
+---
+
+## Mobile v1 Scope — Brian + Lee Walkthrough (2026-04-13)
+
+> Source: Internal meeting with Brian (CEO, Quantify expert) and Lee (PM, ex-AT-PAC) walking Zeno through the desktop Shipping workflows specifically to set mobile v1 scope. This is ground truth on what to build and what not to.
+
+### Record type inference from From/To
+
+Users never pick "Delivery" or "Return" from a menu. The record type is inferred from the From and To selections:
+
+| From | To | Record Type | Number Prefix |
+|------|-----|-------------|---------------|
+| Branch | Job Site | Delivery | DEL |
+| Job Site | Branch | Return | RET |
+| Branch | Branch | Transfer | TRN |
+| Job Site | Job Site | Transfer | TRN |
+
+Number prefix updates live as radios change. Starting numbers and increments are configured in Tools → Numbering Options. Mobile can trust the defaults and does not need to expose numbering configuration.
+
+### Context-sensitivity
+
+When a user selects a job site in the Org Tree and creates a new shipment, the From and To fields are pre-filled based on that selection. Mobile should mirror this: if a user is looking at a job site and taps "new return," the From should already be set.
+
+### The only required field
+
+**Rent Start Date** is the single mandatory field on a new shipment. Everything else (driver, salesperson, notes, attachments) is optional. A global option can auto-fill Rent Start Date; Blake's code already does this on mobile so users never manually set it.
+
+### Mobile v1 Scope — IN
+
+Explicitly confirmed in scope by Brian and Lee:
+- Create shipment with From, To, Rent Start Date pre-filled
+- Attachments (photos, files)
+- Notes (free text)
+- Products tab: pick items, enter quantities, plus/minus incrementers
+- Filter by category (Cuplock, QuickStage, etc.)
+- Text filter (contains search on part number / description)
+- "Showing parts on shipment" vs "showing parts at branch" toggle
+- Damaged / Scrap / Lost-Missing handling on returns (one row can split quantity across all four destinations: To Ship, Damage, Scrap, Lost Missing)
+
+### Mobile v1 Scope — OUT (explicitly excluded)
+
+- **Consumables** — AT-PAC does sell them, but leave for later iteration
+- **Additional Charges** (freight, dismantle, cutting fees) — office-side only
+- **Recurring Charges** (monthly fees) — office-side only
+- **Prorate features** (weight-based or list-based rent calculation) — desktop power feature
+- **Barcode scanning** — probably useful later, not v1. Revisit after customer feedback
+- **Service tickets / to-be-serviced workflow** — AT-PAC doesn't do servicing (harnesses, swing-stage motors aren't their business)
+- **Advanced filter options** (starts-with vs contains, field-specific search) — keep filter simple
+- **Rate Profile management, billing, invoicing** — all desktop
+- **Damage disposition** (cut down to 5-foot, change damage to scrap, bill customer for damage) — desktop only; mobile only captures damage
+
+**Rule:** if something lives in the office, don't build it in mobile. Mobile is for the yard.
+
+### Three existing trust patterns (don't invent new ones)
+
+AT-PAC is expected to raise "we don't trust our yard workers" concerns. Brian's position: this is not a software problem, but the system has three existing ways to handle different trust levels:
+
+1. **Notifications (reactive)** — office gets notified when yard submits; reviews after the fact
+2. **Reservations (proactive)** — office pre-creates reservations; yard only confirms quantities, doesn't create from scratch
+3. **Counting on Receipt / In Transit** — yard submits, status becomes "To Be Received," office must confirm before it goes On Rent
+
+Mobile does not need to invent new approval screens. It must coexist with all three modes.
+
+### Returns — the four-destination quantity split
+
+On a return, each line item can split its quantity across four columns:
+
+| Column | Meaning | Mobile Behavior |
+|--------|---------|-----------------|
+| To Ship | Normal, going back into stock | Main quantity field |
+| Damage | Damaged, disposition decided later | Flag + note + optional photo |
+| Scrap | Beyond repair, write off | Flag + note + optional photo |
+| Lost Missing | Physically unfindable on site | Flag + note |
+
+Damage can ONLY be specified on a return — never on a delivery.
+
+Column names are customizable in Global Options but these three are the defaults. Nobody has asked for a fourth category.
+
+### Over-returns are first-class, not an edge case
+
+Quantify allows returning MORE than was delivered. When this happens, the system creates a negative balance on the job site record that's resolved later. Real reasons this happens:
+- Equipment was on site that nobody tracked
+- A 10-foot tube was cut on site into two 5-foot tubes, both come back
+- Customer picked up someone else's equipment
+
+**This is a Quantify differentiator.** Brian cited a customer who paid SAP $10M to replicate Quantify and SAP couldn't do it because distribution software doesn't model return-more-than-you-sent.
+
+Mobile must allow quantities that exceed the delivered amount. Can warn, but must allow.
+
+### Rent Stop Date rules
+
+- Rent Stop Date is the key field on returns
+- It CAN be earlier than today (truck returned Friday, office processes Monday → Rent Stop = Friday, customer not billed for weekend)
+- Office reviews all deliveries and returns before running invoicing, so yard estimates are fine as a first draft
+
+### Scale — 50 items and 300–400 parts per shipment
+
+Real-world shipment size: **50 distinct line items, 300–400 total parts.**
+
+Implications for mobile counting screen:
+- Must be scrollable and fast
+- Category filter is essential, not optional
+- Consider list virtualization
+- Sticky headers so user always knows where they are
+- Progress indicator (e.g., "37 of 50 items counted")
+- The current prototype with 8 items will collapse at real scale — redesign needed
+
+### Architecture note — library-driven validation
+
+Quantify uses a three-tier architecture:
+- **UI tier** — "dumb"; binds to library object
+- **Library (middle tier)** — all business rules; exposes `isSavable` and a broken-rules collection with Error / Warning / Info severities
+- **Data tier** — "dumb"; assumes valid data, just writes
+
+Mobile uses the same library via API. Validation messages that appear on desktop will appear on mobile. You don't duplicate rules; you render them gracefully. Design error/warning/info display patterns accordingly.
+
+### Predicted v2 requests (scope discipline for v1)
+
+Brian predicts customers will ask for after v1 ships:
+- Resolve damages in the yard (currently desktop only)
+- Count physical yard inventory (not just count shipments)
+- More
+
+When customers ask for these during v1 sessions, the response is "we hear you, v2." Do not expand v1 scope.
+
+### Working cadence
+
+Design review with Brian every two days (Zeno's requested cadence, Brian agreed). Design, show, iterate.
+
+---
+
+## Workflow Detail — End-to-End AT-PAC Delivery Process (from Lee, 2026-04-14)
+
+> Source: process diagram shared by Lee. This is the canonical end-to-end workflow at AT-PAC for a delivery, from sales order through customer-confirmed delivery and email follow-up. Use this to understand where mobile sits inside the full flow and what touches mobile must respect.
+
+### Roles in the diagram
+
+- **Office Staff / Sales** — sales-side and reservation creation
+- **Operational / Yard Manager** — orchestrates yard work, prints tickets, hands paperwork around
+- **Yard Manager / Yard Staff** — physical yard operations, counting, loading
+- **Driver** — picks up at yard, delivers, gets customer sign-off
+- **Quantify automation** — system-level state transitions, attachments, status updates
+
+### The full sequence
+
+**Sales / office side (pre-yard):**
+1. Order Customer — Office Staff / Sales
+2. Estimate — Office Staff / Sales
+3. Estimate approved — Office Staff / Sales
+4. Reservation ticket created — Operational / Yard Manager
+5. Reservation pick ticket printed — Yard Manager
+
+**Yard side (mobile's territory):**
+6. Equipment is checked in the yard to confirm availability — Yard Manager / Yard Staff
+7. Delivery approval confirmed — Office Staff / Sales
+8. Paper reservation pick ticket handed to yard staff — Yard Manager
+9. Pick ticket filled out (counting) — Yard Staff
+10. Equipment loaded into stillages and set aside, ready for wagons — Yard Staff
+11. Paper sheet filled out and handed back to yard manager — Yard Staff
+12. Driver's name and vehicle registration captured — Yard Manager / Yard Staff
+13. Delivery driver / customer wagon turns up; items collected — Yard Manager / Yard Staff
+14. Equipment loaded onto wagon — Yard Staff
+15. Photos of the fully loaded wagon and equipment taken — Yard Staff
+16. All photos given in print to yard manager — Yard Staff
+17. Photo attachments assigned to the delivery ticket number — Yard Manager
+18. With driver info + photo attachments handed to Quantify automation
+19. Reservation in Quantify is filled out — Yard Manager
+20. Quantify status updates to Shipment Sent — Quantify automation
+21. Reservation sent to site — Quantify automation
+22. New reservation created if not all parts went on the first shipment (backorder) — Quantify automation
+
+**Driver / customer side (post-yard):**
+23. Delivery ticket printed and handed to driver — Operational / Yard Manager
+24. If the customer is collecting, they sign the document at the yard — Driver
+25. Driver delivers to site, equipment is counted by the receiver — Driver
+26. Customer signs, document returned to driver, sent back to office — Driver
+27. Delivery document added as an attachment in Quantify — Operational / Yard Manager
+28. Office fills delivery numbers in Quantify — Quantify automation
+29. Quantify status updates to Shipment Sent (final) — Quantify automation
+30. Delivery complete email printed and sent to customer — Operational / Yard Manager
+31. Process complete
+
+### What this diagram adds beyond Brian + Lee's verbal walkthrough
+
+- **Driver name + vehicle registration capture** is an explicit yard step (12). My prototype was missing this.
+- **Photos serve multiple purposes**: full wagon + loaded equipment verification (15), not only damage documentation. Mobile should reframe photo capture as general shipment evidence, with damage as one variant.
+- **Stillages first, then wagons** (10): there's a physical staging step where parts get pre-loaded into stillages before the wagon arrives. The yard worker may not need this in the app, but the mental model matters.
+- **"Equipment checked in the yard to confirm availability"** (6) before loading begins: this is the verification step Andrej described in the AT-PAC interview. Could be a pre-step in mobile.
+- **Customer pickup path** (24): if the customer collects directly, they sign at the yard. The driver-delivery and customer-pickup paths diverge at this point. v1 may treat customer pickup as out of scope; flag for v2.
+- **Two "Shipment Sent" status updates** in the diagram (20 and 29) — the diagram labels both as "Shipment Sent" but they appear to be different states (sent from yard vs. confirmed delivered). Verify with Lee whether the second one is actually "Completed" or another status.
+
+### Mobile's slice of this flow (v1 scope)
+
+Mobile owns yard steps 9 → 19. Specifically:
+- Steps 9–11: counting, loading, the paper-sheet replacement
+- Step 12: driver name + vehicle registration capture (NEW — must be added)
+- Steps 13–17: photos of wagon + load + auto-attach to shipment record
+- Step 18–19: hand-off to Quantify automation via API
+
+Everything before step 9 (sales, reservation creation, pick ticket print) and after step 19 (driver delivery, customer signature, office finalization) stays on desktop or other systems for v1.
+
+### Open verification questions for Lee
+
+1. Are the two "Shipment Sent" labels (20 and 29) actually the same status, or is the diagram simplified? In Quantify desktop terms, what should each be called?
+2. Is the customer-pickup path (24) common enough to model in v1, or wait for v2?
+3. The "stillage staging" step (10): is it always a separate pass, or do some yards load directly onto the wagon?
+4. Where exactly should driver/registration capture live in mobile — at loading start, mid-load, or at submit?
+
+---
+
+## Workflow Detail — AT-PAC-Specific Vocabulary Added
+
+In addition to the universal glossary above, AT-PAC interviews revealed:
+
+- **Blue sheet** — internal manual spreadsheet for truckload breakdown (tonnage + priorities + sequence)
+- **Pre-return pick ticket** — paper form yard fills out when accepting a return
+- **Backorder ticket** — auto-generated in Quantify for the remainder after a partial truckload load
+- **"First site"** (Andrej's term) — the principle that a return must be identified against the correct job site / reservation at the moment of receipt, not later in the office
+- **DEL** — delivery record (reservation in completed state)
+- **CNRL Fort Mac** — typical parent-location naming pattern where one named site has multiple Quantify job sites under it

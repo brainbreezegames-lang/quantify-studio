@@ -475,6 +475,19 @@ body::after {
 .rev-attach-meta { font-size: 11px; color: var(--muted); margin-top: 1px; font-weight: 500; letter-spacing: 0.2px; }
 .rev-attach-edit { color: var(--blue); font-size: 12px; font-weight: 600; cursor: pointer; padding: 6px 10px; background: none; border: 1px solid var(--blue); font-family: 'Switzer', sans-serif; }
 
+/* DRIVER + VEHICLE CARD on review */
+.rev-driver { background: var(--surface); margin: 14px 16px 0; padding: 16px 18px; border: 1px solid var(--line); }
+.rev-driver-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.rev-driver-title { font-size: 11px; font-weight: 700; color: var(--text); letter-spacing: 0.7px; text-transform: uppercase; }
+.rev-driver-edit { color: var(--blue); font-size: 12px; font-weight: 600; cursor: pointer; padding: 4px 6px; background: none; border: none; font-family: 'Switzer', sans-serif; -webkit-tap-highlight-color: transparent; }
+.rev-driver-rows { display: flex; flex-direction: column; gap: 10px; }
+.rev-driver-row { display: flex; align-items: center; gap: 10px; }
+.rev-driver-row .icon { color: var(--muted); flex-shrink: 0; }
+.rev-driver-label { font-size: 12px; color: var(--muted); font-weight: 500; flex-shrink: 0; min-width: 56px; }
+.rev-driver-value { font-size: 14px; color: var(--ink); font-weight: 600; letter-spacing: -0.15px; }
+.rev-driver-value.empty { color: var(--blue); font-weight: 500; }
+.rev-driver-value.empty::after { content: ' →'; color: var(--blue); }
+
 /* ═══ SCENE 6: SUBMITTED ═══ */
 .done-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 32px; text-align: center; background: var(--surface); }
 .done-mark { width: 84px; height: 84px; background: var(--blue); display: flex; align-items: center; justify-content: center; margin-bottom: 32px; position: relative; }
@@ -927,6 +940,25 @@ body::after {
               <div class="rev-sub">Office confirms what you submit. <strong>Rent starts</strong> after their confirmation, not when you tap send.</div>
             </div>
 
+            <div class="rev-driver">
+              <div class="rev-driver-head">
+                <div class="rev-driver-title">Driver &amp; vehicle</div>
+                <button class="rev-driver-edit">Edit</button>
+              </div>
+              <div class="rev-driver-rows">
+                <div class="rev-driver-row">
+                  <i data-lucide="user" class="icon icon-sm"></i>
+                  <div class="rev-driver-label">Driver</div>
+                  <div class="rev-driver-value">Mike Salazar</div>
+                </div>
+                <div class="rev-driver-row">
+                  <i data-lucide="truck" class="icon icon-sm"></i>
+                  <div class="rev-driver-label">Plate</div>
+                  <div class="rev-driver-value">TX-FRT-2891</div>
+                </div>
+              </div>
+            </div>
+
             <div class="rev-numbers">
               <div class="rn-col">
                 <div class="rn-label">Matched</div>
@@ -1098,11 +1130,11 @@ const scenes = [
   },
   {
     title: "Review before submit",
-    desc: "Summary of what was counted, what was short, what was flagged. The yard sees exactly what goes to the office. No surprises after submit.",
+    desc: "Summary of what was counted, what was short, what was flagged. Driver and vehicle captured here so the office can match the doc to who picked up. No surprises after submit.",
     callouts: [
-      { num: "01", text: "<span>Three-number summary:</span> full, short, damaged. Matches the variance language the office uses." },
-      { num: "02", text: "<span>Flagged lines float to the top</span> so they're reviewed first. Full-loaded lines are collapsible." },
-      { num: "03", text: "<span>CTA reads 'Submit for office confirmation'</span> — never 'mark as loaded'. Yard submits, ops confirms." }
+      { num: "01", text: "<span>Driver name + plate captured</span> per AT-PAC's process diagram (step 12). Office needs this on the delivery doc." },
+      { num: "02", text: "<span>Three-number summary:</span> matched, short, damaged. Flagged lines float to the top so they're reviewed first." },
+      { num: "03", text: "<span>CTA reads 'Send to office'</span> — yard sends, office confirms. Rent starts only after their confirmation." }
     ]
   },
   {
