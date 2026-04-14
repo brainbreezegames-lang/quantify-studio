@@ -385,6 +385,28 @@ body::after {
 .kp-split-btn:hover { color: var(--err); }
 .kp-split-btn .icon { width: 12px; height: 12px; stroke-width: 2.5; }
 
+/* GENERAL PHOTO SHEET (wagon / load verification photos, not damage) */
+.photo-sheet-overlay { position: absolute; inset: 0; background: rgba(10, 12, 24, 0.48); z-index: 500; opacity: 0; pointer-events: none; transition: opacity 200ms var(--ease-out); }
+.photo-sheet-overlay.open { opacity: 1; pointer-events: all; }
+.photo-sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--surface); z-index: 510; transform: translateY(100%); transition: transform 280ms var(--ease-out); display: flex; flex-direction: column; border-radius: 18px 18px 0 0; overflow: hidden; max-height: 80%; }
+.photo-sheet-overlay.open .photo-sheet { transform: translateY(0); }
+.ps-handle { width: 36px; height: 4px; background: var(--line-strong); margin: 10px auto 4px; border-radius: 2px; }
+.ps-head { padding: 10px 20px 14px; border-bottom: 1px solid var(--line); }
+.ps-title { font-size: 16px; font-weight: 600; color: var(--ink); letter-spacing: -0.2px; }
+.ps-sub { font-size: 12px; color: var(--muted); margin-top: 3px; font-weight: 500; letter-spacing: -0.05px; }
+.ps-body { padding: 18px 20px; }
+.ps-actions { display: flex; flex-direction: column; gap: 8px; }
+.ps-action { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--surface-2); border: 1.5px solid var(--line); cursor: pointer; -webkit-tap-highlight-color: transparent; transition: all 140ms var(--ease-out); text-align: left; font-family: 'Switzer', sans-serif; }
+.ps-action:hover { border-color: var(--blue); background: var(--blue-tint); }
+.ps-action:active { transform: scale(0.98); }
+.ps-action-icon { width: 36px; height: 36px; background: var(--surface); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--ink); }
+.ps-action-body { flex: 1; min-width: 0; }
+.ps-action-name { font-size: 14px; font-weight: 600; color: var(--ink); letter-spacing: -0.1px; }
+.ps-action-desc { font-size: 12px; color: var(--muted); font-weight: 500; margin-top: 2px; letter-spacing: -0.05px; }
+.ps-action .icon-arrow { color: var(--muted); }
+.ps-cancel { width: 100%; padding: 14px; background: none; border: none; color: var(--text); font-family: 'Switzer', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; border-top: 1px solid var(--line); -webkit-tap-highlight-color: transparent; }
+.ps-cancel:hover { color: var(--blue); }
+
 /* Bottom action bar */
 .bot-action { padding: 14px 16px 26px; background: var(--surface); border-top: 1px solid var(--line); flex-shrink: 0; display: flex; gap: 10px; }
 .bot-photo-btn { width: 56px; height: 56px; background: var(--surface); border: 1.5px solid var(--line-strong); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; position: relative; transition: all 140ms var(--ease-out); -webkit-tap-highlight-color: transparent; }
@@ -637,7 +659,7 @@ body::after {
 
             <div class="ship-card">
               <div class="ship-top">
-                <span class="pill prereturn"><span class="pill-dot"></span>Pre-return</span>
+                <span class="pill prereturn"><span class="pill-dot"></span>Pre-Return</span>
                 <div class="ship-time">13:30</div>
               </div>
               <div class="ship-name">Marathon Galveston Bay</div>
@@ -650,7 +672,7 @@ body::after {
 
             <div class="ship-card">
               <div class="ship-top">
-                <span class="pill prereturn"><span class="pill-dot"></span>Pre-return</span>
+                <span class="pill prereturn"><span class="pill-dot"></span>Pre-Return</span>
                 <div class="ship-time">15:00</div>
               </div>
               <div class="ship-name">Dow Freeport</div>
@@ -806,6 +828,46 @@ body::after {
               <span class="bot-photo-count" id="photoTotal" style="display:none;">0</span>
             </button>
             <button class="btn-primary" onclick="goTo(5)">Review <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
+          </div>
+
+          <!-- GENERAL PHOTO SHEET (wagon / load verification) -->
+          <div class="photo-sheet-overlay" id="photoSheetOverlay" onclick="closePhotoSheet(event)">
+            <div class="photo-sheet" onclick="event.stopPropagation()">
+              <div class="ps-handle"></div>
+              <div class="ps-head">
+                <div class="ps-title">Add a photo</div>
+                <div class="ps-sub">DEL-2401 · auto-attaches to this shipment</div>
+              </div>
+              <div class="ps-body">
+                <div class="ps-actions">
+                  <button class="ps-action" onclick="captureGeneral('wagon')">
+                    <div class="ps-action-icon"><i data-lucide="truck" class="icon icon-sm"></i></div>
+                    <div class="ps-action-body">
+                      <div class="ps-action-name">Loaded wagon</div>
+                      <div class="ps-action-desc">Verification of full truck after loading</div>
+                    </div>
+                    <i data-lucide="chevron-right" class="icon icon-sm icon-arrow"></i>
+                  </button>
+                  <button class="ps-action" onclick="captureGeneral('item')">
+                    <div class="ps-action-icon"><i data-lucide="package" class="icon icon-sm"></i></div>
+                    <div class="ps-action-body">
+                      <div class="ps-action-name">Specific item or kit</div>
+                      <div class="ps-action-desc">Stillage, pallet, or unusual setup</div>
+                    </div>
+                    <i data-lucide="chevron-right" class="icon icon-sm icon-arrow"></i>
+                  </button>
+                  <button class="ps-action" onclick="captureGeneral('paperwork')">
+                    <div class="ps-action-icon"><i data-lucide="file-text" class="icon icon-sm"></i></div>
+                    <div class="ps-action-body">
+                      <div class="ps-action-name">Paperwork or delivery doc</div>
+                      <div class="ps-action-desc">Driver paperwork, bills of lading</div>
+                    </div>
+                    <i data-lucide="chevron-right" class="icon icon-sm icon-arrow"></i>
+                  </button>
+                </div>
+              </div>
+              <button class="ps-cancel" onclick="closePhotoSheet()">Cancel</button>
+            </div>
           </div>
 
           <!-- KEYPAD SHEET -->
@@ -1075,9 +1137,9 @@ body::after {
 
           <div class="done-screen">
             <div class="done-mark"><i data-lucide="check" class="icon"></i></div>
-            <div class="done-eyebrow"><span class="done-eyebrow-dot"></span>DEL-2401 · AWAITING OFFICE APPROVAL</div>
+            <div class="done-eyebrow"><span class="done-eyebrow-dot"></span>DEL-2401 · TO BE RECEIVED</div>
             <div class="done-headline">Counts sent.<br>Office reviews next.</div>
-            <div class="done-meta">Atlanta gets your counts, photos, and damage note. <strong>Rent doesn't start yet</strong> — it activates after office confirms and the truck reaches Sweeny.</div>
+            <div class="done-meta">Atlanta gets your counts, photos, and damage note. Status is <strong>To Be Received</strong> — the official Quantify state for shipments awaiting confirmation. <strong>Rent doesn't start yet</strong>; it activates after office confirms and the truck reaches Sweeny.</div>
 
             <div class="done-stages">
               <div class="done-stage">
@@ -1535,15 +1597,7 @@ function setupPhotos() {
   const genBtn = document.getElementById('genPhotoBtn');
   if (genBtn) {
     genBtn.addEventListener('click', () => {
-      if (current !== 4) goTo(4);
-      setTimeout(() => {
-        const empty = document.querySelector('#photoRow .photo-tile:not(.filled)');
-        if (empty) {
-          activePhotoSlot = parseInt(empty.dataset.slot, 10);
-          input.value = '';
-          input.click();
-        }
-      }, 260);
+      openPhotoSheet();
     });
   }
   input.addEventListener('change', (e) => {
@@ -1573,12 +1627,39 @@ function updatePhotoCount() {
   if (el) el.textContent = `${filled} of ${total}`;
   const badge = document.getElementById('photoTotal');
   if (badge) {
-    if (filled > 0) {
+    const wagonCount = generalPhotos.length;
+    const totalCount = filled + wagonCount;
+    if (totalCount > 0) {
       badge.style.display = 'flex';
-      badge.textContent = filled;
+      badge.textContent = totalCount;
     } else {
       badge.style.display = 'none';
     }
+  }
+}
+
+// ═══ GENERAL PHOTO SHEET ═══
+let generalPhotos = [];
+
+function openPhotoSheet() {
+  document.getElementById('photoSheetOverlay').classList.add('open');
+}
+function closePhotoSheet(e) {
+  if (e && e.target && !e.target.classList.contains('photo-sheet-overlay')) return;
+  document.getElementById('photoSheetOverlay').classList.remove('open');
+}
+function captureGeneral(kind) {
+  generalPhotos.push({ kind, ts: Date.now() });
+  closePhotoSheet();
+  updatePhotoCount();
+  const btn = document.getElementById('genPhotoBtn');
+  if (btn) {
+    btn.style.borderColor = 'var(--ok)';
+    btn.style.color = 'var(--ok)';
+    setTimeout(() => {
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }, 800);
   }
 }
 
