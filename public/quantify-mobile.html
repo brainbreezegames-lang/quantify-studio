@@ -1393,6 +1393,283 @@ body::after {
   .scene-title { font-size: 18px; }
 }
 
+/* ─── CATEGORY TABS ─── */
+.cat-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 14px 16px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.cat-tabs::-webkit-scrollbar { display: none; }
+.cat-tab {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  font-family: 'Switzer', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  letter-spacing: -0.1px;
+  transition: all 160ms var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+}
+.cat-tab:hover { border-color: var(--line-strong); }
+.cat-tab.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: white;
+}
+.cat-tab .cat-count {
+  color: var(--muted);
+  font-weight: 500;
+  margin-left: 4px;
+}
+.cat-tab.active .cat-count { color: rgba(255,255,255,0.7); }
+
+/* ─── SEARCH ─── */
+.count-search {
+  padding: 12px 16px 8px;
+  background: var(--surface-2);
+}
+.count-search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  padding: 10px 14px;
+  border: 1.5px solid var(--line);
+}
+.count-search-box .icon { color: var(--muted); }
+.search-input {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: 'Switzer', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+  min-width: 0;
+}
+.search-input::placeholder { color: var(--muted); }
+
+/* ─── STATUS PILL VARIANTS ─── */
+.ship-tag.res {
+  background: var(--blue-tint);
+  color: var(--blue);
+}
+.ship-tag.prer {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+.ship-tag.transit {
+  background: #E7E9EF;
+  color: var(--text);
+}
+
+/* ─── MONO SHIPMENT META ─── */
+.ship-foot-compact {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.ship-foot-compact .sep {
+  width: 3px;
+  height: 3px;
+  background: var(--dim);
+  border-radius: 50%;
+}
+
+/* ─── DAMAGE FLAG (on count row) ─── */
+.cr-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  background: var(--warn-bg);
+  color: var(--warn);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+.cr-flag .icon { width: 10px; height: 10px; stroke-width: 2.5; }
+
+/* ─── REVIEW SCREEN ─── */
+.review-hero {
+  padding: 6px 24px 22px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.review-headline {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.6px;
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+.review-sub {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 500;
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+.review-numbers {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  background: var(--surface-2);
+  padding: 16px 0;
+}
+.rn-col {
+  text-align: center;
+  border-right: 1px solid var(--line);
+}
+.rn-col:last-child { border-right: none; }
+.rn-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.rn-value {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+.rn-value.warn { color: var(--warn); }
+.rn-value.ok { color: var(--ok); }
+
+.review-divider {
+  padding: 22px 24px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.review-divider .div-count {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.review-line {
+  display: flex;
+  align-items: center;
+  padding: 14px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  gap: 14px;
+}
+.review-line.short { background: #FFF8EC; }
+.rl-status {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.rl-status.ok { background: var(--ok-bg); color: var(--ok); }
+.rl-status.short { background: var(--warn-bg); color: var(--warn); }
+.rl-status .icon { width: 14px; height: 14px; stroke-width: 2.5; }
+.rl-body { flex: 1; min-width: 0; }
+.rl-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.1px;
+}
+.rl-meta {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 2px;
+  font-weight: 500;
+}
+.rl-qty {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.2px;
+}
+.rl-qty.short { color: var(--warn); }
+
+/* ─── ATTACH PANEL (scene 4) ─── */
+.attach-hero {
+  padding: 6px 24px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.attach-headline {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+.attach-sub {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
+  line-height: 1.5;
+}
+.attach-sub strong { color: var(--text); font-weight: 600; }
+
+.damage-card {
+  margin: 16px 16px 0;
+  padding: 16px;
+  background: var(--surface);
+  border-left: 3px solid var(--warn);
+}
+.damage-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.damage-card-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.1px;
+}
+.damage-card-qty {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--warn);
+  font-weight: 700;
+}
+.damage-card-reason {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -1439,75 +1716,99 @@ body::after {
 
           <div class="content">
             <div class="today-hero">
-              <div class="hero-eyebrow">FRIDAY · APR 11</div>
+              <div class="hero-eyebrow">MONDAY · APR 14</div>
               <div class="hero-headline">Today</div>
               <div class="hero-stat-row">
                 <span><strong>4</strong> shipments</span>
                 <span class="sep"></span>
-                <span><strong>2</strong> pending</span>
+                <span><strong>2</strong> out</span>
                 <span class="sep"></span>
-                <span><strong>548</strong> units</span>
+                <span><strong>2</strong> in</span>
               </div>
             </div>
 
             <div class="section-label">
-              <span>NEXT UP</span>
+              <span>NOW</span>
               <span class="count">09:00 — 12:00</span>
             </div>
 
             <div class="ship-card featured" onclick="goTo(2)">
               <div class="ship-top">
-                <div class="ship-tag del"><span class="tag-dot"></span>DELIVERY</div>
+                <div class="ship-tag res"><span class="tag-dot"></span>RESERVED · TO BE SENT</div>
                 <div class="ship-time">09:42</div>
               </div>
               <div class="ship-name">Phillips 66 Sweeny Refinery</div>
               <div class="ship-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Old Ocean, TX · Unit 14 turnaround</div>
               <div class="ship-foot">
-                <div class="ship-stat"><span><strong>8</strong> items</span><span><strong>342</strong> units</span></div>
+                <div class="ship-foot-compact">
+                  <span>DEL-2401</span>
+                  <span class="sep"></span>
+                  <span>48 items · 342 parts</span>
+                  <span class="sep"></span>
+                  <span>Truck 1 of 4</span>
+                </div>
                 <i data-lucide="arrow-right" class="icon icon-sm ship-arrow"></i>
               </div>
             </div>
 
             <div class="ship-card">
               <div class="ship-top">
-                <div class="ship-tag del"><span class="tag-dot"></span>DELIVERY</div>
+                <div class="ship-tag res"><span class="tag-dot"></span>RESERVED · TO BE SENT</div>
                 <div class="ship-time">11:00</div>
               </div>
               <div class="ship-name">ExxonMobil Beaumont</div>
               <div class="ship-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Beaumont, TX · Coker 2 platform</div>
               <div class="ship-foot">
-                <div class="ship-stat"><span><strong>5</strong> items</span><span><strong>96</strong> units</span></div>
+                <div class="ship-foot-compact">
+                  <span>DEL-2402</span>
+                  <span class="sep"></span>
+                  <span>21 items · 96 parts</span>
+                  <span class="sep"></span>
+                  <span>Truck 1 of 1</span>
+                </div>
                 <i data-lucide="arrow-right" class="icon icon-sm ship-arrow"></i>
               </div>
             </div>
 
             <div class="section-label">
-              <span>LATER TODAY</span>
+              <span>LATER</span>
               <span class="count">13:00 — 17:00</span>
             </div>
 
             <div class="ship-card">
               <div class="ship-top">
-                <div class="ship-tag ret"><span class="tag-dot"></span>PRE-RETURN</div>
+                <div class="ship-tag prer"><span class="tag-dot"></span>PRE-RETURN · AWAITING COUNT</div>
                 <div class="ship-time">13:30</div>
               </div>
               <div class="ship-name">Marathon Galveston Bay</div>
               <div class="ship-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Texas City, TX · FCC unit return</div>
               <div class="ship-foot">
-                <div class="ship-stat"><span><strong>6</strong> items</span><span><strong>68</strong> units</span></div>
+                <div class="ship-foot-compact">
+                  <span>RET-1187</span>
+                  <span class="sep"></span>
+                  <span>Est. 68 parts</span>
+                  <span class="sep"></span>
+                  <span>Truck arriving</span>
+                </div>
                 <i data-lucide="arrow-right" class="icon icon-sm ship-arrow"></i>
               </div>
             </div>
 
             <div class="ship-card">
               <div class="ship-top">
-                <div class="ship-tag ret"><span class="tag-dot"></span>PRE-RETURN</div>
+                <div class="ship-tag prer"><span class="tag-dot"></span>PRE-RETURN · AWAITING COUNT</div>
                 <div class="ship-time">15:00</div>
               </div>
               <div class="ship-name">Dow Freeport</div>
               <div class="ship-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Freeport, TX · Plant B-3 partial return</div>
               <div class="ship-foot">
-                <div class="ship-stat"><span><strong>4</strong> items</span><span><strong>42</strong> units</span></div>
+                <div class="ship-foot-compact">
+                  <span>RET-1188</span>
+                  <span class="sep"></span>
+                  <span>Est. 42 parts</span>
+                  <span class="sep"></span>
+                  <span>Truck arriving</span>
+                </div>
                 <i data-lucide="arrow-right" class="icon icon-sm ship-arrow"></i>
               </div>
             </div>
