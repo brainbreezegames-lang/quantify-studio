@@ -385,6 +385,48 @@ body::after {
 .kp-split-btn:hover { color: var(--err); }
 .kp-split-btn .icon { width: 12px; height: 12px; stroke-width: 2.5; }
 
+/* ITEM PICKER SHEET (substitutes for delivery, adding items for pre-return) */
+.picker-overlay { position: absolute; inset: 0; background: rgba(10, 12, 24, 0.48); z-index: 500; opacity: 0; pointer-events: none; transition: opacity 200ms var(--ease-out); }
+.picker-overlay.open { opacity: 1; pointer-events: all; }
+.picker-sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--surface); z-index: 510; transform: translateY(100%); transition: transform 280ms var(--ease-out); display: flex; flex-direction: column; border-radius: 18px 18px 0 0; overflow: hidden; max-height: 88%; }
+.picker-overlay.open .picker-sheet { transform: translateY(0); }
+.pk-handle { width: 36px; height: 4px; background: var(--line-strong); margin: 10px auto 4px; border-radius: 2px; }
+.pk-head { padding: 10px 20px 14px; }
+.pk-title { font-size: 16px; font-weight: 600; color: var(--ink); letter-spacing: -0.2px; margin-bottom: 8px; }
+.pk-search { display: flex; align-items: center; gap: 8px; background: var(--surface-2); padding: 9px 12px; border: 1.5px solid var(--line); }
+.pk-search .icon { color: var(--muted); }
+.pk-search input { flex: 1; border: 0; outline: 0; background: transparent; font-family: 'Switzer', sans-serif; font-size: 14px; font-weight: 500; color: var(--ink); min-width: 0; }
+.pk-search input::placeholder { color: var(--muted); }
+.pk-list { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.pk-list::-webkit-scrollbar { width: 0; }
+.pk-row { display: flex; align-items: center; padding: 14px 20px; gap: 12px; border-top: 1px solid var(--line); cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background 140ms var(--ease-out); }
+.pk-row:active { background: var(--blue-tint); }
+.pk-row-body { flex: 1; min-width: 0; }
+.pk-row-name { font-size: 14px; font-weight: 600; color: var(--ink); letter-spacing: -0.1px; }
+.pk-row-spec { font-size: 12px; color: var(--muted); margin-top: 2px; font-weight: 500; }
+.pk-row-tag { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 0.3px; padding: 3px 7px; background: var(--surface-2); }
+.pk-cancel { width: 100%; padding: 14px; background: none; border: none; color: var(--text); font-family: 'Switzer', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; border-top: 1px solid var(--line); -webkit-tap-highlight-color: transparent; }
+.pk-cancel:hover { color: var(--blue); }
+
+/* "+ Add item" link at end of count list */
+.add-item-link { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 14px 16px; background: var(--surface-2); color: var(--blue); font-family: 'Switzer', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; border: none; width: 100%; -webkit-tap-highlight-color: transparent; transition: opacity 140ms var(--ease-out); letter-spacing: -0.1px; }
+.add-item-link:active { opacity: 0.6; }
+.add-item-link .icon { width: 14px; height: 14px; stroke-width: 2.25; }
+
+/* Pre-return empty state for Scene 3 */
+.empty-state { padding: 36px 28px 28px; text-align: center; background: var(--surface); }
+.empty-state-icon { width: 56px; height: 56px; background: var(--warn-bg); color: var(--warn); display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
+.empty-state-icon .icon { width: 28px; height: 28px; stroke-width: 1.75; }
+.empty-state-title { font-size: 18px; font-weight: 600; color: var(--ink); letter-spacing: -0.3px; margin-bottom: 8px; }
+.empty-state-desc { font-size: 13.5px; color: var(--muted); font-weight: 500; line-height: 1.55; max-width: 280px; margin: 0 auto 22px; letter-spacing: -0.05px; }
+.empty-state-cta { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; background: var(--blue); color: white; border: none; font-family: 'Switzer', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: all 200ms var(--ease-out); }
+.empty-state-cta:hover { background: var(--blue-dark); }
+.empty-state-cta:active { transform: scale(0.97); }
+
+/* Note callout (small inline messages on screens) */
+.note { display: flex; gap: 8px; padding: 10px 14px; background: var(--blue-tint); color: var(--blue); font-size: 12px; font-weight: 500; line-height: 1.4; letter-spacing: -0.05px; margin: 0 16px 8px; }
+.note .icon { color: var(--blue); flex-shrink: 0; margin-top: 1px; }
+
 /* GENERAL PHOTO SHEET (wagon / load verification photos, not damage) */
 .photo-sheet-overlay { position: absolute; inset: 0; background: rgba(10, 12, 24, 0.48); z-index: 500; opacity: 0; pointer-events: none; transition: opacity 200ms var(--ease-out); }
 .photo-sheet-overlay.open { opacity: 1; pointer-events: all; }
@@ -629,7 +671,7 @@ body::after {
 
             <div class="group-label"><span>This morning</span><span class="count">09:00 — 12:00</span></div>
 
-            <div class="ship-card featured" onclick="goTo(2)">
+            <div class="ship-card featured" onclick="openShipment('delivery')">
               <div class="ship-top">
                 <span class="pill reserved"><span class="pill-dot"></span>Reserved</span>
                 <div class="ship-time">09:42</div>
@@ -642,7 +684,7 @@ body::after {
               </div>
             </div>
 
-            <div class="ship-card" onclick="goTo(2)">
+            <div class="ship-card" onclick="openShipment('delivery')">
               <div class="ship-top">
                 <span class="pill reserved"><span class="pill-dot"></span>Reserved</span>
                 <div class="ship-time">11:00</div>
@@ -657,7 +699,7 @@ body::after {
 
             <div class="group-label"><span>This afternoon</span><span class="count">13:00 — 17:00</span></div>
 
-            <div class="ship-card">
+            <div class="ship-card" onclick="openShipment('preReturn')">
               <div class="ship-top">
                 <span class="pill prereturn"><span class="pill-dot"></span>Pre-Return</span>
                 <div class="ship-time">13:30</div>
@@ -665,12 +707,12 @@ body::after {
               <div class="ship-name">Marathon Galveston Bay</div>
               <div class="ship-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Texas City, TX · FCC unit return</div>
               <div class="ship-foot">
-                <div class="ship-meta">RET-1187 · Est. 68 parts</div>
+                <div class="ship-meta">RET-1187 · Est. 68 parts · Blank BOM</div>
                 <i data-lucide="arrow-right" class="icon icon-sm ship-arrow"></i>
               </div>
             </div>
 
-            <div class="ship-card">
+            <div class="ship-card" onclick="openShipment('preReturn')">
               <div class="ship-top">
                 <span class="pill prereturn"><span class="pill-dot"></span>Pre-Return</span>
                 <div class="ship-time">15:00</div>
@@ -678,7 +720,7 @@ body::after {
               <div class="ship-name">Dow Freeport</div>
               <div class="ship-site"><i data-lucide="map-pin" class="icon icon-xs"></i>Freeport, TX · Plant B-3 partial return</div>
               <div class="ship-foot">
-                <div class="ship-meta">RET-1188 · Est. 42 parts</div>
+                <div class="ship-meta">RET-1188 · Est. 42 parts · Blank BOM</div>
                 <i data-lucide="arrow-right" class="icon icon-sm ship-arrow"></i>
               </div>
             </div>
@@ -730,6 +772,11 @@ body::after {
             </div>
 
             <div class="resv-divider"></div>
+
+            <div class="note">
+              <i data-lucide="info" class="icon icon-sm"></i>
+              <span>Verify on-hand stock before counting. Office uses your check to plan the next truck.</span>
+            </div>
 
             <div class="resv-items-label">
               <span class="resv-items-text">What goes on this truck</span>
@@ -786,10 +833,10 @@ body::after {
 
           <div class="count-header">
             <div class="count-summary">
-              <div class="count-summary-text">
+              <div class="count-summary-text" id="countSummaryText">
                 <strong id="countDone">0</strong><span class="muted"> of </span><strong id="countTotal">13</strong><span class="muted"> lines</span>
               </div>
-              <div class="count-summary-meta"><span id="countParts">0</span> / 180 parts</div>
+              <div class="count-summary-meta" id="countSummaryMeta"><span id="countParts">0</span> / 180 parts</div>
             </div>
             <div class="progress-bar"><div class="progress-fill" id="progressFill" style="right: 100%;"></div></div>
           </div>
@@ -812,13 +859,16 @@ body::after {
           </div>
 
           <div class="content">
-            <div class="list-actions">
+            <div class="list-actions" id="listActions">
               <button class="list-action-btn" onclick="matchAllReserved()">
                 <i data-lucide="check-check" class="icon"></i>Copy reserved to loaded
               </button>
               <span class="list-action-meta">Tap a number to edit</span>
             </div>
             <div class="count-list" id="countList"></div>
+            <button class="add-item-link" onclick="openPicker()">
+              <i data-lucide="plus" class="icon"></i><span id="addItemLabel">Add a substitute or extra item</span>
+            </button>
             <div style="height: 16px;"></div>
           </div>
 
@@ -828,6 +878,22 @@ body::after {
               <span class="bot-photo-count" id="photoTotal" style="display:none;">0</span>
             </button>
             <button class="btn-primary" onclick="goTo(5)">Review <i data-lucide="arrow-right" class="icon icon-sm"></i></button>
+          </div>
+
+          <!-- ITEM PICKER SHEET (substitutes, pre-return additions) -->
+          <div class="picker-overlay" id="pickerOverlay" onclick="closePicker(event)">
+            <div class="picker-sheet" onclick="event.stopPropagation()">
+              <div class="pk-handle"></div>
+              <div class="pk-head">
+                <div class="pk-title" id="pickerTitle">Add an item</div>
+                <div class="pk-search">
+                  <i data-lucide="search" class="icon icon-sm"></i>
+                  <input type="text" id="pickerSearch" placeholder="Search the product catalog">
+                </div>
+              </div>
+              <div class="pk-list" id="pickerList"></div>
+              <button class="pk-cancel" onclick="closePicker()">Cancel</button>
+            </div>
           </div>
 
           <!-- GENERAL PHOTO SHEET (wagon / load verification) -->
@@ -1176,6 +1242,10 @@ body::after {
               </div>
             </div>
 
+            <div style="font-size: 11px; color: var(--muted); font-weight: 500; line-height: 1.5; margin: -8px 0 18px; max-width: 290px;">
+              Some destinations skip office review and go straight to <strong style="color:var(--text);">Completed</strong> — set per job site in Quantify desktop.
+            </div>
+
             <div class="done-actions">
               <button class="done-btn-prim" onclick="goTo(1)">Next shipment</button>
               <button class="done-btn-text" onclick="goTo(1)">Back to today's list</button>
@@ -1226,12 +1296,12 @@ const scenes = [
     ]
   },
   {
-    title: "Load items",
-    desc: "List dominates the screen. Compact stats and progress on top, filter chips when needed, search hidden behind an icon. Tap a number to type big quantities; ± for fine-tuning. Real shipments are 50 lines, 300–400 parts.",
+    title: "Counting screen",
+    desc: "Same shell for delivery loading and pre-return counting. For deliveries, the list is pre-filled from the reservation. For pre-returns, the list starts blank — yard adds items via the picker as they come off the truck. Tap any number to type fast in the keypad.",
     callouts: [
-      { num: "01", text: "<span>The list is the interface.</span> Chrome compressed: stats + progress in one line, filter and search collapsed until needed." },
-      { num: "02", text: "<span>Tap the number to type</span> in the keypad sheet — 96 in two taps, not ninety-six. ± buttons are for fine-tuning only." },
-      { num: "03", text: "<span>Copy reserved to loaded</span> as a subtle shortcut at the top of the list, not a heavy bulk-action bar. Scan stays in the nav." }
+      { num: "01", text: "<span>One screen, two contexts.</span> Delivery: pre-filled list, Copy reserved shortcut. Pre-Return: blank BOM, picker is the primary entry." },
+      { num: "02", text: "<span>Tap the number to type</span> in the keypad sheet — 96 in two taps, not ninety-six. ± buttons for fine-tuning only." },
+      { num: "03", text: "<span>Add a substitute or extra item</span> opens the product catalog picker. Same picker handles substitutions in delivery and item-adding in pre-return." }
     ]
   },
   {
@@ -1313,6 +1383,38 @@ let splitState = { load: 58, damage: 2, scrap: 0, lost: 0 };
 let photoSlots = { 0: null, 1: null, 2: null };
 let activePhotoSlot = null;
 
+// Context: 'delivery' (DEL flow, pre-filled list) or 'preReturn' (RET flow, blank BOM)
+let currentContext = 'delivery';
+
+// Product catalog for the item picker (substitutes / pre-return additions)
+const productCatalog = [
+  { name: "Cuplok Standard 1.5m",   spec: "Vertical · 4 cup welded",   cat: 'Cuplok', avail: 80 },
+  { name: "Cuplok Standard 2.0m",   spec: "Vertical · 4 cup welded",   cat: 'Cuplok', avail: 124 },
+  { name: "Cuplok Standard 2.5m",   spec: "Vertical · 4 cup welded",   cat: 'Cuplok', avail: 96 },
+  { name: "Cuplok Standard 3.0m",   spec: "Vertical · 4 cup welded",   cat: 'Cuplok', avail: 48 },
+  { name: "Cuplok Ledger 0.7m",     spec: "Horizontal · galvanized",   cat: 'Cuplok', avail: 60 },
+  { name: "Cuplok Ledger 1.2m",     spec: "Horizontal · galvanized",   cat: 'Cuplok', avail: 72 },
+  { name: "Cuplok Ledger 1.8m",     spec: "Horizontal · galvanized",   cat: 'Cuplok', avail: 96 },
+  { name: "Cuplok Ledger 2.5m",     spec: "Horizontal · galvanized",   cat: 'Cuplok', avail: 144 },
+  { name: "Cuplok Transom 0.7m",    spec: "Intermediate · galvanized", cat: 'Cuplok', avail: 32 },
+  { name: "Cuplok Transom 1.2m",    spec: "Intermediate · galvanized", cat: 'Cuplok', avail: 48 },
+  { name: "LVL Plank 1.5m",         spec: "Laminated veneer · OSHA",   cat: 'Boards', avail: 24 },
+  { name: "LVL Plank 1.8m",         spec: "Laminated veneer · OSHA",   cat: 'Boards', avail: 36 },
+  { name: "LVL Plank 2.5m",         spec: "Laminated veneer · OSHA",   cat: 'Boards', avail: 48 },
+  { name: "Steel Toe Board 1.8m",   spec: "Edge protection · steel",   cat: 'Boards', avail: 24 },
+  { name: "Steel Toe Board 2.5m",   spec: "Edge protection · steel",   cat: 'Boards', avail: 36 },
+  { name: "Cuplok Guardrail 1.8m",  spec: "Top rail · galvanized",     cat: 'Cuplok', avail: 24 },
+  { name: "Cuplok Guardrail 2.5m",  spec: "Top rail · galvanized",     cat: 'Cuplok', avail: 32 },
+  { name: "Cuplok Spigot",          spec: "Vertical joint connector",  cat: 'Cuplok', avail: 64 },
+  { name: "Base Jack 450mm",        spec: "Adjustable · 38mm thread",  cat: 'Access', avail: 32 },
+  { name: "Base Jack 600mm",        spec: "Adjustable · 38mm thread",  cat: 'Access', avail: 48 },
+  { name: "Ladder 2.0m",            spec: "Aluminum · OSHA rated",     cat: 'Access', avail: 8 },
+  { name: "Ladder 3.0m",            spec: "Aluminum · OSHA rated",     cat: 'Access', avail: 6 },
+  { name: "Sole Plate Steel",       spec: "Foundation distribution",   cat: 'Access', avail: 28 }
+];
+let pickerSearch = '';
+let nextItemId = 1000;
+
 // ═══ CATEGORY TABS ═══
 function renderCatTabs() {
   const el = document.getElementById('catTabs');
@@ -1359,7 +1461,20 @@ function buildCountList() {
   if (!list) return;
   const filtered = filteredItems();
   if (filtered.length === 0) {
-    list.innerHTML = `<div style="padding: 32px 24px; text-align:center; color: var(--muted); font-size: 14px; font-weight: 500;">No items match</div>`;
+    if (currentContext === 'preReturn' && items.length === 0) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon"><i data-lucide="package-open" class="icon"></i></div>
+          <div class="empty-state-title">Blank Bill of Materials</div>
+          <div class="empty-state-desc">Pre-Returns start empty. Add each item as it comes off the truck. The 4-way split (load · damage · scrap · lost) opens after each item is added.</div>
+          <button class="empty-state-cta" onclick="openPicker()">
+            <i data-lucide="plus" class="icon icon-sm"></i>Add the first item
+          </button>
+        </div>`;
+      if (window.lucide) lucide.createIcons();
+    } else {
+      list.innerHTML = `<div style="padding: 32px 24px; text-align:center; color: var(--muted); font-size: 14px; font-weight: 500;">No items match</div>`;
+    }
     return;
   }
   list.innerHTML = filtered.map(it => {
@@ -1521,14 +1636,26 @@ function updateProgress() {
   const counted = items.filter(i => i.counted > 0).length;
   const totalParts = items.reduce((sum, i) => sum + i.reserved, 0);
   const loadedParts = items.reduce((sum, i) => sum + i.counted, 0);
+  const isPR = currentContext === 'preReturn';
 
-  const done = document.getElementById('countDone');
-  const tot = document.getElementById('countTotal');
-  const parts = document.getElementById('countParts');
+  const summaryText = document.getElementById('countSummaryText');
+  const summaryMeta = document.getElementById('countSummaryMeta');
   const fill = document.getElementById('progressFill');
-  if (done) done.textContent = counted;
-  if (tot) tot.textContent = total;
-  if (parts) parts.textContent = loadedParts;
+
+  if (summaryText) {
+    if (isPR) {
+      summaryText.innerHTML = `<strong>${total}</strong><span class="muted"> ${total === 1 ? 'line' : 'lines'} added</span>`;
+    } else {
+      summaryText.innerHTML = `<strong>${counted}</strong><span class="muted"> of </span><strong>${total}</strong><span class="muted"> lines</span>`;
+    }
+  }
+  if (summaryMeta) {
+    if (isPR) {
+      summaryMeta.innerHTML = `${loadedParts} parts counted`;
+    } else {
+      summaryMeta.innerHTML = `${loadedParts} / 180 parts`;
+    }
+  }
   if (fill) {
     const pct = total === 0 ? 0 : Math.round((counted / total) * 100);
     fill.style.right = (100 - pct) + '%';
@@ -1638,6 +1765,74 @@ function updatePhotoCount() {
   }
 }
 
+// ═══ ITEM PICKER (substitutes / pre-return additions) ═══
+function openPicker() {
+  pickerSearch = '';
+  const search = document.getElementById('pickerSearch');
+  if (search) search.value = '';
+  const title = document.getElementById('pickerTitle');
+  if (title) title.textContent = currentContext === 'preReturn' ? 'Add an item from the truck' : 'Add a substitute or extra item';
+  renderPickerList();
+  document.getElementById('pickerOverlay').classList.add('open');
+  setTimeout(() => { if (search) search.focus(); }, 60);
+}
+function closePicker(e) {
+  if (e && e.target && !e.target.classList.contains('picker-overlay')) return;
+  document.getElementById('pickerOverlay').classList.remove('open');
+}
+function renderPickerList() {
+  const list = document.getElementById('pickerList');
+  if (!list) return;
+  const onShipmentNames = new Set(items.map(i => i.name));
+  let rows = productCatalog.filter(p => {
+    const q = pickerSearch.toLowerCase();
+    if (!q) return true;
+    return p.name.toLowerCase().includes(q) || p.spec.toLowerCase().includes(q);
+  });
+  if (rows.length === 0) {
+    list.innerHTML = `<div style="padding: 40px 20px; text-align:center; color: var(--muted); font-size: 13px; font-weight: 500;">No products match "${pickerSearch}"</div>`;
+    return;
+  }
+  list.innerHTML = rows.map(p => {
+    const onShip = onShipmentNames.has(p.name);
+    const tag = onShip ? `<span class="pk-row-tag" style="color:var(--ok);">On shipment</span>` : `<span class="pk-row-tag">${p.avail} avail</span>`;
+    return `
+      <div class="pk-row" onclick="addPickedItem('${encodeURIComponent(p.name)}')">
+        <div class="pk-row-body">
+          <div class="pk-row-name">${p.name}</div>
+          <div class="pk-row-spec">${p.spec} · ${p.cat}</div>
+        </div>
+        ${tag}
+      </div>`;
+  }).join('');
+}
+function addPickedItem(encName) {
+  const name = decodeURIComponent(encName);
+  const product = productCatalog.find(p => p.name === name);
+  if (!product) return;
+  const existing = items.find(i => i.name === name);
+  if (existing) {
+    closePicker();
+    openKeypad(existing.id);
+    return;
+  }
+  const newItem = {
+    id: nextItemId++,
+    name: product.name,
+    spec: product.spec,
+    cat: product.cat === 'Cuplok' ? CAT.CUPLOK : (product.cat === 'Boards' ? CAT.BOARDS : CAT.ACCESS),
+    reserved: 0,
+    counted: 0,
+    flag: false,
+    added: true
+  };
+  items.push(newItem);
+  closePicker();
+  renderCatTabs();
+  buildCountList();
+  setTimeout(() => openKeypad(newItem.id), 250);
+}
+
 // ═══ GENERAL PHOTO SHEET ═══
 let generalPhotos = [];
 
@@ -1707,6 +1902,129 @@ function goTo(n) {
   if (n < 1 || n > total) return;
   current = n;
   render();
+  applyContext();
+}
+
+function openShipment(context) {
+  currentContext = context;
+  if (context === 'preReturn') {
+    items.length = 0;
+  } else {
+    if (items.length === 0) restoreDeliveryItems();
+  }
+  buildCountList();
+  renderCatTabs();
+  goTo(2);
+}
+
+function restoreDeliveryItems() {
+  const seed = [
+    { id: 1,  name: "Cuplok Standard 2.0m",   spec: "Vertical · 4 cup welded",   cat: CAT.CUPLOK, reserved: 36, counted: 36, flag: false },
+    { id: 2,  name: "Cuplok Standard 2.5m",   spec: "Vertical · 4 cup welded",   cat: CAT.CUPLOK, reserved: 18, counted: 18, flag: false },
+    { id: 3,  name: "Cuplok Standard 3.0m",   spec: "Vertical · 4 cup welded",   cat: CAT.CUPLOK, reserved: 12, counted: 12, flag: false },
+    { id: 4,  name: "Cuplok Ledger 2.5m",     spec: "Horizontal · galvanized",   cat: CAT.CUPLOK, reserved: 36, counted: 36, flag: false },
+    { id: 5,  name: "Cuplok Ledger 1.8m",     spec: "Horizontal · galvanized",   cat: CAT.CUPLOK, reserved: 12, counted: 12, flag: false },
+    { id: 6,  name: "Cuplok Ledger 1.2m",     spec: "Horizontal · galvanized",   cat: CAT.CUPLOK, reserved: 6,  counted: 6,  flag: false },
+    { id: 7,  name: "Cuplok Transom 1.2m",    spec: "Intermediate · galvanized", cat: CAT.CUPLOK, reserved: 12, counted: 12, flag: false },
+    { id: 8,  name: "LVL Plank 2.5m",         spec: "Laminated veneer · OSHA",   cat: CAT.BOARDS, reserved: 12, counted: 10, flag: true },
+    { id: 9,  name: "LVL Plank 1.8m",         spec: "Laminated veneer · OSHA",   cat: CAT.BOARDS, reserved: 6,  counted: 6,  flag: false },
+    { id: 10, name: "Steel Toe Board 2.5m",   spec: "Edge protection · steel",   cat: CAT.BOARDS, reserved: 6,  counted: 6,  flag: false },
+    { id: 11, name: "Cuplok Guardrail 2.5m",  spec: "Top rail · galvanized",     cat: CAT.CUPLOK, reserved: 8,  counted: 8,  flag: false },
+    { id: 12, name: "Base Jack 600mm",        spec: "Adjustable · 38mm thread",  cat: CAT.ACCESS, reserved: 12, counted: 12, flag: false },
+    { id: 13, name: "Ladder 2.0m",            spec: "Aluminum · OSHA rated",     cat: CAT.ACCESS, reserved: 4,  counted: 4,  flag: false }
+  ];
+  seed.forEach(s => items.push(s));
+}
+
+function applyContext() {
+  const isPR = currentContext === 'preReturn';
+
+  const s2NavTitle = document.querySelector('.screen[data-screen="2"] .nav-title');
+  if (s2NavTitle) {
+    s2NavTitle.firstChild.textContent = isPR ? 'RET-1187' : 'DEL-2401';
+    const sub = s2NavTitle.querySelector('.nav-sub');
+    if (sub) sub.textContent = isPR ? 'Pre-Return · awaiting count' : 'Reserved · Truck 1 of 4';
+  }
+  const s2Name = document.querySelector('.screen[data-screen="2"] .resv-name');
+  if (s2Name) s2Name.textContent = isPR ? 'Marathon Galveston Bay' : 'Phillips 66 Sweeny';
+  const s2Site = document.querySelector('.screen[data-screen="2"] .resv-site');
+  if (s2Site) s2Site.innerHTML = `<i data-lucide="map-pin" class="icon icon-xs"></i>${isPR ? 'Texas City, TX · FCC unit return' : 'Old Ocean, TX · Unit 14 turnaround'}`;
+
+  const s2Stats = document.querySelectorAll('.screen[data-screen="2"] .resv-stat');
+  if (s2Stats.length >= 4) {
+    s2Stats[0].querySelector('.resv-stat-label').textContent = isPR ? 'Coming from' : 'From';
+    s2Stats[0].querySelector('.resv-stat-value').textContent = isPR ? 'Customer drop' : 'Beaumont Branch';
+    s2Stats[1].querySelector('.resv-stat-label').textContent = isPR ? 'Rent stops' : 'Rent starts';
+    s2Stats[1].querySelector('.resv-stat-value').textContent = isPR ? 'Today, when truck arrives' : 'Today, when truck leaves';
+    s2Stats[2].querySelector('.resv-stat-label').textContent = isPR ? 'BOM' : 'This truck';
+    s2Stats[2].querySelector('.resv-stat-value').textContent = isPR ? 'Blank — add as you count' : '13 lines · 180 parts';
+    s2Stats[3].querySelector('.resv-stat-label').textContent = isPR ? 'Customer estimate' : 'Reservation total';
+    s2Stats[3].querySelector('.resv-stat-value').textContent = isPR ? 'Estimated 68 parts' : '48 lines across 4 trucks';
+  }
+
+  const s2ItemsLabel = document.querySelector('.screen[data-screen="2"] .resv-items-text');
+  if (s2ItemsLabel) s2ItemsLabel.textContent = isPR ? 'Bill of Materials' : 'What goes on this truck';
+  const s2ItemsCount = document.querySelector('.screen[data-screen="2"] .resv-items-count');
+  if (s2ItemsCount) s2ItemsCount.textContent = isPR ? 'Empty until counted' : '13 lines';
+  const s2Preview = document.querySelector('.screen[data-screen="2"] .resv-preview');
+  if (s2Preview) {
+    if (isPR) {
+      s2Preview.innerHTML = `<div class="resv-more" style="padding: 26px 24px;">No items yet. Pre-Returns start with a blank Bill of Materials. Items get added on the next screen as they come off the truck.</div>`;
+    } else {
+      s2Preview.innerHTML = `
+        <div class="resv-preview-row">
+          <div class="resv-preview-body">
+            <div class="resv-preview-name">Cuplok Standard 2.0m</div>
+            <div class="resv-preview-spec">Vertical · 4 cup welded</div>
+          </div>
+          <div class="resv-preview-qty">36</div>
+        </div>
+        <div class="resv-preview-row">
+          <div class="resv-preview-body">
+            <div class="resv-preview-name">Cuplok Ledger 2.5m</div>
+            <div class="resv-preview-spec">Horizontal · galvanized</div>
+          </div>
+          <div class="resv-preview-qty">36</div>
+        </div>
+        <div class="resv-preview-row">
+          <div class="resv-preview-body">
+            <div class="resv-preview-name">Cuplok Standard 2.5m</div>
+            <div class="resv-preview-spec">Vertical · 4 cup welded</div>
+          </div>
+          <div class="resv-preview-qty">18</div>
+        </div>
+        <div class="resv-more">+ 10 more lines · open the loading screen to see and count</div>
+      `;
+    }
+  }
+
+  const s2CTA = document.querySelector('.screen[data-screen="2"] .bot-action .btn-primary');
+  if (s2CTA) s2CTA.innerHTML = `${isPR ? 'Start counting return' : 'Start loading'} <i data-lucide="arrow-right" class="icon icon-sm"></i>`;
+
+  const s3NavTitle = document.querySelector('.screen[data-screen="3"] .nav-title');
+  if (s3NavTitle) {
+    s3NavTitle.firstChild.textContent = isPR ? 'Count items off truck' : 'Load items';
+    const sub = s3NavTitle.querySelector('.nav-sub');
+    if (sub) sub.textContent = isPR ? 'RET-1187 · Marathon Galveston Bay' : 'DEL-2401 · Truck 1 of 4';
+  }
+
+  const listActions = document.getElementById('listActions');
+  if (listActions) listActions.style.display = isPR ? 'none' : 'flex';
+
+  const addLabel = document.getElementById('addItemLabel');
+  if (addLabel) addLabel.textContent = isPR ? 'Add an item from the truck' : 'Add a substitute or extra item';
+
+  const s5NavTitle = document.querySelector('.screen[data-screen="5"] .nav-title');
+  if (s5NavTitle) {
+    s5NavTitle.firstChild.textContent = 'Review';
+    const sub = s5NavTitle.querySelector('.nav-sub');
+    if (sub) sub.textContent = isPR ? 'RET-1187 · Pre-Return' : 'DEL-2401 · Truck 1 of 4';
+  }
+
+  const eyebrow = document.querySelector('.screen[data-screen="6"] .done-eyebrow');
+  if (eyebrow) eyebrow.innerHTML = `<span class="done-eyebrow-dot"></span>${isPR ? 'RET-1187' : 'DEL-2401'} · TO BE RECEIVED`;
+
+  if (window.lucide) lucide.createIcons();
 }
 
 const dotsEl = document.getElementById('sceneDots');
@@ -1725,12 +2043,22 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ═══ INIT ═══
+function setupPicker() {
+  const search = document.getElementById('pickerSearch');
+  if (!search) return;
+  search.addEventListener('input', (e) => {
+    pickerSearch = e.target.value;
+    renderPickerList();
+  });
+}
+
 function init() {
   if (window.lucide) lucide.createIcons();
   renderCatTabs();
   buildCountList();
   setupSearch();
   setupPhotos();
+  setupPicker();
   render();
 }
 
