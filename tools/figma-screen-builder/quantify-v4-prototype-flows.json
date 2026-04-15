@@ -1,0 +1,76 @@
+{
+  "startFrame": "V4-1. Shipments",
+  "transition": "SMART_ANIMATE",
+  "duration": 280,
+
+  "flows": [
+    { "from": "V4-1. Shipments", "element": "Card-DEL00791", "to": "V4-2. Shipment Detail - Delivery" },
+    { "from": "V4-1. Shipments", "element": "Card-DEL2401", "to": "V4-2. Shipment Detail - Delivery" },
+    { "from": "V4-1. Shipments", "element": "Card-DEL2402", "to": "V4-2. Shipment Detail - Delivery" },
+    { "from": "V4-1. Shipments", "element": "Card-DEL00802", "to": "V4-2. Shipment Detail - Delivery" },
+    { "from": "V4-1. Shipments", "element": "Card-RSV3341", "to": "V4-2. Shipment Detail - Delivery" },
+    { "from": "V4-1. Shipments", "element": "Card-RET1892", "to": "V4-9. Shipment Detail - Pre-Return" },
+    { "from": "V4-1. Shipments", "element": "Card-RET00829", "to": "V4-1e. Discrepancy Detail" },
+    { "from": "V4-1. Shipments", "element": "LocationBar", "to": "V4-1c. Select Location" },
+    { "from": "V4-1. Shipments", "element": "FAB", "to": "V4-1b. Shipments — New Sheet" },
+
+    { "from": "V4-1b. Shipments — New Sheet", "element": "Card-Delivery", "to": "V4-2. Shipment Detail - Delivery" },
+    { "from": "V4-1b. Shipments — New Sheet", "element": "Card-PreReturn", "to": "V4-9. Shipment Detail - Pre-Return" },
+
+    { "from": "V4-1c. Select Location", "element": "Header", "to": "V4-1. Shipments" },
+
+    { "from": "V4-1d. Shipments — Empty", "element": "SelectLocationBtn", "to": "V4-1c. Select Location" },
+    { "from": "V4-1d. Shipments — Empty", "element": "LocationBar", "to": "V4-1c. Select Location" },
+
+    { "from": "V4-1e. Discrepancy Detail", "element": "Header", "to": "V4-1. Shipments" },
+
+    { "from": "V4-2. Shipment Detail - Delivery", "element": "Header", "to": "V4-1. Shipments" },
+    { "from": "V4-2. Shipment Detail - Delivery", "element": "TruckCard", "to": "V4-3. Counting Screen - Delivery" },
+    { "from": "V4-2. Shipment Detail - Delivery", "element": "Bottom", "to": "V4-3. Counting Screen - Delivery" },
+
+    { "from": "V4-3. Counting Screen - Delivery", "element": "Header", "to": "V4-2. Shipment Detail - Delivery" },
+    { "from": "V4-3. Counting Screen - Delivery", "element": "Bottom", "to": "V4-6. Review Before Submit" },
+    { "from": "V4-3. Counting Screen - Delivery", "element": "ItemList", "to": "V4-4. Number Pad Sheet" },
+
+    { "from": "V4-4. Number Pad Sheet", "element": "Sheet", "to": "V4-3. Counting Screen - Delivery" },
+
+    { "from": "V4-5. Split Line Damage Flow", "element": "Header", "to": "V4-3. Counting Screen - Delivery" },
+    { "from": "V4-5. Split Line Damage Flow", "element": "Bottom", "to": "V4-3. Counting Screen - Delivery" },
+    { "from": "V4-5. Split Line Damage Flow", "element": "PhotoSection", "to": "V4-12. Photo Capture" },
+
+    { "from": "V4-6. Review Before Submit", "element": "Header", "to": "V4-3. Counting Screen - Delivery" },
+    { "from": "V4-6. Review Before Submit", "element": "Bottom", "to": "V4-15. Send to Office Modal" },
+    { "from": "V4-6. Review Before Submit", "element": "TrustBlock", "to": "V4-15. Send to Office Modal" },
+
+    { "from": "V4-7. Side Nav", "element": "DrawerHeader", "to": "V4-1. Shipments" },
+    { "from": "V4-7. Side Nav", "element": "ConnectionCard", "to": "V4-1. Shipments" },
+    { "from": "V4-7. Side Nav", "element": "NavList", "to": "V4-16. To Be Received" },
+
+    { "from": "V4-8. Profile Sheet", "element": "Sheet", "to": "V4-1. Shipments" },
+
+    { "from": "V4-9. Shipment Detail - Pre-Return", "element": "Header", "to": "V4-1. Shipments" },
+    { "from": "V4-9. Shipment Detail - Pre-Return", "element": "Bottom", "to": "V4-10. Counting - Pre-Return Empty" },
+    { "from": "V4-9. Shipment Detail - Pre-Return", "element": "DetailsList", "to": "V4-10. Counting - Pre-Return Empty" },
+
+    { "from": "V4-10. Counting - Pre-Return Empty", "element": "Header", "to": "V4-9. Shipment Detail - Pre-Return" },
+    { "from": "V4-10. Counting - Pre-Return Empty", "element": "Bottom", "to": "V4-13. Add Item Picker" },
+
+    { "from": "V4-11. More Menu Popover", "element": "Popover", "to": "V4-12. Photo Capture" },
+
+    { "from": "V4-12. Photo Capture", "element": "TopBar", "to": "V4-5. Split Line Damage Flow" },
+    { "from": "V4-12. Photo Capture", "element": "BottomBar", "to": "V4-5. Split Line Damage Flow" },
+
+    { "from": "V4-13. Add Item Picker", "element": "Header", "to": "V4-10. Counting - Pre-Return Empty" },
+    { "from": "V4-13. Add Item Picker", "element": "Results", "to": "V4-4. Number Pad Sheet" },
+
+    { "from": "V4-14. Notes Sheet", "element": "Sheet", "to": "V4-2. Shipment Detail - Delivery" },
+
+    { "from": "V4-15. Send to Office Modal", "element": "ModalCard", "to": "V4-17. Success" },
+
+    { "from": "V4-16. To Be Received", "element": "Header", "to": "V4-1. Shipments" },
+    { "from": "V4-16. To Be Received", "element": "Bottom", "to": "V4-1. Shipments" },
+
+    { "from": "V4-17. Success", "element": "Bottom", "to": "V4-1. Shipments" },
+    { "from": "V4-17. Success", "element": "InfoCard", "to": "V4-16. To Be Received" }
+  ]
+}

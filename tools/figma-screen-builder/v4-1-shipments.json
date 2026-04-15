@@ -1,0 +1,1302 @@
+[
+  {
+    "name": "V4-1. Shipments",
+    "width": 390,
+    "height": 1820,
+    "fill": "#F5F5F5",
+    "children": [
+      {
+        "type": "frame", "name": "BlueHeader", "layout": "vertical",
+        "gap": 16, "padding": { "top": 18, "bottom": 22, "left": 20, "right": 20 },
+        "stretch": true, "hugHeight": true, "fill": "#1E3FFF",
+        "children": [
+          {
+            "type": "frame", "name": "TopRow", "layout": "horizontal",
+            "gap": 12, "stretch": true, "hugHeight": true, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "children": [
+              {
+                "type": "frame", "layout": "vertical", "fixedWidth": 40, "fixedHeight": 40, "cornerRadius": 100, "fill": "#FFFFFF1F", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [ { "type": "icon", "icon": "menu", "size": 20, "color": "#FFFFFF" } ]
+              },
+              {
+                "type": "frame", "layout": "horizontal", "gap": 6, "padding": { "top": 6, "bottom": 6, "left": 12, "right": 14 }, "hugWidth": true, "hugHeight": true, "cornerRadius": 100, "fill": "#FFFFFF1F", "crossAlign": "CENTER",
+                "children": [
+                  { "type": "icon", "icon": "wifi", "size": 13, "color": "#FFFFFF" },
+                  { "type": "text", "content": "Synced 11:05", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" }
+                ]
+              },
+              {
+                "type": "frame", "layout": "vertical", "fixedWidth": 40, "fixedHeight": 40, "cornerRadius": 100, "fill": "#FFFFFF2E", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [ { "type": "text", "content": "JD", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" } ]
+              }
+            ]
+          },
+          {
+            "type": "frame", "layout": "vertical", "gap": 4, "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "Shipments", "fontSize": 30, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" },
+              { "type": "text", "content": "14 shipments  ·  Apr 7 – Apr 28", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#FFFFFFCC" }
+            ]
+          }
+        ]
+      },
+
+      {
+        "type": "frame", "name": "LocationBar", "layout": "horizontal",
+        "gap": 12, "padding": { "top": 16, "bottom": 16, "left": 20, "right": 20 },
+        "stretch": true, "hugHeight": true, "fill": "#FFFFFF", "crossAlign": "CENTER",
+        "children": [
+          {
+            "type": "frame", "layout": "vertical", "fixedWidth": 36, "fixedHeight": 36, "cornerRadius": 10, "fill": "#EEF2FF", "crossAlign": "CENTER", "mainAlign": "CENTER",
+            "children": [ { "type": "icon", "icon": "map-pin", "size": 18, "color": "#1E3FFF" } ]
+          },
+          {
+            "type": "frame", "layout": "vertical", "gap": 2, "grow": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "New York", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+              { "type": "text", "content": "Branch Office", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#737373" }
+            ]
+          },
+          { "type": "icon", "icon": "chevron-right", "size": 18, "color": "#999999" }
+        ]
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+
+      {
+        "type": "frame", "name": "FilterBar", "layout": "horizontal",
+        "gap": 8, "padding": { "top": 14, "bottom": 14, "left": 20, "right": 20 },
+        "stretch": true, "hugHeight": true, "fill": "#FFFFFF", "crossAlign": "CENTER",
+        "children": [
+          {
+            "type": "frame", "name": "Chip-NeedsCount", "layout": "horizontal", "gap": 8,
+            "padding": { "top": 9, "bottom": 9, "left": 14, "right": 12 },
+            "hugWidth": true, "hugHeight": true, "cornerRadius": 100, "fill": "#F59E0B", "crossAlign": "CENTER",
+            "children": [
+              { "type": "icon", "icon": "circle-dot", "size": 14, "color": "#FFFFFF" },
+              { "type": "text", "content": "Needs your count", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" },
+              {
+                "type": "frame", "layout": "vertical", "padding": { "top": 2, "bottom": 2, "left": 7, "right": 7 }, "hugWidth": true, "hugHeight": true, "cornerRadius": 100, "fill": "#FFFFFF33",
+                "children": [ { "type": "text", "content": "2", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" } ]
+              }
+            ]
+          },
+          { "type": "component", "component": "Chip", "variant": { "Type": "Outlined", "State": "Enabled", "Selected": "False" }, "text": { "Label": "Reserved 3" } },
+          { "type": "component", "component": "Chip", "variant": { "Type": "Outlined", "State": "Enabled", "Selected": "False" }, "text": { "Label": "To Be Received 1" } },
+          { "type": "component", "component": "Chip", "variant": { "Type": "Outlined", "State": "Enabled", "Selected": "False" }, "text": { "Label": "In Transit 1" } }
+        ]
+      },
+
+      { "type": "spacer", "height": 12 },
+
+      {
+        "type": "frame", "name": "CardList", "layout": "vertical",
+        "gap": 14, "padding": { "top": 0, "bottom": 28, "left": 16, "right": 16 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+
+          {
+            "type": "frame", "name": "Card-RET00829", "layout": "vertical",
+            "gap": 0, "stretch": true, "hugHeight": true,
+            "fill": "#FFFFFF", "cornerRadius": 16, "stroke": "#EAEAEA", "strokeWeight": 1, "clip": true,
+            "children": [
+              { "type": "frame", "layout": "vertical", "stretch": true, "fixedHeight": 4, "fill": "#DC2626" },
+              {
+                "type": "frame", "layout": "vertical", "gap": 16,
+                "padding": { "top": 20, "bottom": 20, "left": 20, "right": 20 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 10, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "text", "content": "RET-00829", "fontSize": 20, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                      {
+                        "type": "frame", "layout": "vertical", "padding": { "top": 5, "bottom": 5, "left": 10, "right": 10 }, "hugWidth": true, "hugHeight": true, "cornerRadius": 100, "fill": "#FEE2E2",
+                        "children": [ { "type": "text", "content": "DISCREPANCY", "fontSize": 10, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#991B1B" } ]
+                      },
+                      { "type": "spacer", "grow": true },
+                      { "type": "icon", "icon": "chevron-right", "size": 20, "color": "#999999" }
+                    ]
+                  },
+                  { "type": "text", "content": "JS-0942 — Vanguard Plant Systems", "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 14, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "map-pin", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "Bayonne, NJ", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#525252" }
+                        ]
+                      },
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "calendar", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "Planned Apr 8", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" }
+                        ]
+                      },
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "package", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "583 pcs", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#525252" }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 8, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "icon", "icon": "alert-triangle", "size": 14, "color": "#991B1B" },
+                      { "type": "text", "content": "Count mismatch (−12)", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#991B1B" },
+                      { "type": "spacer", "grow": true },
+                      { "type": "text", "content": "Resolve on desktop", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#991B1B" },
+                      { "type": "icon", "icon": "arrow-right", "size": 12, "color": "#991B1B" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+
+          {
+            "type": "frame", "name": "Card-DEL00791", "layout": "vertical",
+            "gap": 0, "stretch": true, "hugHeight": true,
+            "fill": "#FFFFFF", "cornerRadius": 16, "stroke": "#EAEAEA", "strokeWeight": 1, "clip": true,
+            "children": [
+              { "type": "frame", "layout": "vertical", "stretch": true, "fixedHeight": 4, "fill": "#1E3FFF" },
+              {
+                "type": "frame", "layout": "vertical", "gap": 16,
+                "padding": { "top": 20, "bottom": 20, "left": 20, "right": 20 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 10, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "text", "content": "DEL-00791", "fontSize": 20, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                      {
+                        "type": "frame", "layout": "vertical", "padding": { "top": 5, "bottom": 5, "left": 10, "right": 10 }, "hugWidth": true, "hugHeight": true, "cornerRadius": 100, "fill": "#E5ECFF",
+                        "children": [ { "type": "text", "content": "RESERVED", "fontSize": 10, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#1E3FFF" } ]
+                      },
+                      { "type": "spacer", "grow": true },
+                      { "type": "icon", "icon": "chevron-right", "size": 20, "color": "#999999" }
+                    ]
+                  },
+                  { "type": "text", "content": "JS-1247 — Titan Apex Industrial Services", "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 14, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "map-pin", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "Newark, NJ", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#525252" }
+                        ]
+                      },
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "calendar", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "Planned Apr 11", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" }
+                        ]
+                      },
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "package", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "589 pcs", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#525252" }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 8, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "icon", "icon": "circle-dot", "size": 14, "color": "#92400E" },
+                      { "type": "text", "content": "Needs your count", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#92400E" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+
+          {
+            "type": "frame", "name": "Card-RET1892", "layout": "vertical",
+            "gap": 0, "stretch": true, "hugHeight": true,
+            "fill": "#FFFFFF", "cornerRadius": 16, "stroke": "#EAEAEA", "strokeWeight": 1, "clip": true,
+            "children": [
+              { "type": "frame", "layout": "vertical", "stretch": true, "fixedHeight": 4, "fill": "#F59E0B" },
+              {
+                "type": "frame", "layout": "vertical", "gap": 16,
+                "padding": { "top": 20, "bottom": 20, "left": 20, "right": 20 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 10, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "text", "content": "RET-1892", "fontSize": 20, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                      {
+                        "type": "frame", "layout": "vertical", "padding": { "top": 5, "bottom": 5, "left": 10, "right": 10 }, "hugWidth": true, "hugHeight": true, "cornerRadius": 100, "fill": "#FEF3C7",
+                        "children": [ { "type": "text", "content": "PRE-RETURN", "fontSize": 10, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#92400E" } ]
+                      },
+                      { "type": "spacer", "grow": true },
+                      { "type": "icon", "icon": "chevron-right", "size": 20, "color": "#999999" }
+                    ]
+                  },
+                  { "type": "text", "content": "JS-2014 — Downtown Tower Demo", "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 14, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "map-pin", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "Manhattan, NY", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#525252" }
+                        ]
+                      },
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "calendar", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "Planned Apr 14", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" }
+                        ]
+                      },
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "package-open", "size": 14, "color": "#92400E" },
+                          { "type": "text", "content": "BOM blank", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#92400E" }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 8, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "icon", "icon": "circle-dot", "size": 14, "color": "#92400E" },
+                      { "type": "text", "content": "Needs your count", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#92400E" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+
+          {
+            "type": "frame", "name": "Card-DEL2401", "layout": "vertical",
+            "gap": 0, "stretch": true, "hugHeight": true,
+            "fill": "#FFFFFF", "cornerRadius": 16, "stroke": "#EAEAEA", "strokeWeight": 1, "clip": true,
+            "children": [
+              { "type": "frame", "layout": "vertical", "stretch": true, "fixedHeight": 4, "fill": "#1E3FFF" },
+              {
+                "type": "frame", "layout": "vertical", "gap": 16,
+                "padding": { "top": 20, "bottom": 20, "left": 20, "right": 20 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 10, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "text", "content": "DEL-2401", "fontSize": 20, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                      {
+                        "type": "frame", "layout": "vertical", "padding": { "top": 5, "bottom": 5, "left": 10, "right": 10 }, "hugWidth": true, "hugHeight": true, "cornerRadius": 100, "fill": "#EEF2FF",
+                        "children": [ { "type": "text", "content": "TO BE RECEIVED", "fontSize": 10, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#4F46E5" } ]
+                      },
+                      { "type": "spacer", "grow": true },
+                      { "type": "icon", "icon": "chevron-right", "size": 20, "color": "#999999" }
+                    ]
+                  },
+                  { "type": "text", "content": "JS-1247 — Phillips 66 Bayway Refinery", "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 14, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "map-pin", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "Linden, NJ", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#525252" }
+                        ]
+                      },
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "calendar", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "Planned Apr 14", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" }
+                        ]
+                      },
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "package", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "342 pcs", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#525252" }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+
+          {
+            "type": "frame", "name": "Card-DEL2402", "layout": "vertical",
+            "gap": 0, "stretch": true, "hugHeight": true,
+            "fill": "#FFFFFF", "cornerRadius": 16, "stroke": "#EAEAEA", "strokeWeight": 1, "clip": true,
+            "children": [
+              { "type": "frame", "layout": "vertical", "stretch": true, "fixedHeight": 4, "fill": "#1E3FFF" },
+              {
+                "type": "frame", "layout": "vertical", "gap": 16,
+                "padding": { "top": 20, "bottom": 20, "left": 20, "right": 20 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 10, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "text", "content": "DEL-2402", "fontSize": 20, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                      {
+                        "type": "frame", "layout": "vertical", "padding": { "top": 5, "bottom": 5, "left": 10, "right": 10 }, "hugWidth": true, "hugHeight": true, "cornerRadius": 100, "fill": "#E5ECFF",
+                        "children": [ { "type": "text", "content": "RESERVED", "fontSize": 10, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#1E3FFF" } ]
+                      },
+                      { "type": "spacer", "grow": true },
+                      { "type": "icon", "icon": "chevron-right", "size": 20, "color": "#999999" }
+                    ]
+                  },
+                  { "type": "text", "content": "JS-1860 — Hudson Yards Construction", "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 14, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "map-pin", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "Manhattan, NY", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#525252" }
+                        ]
+                      },
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "calendar", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "Planned Apr 17", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" }
+                        ]
+                      },
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "package", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "187 pcs", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#525252" }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+
+          {
+            "type": "frame", "name": "Card-DEL00802", "layout": "vertical",
+            "gap": 0, "stretch": true, "hugHeight": true,
+            "fill": "#FFFFFF", "cornerRadius": 16, "stroke": "#EAEAEA", "strokeWeight": 1, "clip": true,
+            "children": [
+              { "type": "frame", "layout": "vertical", "stretch": true, "fixedHeight": 4, "fill": "#1E3FFF" },
+              {
+                "type": "frame", "layout": "vertical", "gap": 16,
+                "padding": { "top": 20, "bottom": 20, "left": 20, "right": 20 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 10, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "text", "content": "DEL-00802", "fontSize": 20, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                      {
+                        "type": "frame", "layout": "vertical", "padding": { "top": 5, "bottom": 5, "left": 10, "right": 10 }, "hugWidth": true, "hugHeight": true, "cornerRadius": 100, "fill": "#E0F2FE",
+                        "children": [ { "type": "text", "content": "IN TRANSIT", "fontSize": 10, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0369A1" } ]
+                      },
+                      { "type": "spacer", "grow": true },
+                      { "type": "icon", "icon": "chevron-right", "size": 20, "color": "#999999" }
+                    ]
+                  },
+                  { "type": "text", "content": "JS-0744 — BlueRidge Fabrication", "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 14, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "map-pin", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "Brooklyn, NY", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#525252" }
+                        ]
+                      },
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "calendar", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "Planned Apr 18", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" }
+                        ]
+                      },
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "package", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "612 pcs", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#525252" }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+
+          {
+            "type": "frame", "name": "Card-RSV3341", "layout": "vertical",
+            "gap": 0, "stretch": true, "hugHeight": true,
+            "fill": "#FFFFFF", "cornerRadius": 16, "stroke": "#EAEAEA", "strokeWeight": 1, "clip": true,
+            "children": [
+              { "type": "frame", "layout": "vertical", "stretch": true, "fixedHeight": 4, "fill": "#1E3FFF" },
+              {
+                "type": "frame", "layout": "vertical", "gap": 16,
+                "padding": { "top": 20, "bottom": 20, "left": 20, "right": 20 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 10, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "text", "content": "RSV-3341", "fontSize": 20, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                      {
+                        "type": "frame", "layout": "vertical", "padding": { "top": 5, "bottom": 5, "left": 10, "right": 10 }, "hugWidth": true, "hugHeight": true, "cornerRadius": 100, "fill": "#E5ECFF",
+                        "children": [ { "type": "text", "content": "RESERVED", "fontSize": 10, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#1E3FFF" } ]
+                      },
+                      { "type": "spacer", "grow": true },
+                      { "type": "icon", "icon": "chevron-right", "size": 20, "color": "#999999" }
+                    ]
+                  },
+                  { "type": "text", "content": "JS-2188 — Battery Park Tower", "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 14, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "map-pin", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "Manhattan, NY", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#525252" }
+                        ]
+                      },
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "calendar", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "Planned Apr 24", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" }
+                        ]
+                      },
+                      {
+                        "type": "frame", "layout": "horizontal", "gap": 6, "hugWidth": true, "hugHeight": true, "crossAlign": "CENTER",
+                        "children": [
+                          { "type": "icon", "icon": "package", "size": 14, "color": "#737373" },
+                          { "type": "text", "content": "312 pcs", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#525252" }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+
+        ]
+      },
+
+      {
+        "type": "frame", "name": "FabRow", "layout": "horizontal",
+        "padding": { "top": 0, "bottom": 28, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "mainAlign": "MAX", "crossAlign": "CENTER",
+        "children": [
+          {
+            "type": "frame", "name": "FAB", "layout": "vertical",
+            "fixedWidth": 60, "fixedHeight": 60, "cornerRadius": 100,
+            "fill": "#1E3FFF", "crossAlign": "CENTER", "mainAlign": "CENTER",
+            "shadow": [
+              { "type": "DROP_SHADOW", "color": { "r": 0.118, "g": 0.247, "b": 1, "a": 0.35 }, "offset": { "x": 0, "y": 8 }, "radius": 20, "spread": 0, "visible": true, "blendMode": "NORMAL" },
+              { "type": "DROP_SHADOW", "color": { "r": 0, "g": 0, "b": 0, "a": 0.10 }, "offset": { "x": 0, "y": 2 }, "radius": 6, "spread": 0, "visible": true, "blendMode": "NORMAL" }
+            ],
+            "children": [
+              { "type": "icon", "icon": "plus", "size": 26, "color": "#FFFFFF" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "V4-1b. Shipments — New Sheet",
+    "width": 390,
+    "height": 1860,
+    "fill": "#0A0F2999",
+    "children": [
+      { "type": "spacer", "grow": true },
+
+      {
+        "type": "frame", "name": "Sheet", "layout": "vertical",
+        "gap": 0, "stretch": true, "hugHeight": true,
+        "fill": "#FFFFFF", "cornerRadius": 28,
+        "shadow": [
+          { "type": "DROP_SHADOW", "color": { "r": 0, "g": 0, "b": 0, "a": 0.18 }, "offset": { "x": 0, "y": -8 }, "radius": 32, "spread": 0, "visible": true, "blendMode": "NORMAL" }
+        ],
+        "children": [
+          {
+            "type": "frame", "layout": "vertical",
+            "padding": { "top": 12, "bottom": 0, "left": 0, "right": 0 },
+            "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+            "children": [
+              { "type": "frame", "layout": "vertical", "fixedWidth": 44, "fixedHeight": 5, "cornerRadius": 100, "fill": "#D4D4D4" }
+            ]
+          },
+
+          {
+            "type": "frame", "layout": "horizontal",
+            "padding": { "top": 18, "bottom": 4, "left": 24, "right": 16 },
+            "stretch": true, "hugHeight": true, "mainAlign": "SPACE_BETWEEN", "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "layout": "vertical", "gap": 4, "grow": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Create new", "fontSize": 24, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  { "type": "text", "content": "What are you working on?", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#737373" }
+                ]
+              },
+              {
+                "type": "frame", "layout": "vertical", "fixedWidth": 36, "fixedHeight": 36, "cornerRadius": 100, "fill": "#F5F5F5", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [ { "type": "icon", "icon": "x", "size": 18, "color": "#525252" } ]
+              }
+            ]
+          },
+
+          {
+            "type": "frame", "layout": "vertical",
+            "padding": { "top": 22, "bottom": 6, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "GOING OUT", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#737373", "letterSpacing": 1 }
+            ]
+          },
+
+          {
+            "type": "frame", "layout": "vertical", "gap": 10,
+            "padding": { "top": 8, "bottom": 4, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true,
+            "children": [
+              {
+                "type": "frame", "name": "Card-Delivery", "layout": "vertical", "gap": 0,
+                "stretch": true, "hugHeight": true, "cornerRadius": 14, "fill": "#FFFFFF", "stroke": "#EAEAEA", "strokeWeight": 1, "clip": true,
+                "children": [
+                  { "type": "frame", "layout": "vertical", "stretch": true, "fixedHeight": 4, "fill": "#1E3FFF" },
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 14,
+                    "padding": { "top": 16, "bottom": 16, "left": 16, "right": 16 },
+                    "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      {
+                        "type": "frame", "layout": "vertical", "fixedWidth": 44, "fixedHeight": 44, "cornerRadius": 12, "fill": "#EEF2FF", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                        "children": [ { "type": "icon", "icon": "truck", "size": 22, "color": "#1E3FFF" } ]
+                      },
+                      {
+                        "type": "frame", "layout": "vertical", "gap": 4, "grow": true, "hugHeight": true,
+                        "children": [
+                          { "type": "text", "content": "Delivery", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                          { "type": "text", "content": "Send equipment out today", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#525252" }
+                        ]
+                      },
+                      { "type": "icon", "icon": "chevron-right", "size": 18, "color": "#999999" }
+                    ]
+                  }
+                ]
+              },
+
+              {
+                "type": "frame", "name": "Card-Reservation", "layout": "vertical", "gap": 0,
+                "stretch": true, "hugHeight": true, "cornerRadius": 14, "fill": "#FFFFFF", "stroke": "#EAEAEA", "strokeWeight": 1, "clip": true,
+                "children": [
+                  { "type": "frame", "layout": "vertical", "stretch": true, "fixedHeight": 4, "fill": "#1E3FFF" },
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 14,
+                    "padding": { "top": 16, "bottom": 16, "left": 16, "right": 16 },
+                    "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      {
+                        "type": "frame", "layout": "vertical", "fixedWidth": 44, "fixedHeight": 44, "cornerRadius": 12, "fill": "#E5ECFF", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                        "children": [ { "type": "icon", "icon": "calendar-plus", "size": 22, "color": "#1E3FFF" } ]
+                      },
+                      {
+                        "type": "frame", "layout": "vertical", "gap": 4, "grow": true, "hugHeight": true,
+                        "children": [
+                          { "type": "text", "content": "Reservation", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                          { "type": "text", "content": "Schedule a future delivery", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#525252" }
+                        ]
+                      },
+                      { "type": "icon", "icon": "chevron-right", "size": 18, "color": "#999999" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+
+          {
+            "type": "frame", "layout": "vertical",
+            "padding": { "top": 18, "bottom": 6, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "COMING IN", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#737373", "letterSpacing": 1 }
+            ]
+          },
+
+          {
+            "type": "frame", "layout": "vertical", "gap": 10,
+            "padding": { "top": 8, "bottom": 4, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true,
+            "children": [
+              {
+                "type": "frame", "name": "Card-Return", "layout": "vertical", "gap": 0,
+                "stretch": true, "hugHeight": true, "cornerRadius": 14, "fill": "#FFFFFF", "stroke": "#EAEAEA", "strokeWeight": 1, "clip": true,
+                "children": [
+                  { "type": "frame", "layout": "vertical", "stretch": true, "fixedHeight": 4, "fill": "#F59E0B" },
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 14,
+                    "padding": { "top": 16, "bottom": 16, "left": 16, "right": 16 },
+                    "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      {
+                        "type": "frame", "layout": "vertical", "fixedWidth": 44, "fixedHeight": 44, "cornerRadius": 12, "fill": "#FEF3C7", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                        "children": [ { "type": "icon", "icon": "arrow-down-to-line", "size": 22, "color": "#92400E" } ]
+                      },
+                      {
+                        "type": "frame", "layout": "vertical", "gap": 4, "grow": true, "hugHeight": true,
+                        "children": [
+                          { "type": "text", "content": "Return", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                          { "type": "text", "content": "Equipment arriving now — count it", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#525252" }
+                        ]
+                      },
+                      { "type": "icon", "icon": "chevron-right", "size": 18, "color": "#999999" }
+                    ]
+                  }
+                ]
+              },
+
+              {
+                "type": "frame", "name": "Card-PreReturn", "layout": "vertical", "gap": 0,
+                "stretch": true, "hugHeight": true, "cornerRadius": 14, "fill": "#FFFFFF", "stroke": "#EAEAEA", "strokeWeight": 1, "clip": true,
+                "children": [
+                  { "type": "frame", "layout": "vertical", "stretch": true, "fixedHeight": 4, "fill": "#F59E0B" },
+                  {
+                    "type": "frame", "layout": "horizontal", "gap": 14,
+                    "padding": { "top": 16, "bottom": 16, "left": 16, "right": 16 },
+                    "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      {
+                        "type": "frame", "layout": "vertical", "fixedWidth": 44, "fixedHeight": 44, "cornerRadius": 12, "fill": "#FEF7E6", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                        "children": [ { "type": "icon", "icon": "calendar-clock", "size": 22, "color": "#92400E" } ]
+                      },
+                      {
+                        "type": "frame", "layout": "vertical", "gap": 4, "grow": true, "hugHeight": true,
+                        "children": [
+                          { "type": "text", "content": "Pre-Return", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                          { "type": "text", "content": "Schedule a future return pickup", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#525252" }
+                        ]
+                      },
+                      { "type": "icon", "icon": "chevron-right", "size": 18, "color": "#999999" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+
+          { "type": "spacer", "height": 32 }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "V4-1c. Select Location",
+    "width": 390,
+    "height": 1340,
+    "fill": "#FFFFFF",
+    "children": [
+      {
+        "type": "frame", "name": "Header", "layout": "horizontal",
+        "gap": 14, "padding": { "top": 18, "bottom": 18, "left": 16, "right": 20 },
+        "stretch": true, "fixedHeight": 64, "fill": "#FFFFFF", "crossAlign": "CENTER",
+        "children": [
+          {
+            "type": "frame", "layout": "vertical", "fixedWidth": 40, "fixedHeight": 40, "cornerRadius": 100, "fill": "#F5F5F5", "crossAlign": "CENTER", "mainAlign": "CENTER",
+            "children": [ { "type": "icon", "icon": "arrow-left", "size": 20, "color": "#0A0A0A" } ]
+          },
+          { "type": "text", "content": "Select location", "fontSize": 19, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A", "grow": true }
+        ]
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+
+      {
+        "type": "frame", "name": "Search", "layout": "horizontal", "gap": 12,
+        "padding": { "top": 16, "bottom": 16, "left": 20, "right": 20 },
+        "stretch": true, "hugHeight": true, "fill": "#FFFFFF", "crossAlign": "CENTER",
+        "children": [
+          {
+            "type": "frame", "layout": "horizontal", "gap": 12, "padding": { "top": 14, "bottom": 14, "left": 16, "right": 16 },
+            "grow": true, "hugHeight": true, "cornerRadius": 14, "fill": "#F5F5F5", "crossAlign": "CENTER",
+            "children": [
+              { "type": "icon", "icon": "search", "size": 18, "color": "#737373" },
+              { "type": "text", "content": "Search jobsite or branch…", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#999999", "grow": true }
+            ]
+          }
+        ]
+      },
+
+      {
+        "type": "frame", "name": "CurrentBranchWrap", "layout": "vertical",
+        "padding": { "top": 4, "bottom": 0, "left": 16, "right": 16 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "frame", "name": "CurrentBranch", "layout": "horizontal",
+            "gap": 14, "padding": { "top": 18, "bottom": 18, "left": 18, "right": 18 },
+            "stretch": true, "hugHeight": true, "cornerRadius": 14, "fill": "#EEF2FF", "stroke": "#1E3FFF", "strokeWeight": 1.5, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "layout": "vertical", "fixedWidth": 40, "fixedHeight": 40, "cornerRadius": 100, "fill": "#1E3FFF", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [ { "type": "icon", "icon": "check", "size": 22, "color": "#FFFFFF" } ]
+              },
+              {
+                "type": "frame", "layout": "vertical", "gap": 3, "grow": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "New York", "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#1E3FFF" },
+                  { "type": "text", "content": "Branch Office  ·  Currently selected", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#1E3FFF" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+
+      {
+        "type": "frame", "name": "NYLocations-Header", "layout": "horizontal",
+        "padding": { "top": 28, "bottom": 10, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "mainAlign": "SPACE_BETWEEN", "crossAlign": "CENTER",
+        "children": [
+          { "type": "text", "content": "NEW YORK LOCATIONS", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#737373", "letterSpacing": 1 },
+          { "type": "text", "content": "View all", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#1E3FFF" }
+        ]
+      },
+
+      {
+        "type": "frame", "name": "NYLocations", "layout": "vertical", "gap": 8,
+        "padding": { "top": 0, "bottom": 0, "left": 16, "right": 16 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "frame", "layout": "horizontal", "gap": 14,
+            "padding": { "top": 14, "bottom": 14, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "cornerRadius": 14, "fill": "#FFFFFF", "stroke": "#EAEAEA", "strokeWeight": 1, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "layout": "vertical", "fixedWidth": 40, "fixedHeight": 40, "cornerRadius": 12, "fill": "#EEF2FF", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [ { "type": "icon", "icon": "warehouse", "size": 20, "color": "#1E3FFF" } ]
+              },
+              {
+                "type": "frame", "layout": "vertical", "gap": 2, "grow": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Eastgate Distribution Hub", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  { "type": "text", "content": "Jobsite", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#737373" }
+                ]
+              },
+              { "type": "icon", "icon": "chevron-right", "size": 18, "color": "#999999" }
+            ]
+          },
+          {
+            "type": "frame", "layout": "horizontal", "gap": 14,
+            "padding": { "top": 14, "bottom": 14, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "cornerRadius": 14, "fill": "#FFFFFF", "stroke": "#EAEAEA", "strokeWeight": 1, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "layout": "vertical", "fixedWidth": 40, "fixedHeight": 40, "cornerRadius": 12, "fill": "#EEF2FF", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [ { "type": "icon", "icon": "warehouse", "size": 20, "color": "#1E3FFF" } ]
+              },
+              {
+                "type": "frame", "layout": "vertical", "gap": 2, "grow": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Northwind Logistics Terminal", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  { "type": "text", "content": "Jobsite", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#737373" }
+                ]
+              },
+              { "type": "icon", "icon": "chevron-right", "size": 18, "color": "#999999" }
+            ]
+          },
+          {
+            "type": "frame", "layout": "horizontal", "gap": 14,
+            "padding": { "top": 14, "bottom": 14, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "cornerRadius": 14, "fill": "#FFFFFF", "stroke": "#EAEAEA", "strokeWeight": 1, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "layout": "vertical", "fixedWidth": 40, "fixedHeight": 40, "cornerRadius": 12, "fill": "#FEF7E6", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [ { "type": "icon", "icon": "boxes", "size": 20, "color": "#92400E" } ]
+              },
+              {
+                "type": "frame", "layout": "vertical", "gap": 2, "grow": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Jersey City Laydown Yard", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  { "type": "text", "content": "Laydown yard", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#737373" }
+                ]
+              },
+              { "type": "icon", "icon": "chevron-right", "size": 18, "color": "#999999" }
+            ]
+          },
+          {
+            "type": "frame", "layout": "horizontal", "gap": 14,
+            "padding": { "top": 14, "bottom": 14, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "cornerRadius": 14, "fill": "#FFFFFF", "stroke": "#EAEAEA", "strokeWeight": 1, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "layout": "vertical", "fixedWidth": 40, "fixedHeight": 40, "cornerRadius": 12, "fill": "#FEF7E6", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [ { "type": "icon", "icon": "boxes", "size": 20, "color": "#92400E" } ]
+              },
+              {
+                "type": "frame", "layout": "vertical", "gap": 2, "grow": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Queens Staging Area", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  { "type": "text", "content": "Laydown yard", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#737373" }
+                ]
+              },
+              { "type": "icon", "icon": "chevron-right", "size": 18, "color": "#999999" }
+            ]
+          }
+        ]
+      },
+
+      {
+        "type": "frame", "name": "OtherBranches-Header", "layout": "vertical",
+        "padding": { "top": 28, "bottom": 10, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          { "type": "text", "content": "OTHER BRANCHES", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#737373", "letterSpacing": 1 }
+        ]
+      },
+
+      {
+        "type": "frame", "name": "OtherBranches", "layout": "vertical", "gap": 8,
+        "padding": { "top": 0, "bottom": 0, "left": 16, "right": 16 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "frame", "layout": "horizontal", "gap": 14,
+            "padding": { "top": 14, "bottom": 14, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "cornerRadius": 14, "fill": "#FFFFFF", "stroke": "#EAEAEA", "strokeWeight": 1, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "layout": "vertical", "fixedWidth": 40, "fixedHeight": 40, "cornerRadius": 12, "fill": "#F5F5F5", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [ { "type": "icon", "icon": "building-2", "size": 20, "color": "#525252" } ]
+              },
+              { "type": "text", "content": "Ohio", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A", "grow": true },
+              { "type": "icon", "icon": "chevron-right", "size": 18, "color": "#999999" }
+            ]
+          },
+          {
+            "type": "frame", "layout": "horizontal", "gap": 14,
+            "padding": { "top": 14, "bottom": 14, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "cornerRadius": 14, "fill": "#FFFFFF", "stroke": "#EAEAEA", "strokeWeight": 1, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "layout": "vertical", "fixedWidth": 40, "fixedHeight": 40, "cornerRadius": 12, "fill": "#F5F5F5", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [ { "type": "icon", "icon": "building-2", "size": 20, "color": "#525252" } ]
+              },
+              { "type": "text", "content": "Texas", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A", "grow": true },
+              { "type": "icon", "icon": "chevron-right", "size": 18, "color": "#999999" }
+            ]
+          }
+        ]
+      },
+
+      {
+        "type": "frame", "name": "Laydowns-Header", "layout": "vertical",
+        "padding": { "top": 28, "bottom": 10, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          { "type": "text", "content": "LAYDOWN YARDS", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#737373", "letterSpacing": 1 }
+        ]
+      },
+
+      {
+        "type": "frame", "name": "Laydowns", "layout": "vertical", "gap": 8,
+        "padding": { "top": 0, "bottom": 28, "left": 16, "right": 16 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "frame", "layout": "horizontal", "gap": 14,
+            "padding": { "top": 14, "bottom": 14, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "cornerRadius": 14, "fill": "#FFFFFF", "stroke": "#EAEAEA", "strokeWeight": 1, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "layout": "vertical", "fixedWidth": 40, "fixedHeight": 40, "cornerRadius": 12, "fill": "#FEF7E6", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [ { "type": "icon", "icon": "boxes", "size": 20, "color": "#92400E" } ]
+              },
+              { "type": "text", "content": "Punta Cana", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A", "grow": true },
+              { "type": "icon", "icon": "chevron-right", "size": 18, "color": "#999999" }
+            ]
+          },
+          {
+            "type": "frame", "layout": "horizontal", "gap": 14,
+            "padding": { "top": 14, "bottom": 14, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "cornerRadius": 14, "fill": "#FFFFFF", "stroke": "#EAEAEA", "strokeWeight": 1, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "layout": "vertical", "fixedWidth": 40, "fixedHeight": 40, "cornerRadius": 12, "fill": "#FEF7E6", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [ { "type": "icon", "icon": "boxes", "size": 20, "color": "#92400E" } ]
+              },
+              { "type": "text", "content": "Constantine", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A", "grow": true },
+              { "type": "icon", "icon": "chevron-right", "size": 18, "color": "#999999" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "V4-1d. Shipments — Empty",
+    "width": 390,
+    "height": 844,
+    "fill": "#F5F5F5",
+    "children": [
+      {
+        "type": "frame", "name": "BlueHeader", "layout": "vertical",
+        "gap": 16, "padding": { "top": 18, "bottom": 22, "left": 20, "right": 20 },
+        "stretch": true, "hugHeight": true, "fill": "#1E3FFF",
+        "children": [
+          {
+            "type": "frame", "name": "TopRow", "layout": "horizontal",
+            "gap": 12, "stretch": true, "hugHeight": true, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "children": [
+              {
+                "type": "frame", "layout": "vertical", "fixedWidth": 40, "fixedHeight": 40, "cornerRadius": 100, "fill": "#FFFFFF1F", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [ { "type": "icon", "icon": "menu", "size": 20, "color": "#FFFFFF" } ]
+              },
+              {
+                "type": "frame", "layout": "horizontal", "gap": 6, "padding": { "top": 6, "bottom": 6, "left": 12, "right": 14 }, "hugWidth": true, "hugHeight": true, "cornerRadius": 100, "fill": "#FFFFFF1F", "crossAlign": "CENTER",
+                "children": [
+                  { "type": "icon", "icon": "wifi", "size": 13, "color": "#FFFFFF" },
+                  { "type": "text", "content": "Synced 11:05", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" }
+                ]
+              },
+              {
+                "type": "frame", "layout": "vertical", "fixedWidth": 40, "fixedHeight": 40, "cornerRadius": 100, "fill": "#FFFFFF2E", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [ { "type": "text", "content": "JD", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" } ]
+              }
+            ]
+          },
+          {
+            "type": "frame", "layout": "vertical", "gap": 4, "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "Shipments", "fontSize": 30, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" },
+              { "type": "text", "content": "0 shipments  ·  Apr 7 – Apr 28", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#FFFFFFCC" }
+            ]
+          }
+        ]
+      },
+
+      {
+        "type": "frame", "name": "LocationBar", "layout": "horizontal",
+        "gap": 12, "padding": { "top": 16, "bottom": 16, "left": 20, "right": 20 },
+        "stretch": true, "hugHeight": true, "fill": "#FFFFFF", "crossAlign": "CENTER",
+        "children": [
+          {
+            "type": "frame", "layout": "vertical", "fixedWidth": 36, "fixedHeight": 36, "cornerRadius": 10, "fill": "#EEF2FF", "crossAlign": "CENTER", "mainAlign": "CENTER",
+            "children": [ { "type": "icon", "icon": "map-pin", "size": 18, "color": "#1E3FFF" } ]
+          },
+          {
+            "type": "frame", "layout": "vertical", "gap": 2, "grow": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "New York", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+              { "type": "text", "content": "Branch Office", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#737373" }
+            ]
+          },
+          { "type": "icon", "icon": "chevron-right", "size": 18, "color": "#999999" }
+        ]
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+
+      { "type": "spacer", "grow": true },
+
+      {
+        "type": "frame", "name": "EmptyState", "layout": "vertical", "gap": 16,
+        "padding": { "top": 0, "bottom": 0, "left": 40, "right": 40 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+        "children": [
+          {
+            "type": "frame", "layout": "vertical", "fixedWidth": 100, "fixedHeight": 100, "cornerRadius": 100, "fill": "#FFFFFF", "stroke": "#EAEAEA", "strokeWeight": 1, "crossAlign": "CENTER", "mainAlign": "CENTER",
+            "children": [ { "type": "icon", "icon": "truck", "size": 44, "color": "#999999" } ]
+          },
+          { "type": "spacer", "height": 6 },
+          { "type": "text", "content": "No shipments", "fontSize": 22, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+          { "type": "text", "content": "There are no shipments for this location.\nTry changing the location or check back later.", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#525252", "align": "center", "stretch": true },
+          { "type": "spacer", "height": 10 },
+          {
+            "type": "frame", "name": "SelectLocationBtn", "layout": "horizontal", "gap": 8,
+            "padding": { "top": 14, "bottom": 14, "left": 22, "right": 22 },
+            "hugWidth": true, "hugHeight": true, "cornerRadius": 100, "fill": "#FFFFFF", "stroke": "#1E3FFF", "strokeWeight": 1.5, "crossAlign": "CENTER",
+            "children": [
+              { "type": "icon", "icon": "map-pin", "size": 16, "color": "#1E3FFF" },
+              { "type": "text", "content": "Select location", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#1E3FFF" }
+            ]
+          }
+        ]
+      },
+
+      { "type": "spacer", "grow": true },
+
+      {
+        "type": "frame", "name": "FabRow", "layout": "horizontal",
+        "padding": { "top": 0, "bottom": 28, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "mainAlign": "MAX", "crossAlign": "CENTER",
+        "children": [
+          {
+            "type": "frame", "name": "FAB", "layout": "vertical",
+            "fixedWidth": 60, "fixedHeight": 60, "cornerRadius": 100,
+            "fill": "#1E3FFF", "crossAlign": "CENTER", "mainAlign": "CENTER",
+            "shadow": [
+              { "type": "DROP_SHADOW", "color": { "r": 0.118, "g": 0.247, "b": 1, "a": 0.35 }, "offset": { "x": 0, "y": 8 }, "radius": 20, "spread": 0, "visible": true, "blendMode": "NORMAL" },
+              { "type": "DROP_SHADOW", "color": { "r": 0, "g": 0, "b": 0, "a": 0.10 }, "offset": { "x": 0, "y": 2 }, "radius": 6, "spread": 0, "visible": true, "blendMode": "NORMAL" }
+            ],
+            "children": [
+              { "type": "icon", "icon": "plus", "size": 26, "color": "#FFFFFF" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "V4-1e. Discrepancy Detail",
+    "width": 390,
+    "height": 1280,
+    "fill": "#F5F5F5",
+    "children": [
+      {
+        "type": "frame", "name": "Header", "layout": "horizontal",
+        "gap": 12, "padding": { "top": 16, "bottom": 16, "left": 20, "right": 20 },
+        "stretch": true, "fixedHeight": 64, "fill": "#1E3FFF", "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+        "children": [
+          { "type": "icon", "icon": "arrow-left", "size": 24, "color": "#FFFFFF" },
+          {
+            "type": "frame", "layout": "vertical", "gap": 2, "grow": true, "hugHeight": true, "crossAlign": "CENTER",
+            "children": [
+              { "type": "text", "content": "RET-00829", "fontSize": 18, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" },
+              { "type": "text", "content": "Discrepancy", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#FFFFFFCC" }
+            ]
+          },
+          { "type": "icon", "icon": "more-vertical", "size": 24, "color": "#FFFFFF" }
+        ]
+      },
+
+      {
+        "type": "frame", "name": "Hero", "layout": "vertical", "gap": 10,
+        "padding": { "top": 28, "bottom": 28, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "layout": "horizontal", "gap": 8, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "layout": "horizontal", "gap": 6, "padding": { "top": 6, "bottom": 6, "left": 12, "right": 12 }, "hugWidth": true, "hugHeight": true, "cornerRadius": 100, "fill": "#FEE2E2", "crossAlign": "CENTER",
+                "children": [
+                  { "type": "icon", "icon": "alert-triangle", "size": 14, "color": "#991B1B" },
+                  { "type": "text", "content": "DISCREPANCY", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#991B1B" }
+                ]
+              }
+            ]
+          },
+          { "type": "spacer", "height": 4 },
+          { "type": "text", "content": "Vanguard Plant Systems", "fontSize": 26, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+          {
+            "type": "frame", "layout": "horizontal", "gap": 6, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+            "children": [
+              { "type": "text", "content": "JS-0942", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#737373" },
+              { "type": "text", "content": "·", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#999999" },
+              { "type": "icon", "icon": "map-pin", "size": 14, "color": "#737373" },
+              { "type": "text", "content": "Bayonne, NJ", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#737373" }
+            ]
+          }
+        ]
+      },
+
+      {
+        "type": "frame", "name": "DesktopBanner", "layout": "vertical", "gap": 10,
+        "padding": { "top": 20, "bottom": 20, "left": 20, "right": 20 },
+        "stretch": true, "hugHeight": true, "fill": "#FEE2E2",
+        "children": [
+          {
+            "type": "frame", "layout": "horizontal", "gap": 12, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "layout": "vertical", "fixedWidth": 36, "fixedHeight": 36, "cornerRadius": 100, "fill": "#FFFFFF", "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [ { "type": "icon", "icon": "monitor", "size": 18, "color": "#991B1B" } ]
+              },
+              {
+                "type": "frame", "layout": "vertical", "gap": 2, "grow": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Resolve on desktop", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#991B1B" },
+                  { "type": "text", "content": "Discrepancies can't be edited from mobile. Open Quantify on desktop to reconcile.", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#7F1D1D" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+
+      { "type": "spacer", "height": 12 },
+
+      {
+        "type": "frame", "name": "SummaryCard", "layout": "vertical", "gap": 0, "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "layout": "horizontal",
+            "padding": { "top": 22, "bottom": 14, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "mainAlign": "SPACE_BETWEEN", "crossAlign": "CENTER",
+            "children": [
+              { "type": "text", "content": "Variance summary", "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+              { "type": "text", "content": "Read-only", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#737373" }
+            ]
+          },
+          {
+            "type": "frame", "layout": "horizontal", "gap": 12, "padding": { "top": 4, "bottom": 22, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true,
+            "children": [
+              {
+                "type": "frame", "layout": "vertical", "gap": 6, "padding": { "top": 16, "bottom": 16, "left": 8, "right": 8 }, "grow": true, "hugHeight": true, "cornerRadius": 14, "fill": "#F5F5F5", "crossAlign": "CENTER",
+                "children": [
+                  { "type": "text", "content": "583", "fontSize": 24, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  { "type": "text", "content": "Counted", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#737373" }
+                ]
+              },
+              {
+                "type": "frame", "layout": "vertical", "gap": 6, "padding": { "top": 16, "bottom": 16, "left": 8, "right": 8 }, "grow": true, "hugHeight": true, "cornerRadius": 14, "fill": "#F5F5F5", "crossAlign": "CENTER",
+                "children": [
+                  { "type": "text", "content": "595", "fontSize": 24, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  { "type": "text", "content": "Expected", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#737373" }
+                ]
+              },
+              {
+                "type": "frame", "layout": "vertical", "gap": 6, "padding": { "top": 16, "bottom": 16, "left": 8, "right": 8 }, "grow": true, "hugHeight": true, "cornerRadius": 14, "fill": "#FEE2E2", "crossAlign": "CENTER",
+                "children": [
+                  { "type": "text", "content": "−12", "fontSize": 24, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#991B1B" },
+                  { "type": "text", "content": "Mismatch", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#991B1B" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+
+      { "type": "spacer", "height": 12 },
+
+      {
+        "type": "frame", "name": "MismatchedItems", "layout": "vertical", "gap": 0, "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "layout": "horizontal",
+            "padding": { "top": 22, "bottom": 12, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "mainAlign": "SPACE_BETWEEN", "crossAlign": "CENTER",
+            "children": [
+              { "type": "text", "content": "Mismatched lines", "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+              { "type": "text", "content": "3 lines", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#737373" }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+
+          {
+            "type": "frame", "layout": "horizontal", "gap": 14,
+            "padding": { "top": 16, "bottom": 16, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "layout": "vertical", "gap": 4, "grow": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Cuplok Standard 2.0m", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  { "type": "text", "content": "Expected 48  ·  Counted 41", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#737373" }
+                ]
+              },
+              {
+                "type": "frame", "layout": "vertical", "padding": { "top": 5, "bottom": 5, "left": 10, "right": 10 }, "hugWidth": true, "hugHeight": true, "cornerRadius": 100, "fill": "#FEE2E2",
+                "children": [ { "type": "text", "content": "−7", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#991B1B" } ]
+              }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+
+          {
+            "type": "frame", "layout": "horizontal", "gap": 14,
+            "padding": { "top": 16, "bottom": 16, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "layout": "vertical", "gap": 4, "grow": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Cuplok Ledger 2.5m", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  { "type": "text", "content": "Expected 96  ·  Counted 93", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#737373" }
+                ]
+              },
+              {
+                "type": "frame", "layout": "vertical", "padding": { "top": 5, "bottom": 5, "left": 10, "right": 10 }, "hugWidth": true, "hugHeight": true, "cornerRadius": 100, "fill": "#FEE2E2",
+                "children": [ { "type": "text", "content": "−3", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#991B1B" } ]
+              }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+
+          {
+            "type": "frame", "layout": "horizontal", "gap": 14,
+            "padding": { "top": 16, "bottom": 22, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "layout": "vertical", "gap": 4, "grow": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "LVL Plank 2.5m", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  { "type": "text", "content": "Expected 24  ·  Counted 22", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#737373" }
+                ]
+              },
+              {
+                "type": "frame", "layout": "vertical", "padding": { "top": 5, "bottom": 5, "left": 10, "right": 10 }, "hugWidth": true, "hugHeight": true, "cornerRadius": 100, "fill": "#FEE2E2",
+                "children": [ { "type": "text", "content": "−2", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#991B1B" } ]
+              }
+            ]
+          }
+        ]
+      },
+
+      { "type": "spacer", "grow": true },
+
+      {
+        "type": "frame", "name": "Bottom", "layout": "vertical", "gap": 10,
+        "padding": { "top": 0, "bottom": 32, "left": 20, "right": 20 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "frame", "layout": "horizontal", "gap": 10, "stretch": true, "fixedHeight": 56, "cornerRadius": 14, "fill": "#1E3FFF", "crossAlign": "CENTER", "mainAlign": "CENTER",
+            "children": [
+              { "type": "icon", "icon": "monitor", "size": 18, "color": "#FFFFFF" },
+              { "type": "text", "content": "Open on desktop", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" }
+            ]
+          },
+          {
+            "type": "frame", "layout": "vertical", "stretch": true, "fixedHeight": 48, "crossAlign": "CENTER", "mainAlign": "CENTER",
+            "children": [
+              { "type": "text", "content": "Back to shipments", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#737373" }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

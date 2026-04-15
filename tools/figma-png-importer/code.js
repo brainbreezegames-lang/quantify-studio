@@ -346,9 +346,15 @@ function applyChildSizing(frame, node, parent) {
       frame.layoutSizingHorizontal = node.preserveWidth ? "FIXED" : "FILL";
       frame.layoutSizingVertical = node.preserveHeight ? "FIXED" : "HUG";
     } else {
-      // Row parent -> children hug width, fill height
+      // Row parent -> children hug width. Auto-layout children should hug their
+      // own content vertically instead of inheriting stretched DOM heights.
       frame.layoutSizingHorizontal = node.preserveWidth ? "FIXED" : "HUG";
-      frame.layoutSizingVertical = node.preserveHeight ? "FIXED" : "FILL";
+      frame.layoutSizingVertical = node.preserveHeight ? "FIXED" : (node.layout ? "HUG" : "FIXED");
+    }
+
+    if (node.fillCrossAxis) {
+      if (parent.layoutMode === "VERTICAL") frame.layoutSizingHorizontal = "FILL";
+      else frame.layoutSizingVertical = "FILL";
     }
 
     if (node.flexGrow >= 1) {

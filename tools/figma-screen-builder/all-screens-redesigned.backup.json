@@ -1,0 +1,1601 @@
+[
+  {
+    "name": "01. Login",
+    "width": 390,
+    "height": 844,
+    "fill": "#FFFFFF",
+    "children": [
+      { "type": "spacer", "height": 60 },
+      {
+        "type": "frame", "name": "BrandArea", "layout": "vertical",
+        "gap": 12, "padding": { "top": 0, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+        "children": [
+          {
+            "type": "frame", "name": "AppLogo", "layout": "vertical",
+            "gap": 0, "padding": { "top": 16, "bottom": 16, "left": 20, "right": 20 },
+            "hugHeight": true, "hugWidth": true,
+            "cornerRadius": 16, "fill": "#0A3EFF",
+            "crossAlign": "CENTER", "mainAlign": "CENTER",
+            "children": [
+              { "type": "text", "content": "Q", "fontSize": 36, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" }
+            ]
+          },
+          { "type": "text", "content": "Quantify", "fontSize": 28, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A3EFF", "align": "center" }
+        ]
+      },
+      { "type": "spacer", "height": 32 },
+      {
+        "type": "frame", "name": "Form", "layout": "vertical",
+        "gap": 20, "padding": { "top": 0, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "component", "component": "TextBox",
+            "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+            "text": { "Label": "Username" },
+            "stretch": true
+          },
+          {
+            "type": "component", "component": "PasswordBox",
+            "variant": { "Type": "Outlined", "Leading": "None" },
+            "text": { "Label": "Password" },
+            "stretch": true
+          },
+          {
+            "type": "frame", "name": "RememberRow", "layout": "horizontal",
+            "gap": 0, "stretch": true, "fixedHeight": 40, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "children": [
+              { "type": "text", "content": "Remember me", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111" },
+              { "type": "component", "component": "ToggleSwitch", "variant": { "State": "Enabled", "Selected": "True" } }
+            ]
+          },
+          {
+            "type": "frame", "name": "ButtonRow", "layout": "horizontal",
+            "gap": 12, "stretch": true, "hugHeight": true, "mainAlign": "MAX",
+            "children": [
+              {
+                "type": "component", "component": "Button",
+                "variant": { "Style": "Text", "State": "Enabled", "Icon": "False" },
+                "text": { "Label": "Connection" }
+              },
+              {
+                "type": "component", "component": "Button",
+                "variant": { "Style": "Filled", "State": "Enabled", "Icon": "False" },
+                "text": { "Label": "Sign in" }
+              }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "height": 24 },
+      {
+        "type": "frame", "name": "OrDivider", "layout": "horizontal",
+        "gap": 12, "padding": { "top": 0, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "fixedHeight": 20, "crossAlign": "CENTER",
+        "children": [
+          { "type": "frame", "name": "LineL", "layout": "horizontal", "fixedHeight": 1, "grow": true, "fill": "#E0E0E0" },
+          { "type": "text", "content": "or", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#999999" },
+          { "type": "frame", "name": "LineR", "layout": "horizontal", "fixedHeight": 1, "grow": true, "fill": "#E0E0E0" }
+        ]
+      },
+      { "type": "spacer", "height": 24 },
+      {
+        "type": "frame", "name": "SocialButtons", "layout": "vertical",
+        "gap": 12, "padding": { "top": 0, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Outlined", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Sign in with Microsoft" },
+            "stretch": true
+          },
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Outlined", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Sign in with Face ID" },
+            "stretch": true
+          }
+        ]
+      },
+      { "type": "spacer", "grow": true },
+      {
+        "type": "frame", "name": "Footer", "layout": "vertical",
+        "gap": 4, "padding": { "top": 12, "bottom": 32, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+        "children": [
+          { "type": "text", "content": "Version 4.2.1", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#999999", "align": "center" },
+          { "type": "text", "content": "(c) 2008-2026 Avontus Software Corporation. All rights reserved.", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#BBBBBB", "align": "center" },
+          { "type": "text", "content": "About Quantify", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#0A3EFF", "align": "center" }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "01b. Login – Validation",
+    "width": 390,
+    "height": 844,
+    "fill": "#FFFFFF",
+    "children": [
+      { "type": "spacer", "height": 60 },
+      {
+        "type": "frame", "name": "BrandArea", "layout": "vertical",
+        "gap": 12, "padding": { "top": 0, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+        "children": [
+          {
+            "type": "frame", "name": "AppLogo", "layout": "vertical",
+            "gap": 0, "padding": { "top": 16, "bottom": 16, "left": 20, "right": 20 },
+            "hugHeight": true, "hugWidth": true,
+            "cornerRadius": 16, "fill": "#0A3EFF",
+            "crossAlign": "CENTER", "mainAlign": "CENTER",
+            "children": [
+              { "type": "text", "content": "Q", "fontSize": 36, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" }
+            ]
+          },
+          { "type": "text", "content": "Quantify", "fontSize": 28, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A3EFF", "align": "center" }
+        ]
+      },
+      { "type": "spacer", "height": 32 },
+      {
+        "type": "frame", "name": "Form", "layout": "vertical",
+        "gap": 6, "padding": { "top": 0, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "component", "component": "TextBox",
+            "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+            "text": { "Label": "Username" },
+            "stretch": true
+          },
+          { "type": "text", "content": "Username required", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" },
+          { "type": "spacer", "height": 12 },
+          {
+            "type": "component", "component": "PasswordBox",
+            "variant": { "Type": "Outlined", "Leading": "None" },
+            "text": { "Label": "Password" },
+            "stretch": true
+          },
+          { "type": "text", "content": "Password required", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" },
+          { "type": "spacer", "height": 16 },
+          {
+            "type": "frame", "name": "ErrorBanner", "layout": "vertical",
+            "gap": 4, "padding": { "top": 14, "bottom": 14, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "fill": "#FDECEA", "cornerRadius": 12,
+            "children": [
+              { "type": "text", "content": "Sign in failed", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#D32F2F" },
+              { "type": "text", "content": "Please fill in all required fields.", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#D32F2F" }
+            ]
+          },
+          { "type": "spacer", "height": 12 },
+          {
+            "type": "frame", "name": "ConnectionStatus", "layout": "horizontal",
+            "gap": 8, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+            "padding": { "top": 4, "bottom": 4, "left": 0, "right": 0 },
+            "children": [
+              {
+                "type": "frame", "name": "GreenDot", "layout": "vertical",
+                "fixedWidth": 8, "fixedHeight": 8, "cornerRadius": 100, "fill": "#2E7D32"
+              },
+              { "type": "text", "content": "Connected to", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+              { "type": "text", "content": "https://acme.quantifycloud.com", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A3EFF" }
+            ]
+          },
+          { "type": "spacer", "height": 16 },
+          {
+            "type": "frame", "name": "ButtonRow", "layout": "horizontal",
+            "gap": 12, "stretch": true, "hugHeight": true, "mainAlign": "MAX",
+            "children": [
+              {
+                "type": "component", "component": "Button",
+                "variant": { "Style": "Text", "State": "Enabled", "Icon": "False" },
+                "text": { "Label": "Connection" }
+              },
+              {
+                "type": "component", "component": "Button",
+                "variant": { "Style": "Filled", "State": "Enabled", "Icon": "False" },
+                "text": { "Label": "Sign in" }
+              }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "height": 24 },
+      {
+        "type": "frame", "name": "OrDivider", "layout": "horizontal",
+        "gap": 12, "padding": { "top": 0, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "fixedHeight": 20, "crossAlign": "CENTER",
+        "children": [
+          { "type": "frame", "name": "LineL", "layout": "horizontal", "fixedHeight": 1, "grow": true, "fill": "#E0E0E0" },
+          { "type": "text", "content": "or", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#999999" },
+          { "type": "frame", "name": "LineR", "layout": "horizontal", "fixedHeight": 1, "grow": true, "fill": "#E0E0E0" }
+        ]
+      },
+      { "type": "spacer", "height": 24 },
+      {
+        "type": "frame", "name": "SocialButtons", "layout": "vertical",
+        "gap": 12, "padding": { "top": 0, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Outlined", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Sign in with Microsoft" },
+            "stretch": true
+          }
+        ]
+      },
+      { "type": "spacer", "grow": true },
+      {
+        "type": "frame", "name": "Footer", "layout": "vertical",
+        "gap": 4, "padding": { "top": 12, "bottom": 32, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+        "children": [
+          { "type": "text", "content": "Version 4.2.1", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#999999", "align": "center" },
+          { "type": "text", "content": "(c) 2008-2026 Avontus Software Corporation. All rights reserved.", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#BBBBBB", "align": "center" },
+          { "type": "text", "content": "About Quantify", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#0A3EFF", "align": "center" }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "02. Connection Settings",
+    "width": 390,
+    "height": 844,
+    "fill": "#FFFFFF",
+    "children": [
+      {
+        "type": "frame", "name": "NavBar", "layout": "horizontal",
+        "gap": 0, "padding": { "top": 12, "bottom": 12, "left": 16, "right": 16 },
+        "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+        "children": [
+          { "type": "icon", "icon": "close", "size": 24, "color": "#111111" },
+          { "type": "text", "content": "Connection settings", "fontSize": 18, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111", "grow": true, "align": "center" },
+          {
+            "type": "frame", "name": "NavTrailing", "layout": "horizontal",
+            "gap": 10, "hugHeight": true, "hugWidth": true, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "name": "OfflineChip", "layout": "horizontal",
+                "gap": 6, "padding": { "top": 4, "bottom": 4, "left": 10, "right": 10 },
+                "hugHeight": true, "hugWidth": true, "cornerRadius": 100,
+                "stroke": "#D32F2F", "strokeWeight": 1,
+                "children": [
+                  {
+                    "type": "frame", "name": "RedDot", "layout": "vertical",
+                    "fixedWidth": 6, "fixedHeight": 6, "cornerRadius": 100, "fill": "#D32F2F"
+                  },
+                  { "type": "text", "content": "Offline", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" }
+                ]
+              },
+              { "type": "icon", "icon": "check", "size": 24, "color": "#0A3EFF" }
+            ]
+          }
+        ]
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      {
+        "type": "frame", "name": "Content", "layout": "vertical",
+        "gap": 0, "padding": { "top": 24, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          { "type": "text", "content": "Remote server", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#555555" },
+          { "type": "spacer", "height": 12 },
+          {
+            "type": "frame", "name": "ServerInput", "layout": "horizontal",
+            "gap": 0, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "name": "Prefix", "layout": "horizontal",
+                "gap": 0, "padding": { "top": 14, "bottom": 14, "left": 14, "right": 10 },
+                "hugHeight": true, "hugWidth": true,
+                "fill": "#F5F5F5", "cornerRadius": 0,
+                "crossAlign": "CENTER",
+                "stroke": "#D4D4D4", "strokeWeight": 1,
+                "children": [
+                  { "type": "text", "content": "https://", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#888888" }
+                ]
+              },
+              {
+                "type": "component", "component": "TextBox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "False", "Populated": "True", "Placeholder": "False", "Multiline": "False" },
+                "text": { "Text": "myinstance.mycompany.com" },
+                "grow": true
+              }
+            ]
+          },
+          { "type": "spacer", "height": 8 },
+          { "type": "text", "content": "Your Quantify server address. Contact your admin if unsure.", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#999999" },
+          { "type": "spacer", "height": 28 },
+          {
+            "type": "frame", "name": "SSLRow", "layout": "horizontal",
+            "gap": 0, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "children": [
+              { "type": "text", "content": "Use SSL", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111" },
+              { "type": "component", "component": "ToggleSwitch", "variant": { "State": "Enabled", "Selected": "True" } }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "height": 32 },
+      {
+        "type": "frame", "name": "Actions", "layout": "vertical",
+        "gap": 16, "padding": { "top": 0, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Outlined", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Test connection" },
+            "stretch": true
+          },
+          {
+            "type": "frame", "name": "ErrorBanner", "layout": "horizontal",
+            "gap": 12, "padding": { "top": 14, "bottom": 14, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "fill": "#FDECEA", "cornerRadius": 12,
+            "crossAlign": "CENTER",
+            "children": [
+              { "type": "text", "content": "Unable to connect to server", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F", "grow": true }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "grow": true }
+    ]
+  },
+
+  {
+    "name": "02b. Connection – Success",
+    "width": 390,
+    "height": 844,
+    "fill": "#FFFFFF",
+    "children": [
+      {
+        "type": "frame", "name": "NavBar", "layout": "horizontal",
+        "gap": 0, "padding": { "top": 12, "bottom": 12, "left": 16, "right": 16 },
+        "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+        "children": [
+          { "type": "icon", "icon": "close", "size": 24, "color": "#111111" },
+          { "type": "text", "content": "Connection settings", "fontSize": 18, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111", "grow": true, "align": "center" },
+          { "type": "icon", "icon": "check", "size": 24, "color": "#0A3EFF" }
+        ]
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      {
+        "type": "frame", "name": "Content", "layout": "vertical",
+        "gap": 0, "padding": { "top": 24, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          { "type": "text", "content": "Remote server", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#555555" },
+          { "type": "spacer", "height": 12 },
+          {
+            "type": "frame", "name": "ServerInput", "layout": "horizontal",
+            "gap": 0, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "name": "Prefix", "layout": "horizontal",
+                "gap": 0, "padding": { "top": 14, "bottom": 14, "left": 14, "right": 10 },
+                "hugHeight": true, "hugWidth": true,
+                "fill": "#F5F5F5",
+                "crossAlign": "CENTER",
+                "stroke": "#D4D4D4", "strokeWeight": 1,
+                "children": [
+                  { "type": "text", "content": "https://", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#888888" }
+                ]
+              },
+              {
+                "type": "component", "component": "TextBox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "False", "Populated": "True", "Placeholder": "False", "Multiline": "False" },
+                "text": { "Text": "myinstance.mycompany.com" },
+                "grow": true
+              }
+            ]
+          },
+          { "type": "spacer", "height": 8 },
+          { "type": "text", "content": "Your Quantify server address. Contact your admin if unsure.", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#999999" },
+          { "type": "spacer", "height": 28 },
+          {
+            "type": "frame", "name": "SSLRow", "layout": "horizontal",
+            "gap": 0, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "children": [
+              { "type": "text", "content": "Use SSL", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111" },
+              { "type": "component", "component": "ToggleSwitch", "variant": { "State": "Enabled", "Selected": "True" } }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "height": 32 },
+      {
+        "type": "frame", "name": "Actions", "layout": "vertical",
+        "gap": 16, "padding": { "top": 0, "bottom": 0, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Outlined", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Test connection" },
+            "stretch": true
+          },
+          {
+            "type": "frame", "name": "SuccessBanner", "layout": "horizontal",
+            "gap": 12, "padding": { "top": 14, "bottom": 14, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "fill": "#E8F5E9", "cornerRadius": 12,
+            "crossAlign": "CENTER",
+            "children": [
+              { "type": "text", "content": "Connected successfully", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#2E7D32", "grow": true }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "grow": true }
+    ]
+  },
+
+  {
+    "name": "03. Home – Online",
+    "width": 390,
+    "height": 844,
+    "fill": "#F2F2F2",
+    "children": [
+      {
+        "type": "frame", "name": "NavBar", "layout": "horizontal",
+        "gap": 0, "padding": { "top": 12, "bottom": 12, "left": 16, "right": 16 },
+        "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+        "fill": "#FFFFFF",
+        "children": [
+          { "type": "icon", "icon": "menu", "size": 24, "color": "#111111" },
+          {
+            "type": "frame", "name": "OnlineStatus", "layout": "horizontal",
+            "gap": 6, "hugHeight": true, "hugWidth": true, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "name": "GreenDot", "layout": "vertical",
+                "fixedWidth": 8, "fixedHeight": 8, "cornerRadius": 100, "fill": "#2E7D32"
+              },
+              { "type": "text", "content": "Online", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#2E7D32" }
+            ]
+          },
+          { "type": "icon", "icon": "settings", "size": 24, "color": "#555555" }
+        ]
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      {
+        "type": "frame", "name": "WelcomeSection", "layout": "vertical",
+        "gap": 4, "padding": { "top": 32, "bottom": 28, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER", "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "name": "Avatar", "layout": "vertical",
+            "gap": 0, "padding": { "top": 18, "bottom": 18, "left": 22, "right": 22 },
+            "hugHeight": true, "hugWidth": true, "cornerRadius": 100, "fill": "#0A3EFF",
+            "crossAlign": "CENTER", "mainAlign": "CENTER",
+            "children": [
+              { "type": "text", "content": "Q", "fontSize": 24, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" }
+            ]
+          },
+          { "type": "spacer", "height": 12 },
+          { "type": "text", "content": "Quantify", "fontSize": 24, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111", "align": "center" },
+          { "type": "text", "content": "Welcome back, Marcus", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555", "align": "center" }
+        ]
+      },
+      { "type": "spacer", "height": 12 },
+      {
+        "type": "frame", "name": "NavSection", "layout": "vertical",
+        "gap": 0, "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+            "text": { "Label": "Who Am I" }, "stretch": true
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+            "text": { "Label": "Sample Form" }, "stretch": true
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+            "text": { "Label": "Scan Barcode" }, "stretch": true
+          }
+        ]
+      },
+      { "type": "spacer", "height": 12 },
+      {
+        "type": "frame", "name": "BarcodeSection", "layout": "vertical",
+        "gap": 4, "padding": { "top": 16, "bottom": 20, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          { "type": "text", "content": "Barcode result", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#999999" },
+          { "type": "spacer", "height": 8 },
+          { "type": "text", "content": "No barcode scanned", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#BBBBBB" }
+        ]
+      },
+      { "type": "spacer", "grow": true },
+      {
+        "type": "frame", "name": "Footer", "layout": "vertical",
+        "gap": 4, "padding": { "top": 12, "bottom": 28, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+        "children": [
+          { "type": "text", "content": "Version 4.2.1", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#999999", "align": "center" },
+          { "type": "text", "content": "(c) 2008-2026 Avontus Software Corporation", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#BBBBBB", "align": "center" },
+          { "type": "text", "content": "About Quantify", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#0A3EFF", "align": "center" }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "03b. Home – Barcode Success",
+    "width": 390,
+    "height": 844,
+    "fill": "#F2F2F2",
+    "children": [
+      {
+        "type": "frame", "name": "NavBar", "layout": "horizontal",
+        "gap": 0, "padding": { "top": 12, "bottom": 12, "left": 16, "right": 16 },
+        "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+        "fill": "#FFFFFF",
+        "children": [
+          { "type": "icon", "icon": "menu", "size": 24, "color": "#111111" },
+          {
+            "type": "frame", "name": "OnlineStatus", "layout": "horizontal",
+            "gap": 6, "hugHeight": true, "hugWidth": true, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "name": "GreenDot", "layout": "vertical",
+                "fixedWidth": 8, "fixedHeight": 8, "cornerRadius": 100, "fill": "#2E7D32"
+              },
+              { "type": "text", "content": "Online", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#2E7D32" }
+            ]
+          },
+          { "type": "icon", "icon": "settings", "size": 24, "color": "#555555" }
+        ]
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      {
+        "type": "frame", "name": "WelcomeSection", "layout": "vertical",
+        "gap": 4, "padding": { "top": 32, "bottom": 28, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER", "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "name": "Avatar", "layout": "vertical",
+            "gap": 0, "padding": { "top": 18, "bottom": 18, "left": 22, "right": 22 },
+            "hugHeight": true, "hugWidth": true, "cornerRadius": 100, "fill": "#0A3EFF",
+            "crossAlign": "CENTER", "mainAlign": "CENTER",
+            "children": [
+              { "type": "text", "content": "Q", "fontSize": 24, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" }
+            ]
+          },
+          { "type": "spacer", "height": 12 },
+          { "type": "text", "content": "Quantify", "fontSize": 24, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111", "align": "center" },
+          { "type": "text", "content": "Welcome back, Marcus", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555", "align": "center" }
+        ]
+      },
+      { "type": "spacer", "height": 12 },
+      {
+        "type": "frame", "name": "NavSection", "layout": "vertical",
+        "gap": 0, "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+            "text": { "Label": "Who Am I" }, "stretch": true
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+            "text": { "Label": "Sample Form" }, "stretch": true
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+            "text": { "Label": "Scan Barcode" }, "stretch": true
+          }
+        ]
+      },
+      { "type": "spacer", "height": 12 },
+      {
+        "type": "frame", "name": "BarcodeSection", "layout": "vertical",
+        "gap": 12, "padding": { "top": 16, "bottom": 20, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "name": "BarcodeHeader", "layout": "horizontal",
+            "gap": 0, "stretch": true, "hugHeight": true, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "children": [
+              { "type": "text", "content": "Barcode result", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#999999" },
+              { "type": "text", "content": "Scan again", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#0A3EFF" }
+            ]
+          },
+          {
+            "type": "frame", "name": "ResultCard", "layout": "vertical",
+            "gap": 12, "padding": { "top": 16, "bottom": 16, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "fill": "#F0FDF4", "cornerRadius": 12,
+            "stroke": "#C8E6C9", "strokeWeight": 1,
+            "children": [
+              { "type": "text", "content": "Ledger — 10ft", "fontSize": 18, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" },
+              {
+                "type": "frame", "name": "ChipRow", "layout": "horizontal",
+                "gap": 10, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                "children": [
+                  { "type": "component", "component": "Chip", "variant": { "Type": "Outlined", "State": "Enabled", "Selected": "True" }, "text": { "Label": "Available" } },
+                  { "type": "text", "content": "LED-10-STD", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" }
+                ]
+              },
+              { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "frame", "name": "StatsRow", "layout": "horizontal",
+                "gap": 0, "stretch": true, "hugHeight": true, "mainAlign": "SPACE_BETWEEN",
+                "children": [
+                  {
+                    "type": "frame", "name": "Stat1", "layout": "vertical", "gap": 2, "hugHeight": true, "hugWidth": true,
+                    "children": [
+                      { "type": "text", "content": "On hand", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+                      { "type": "text", "content": "142", "fontSize": 20, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" }
+                    ]
+                  },
+                  {
+                    "type": "frame", "name": "Stat2", "layout": "vertical", "gap": 2, "hugHeight": true, "hugWidth": true,
+                    "children": [
+                      { "type": "text", "content": "On rent", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+                      { "type": "text", "content": "87", "fontSize": 20, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" }
+                    ]
+                  },
+                  {
+                    "type": "frame", "name": "Stat3", "layout": "vertical", "gap": 2, "hugHeight": true, "hugWidth": true,
+                    "children": [
+                      { "type": "text", "content": "Reserved", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+                      { "type": "text", "content": "24", "fontSize": 20, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "grow": true },
+      {
+        "type": "frame", "name": "Footer", "layout": "vertical",
+        "gap": 4, "padding": { "top": 12, "bottom": 28, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+        "children": [
+          { "type": "text", "content": "Version 4.2.1", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#999999", "align": "center" },
+          { "type": "text", "content": "(c) 2008-2026 Avontus Software Corporation", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#BBBBBB", "align": "center" }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "03c. Home – Barcode Error",
+    "width": 390,
+    "height": 844,
+    "fill": "#F2F2F2",
+    "children": [
+      {
+        "type": "frame", "name": "NavBar", "layout": "horizontal",
+        "gap": 0, "padding": { "top": 12, "bottom": 12, "left": 16, "right": 16 },
+        "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+        "fill": "#FFFFFF",
+        "children": [
+          { "type": "icon", "icon": "menu", "size": 24, "color": "#111111" },
+          {
+            "type": "frame", "name": "OnlineStatus", "layout": "horizontal",
+            "gap": 6, "hugHeight": true, "hugWidth": true, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "name": "GreenDot", "layout": "vertical",
+                "fixedWidth": 8, "fixedHeight": 8, "cornerRadius": 100, "fill": "#2E7D32"
+              },
+              { "type": "text", "content": "Online", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#2E7D32" }
+            ]
+          },
+          { "type": "icon", "icon": "settings", "size": 24, "color": "#555555" }
+        ]
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      {
+        "type": "frame", "name": "WelcomeSection", "layout": "vertical",
+        "gap": 4, "padding": { "top": 32, "bottom": 28, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER", "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "name": "Avatar", "layout": "vertical",
+            "gap": 0, "padding": { "top": 18, "bottom": 18, "left": 22, "right": 22 },
+            "hugHeight": true, "hugWidth": true, "cornerRadius": 100, "fill": "#0A3EFF",
+            "crossAlign": "CENTER", "mainAlign": "CENTER",
+            "children": [
+              { "type": "text", "content": "Q", "fontSize": 24, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" }
+            ]
+          },
+          { "type": "spacer", "height": 12 },
+          { "type": "text", "content": "Quantify", "fontSize": 24, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111", "align": "center" },
+          { "type": "text", "content": "Welcome back, Marcus", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555", "align": "center" }
+        ]
+      },
+      { "type": "spacer", "height": 12 },
+      {
+        "type": "frame", "name": "NavSection", "layout": "vertical",
+        "gap": 0, "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+            "text": { "Label": "Who Am I" }, "stretch": true
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+            "text": { "Label": "Sample Form" }, "stretch": true
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+            "text": { "Label": "Scan Barcode" }, "stretch": true
+          }
+        ]
+      },
+      { "type": "spacer", "height": 12 },
+      {
+        "type": "frame", "name": "BarcodeSection", "layout": "vertical",
+        "gap": 12, "padding": { "top": 16, "bottom": 20, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          { "type": "text", "content": "Barcode result", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#999999" },
+          {
+            "type": "frame", "name": "ErrorCard", "layout": "vertical",
+            "gap": 12, "padding": { "top": 16, "bottom": 16, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "fill": "#FDECEA", "cornerRadius": 12,
+            "children": [
+              { "type": "text", "content": "Barcode not recognized", "fontSize": 18, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" },
+              { "type": "text", "content": "The sticker may be damaged or dirty. Try wiping it clean or enter the code manually.", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+              {
+                "type": "frame", "name": "ErrorActions", "layout": "horizontal",
+                "gap": 12, "stretch": true, "hugHeight": true, "mainAlign": "MAX",
+                "children": [
+                  {
+                    "type": "component", "component": "Button",
+                    "variant": { "Style": "Text", "State": "Enabled", "Icon": "False" },
+                    "text": { "Label": "Enter manually" }
+                  },
+                  {
+                    "type": "component", "component": "Button",
+                    "variant": { "Style": "Filled", "State": "Enabled", "Icon": "False" },
+                    "text": { "Label": "Scan again" }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "grow": true },
+      {
+        "type": "frame", "name": "Footer", "layout": "vertical",
+        "gap": 4, "padding": { "top": 12, "bottom": 28, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+        "children": [
+          { "type": "text", "content": "Version 4.2.1", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#999999", "align": "center" }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "03d. Home – Offline",
+    "width": 390,
+    "height": 844,
+    "fill": "#F2F2F2",
+    "children": [
+      {
+        "type": "frame", "name": "NavBar", "layout": "horizontal",
+        "gap": 0, "padding": { "top": 12, "bottom": 12, "left": 16, "right": 16 },
+        "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+        "fill": "#FFFFFF",
+        "children": [
+          { "type": "icon", "icon": "menu", "size": 24, "color": "#111111" },
+          {
+            "type": "frame", "name": "OfflineStatus", "layout": "horizontal",
+            "gap": 6, "hugHeight": true, "hugWidth": true, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "name": "RedDot", "layout": "vertical",
+                "fixedWidth": 8, "fixedHeight": 8, "cornerRadius": 100, "fill": "#D32F2F"
+              },
+              { "type": "text", "content": "Offline", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" }
+            ]
+          },
+          { "type": "icon", "icon": "settings", "size": 24, "color": "#555555" }
+        ]
+      },
+      {
+        "type": "frame", "name": "OfflineBanner", "layout": "vertical",
+        "gap": 4, "padding": { "top": 14, "bottom": 14, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "fill": "#FDECEA",
+        "children": [
+          { "type": "text", "content": "No connection", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#D32F2F" },
+          { "type": "text", "content": "3 changes queued — will sync when online", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#D32F2F" }
+        ]
+      },
+      {
+        "type": "frame", "name": "WelcomeSection", "layout": "vertical",
+        "gap": 4, "padding": { "top": 32, "bottom": 28, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER", "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "name": "Avatar", "layout": "vertical",
+            "gap": 0, "padding": { "top": 18, "bottom": 18, "left": 22, "right": 22 },
+            "hugHeight": true, "hugWidth": true, "cornerRadius": 100, "fill": "#0A3EFF",
+            "crossAlign": "CENTER", "mainAlign": "CENTER",
+            "children": [
+              { "type": "text", "content": "Q", "fontSize": 24, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" }
+            ]
+          },
+          { "type": "spacer", "height": 12 },
+          { "type": "text", "content": "Quantify", "fontSize": 24, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111", "align": "center" },
+          { "type": "text", "content": "Welcome back, Marcus", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555", "align": "center" }
+        ]
+      },
+      { "type": "spacer", "height": 12 },
+      {
+        "type": "frame", "name": "NavSection", "layout": "vertical",
+        "gap": 0, "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+            "text": { "Label": "Who Am I" }, "stretch": true
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+            "text": { "Label": "Sample Form" }, "stretch": true
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+            "text": { "Label": "Scan Barcode" }, "stretch": true
+          }
+        ]
+      },
+      { "type": "spacer", "grow": true },
+      {
+        "type": "frame", "name": "Footer", "layout": "vertical",
+        "gap": 4, "padding": { "top": 12, "bottom": 28, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+        "children": [
+          { "type": "text", "content": "Version 4.2.1", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#999999", "align": "center" },
+          { "type": "text", "content": "(c) 2008-2026 Avontus Software Corporation", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#BBBBBB", "align": "center" }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "03e. Home – Unsaved Changes",
+    "width": 390,
+    "height": 844,
+    "fill": "#F2F2F2",
+    "children": [
+      {
+        "type": "frame", "name": "NavBar", "layout": "horizontal",
+        "gap": 0, "padding": { "top": 12, "bottom": 12, "left": 16, "right": 16 },
+        "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+        "fill": "#FFFFFF",
+        "children": [
+          { "type": "icon", "icon": "menu", "size": 24, "color": "#111111" },
+          {
+            "type": "frame", "name": "OnlineStatus", "layout": "horizontal",
+            "gap": 6, "hugHeight": true, "hugWidth": true, "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame", "name": "GreenDot", "layout": "vertical",
+                "fixedWidth": 8, "fixedHeight": 8, "cornerRadius": 100, "fill": "#2E7D32"
+              },
+              { "type": "text", "content": "Online", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#2E7D32" }
+            ]
+          },
+          { "type": "icon", "icon": "settings", "size": 24, "color": "#555555" }
+        ]
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      {
+        "type": "frame", "name": "WelcomeSection", "layout": "vertical",
+        "gap": 4, "padding": { "top": 32, "bottom": 28, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "crossAlign": "CENTER", "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "name": "Avatar", "layout": "vertical",
+            "gap": 0, "padding": { "top": 18, "bottom": 18, "left": 22, "right": 22 },
+            "hugHeight": true, "hugWidth": true, "cornerRadius": 100, "fill": "#0A3EFF",
+            "crossAlign": "CENTER", "mainAlign": "CENTER",
+            "children": [
+              { "type": "text", "content": "Q", "fontSize": 24, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" }
+            ]
+          },
+          { "type": "spacer", "height": 12 },
+          { "type": "text", "content": "Quantify", "fontSize": 24, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111", "align": "center" }
+        ]
+      },
+      { "type": "spacer", "grow": true },
+      {
+        "type": "frame", "name": "DialogOverlay", "layout": "vertical",
+        "stretch": true, "fixedHeight": 844,
+        "fill": "#000000", "opacity": 0.4,
+        "crossAlign": "CENTER", "mainAlign": "CENTER",
+        "padding": { "top": 0, "bottom": 0, "left": 32, "right": 32 },
+        "children": [
+          {
+            "type": "frame", "name": "DialogCard", "layout": "vertical",
+            "gap": 16, "padding": { "top": 28, "bottom": 24, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF", "cornerRadius": 20,
+            "children": [
+              { "type": "text", "content": "Unsaved changes", "fontSize": 22, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" },
+              { "type": "text", "content": "You have 3 changes that haven't synced to the office. Signing out now will lose them.", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+              { "type": "spacer", "height": 8 },
+              {
+                "type": "component", "component": "Button",
+                "variant": { "Style": "Filled", "State": "Enabled", "Icon": "False" },
+                "text": { "Label": "Sync and sign out" },
+                "stretch": true
+              },
+              {
+                "type": "component", "component": "Button",
+                "variant": { "Style": "Outlined", "State": "Enabled", "Icon": "False" },
+                "text": { "Label": "Cancel" },
+                "stretch": true
+              },
+              { "type": "text", "content": "Sign out without syncing", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F", "align": "center" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "04. Navigation Drawer",
+    "width": 390,
+    "height": 844,
+    "fill": "#F2F2F2",
+    "children": [
+      {
+        "type": "frame", "name": "DrawerPanel", "layout": "vertical",
+        "gap": 0, "fixedWidth": 300, "fixedHeight": 844, "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "name": "DrawerHeader", "layout": "horizontal",
+            "gap": 12, "padding": { "top": 20, "bottom": 20, "left": 20, "right": 20 },
+            "stretch": true, "hugHeight": true, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "children": [
+              {
+                "type": "frame", "name": "UserInfo", "layout": "horizontal",
+                "gap": 12, "hugHeight": true, "hugWidth": true, "crossAlign": "CENTER",
+                "children": [
+                  {
+                    "type": "frame", "name": "DrawerAvatar", "layout": "vertical",
+                    "gap": 0, "padding": { "top": 12, "bottom": 12, "left": 14, "right": 14 },
+                    "hugHeight": true, "hugWidth": true, "cornerRadius": 100, "fill": "#0A3EFF",
+                    "crossAlign": "CENTER", "mainAlign": "CENTER",
+                    "children": [
+                      { "type": "text", "content": "Q", "fontSize": 18, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" }
+                    ]
+                  },
+                  {
+                    "type": "frame", "name": "UserText", "layout": "vertical",
+                    "gap": 2, "hugHeight": true, "hugWidth": true,
+                    "children": [
+                      { "type": "text", "content": "Marcus Aurelio", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" },
+                      { "type": "text", "content": "Yard Worker — Portland", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" }
+                    ]
+                  }
+                ]
+              },
+              { "type": "icon", "icon": "settings", "size": 20, "color": "#555555" }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "frame", "name": "ActiveItem", "layout": "horizontal",
+            "gap": 12, "padding": { "top": 14, "bottom": 14, "left": 20, "right": 20 },
+            "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+            "fill": "#E8EEFF",
+            "children": [
+              { "type": "text", "content": "Home", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A3EFF" }
+            ]
+          },
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "False", "Label": "True" },
+            "text": { "Label": "Who am I" }, "stretch": true
+          },
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "False", "Label": "True" },
+            "text": { "Label": "Sample form" }, "stretch": true
+          },
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "False", "Label": "True" },
+            "text": { "Label": "Scan barcode" }, "stretch": true
+          },
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+            "text": { "Label": "Connection settings" }, "stretch": true
+          },
+          { "type": "spacer", "grow": true },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "frame", "name": "SignOutRow", "layout": "horizontal",
+            "gap": 12, "padding": { "top": 16, "bottom": 16, "left": 20, "right": 20 },
+            "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+            "children": [
+              { "type": "text", "content": "Sign out", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" }
+            ]
+          },
+          {
+            "type": "frame", "name": "DrawerFooter", "layout": "vertical",
+            "gap": 0, "padding": { "top": 8, "bottom": 28, "left": 20, "right": 20 },
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "Version 4.2.1", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#999999" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "05. Who Am I",
+    "width": 390,
+    "height": 844,
+    "fill": "#F2F2F2",
+    "children": [
+      {
+        "type": "frame", "name": "NavBar", "layout": "horizontal",
+        "gap": 0, "padding": { "top": 12, "bottom": 12, "left": 16, "right": 16 },
+        "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+        "fill": "#FFFFFF",
+        "children": [
+          { "type": "icon", "icon": "arrow_back", "size": 24, "color": "#0A3EFF" },
+          { "type": "text", "content": "Who am I", "fontSize": 18, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111", "grow": true, "align": "center" },
+          {
+            "type": "frame", "name": "ReadOnlyBadge", "layout": "horizontal",
+            "gap": 0, "padding": { "top": 4, "bottom": 4, "left": 10, "right": 10 },
+            "hugHeight": true, "hugWidth": true, "cornerRadius": 6,
+            "stroke": "#D4D4D4", "strokeWeight": 1,
+            "children": [
+              { "type": "text", "content": "Read-only", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#555555" }
+            ]
+          }
+        ]
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      {
+        "type": "frame", "name": "ProfileSection", "layout": "vertical",
+        "gap": 0, "padding": { "top": 4, "bottom": 4, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "name": "UsernameRow", "layout": "horizontal",
+            "gap": 0, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "children": [
+              { "type": "text", "content": "Username", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+              { "type": "text", "content": "marcus.aurelio", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "frame", "name": "EmailRow", "layout": "horizontal",
+            "gap": 0, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "children": [
+              { "type": "text", "content": "Email", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+              { "type": "text", "content": "marcus@acmescaffolding.com", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "frame", "name": "RoleRow", "layout": "horizontal",
+            "gap": 0, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "children": [
+              { "type": "text", "content": "Role", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+              { "type": "text", "content": "Yard Worker", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "height": 12 },
+      {
+        "type": "frame", "name": "PermissionsSection", "layout": "vertical",
+        "gap": 0, "padding": { "top": 0, "bottom": 0, "left": 0, "right": 0 },
+        "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "name": "PermHeader", "layout": "vertical",
+            "gap": 0, "padding": { "top": 16, "bottom": 12, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "Permissions", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#999999" }
+            ]
+          },
+          {
+            "type": "frame", "name": "Perm1", "layout": "horizontal",
+            "gap": 0, "padding": { "top": 14, "bottom": 14, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "View shipments", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111" }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "frame", "name": "Perm2", "layout": "horizontal",
+            "gap": 0, "padding": { "top": 14, "bottom": 14, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "Create pre-returns", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111" }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "frame", "name": "Perm3", "layout": "horizontal",
+            "gap": 0, "padding": { "top": 14, "bottom": 14, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "Process returns", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111" }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "frame", "name": "Perm4", "layout": "horizontal",
+            "gap": 0, "padding": { "top": 14, "bottom": 14, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "Yard counts", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111" }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "height": 12 },
+      {
+        "type": "frame", "name": "BranchSection", "layout": "vertical",
+        "gap": 0, "padding": { "top": 0, "bottom": 0, "left": 0, "right": 0 },
+        "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "name": "BranchHeader", "layout": "vertical",
+            "gap": 0, "padding": { "top": 16, "bottom": 12, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "Assigned to branch offices", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#999999" }
+            ]
+          },
+          {
+            "type": "frame", "name": "Branch1", "layout": "horizontal",
+            "gap": 0, "padding": { "top": 14, "bottom": 14, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "children": [
+              { "type": "text", "content": "Portland", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111" },
+              {
+                "type": "frame", "name": "ActiveDot", "layout": "vertical",
+                "fixedWidth": 10, "fixedHeight": 10, "cornerRadius": 100, "fill": "#0A3EFF"
+              }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "frame", "name": "Branch2", "layout": "horizontal",
+            "gap": 0, "padding": { "top": 14, "bottom": 14, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "Chicago", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111" }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "frame", "name": "Branch3", "layout": "horizontal",
+            "gap": 0, "padding": { "top": 14, "bottom": 14, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "Salt Lake City", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111" }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "grow": true }
+    ]
+  },
+
+  {
+    "name": "06. Sample Form (Parent)",
+    "width": 390,
+    "height": 1280,
+    "fill": "#F2F2F2",
+    "children": [
+      {
+        "type": "frame", "name": "NavBar", "layout": "horizontal",
+        "gap": 0, "padding": { "top": 12, "bottom": 12, "left": 16, "right": 16 },
+        "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+        "fill": "#FFFFFF",
+        "children": [
+          { "type": "icon", "icon": "close", "size": 24, "color": "#111111" },
+          { "type": "text", "content": "Parent", "fontSize": 18, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111", "grow": true, "align": "center" },
+          { "type": "icon", "icon": "check", "size": 24, "color": "#0A3EFF" }
+        ]
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      {
+        "type": "frame", "name": "FormContent", "layout": "vertical",
+        "gap": 12, "padding": { "top": 12, "bottom": 0, "left": 0, "right": 0 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "frame", "name": "TextFieldsCard", "layout": "vertical",
+            "gap": 16, "padding": { "top": 20, "bottom": 24, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              {
+                "type": "component", "component": "TextBox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+                "text": { "Label": "Alphanumeric (required)" },
+                "stretch": true
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "AttachmentsCard", "layout": "vertical",
+            "gap": 0, "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Files and pictures (6)" }, "stretch": true
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "BooleansCard", "layout": "vertical",
+            "gap": 0, "padding": { "top": 8, "bottom": 8, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              {
+                "type": "frame", "name": "Toggle1", "layout": "horizontal",
+                "gap": 16, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+                "children": [
+                  { "type": "text", "content": "Must be turned true", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111", "grow": true },
+                  { "type": "component", "component": "ToggleSwitch", "variant": { "State": "Enabled", "Selected": "False" } }
+                ]
+              },
+              { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "frame", "name": "Toggle2", "layout": "horizontal",
+                "gap": 16, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+                "children": [
+                  { "type": "text", "content": "Must be turned false", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111", "grow": true },
+                  { "type": "component", "component": "ToggleSwitch", "variant": { "State": "Enabled", "Selected": "True" } }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "SelectCard", "layout": "vertical",
+            "gap": 0, "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Combobox? Select widget (required)" }, "stretch": true
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "DateFieldsCard", "layout": "vertical",
+            "gap": 0, "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Minimum date (required)" }, "stretch": true
+              },
+              { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Maximum date (required)" }, "stretch": true
+              },
+              { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Minimum date (not required)" }, "stretch": true
+              },
+              { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Maximum date (not required)" }, "stretch": true
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "NumericCard", "layout": "vertical",
+            "gap": 16, "padding": { "top": 20, "bottom": 24, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              {
+                "type": "component", "component": "TextBox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+                "text": { "Label": "Numeric value (nullable - required)" },
+                "stretch": true
+              },
+              {
+                "type": "component", "component": "TextBox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+                "text": { "Label": "Currency numeric (null - required)" },
+                "stretch": true
+              },
+              {
+                "type": "frame", "name": "Result", "layout": "horizontal",
+                "gap": 0, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+                "padding": { "top": 0, "bottom": 0, "left": 20, "right": 20 },
+                "fill": "#F2F2F2", "cornerRadius": 12,
+                "children": [
+                  { "type": "text", "content": "Result of numeric * currency", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+                  { "type": "text", "content": "$0", "fontSize": 20, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "height": 12 },
+      {
+        "type": "frame", "name": "BottomActions", "layout": "horizontal",
+        "gap": 12, "padding": { "top": 0, "bottom": 32, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "mainAlign": "MAX",
+        "children": [
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Text", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Cancel" }
+          },
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Filled", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Save" }
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "06b. Form – Validation",
+    "width": 390,
+    "height": 1480,
+    "fill": "#F2F2F2",
+    "children": [
+      {
+        "type": "frame", "name": "NavBar", "layout": "horizontal",
+        "gap": 0, "padding": { "top": 12, "bottom": 12, "left": 16, "right": 16 },
+        "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+        "fill": "#FFFFFF",
+        "children": [
+          { "type": "icon", "icon": "close", "size": 24, "color": "#111111" },
+          { "type": "text", "content": "Parent", "fontSize": 18, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111", "grow": true, "align": "center" },
+          { "type": "icon", "icon": "check", "size": 24, "color": "#0A3EFF" }
+        ]
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      {
+        "type": "frame", "name": "ErrorSummary", "layout": "vertical",
+        "gap": 4, "padding": { "top": 14, "bottom": 14, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "fill": "#FDECEA",
+        "children": [
+          { "type": "text", "content": "7 validation errors", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#D32F2F" },
+          { "type": "text", "content": "Fix the highlighted fields before saving.", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#D32F2F" }
+        ]
+      },
+      {
+        "type": "frame", "name": "FormContent", "layout": "vertical",
+        "gap": 12, "padding": { "top": 12, "bottom": 0, "left": 0, "right": 0 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "frame", "name": "TextFieldsCard", "layout": "vertical",
+            "gap": 6, "padding": { "top": 20, "bottom": 24, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              {
+                "type": "component", "component": "TextBox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+                "text": { "Label": "Alphanumeric (required)" },
+                "stretch": true
+              },
+              { "type": "text", "content": "This field is required", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" }
+            ]
+          },
+          {
+            "type": "frame", "name": "AttachmentsCard", "layout": "vertical",
+            "gap": 0, "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Files and pictures (6)" }, "stretch": true
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "BooleansCard", "layout": "vertical",
+            "gap": 0, "padding": { "top": 8, "bottom": 8, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              {
+                "type": "frame", "name": "Toggle1Wrapper", "layout": "vertical",
+                "gap": 6, "stretch": true, "hugHeight": true,
+                "children": [
+                  {
+                    "type": "frame", "name": "Toggle1", "layout": "horizontal",
+                    "gap": 16, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+                    "children": [
+                      { "type": "text", "content": "Must be turned true", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111", "grow": true },
+                      { "type": "component", "component": "ToggleSwitch", "variant": { "State": "Enabled", "Selected": "False" } }
+                    ]
+                  },
+                  { "type": "text", "content": "Must be set to true", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" }
+                ]
+              },
+              { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "frame", "name": "Toggle2Wrapper", "layout": "vertical",
+                "gap": 6, "stretch": true, "hugHeight": true,
+                "children": [
+                  {
+                    "type": "frame", "name": "Toggle2", "layout": "horizontal",
+                    "gap": 16, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+                    "children": [
+                      { "type": "text", "content": "Must be turned false", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#111111", "grow": true },
+                      { "type": "component", "component": "ToggleSwitch", "variant": { "State": "Enabled", "Selected": "True" } }
+                    ]
+                  },
+                  { "type": "text", "content": "Must be set to false", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "SelectCard", "layout": "vertical",
+            "gap": 6, "padding": { "top": 0, "bottom": 12, "left": 0, "right": 0 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Combobox? Select widget (required)" }, "stretch": true
+              },
+              {
+                "type": "frame", "name": "SelectErr", "layout": "vertical",
+                "gap": 0, "padding": { "top": 0, "bottom": 0, "left": 24, "right": 24 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Selection is required", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "DateFieldsCard", "layout": "vertical",
+            "gap": 0, "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Minimum date (required)" }, "stretch": true
+              },
+              {
+                "type": "frame", "name": "DateErr1", "layout": "vertical",
+                "gap": 0, "padding": { "top": 6, "bottom": 10, "left": 24, "right": 24 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Date is required", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" }
+                ]
+              },
+              { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Maximum date (required)" }, "stretch": true
+              },
+              {
+                "type": "frame", "name": "DateErr2", "layout": "vertical",
+                "gap": 0, "padding": { "top": 6, "bottom": 10, "left": 24, "right": 24 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Date is required", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" }
+                ]
+              },
+              { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Minimum date (not required)" }, "stretch": true
+              },
+              { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "component", "component": "MenuItem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "text": { "Label": "Maximum date (not required)" }, "stretch": true
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "NumericCard", "layout": "vertical",
+            "gap": 6, "padding": { "top": 20, "bottom": 24, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "children": [
+              {
+                "type": "component", "component": "TextBox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+                "text": { "Label": "Numeric value (nullable - required)" },
+                "stretch": true
+              },
+              { "type": "text", "content": "Numeric value is required", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" },
+              { "type": "spacer", "height": 10 },
+              {
+                "type": "component", "component": "TextBox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+                "text": { "Label": "Currency numeric (null - required)" },
+                "stretch": true
+              },
+              { "type": "text", "content": "Currency value is required", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#D32F2F" },
+              { "type": "spacer", "height": 10 },
+              {
+                "type": "frame", "name": "Result", "layout": "horizontal",
+                "gap": 0, "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+                "padding": { "top": 0, "bottom": 0, "left": 20, "right": 20 },
+                "fill": "#F2F2F2", "cornerRadius": 12,
+                "children": [
+                  { "type": "text", "content": "Result of numeric * currency", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+                  { "type": "text", "content": "$0", "fontSize": 20, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "height": 12 },
+      {
+        "type": "frame", "name": "BottomActions", "layout": "horizontal",
+        "gap": 12, "padding": { "top": 0, "bottom": 32, "left": 24, "right": 24 },
+        "stretch": true, "hugHeight": true, "mainAlign": "MAX",
+        "children": [
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Text", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Cancel" }
+          },
+          {
+            "type": "component", "component": "Button",
+            "variant": { "Style": "Filled", "State": "Enabled", "Icon": "False" },
+            "text": { "Label": "Save" }
+          }
+        ]
+      }
+    ]
+  }
+]

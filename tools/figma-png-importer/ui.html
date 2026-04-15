@@ -279,6 +279,50 @@ async function convert() {
 // Track blob URLs for cleanup
 var lastBlobUrl = null;
 
+// Poll until CSS frameworks have applied styles. Checks elements with utility classes
+// (flex, grid, hidden, etc.) and verifies their computed style matches the expected value.
+function waitForCssReady(doc, maxWait) {
+  return new Promise(function(resolve) {
+    var start = Date.now();
+    var checks = [
+      {cls: 'flex', prop: 'display', expected: ['flex', 'inline-flex']},
+      {cls: 'grid', prop: 'display', expected: ['grid', 'inline-grid']},
+      {cls: 'hidden', prop: 'display', expected: ['none']},
+      {cls: 'relative', prop: 'position', expected: ['relative']},
+      {cls: 'absolute', prop: 'position', expected: ['absolute']}
+    ];
+
+    function isReady() {
+      try {
+        var root = doc.getElementById('__figma_root__') || doc.body;
+        if (!root) return false;
+        var foundAny = false;
+        for (var i = 0; i < checks.length; i++) {
+          var el = root.querySelector('.' + checks[i].cls);
+          if (el) {
+            foundAny = true;
+            var val = doc.defaultView.getComputedStyle(el)[checks[i].prop];
+            if (checks[i].expected.indexOf(val) === -1) return false;
+          }
+        }
+        // If we found at least one utility class and all matched, CSS is ready.
+        // If no utility classes found at all, assume no CSS framework and proceed.
+        return true;
+      } catch(e) { return false; }
+    }
+
+    function poll() {
+      if (isReady() || (Date.now() - start > maxWait)) {
+        // Extra 300ms settle time after CSS is detected as ready
+        setTimeout(resolve, 300);
+      } else {
+        setTimeout(poll, 250);
+      }
+    }
+    poll();
+  });
+}
+
 async function convertHtml() {
   var html = document.getElementById('htmlInput').value.trim();
   if (!html) { setStatus('Please paste HTML first', '#E64059'); return; }
@@ -299,46 +343,63 @@ async function convertHtml() {
     iframe.style.width = frameW + 'px';
     iframe.style.height = frameH + 'px';
 
+    var tree, bgColor;
+
     if (isFullDoc) {
-      // Full HTML document with external resources — use blob URL so scripts can execute
-      setStatus('Loading external resources (Tailwind, fonts, etc.)...', '#0A3EFF');
+      // Full HTML document — use srcdoc so we keep same-origin access to iframe.contentDocument.
+      // External <script src> and <link href> tags still load from CDN within srcdoc context.
+      setStatus('Loading HTML with external resources...', '#0A3EFF');
       var fullDoc = buildFullHtmlDocument(html, frameW, frameH);
-      var blob = new Blob([fullDoc], { type: 'text/html' });
-      lastBlobUrl = URL.createObjectURL(blob);
-      iframe.src = lastBlobUrl;
-      // Give more time for external CDN scripts (Tailwind etc.) to load and execute
+      iframe.src = 'about:blank';
+      iframe.srcdoc = fullDoc;
       await new Promise(function(resolve) { iframe.onload = resolve; setTimeout(resolve, 8000); });
-      await new Promise(function(resolve) { setTimeout(resolve, 2000); });
+
+      // Poll until CSS frameworks (Tailwind, etc.) have finished processing
+      setStatus('Waiting for CSS to apply...', '#0A3EFF');
+      var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      await waitForCssReady(iframeDoc, 12000);
+
+      setStatus('Extracting layout structure...', '#0A3EFF');
+      var rootContainer = iframeDoc.getElementById('__figma_root__');
+      if (!rootContainer || !rootContainer.firstElementChild) throw new Error('No root element found in HTML.');
+
+      var rootElement = rootContainer.children.length === 1 ? rootContainer.firstElementChild : rootContainer;
+      var rootRect = rootElement.getBoundingClientRect();
+      tree = walkDOM(rootElement, rootRect, frameW);
+      if (!tree) throw new Error('DOM walker returned empty result.');
+
+      bgColor = '#FFFFFF';
+      try {
+        var bodyBg = iframeDoc.defaultView.getComputedStyle(iframeDoc.body).backgroundColor;
+        if (bodyBg && bodyBg !== 'rgba(0, 0, 0, 0)' && bodyBg !== 'transparent') bgColor = bodyBg;
+      } catch(e) {}
+
     } else {
-      // Quantify fragment — original path via srcdoc (no external resources needed)
+      // Quantify fragment — original path via srcdoc with design system CSS
       var fragDoc = buildFragmentDocument(html, frameW, frameH);
-      iframe.src = 'about:blank'; // Reset any previous blob URL
+      iframe.src = 'about:blank';
       iframe.srcdoc = fragDoc;
       await new Promise(function(resolve) { iframe.onload = resolve; setTimeout(resolve, 3000); });
       await new Promise(function(resolve) { setTimeout(resolve, 200); });
+
+      setStatus('Extracting layout structure...', '#0A3EFF');
+      var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      var rootContainer = iframeDoc.getElementById('app');
+      if (!rootContainer || !rootContainer.firstElementChild) throw new Error('No root element found in HTML.');
+
+      var rootElement = rootContainer.children.length === 1 ? rootContainer.firstElementChild : rootContainer;
+      var rootRect = rootElement.getBoundingClientRect();
+      tree = walkDOM(rootElement, rootRect, frameW);
+      if (!tree) throw new Error('DOM walker returned empty result.');
+
+      bgColor = '#FFFFFF';
+      try {
+        var bodyBg = iframeDoc.defaultView.getComputedStyle(iframeDoc.body).backgroundColor;
+        if (bodyBg && bodyBg !== 'rgba(0, 0, 0, 0)' && bodyBg !== 'transparent') bgColor = bodyBg;
+      } catch(e) {}
     }
 
     setStatus('Extracting layout structure...', '#0A3EFF');
-    var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-
-    // Find root element — use __figma_root__ for full docs, #app for fragments
-    var rootContainer = isFullDoc
-      ? iframeDoc.getElementById('__figma_root__')
-      : iframeDoc.getElementById('app');
-    if (!rootContainer || !rootContainer.firstElementChild) throw new Error('No root element found in HTML.');
-
-    var rootElement = rootContainer.children.length === 1 ? rootContainer.firstElementChild : rootContainer;
-    var rootRect = rootElement.getBoundingClientRect();
-    var tree = walkDOM(rootElement, rootRect, frameW);
-    if (!tree) throw new Error('DOM walker returned empty result.');
-
-    // Detect background color from the rendered document
-    var bgColor = '#FFFFFF';
-    try {
-      var bodyBg = iframeDoc.defaultView.getComputedStyle(iframeDoc.body).backgroundColor;
-      if (bodyBg && bodyBg !== 'rgba(0, 0, 0, 0)' && bodyBg !== 'transparent') bgColor = bodyBg;
-    } catch(e) {}
-
     var useAutoLayout = document.getElementById('autoLayoutToggle') && document.getElementById('autoLayoutToggle').checked;
 
     if (useAutoLayout) {
@@ -458,22 +519,21 @@ function isFullHtmlDocument(html) {
   return hasExternalScript || hasExternalLink;
 }
 
-// For full HTML documents: preserve everything as-is, just inject a root marker and sizing
+// For full HTML documents: preserve everything as-is, inject only sizing styles and root wrapper.
+// Uses srcdoc (same-origin) so parent frame can directly access iframe.contentDocument.
 function buildFullHtmlDocument(html, w, h) {
   // Inject sizing style into the document's <head>
   var sizeStyle = '<style>html,body{margin:0;padding:0;width:' + w + 'px;overflow:hidden;}#__figma_root__{width:' + w + 'px;min-height:' + h + 'px;overflow:auto;}</style>';
 
-  // Insert sizing style before </head>
   if (/<\/head>/i.test(html)) {
     html = html.replace(/<\/head>/i, sizeStyle + '</head>');
   } else {
-    // No head tag — prepend it
     html = '<head>' + sizeStyle + '</head>' + html;
   }
 
-  // Wrap <body> content in a root marker div so the DOM walker can find it
+  // Wrap <body> content in a root marker div
   if (/<body([^>]*)>/i.test(html)) {
-    html = html.replace(/<body([^>]*)>([\s\S]*?)<\/body>/i, function(match, attrs, body) {
+    html = html.replace(/<body([^>]*)>([\s\S]*)<\/body>/i, function(match, attrs, body) {
       return '<body' + attrs + '><div id="__figma_root__">' + body + '</div></body>';
     });
   }
@@ -577,6 +637,7 @@ function walkDOM(element, parentRect, parentWidth) {
     preserveWidth: false,
     preserveHeight: false,
     layoutSource: null,
+    flowHint: null,
     positioning: normalizePosition(cs.position),
     cssOrder: parseFloat(cs.order) || 0,
     children: []
@@ -600,12 +661,11 @@ function walkDOM(element, parentRect, parentWidth) {
     node.gap = Math.round(parseFloat(cs.gap) || parseFloat(cs.rowGap) || 0);
     node.padding = extractPadding(cs);
   } else if (display === 'block' || display === 'list-item' || display === 'flow-root') {
-    // CSS block flow = vertical stacking. Represent as column auto-layout in Figma.
     node.padding = extractPadding(cs);
-    if (hasVisibleChildren(element, win)) {
-      node.layout = 'column';
-      node.layoutSource = 'block-flow';
-      node.gap = 0; // Block flow uses margins, not gap. Gap refined later by refineAutoLayoutMetrics.
+    if (hasVisibleChildren(element, win) && !hasTextNodes(element)) {
+      // Plain block containers are too broad to blindly map to auto-layout.
+      // Keep them literal unless their measured children form a very clear column.
+      node.flowHint = 'column';
     }
   } else {
     node.padding = extractPadding(cs);
@@ -906,6 +966,19 @@ function maybeInferAutoLayout(node) {
       node.layoutSource = 'inferred';
       node.gap = textColumn.gap;
       node.padding = textColumn.padding;
+      node.justifyContent = 'start';
+      node.alignItems = detectCrossAlignment(node, flowChildren, 'column');
+      return;
+    }
+  }
+
+  if (node.flowHint === 'column') {
+    var blockColumn = measureFlow(node, flowChildren, 'column');
+    if (blockColumn.valid && blockColumn.score >= 0.94) {
+      node.layout = 'column';
+      node.layoutSource = 'inferred';
+      node.gap = blockColumn.gap;
+      node.padding = blockColumn.padding;
       node.justifyContent = 'start';
       node.alignItems = detectCrossAlignment(node, flowChildren, 'column');
       return;

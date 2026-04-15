@@ -86,7 +86,63 @@ async function buildRegistry() {
   }
 
   step('  \u2713 ' + Object.keys(registry).length + ' components registered (from ' + sets.length + ' sets)');
+
+  // Phase 2: Build icon registry from standalone components
+  step('Scanning icons...');
+  iconRegistry = {};
+  var allComps = figma.root.findAllWithCriteria({ types: ['COMPONENT'] });
+  var iconCount = 0;
+
+  for (var ic = 0; ic < allComps.length; ic++) {
+    var comp = allComps[ic];
+    // Skip variants (children of component sets)
+    if (comp.parent && comp.parent.type === 'COMPONENT_SET') continue;
+    // Icons are small, square-ish components
+    var isIcon = (comp.width <= 48 && comp.height <= 48) ||
+                 comp.name.toLowerCase().indexOf('icon') !== -1 ||
+                 comp.name.toLowerCase().indexOf('ic/') !== -1 ||
+                 comp.name.toLowerCase().indexOf('ic_') !== -1;
+    if (!isIcon) continue;
+
+    // Store under normalized name (lowercase, trimmed)
+    var iconName = comp.name.trim();
+    iconRegistry[iconName] = comp;
+    // Also store under just the last segment (e.g., "Icons/close" → "close")
+    var parts = iconName.split('/');
+    var shortName = parts[parts.length - 1].trim();
+    if (shortName && !iconRegistry[shortName]) {
+      iconRegistry[shortName] = comp;
+    }
+    // Also store lowercase versions
+    if (!iconRegistry[iconName.toLowerCase()]) iconRegistry[iconName.toLowerCase()] = comp;
+    if (!iconRegistry[shortName.toLowerCase()]) iconRegistry[shortName.toLowerCase()] = comp;
+    iconCount++;
+
+    if (ic % 50 === 0 && ic > 0) await yieldThread();
+  }
+
+  step('  \u2713 ' + iconCount + ' icon components found');
+
+  // Phase 3: Build text style registry from local styles
+  step('Scanning text styles...');
+  textStyleRegistry = {};
+  var localStyles = figma.getLocalTextStyles();
+  for (var ts = 0; ts < localStyles.length; ts++) {
+    var style = localStyles[ts];
+    var styleName = style.name.trim();
+    textStyleRegistry[styleName] = style;
+    // Also store under last segment (e.g., "UNO Semantic/Title Large" → "Title Large")
+    var styleParts = styleName.split('/');
+    var shortStyle = styleParts[styleParts.length - 1].trim();
+    if (shortStyle && !textStyleRegistry[shortStyle]) {
+      textStyleRegistry[shortStyle] = style;
+    }
+  }
+  step('  \u2713 ' + localStyles.length + ' text styles found');
 }
+
+var iconRegistry = {};
+var textStyleRegistry = {};
 
 // Condensed catalog for AI prompt — just what it needs to make decisions
 function catalogForAI() {
@@ -515,10 +571,23 @@ function parseColor(c) {
   return c || { r: 1, g: 1, b: 1 };
 }
 
+// Extract alpha from #RRGGBBAA — returns 1.0 if no alpha present
+function parseAlpha(c) {
+  if (typeof c === 'string' && c.startsWith('#') && c.length === 9) {
+    return parseInt(c.slice(7, 9), 16) / 255;
+  }
+  return 1;
+}
+
+function makeFill(c) {
+  if (!c) return [];
+  return [{ type: 'SOLID', color: parseColor(c), opacity: parseAlpha(c) }];
+}
+
 function assembleFrame(parent, node) {
   var n = figma.createFrame();
   n.name = node.name || 'Frame';
-  n.fills = node.fill ? [{ type: 'SOLID', color: parseColor(node.fill) }] : [];
+  n.fills = makeFill(node.fill);
 
   if (node.layout) {
     n.layoutMode = node.layout === 'horizontal' ? 'HORIZONTAL' : 'VERTICAL';
@@ -537,8 +606,9 @@ function assembleFrame(parent, node) {
 
   if (node.width && node.height) n.resize(node.width, node.height);
   if (node.cornerRadius) n.cornerRadius = node.cornerRadius;
-  if (node.stroke) { n.strokes = [{ type: 'SOLID', color: parseColor(node.stroke) }]; n.strokeWeight = node.strokeWeight || 1; n.strokeAlign = 'INSIDE'; }
+  if (node.stroke) { n.strokes = [{ type: 'SOLID', color: parseColor(node.stroke), opacity: parseAlpha(node.stroke) }]; n.strokeWeight = node.strokeWeight || 1; n.strokeAlign = 'INSIDE'; }
   if (node.shadow) n.effects = node.shadow;
+  if (node.opacity !== undefined) n.opacity = node.opacity;
   n.clipsContent = !!node.clip;
   parent.appendChild(n);
 
@@ -570,10 +640,36 @@ async function assembleText(parent, node) {
   t.fontName = fontName;
   t.characters = node.content || '';
   t.fontSize = node.fontSize || 16;
+
+  // Apply text style if specified — links to the design system
+  if (node.textStyle) {
+    var matchedStyle = textStyleRegistry[node.textStyle];
+    if (!matchedStyle) {
+      // Try case-insensitive search
+      for (var key in textStyleRegistry) {
+        if (key.toLowerCase() === node.textStyle.toLowerCase()) {
+          matchedStyle = textStyleRegistry[key];
+          break;
+        }
+      }
+    }
+    if (matchedStyle) {
+      // Load the font used by the style before applying
+      try { await figma.loadFontAsync(matchedStyle.fontName); } catch (e) {}
+      t.textStyleId = matchedStyle.id;
+      // fontSize/fontName from style overrides raw values — that's correct
+      // But we still allow color override since styles don't always set color
+    }
+  }
+
   if (node.color) t.fills = [{ type: 'SOLID', color: parseColor(node.color) }];
   if (node.align) t.textAlignHorizontal = node.align.toUpperCase();
   if (node.opacity !== undefined) t.opacity = node.opacity;
-  if (node.letterSpacing) t.letterSpacing = node.letterSpacing;
+  if (node.letterSpacing !== undefined) {
+    t.letterSpacing = typeof node.letterSpacing === 'number'
+      ? { unit: 'PIXELS', value: node.letterSpacing }
+      : node.letterSpacing;
+  }
   parent.appendChild(t);
 
   // Sizing — text needs textAutoResize changed for stretch/grow to work
@@ -589,12 +685,263 @@ async function assembleText(parent, node) {
   return t;
 }
 
+function findIcon(name) {
+  // Exact match
+  if (iconRegistry[name]) return iconRegistry[name];
+  // Lowercase match
+  if (iconRegistry[name.toLowerCase()]) return iconRegistry[name.toLowerCase()];
+  return null;
+}
+
+// ── Lucide SVG fallback ──
+// When an icon isn't in the local Figma file, fetch from Lucide CDN via the UI iframe.
+// The plugin sandbox can't fetch directly, so we round-trip through the UI.
+var lucideCache = {};        // name → svg string (or null = miss)
+var pendingLucide = {};      // name → resolver fn
+
+// Aliases — map any name (Material Symbol, Phosphor, alt spelling) → canonical Lucide name
+var ICON_ALIASES = {
+  // Material Symbols → Lucide
+  'arrow_back': 'arrow-left',
+  'arrow_forward': 'arrow-right',
+  'chevron_right': 'chevron-right',
+  'chevron_left': 'chevron-left',
+  'close': 'x',
+  'menu': 'menu',
+  'more_vert': 'more-vertical',
+  'more_horiz': 'more-horizontal',
+  'cloud_done': 'cloud-check',
+  'cloud_off': 'cloud-off',
+  'local_shipping': 'truck',
+  'inventory_2': 'package',
+  'schedule': 'clock',
+  'location_on': 'map-pin',
+  'photo_camera': 'camera',
+  'directions_car': 'car',
+  'business': 'building-2',
+  'event': 'calendar',
+  'today': 'calendar',
+  'edit': 'pencil',
+  'person': 'user',
+  'email': 'mail',
+  'settings': 'settings',
+  'add': 'plus',
+  'remove': 'minus',
+  'block': 'ban',
+  'help': 'help-circle',
+  'refresh': 'refresh-cw',
+  'arrow_drop_down': 'chevron-down',
+  'lock_clock': 'clock',
+
+  // Phosphor → Lucide (for JSON files written with Phosphor names)
+  'caret-right': 'chevron-right',
+  'caret-left': 'chevron-left',
+  'caret-up': 'chevron-up',
+  'caret-down': 'chevron-down',
+  'dots-three-vertical': 'more-vertical',
+  'dots-three': 'more-horizontal',
+  'list': 'menu',
+  'wifi-high': 'wifi',
+  'cloud-slash': 'cloud-off',
+  'pencil-simple': 'pencil',
+  'envelope': 'mail',
+  'gear': 'settings',
+  'magnifying-glass': 'search',
+  'stack': 'layers',
+  'buildings': 'building-2',
+  'flag-banner': 'flag',
+  'arrow-clockwise': 'refresh-cw',
+  'clock-counter-clockwise': 'history',
+  'warning': 'alert-triangle',
+  'prohibit': 'ban',
+  'question': 'help-circle',
+  'x-circle': 'x-circle',
+  'check-circle': 'check-circle'
+};
+
+// Lucide is the primary external source (outline, matches current Quantify UI).
+// Phosphor Fill is kept as a fallback for anything not found on Lucide.
+var iconSvgCache = {};        // 'src:name' → svg string (or null = miss)
+var pendingFetches = {};      // 'src:name' → resolver
+
+function fetchSvgFromUI(source, name) {
+  var key = source + ':' + name;
+  if (iconSvgCache[key] !== undefined) return Promise.resolve(iconSvgCache[key]);
+  if (pendingFetches[key]) return pendingFetches[key].promise;
+
+  var resolver;
+  var promise = new Promise(function(r) { resolver = r; });
+  pendingFetches[key] = { promise: promise, resolve: resolver };
+  post({ type: 'fetchIcon', source: source, name: name });
+  return promise;
+}
+
+function handleIconResponse(source, name, svg) {
+  var key = source + ':' + name;
+  iconSvgCache[key] = svg || null;
+  if (pendingFetches[key]) {
+    pendingFetches[key].resolve(svg || null);
+    delete pendingFetches[key];
+  }
+}
+
+async function fetchExternalIconSvg(name) {
+  var resolved = ICON_ALIASES[name] || name;
+  // 1. Try Lucide outline (primary — cleaner geometry, matches Quantify UI)
+  var svg = await fetchSvgFromUI('lucide', resolved);
+  if (svg) return svg;
+  // 2. Fall back to Phosphor Fill
+  return await fetchSvgFromUI('phosphor', resolved);
+}
+
+function handleLucideResponse(name, svg) {
+  lucideCache[name] = svg || null;
+  if (pendingLucide[name]) {
+    pendingLucide[name].resolve(svg || null);
+    delete pendingLucide[name];
+  }
+}
+
+// Recolor any vector-like node in the imported SVG tree.
+// Lucide icons are STROKE-based (fill="none", stroke="currentColor") — we must
+// preserve their strokes and NOT add a fill (which would turn outlines into
+// solid blobs). Phosphor Fill icons are FILL-based — we update fills.
+// Strategy: if the node already has strokes, only update strokes. If it has
+// fills, only update fills. Never add what wasn't there.
+function recolorVectors(node, color) {
+  try {
+    var allVectors = node.findAll(function(n) { return n.type === 'VECTOR' || n.type === 'BOOLEAN_OPERATION' || n.type === 'STAR' || n.type === 'ELLIPSE' || n.type === 'LINE' || n.type === 'POLYGON' || n.type === 'RECTANGLE'; });
+    var ic = parseColor(color);
+    for (var v = 0; v < allVectors.length; v++) {
+      var vec = allVectors[v];
+      var hasStrokes = false;
+      var hasFills = false;
+      try { hasStrokes = vec.strokes && vec.strokes.length > 0; } catch (e) {}
+      try { hasFills = vec.fills && vec.fills !== figma.mixed && vec.fills.length > 0; } catch (e) {}
+
+      if (hasStrokes) {
+        try { vec.strokes = [{ type: 'SOLID', color: ic }]; } catch (e) {}
+      }
+      if (hasFills) {
+        try { vec.fills = [{ type: 'SOLID', color: ic }]; } catch (e) {}
+      }
+      // If the node has neither (edge case — an imported path missing both),
+      // fall back to a stroke so it becomes visible instead of invisible.
+      if (!hasStrokes && !hasFills) {
+        try { vec.strokes = [{ type: 'SOLID', color: ic }]; vec.strokeWeight = 2; } catch (e) {}
+      }
+    }
+  } catch (e) {}
+}
+
+async function assembleIcon(parent, node, path) {
+  // Lucide primary (outline, cleaner), Phosphor Fill fallback.
+  var svg = await fetchExternalIconSvg(node.icon);
+  if (!svg) {
+    addError(path, 'Icon "' + node.icon + '" not on Lucide or Phosphor');
+    return null;
+  }
+  var svgNode;
+  try { svgNode = figma.createNodeFromSvg(svg); } catch (e) {
+    addError(path, 'SVG parse failed for "' + node.icon + '": ' + e.message);
+    return null;
+  }
+  svgNode.name = 'icon/' + node.icon;
+  parent.appendChild(svgNode);
+
+  var size = node.size || 24;
+  // Lock to FIXED sizing BEFORE resize so auto-layout parents don't collapse
+  // or stretch the icon frame.
+  try { svgNode.layoutSizingHorizontal = 'FIXED'; } catch (e) {}
+  try { svgNode.layoutSizingVertical = 'FIXED'; } catch (e) {}
+  try { svgNode.resize(size, size); } catch (e) {}
+  if (node.stretch) svgNode.layoutAlign = 'STRETCH';
+  if (node.color) recolorVectors(svgNode, node.color);
+
+  step('  \u2713 Icon: ' + node.icon + ' (' + size + 'px)');
+  return svgNode;
+}
+
+// ══════════════════════════════════════════════
+// PRE-BUILD VALIDATION
+// ══════════════════════════════════════════════
+
+function validateSchemaNode(node, path, issues) {
+  if (!node || !node.type) return;
+
+  if (node.type === 'component') {
+    if (!registry[node.component]) {
+      issues.push(path + ': Component "' + node.component + '" NOT in registry');
+    } else {
+      // Check variant exists
+      var entry = registry[node.component];
+      var requested = node.variant || {};
+      var resolved = resolveProps(entry, requested);
+      // Suppress step() logging during validation by doing a quiet check
+    }
+  }
+
+  // Icons no longer pre-validated — missing local icons fall back to Lucide CDN at build time
+
+  if (node.children) {
+    for (var i = 0; i < node.children.length; i++) {
+      var child = node.children[i];
+      validateSchemaNode(child, path + '/' + (child.name || child.component || child.icon || i), issues);
+    }
+  }
+}
+
+function validateFullSchema(screens) {
+  step('Pre-build validation...');
+  var allIssues = [];
+  var componentCount = 0;
+  var iconCount = 0;
+  var frameCount = 0;
+  var textCount = 0;
+
+  function countTypes(node) {
+    if (!node) return;
+    if (node.type === 'component') componentCount++;
+    else if (node.type === 'icon') iconCount++;
+    else if (node.type === 'frame') frameCount++;
+    else if (node.type === 'text') textCount++;
+    if (node.children) {
+      for (var i = 0; i < node.children.length; i++) countTypes(node.children[i]);
+    }
+  }
+
+  for (var s = 0; s < screens.length; s++) {
+    countTypes(screens[s]);
+    if (screens[s].children) {
+      for (var c = 0; c < screens[s].children.length; c++) {
+        var child = screens[s].children[c];
+        validateSchemaNode(child, screens[s].name + '/' + (child.name || child.component || c), allIssues);
+      }
+    }
+  }
+
+  step('  Schema: ' + componentCount + ' components, ' + iconCount + ' icons, ' + frameCount + ' frames, ' + textCount + ' text nodes');
+
+  if (allIssues.length === 0) {
+    step('  \u2713 All references valid');
+  } else {
+    for (var i = 0; i < allIssues.length; i++) {
+      step('  \u2717 ' + allIssues[i]);
+    }
+    step('  \u26A0 ' + allIssues.length + ' issue(s) found');
+  }
+
+  return allIssues;
+}
+
 async function assembleNode(parent, node, path) {
   if (!node || !node.type) { addError(path, 'Missing "type"'); return null; }
 
   switch (node.type) {
     case 'component':
       return await assembleComponent(parent, node, path);
+    case 'icon':
+      return await assembleIcon(parent, node, path);
     case 'frame':
       var frame = assembleFrame(parent, node);
       if (node.children) {
@@ -625,17 +972,35 @@ async function buildScreen(schema) {
   if (!schema.name) { addError('root', 'Missing "name"'); return null; }
   step('Building: ' + schema.name + '...');
 
+  // Replace-on-rebuild: if a screen with the same name already exists on
+  // this page, remember its position and delete it before creating the new
+  // one. This prevents the plugin from duplicating screens every build.
+  var existingX, existingY;
+  var pageKids = figma.currentPage.children;
+  for (var pk = 0; pk < pageKids.length; pk++) {
+    if (pageKids[pk].name === schema.name && pageKids[pk].type === 'FRAME') {
+      existingX = pageKids[pk].x;
+      existingY = pageKids[pk].y;
+      try { pageKids[pk].remove(); step('  \u2713 Replaced existing "' + schema.name + '"'); } catch (e) {}
+      break;
+    }
+  }
+
   var screen = figma.createFrame();
   screen.name = schema.name;
   screen.resize(schema.width || 390, schema.height || 844);
-  screen.fills = [{ type: 'SOLID', color: parseColor(schema.fill || '#FFFFFF') }];
+  screen.fills = makeFill(schema.fill || '#FFFFFF');
   screen.layoutMode = 'VERTICAL';
   screen.primaryAxisSizingMode = 'FIXED';
   screen.counterAxisSizingMode = 'FIXED';
   screen.clipsContent = true;
   figma.currentPage.appendChild(screen);
+  // Prefer explicit coords from schema, else reuse the old screen's position,
+  // else leave Figma's default placement.
   if (schema.x !== undefined) screen.x = schema.x;
+  else if (existingX !== undefined) screen.x = existingX;
   if (schema.y !== undefined) screen.y = schema.y;
+  else if (existingY !== undefined) screen.y = existingY;
 
   if (schema.children) {
     for (var i = 0; i < schema.children.length; i++) {
@@ -668,6 +1033,110 @@ function validate(screenNode) {
   step('  Validation: ' + instances + ' instances, ' + frames + ' layout frames, ' + texts + ' text labels');
   for (var i = 0; i < issues.length; i++) step('  \u26A0 ' + issues[i]);
   return issues;
+}
+
+// ══════════════════════════════════════════════
+// PROTOTYPE WIRING — set click reactions between frames
+// ══════════════════════════════════════════════
+
+function findScreenByName(name) {
+  var kids = figma.currentPage.children;
+  for (var i = 0; i < kids.length; i++) {
+    if (kids[i].name === name) return kids[i];
+  }
+  return null;
+}
+
+function findElementInScreen(screen, elementName) {
+  if (screen.name === elementName) return screen;
+  function walk(node) {
+    if (node.name === elementName) return node;
+    if ('children' in node) {
+      for (var i = 0; i < node.children.length; i++) {
+        var found = walk(node.children[i]);
+        if (found) return found;
+      }
+    }
+    return null;
+  }
+  return walk(screen);
+}
+
+async function wirePrototype(data) {
+  var flows = data.flows || [];
+  var transitionType = data.transition || 'SMART_ANIMATE';
+  var durationMs = data.duration || 300;
+  var durationSec = durationMs / 1000;
+
+  step('Wiring ' + flows.length + ' prototype connection(s)...');
+
+  var wired = 0;
+  var failed = [];
+
+  for (var f = 0; f < flows.length; f++) {
+    var flow = flows[f];
+    var fromScreen = findScreenByName(flow.from);
+    if (!fromScreen) {
+      failed.push(flow.from + ' / ' + flow.element + ' \u2192 ' + flow.to + ': source screen not found');
+      continue;
+    }
+    var toScreen = findScreenByName(flow.to);
+    if (!toScreen) {
+      failed.push(flow.from + ' / ' + flow.element + ' \u2192 ' + flow.to + ': target screen not found');
+      continue;
+    }
+    var element = findElementInScreen(fromScreen, flow.element);
+    if (!element) {
+      failed.push(flow.from + ' / ' + flow.element + ' \u2192 ' + flow.to + ': element not found inside screen');
+      continue;
+    }
+
+    var actionObj = {
+      type: 'NODE',
+      destinationId: toScreen.id,
+      navigation: 'NAVIGATE',
+      transition: {
+        type: transitionType,
+        easing: { type: 'EASE_OUT' },
+        duration: durationSec
+      },
+      preserveScrollPosition: false
+    };
+    if (flow.direction) actionObj.transition.direction = flow.direction;
+
+    var reaction = {
+      trigger: { type: 'ON_CLICK' },
+      actions: [actionObj]
+    };
+
+    try {
+      element.reactions = [reaction];
+      wired++;
+      step('  \u2713 ' + flow.from + ' / ' + flow.element + ' \u2192 ' + flow.to);
+    } catch (e) {
+      failed.push(flow.from + ' / ' + flow.element + ' \u2192 ' + flow.to + ': ' + e.message);
+    }
+    if (f % 10 === 0) await yieldThread();
+  }
+
+  // Set the start frame for the prototype
+  if (data.startFrame) {
+    var start = findScreenByName(data.startFrame);
+    if (start) {
+      try {
+        figma.currentPage.flowStartingPoints = [{ nodeId: start.id, name: 'Start' }];
+        step('  \u2713 Start frame: ' + data.startFrame);
+      } catch (e) {
+        step('  \u26A0 Could not set start frame: ' + e.message);
+      }
+    } else {
+      step('  \u26A0 Start frame "' + data.startFrame + '" not found');
+    }
+  }
+
+  step('');
+  step('\u2705 Wired ' + wired + '/' + flows.length + ' connection(s)');
+  for (var i = 0; i < failed.length; i++) step('  \u2717 ' + failed[i]);
 }
 
 // ══════════════════════════════════════════════
@@ -893,6 +1362,10 @@ async function handleMessage(msg) {
       }
 
       var screens = Array.isArray(schema) ? schema : [schema];
+
+      // Pre-build validation — check all component/icon references
+      var preIssues = validateFullSchema(screens);
+      // Continue building even if there are issues (they'll be logged)
       errors = [];
       var built = [];
       var gap = 60;
@@ -928,6 +1401,23 @@ async function handleMessage(msg) {
       step('\u2717 Build error: ' + e.message);
       post({ type: 'error', message: e.message });
     }
+  }
+
+  if (msg.type === 'iconSvg') {
+    handleIconResponse(msg.source || 'lucide', msg.name, msg.svg);
+    return;
+  }
+
+  if (msg.type === 'wirePrototype') {
+    try {
+      var data = typeof msg.schema === 'string' ? JSON.parse(msg.schema) : msg.schema;
+      await wirePrototype(data);
+      post({ type: 'done', errors: [] });
+    } catch (e) {
+      step('\u2717 Wire error: ' + e.message);
+      post({ type: 'error', message: e.message });
+    }
+    return;
   }
 
   if (msg.type === 'close') figma.closePlugin();

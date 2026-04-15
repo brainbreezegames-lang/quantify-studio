@@ -6,6 +6,6 @@
   "ui": "ui.html",
   "editorType": ["figma"],
   "networkAccess": {
-    "allowedDomains": ["https://openrouter.ai"]
+    "allowedDomains": ["https://openrouter.ai", "https://unpkg.com"]
   }
 }

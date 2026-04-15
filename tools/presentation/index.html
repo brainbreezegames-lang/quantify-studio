@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantify Mobile — Design Overview</title>
+<link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --blue: #0A3EFF;
+    --blue-medium: #6F9DFF;
+    --blue-dark: #10296E;
+    --blue-lightest: #E8EEFF;
+    --white: #FFFFFF;
+    --surface: #F8F8F8;
+    --surface2: #F4F4F4;
+    --border: #E2E2E2;
+    --text-primary: #202020;
+    --text-secondary: #878787;
+    --error: #E64059;
+    --success: #22C55E;
+  }
+
+  html, body {
+    font-family: 'Switzer', -apple-system, sans-serif;
+    background: var(--white);
+    color: var(--text-primary);
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Slide Engine ── */
+  .deck { width: 100vw; height: 100vh; position: relative; }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 100px 140px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.45s ease;
+  }
+
+  .slide.active { opacity: 1; pointer-events: auto; }
+
+  .slide.active .a { animation: fadeUp 0.55s ease forwards; }
+  .slide.active .a:nth-child(1) { animation-delay: 0.08s; }
+  .slide.active .a:nth-child(2) { animation-delay: 0.18s; }
+  .slide.active .a:nth-child(3) { animation-delay: 0.28s; }
+  .slide.active .a:nth-child(4) { animation-delay: 0.38s; }
+  .slide.active .a:nth-child(5) { animation-delay: 0.48s; }
+  .slide.active .a:nth-child(6) { animation-delay: 0.56s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .a { opacity: 0; }
+
+  /* ── Typography ── */
+  h1 {
+    font-size: 64px;
+    font-weight: 500;
+    line-height: 1.05em;
+    letter-spacing: -0.04em;
+  }
+
+  h2 {
+    font-size: 44px;
+    font-weight: 500;
+    line-height: 1.15em;
+    letter-spacing: -0.035em;
+  }
+
+  h3 {
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1.2em;
+    letter-spacing: -0.02em;
+  }
+
+  .body {
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 1.55em;
+    letter-spacing: -0.02em;
+    color: var(--text-secondary);
+    max-width: 640px;
+  }
+
+  .label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 12px;
+  }
+
+  .blue { color: var(--blue); }
+  .dim { color: var(--text-secondary); }
+
+  /* ── Layout ── */
+  .col { display: flex; flex-direction: column; }
+  .row { display: flex; align-items: flex-start; }
+  .center-v { align-items: center; }
+  .g8 { gap: 8px; } .g12 { gap: 12px; } .g16 { gap: 16px; }
+  .g20 { gap: 20px; } .g24 { gap: 24px; } .g32 { gap: 32px; }
+  .g40 { gap: 40px; } .g48 { gap: 48px; } .g56 { gap: 56px; }
+  .f1 { flex: 1; }
+
+  /* ── Divider ── */
+  .line { height: 1px; background: var(--border); align-self: stretch; }
+
+  /* ── Progress ── */
+  .progress-bar {
+    height: 2px;
+    background: var(--border);
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--blue);
+    transition: width 0.4s ease;
+  }
+
+  /* ── Counter ── */
+  .counter {
+    position: fixed;
+    bottom: 40px; right: 48px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    letter-spacing: -0.01em;
+    z-index: 100;
+  }
+
+  /* ── Nav ── */
+  .nav-hint {
+    position: fixed;
+    bottom: 40px; left: 48px;
+    font-size: 12px;
+    color: var(--border);
+    letter-spacing: -0.01em;
+    z-index: 100;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .key {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px;
+    border: 1px solid var(--border);
+    font-size: 10px; color: var(--text-secondary);
+  }
+
+  /* ── Dark slide ── */
+  .dark {
+    background: var(--blue-dark);
+  }
+  .dark h1, .dark h2, .dark h3 { color: var(--white); }
+  .dark .body { color: rgba(255,255,255,0.55); }
+  .dark .label { color: var(--blue-medium); }
+  .dark .line { background: rgba(255,255,255,0.1); }
+  .dark .dim { color: rgba(255,255,255,0.4); }
+
+  /* ── Blue slide ── */
+  .blue-bg { background: var(--blue); }
+  .blue-bg h1, .blue-bg h2, .blue-bg h3 { color: var(--white); }
+  .blue-bg .body { color: rgba(255,255,255,0.65); }
+  .blue-bg .label { color: rgba(255,255,255,0.45); }
+  .blue-bg .line { background: rgba(255,255,255,0.15); }
+
+  /* ── Stat ── */
+  .stat {
+    font-size: 56px;
+    font-weight: 500;
+    line-height: 1em;
+    letter-spacing: -0.04em;
+  }
+
+  .stat-label {
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.45em;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 36px;
+  }
+
+  /* ── Pill grid ── */
+  .pill {
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .pill.on {
+    background: var(--blue);
+    color: white;
+    border-color: var(--blue);
+  }
+
+  /* ── Table ── */
+  table { width: 100%; border-collapse: collapse; }
+  th, td {
+    text-align: left;
+    padding: 18px 24px;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    padding-bottom: 14px;
+  }
+  td:first-child { font-weight: 500; color: var(--blue); }
+  code {
+    font-family: 'JetBrains Mono', 'SF Mono', 'Menlo', monospace;
+    font-size: 15px;
+    background: var(--surface2);
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+  }
+
+  /* ── Screen row ── */
+  .screen-item {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .screen-item:last-child { border-bottom: none; }
+  .screen-num {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--blue);
+    min-width: 28px;
+  }
+  .screen-name {
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    min-width: 180px;
+  }
+  .screen-desc {
+    font-size: 16px;
+    color: var(--text-secondary);
+    letter-spacing: -0.01em;
+    flex: 1;
+  }
+  .screen-badge {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--blue);
+    padding: 4px 10px;
+    border: 1px solid var(--blue);
+    white-space: nowrap;
+  }
+
+  /* ── Variant demo ── */
+  .variant-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .variant-row:last-child { border-bottom: none; }
+  .variant-key {
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    min-width: 100px;
+    color: var(--text-primary);
+  }
+  .variant-options { display: flex; gap: 6px; flex-wrap: wrap; }
+  .variant-opt {
+    font-size: 13px;
+    font-weight: 400;
+    padding: 6px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    letter-spacing: -0.01em;
+  }
+  .variant-opt.sel {
+    background: var(--blue);
+    color: white;
+    border-color: var(--blue);
+  }
+
+  /* ── Composition arrow ── */
+  .comp-flow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .comp-flow:last-child { border-bottom: none; }
+  .comp-item {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    padding: 8px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .comp-arrow {
+    font-size: 18px;
+    color: var(--text-secondary);
+  }
+  .comp-result {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    padding: 8px 16px;
+    background: var(--blue);
+    color: white;
+    white-space: nowrap;
+  }
+  .comp-label {
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    min-width: 200px;
+    flex-shrink: 0;
+  }
+
+  /* ── Color swatches ── */
+  .swatch {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+  }
+
+  /* ── Logo ── */
+  .logo {
+    width: 48px; height: 48px;
+    background: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    font-size: 24px; font-weight: 500;
+  }
+
+  /* ── Meta row ── */
+  .meta-item { display: flex; flex-direction: column; gap: 4px; }
+  .meta-label { font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-secondary); }
+  .meta-value { font-size: 16px; font-weight: 500; letter-spacing: -0.02em; }
+</style>
+</head>
+<body>
+
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+<div class="counter" id="counter"></div>
+<div class="nav-hint"><span class="key">&larr;</span><span class="key">&rarr;</span></div>
+
+<div class="deck" id="deck">
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 1. TITLE -->
+<!-- ═══════════════════════════════════════ -->
+<div class="slide">
+  <div class="col g48">
+    <div class="a"><div class="logo">Q</div></div>
+    <div class="col g16 a">
+      <div class="label">Design overview</div>
+      <h1>Quantify <span class="blue">Mobile</span></h1>
+    </div>
+    <p class="body a">How I designed production-ready mobile screens for Avontus Quantify using the Uno Platform component library, customized to match our brand.</p>
+    <div class="line a"></div>
+    <div class="row g48 a">
+      <div class="meta-item">
+        <div class="meta-label">Designer</div>
+        <div class="meta-value">Zino</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Platform</div>
+        <div class="meta-value">Uno Platform (WinUI / XAML)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Targets</div>
+        <div class="meta-value">iOS &amp; Android</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 2. WHO USES THIS -->
+<!-- ═══════════════════════════════════════ -->
+<div class="slide dark">
+  <div class="col g48">
+    <div class="col g16 a">
+      <div class="label">The users</div>
+      <h2>This app is for people working<br>outdoors with gloves on</h2>
+    </div>
+    <p class="body a">Yard workers, delivery drivers, and site supervisors. They use Quantify on job sites — in direct sunlight, with dirty or wet screens, often wearing work gloves. They need to get in, complete a task, and get out. Speed and clarity are everything.</p>
+    <div class="line a"></div>
+    <p class="body a" style="font-size: 18px;">This context should drive every design and development decision we make. This is not a consumer app — it's an operational tool for power users in harsh conditions. I'll walk through the specific UX recommendations I have based on this.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 3. DESIGN SYSTEM CUSTOMIZATION -->
+<!-- ═══════════════════════════════════════ -->
+<div class="slide">
+  <div class="col g48">
+    <div class="col g16 a">
+      <div class="label">Design system</div>
+      <h2>I took Uno's Material Design 3 library<br>and <span class="blue">rebuilt it for Avontus</span></h2>
+    </div>
+    <p class="body a">Uno ships with standard Material Design components. I customized the entire design system to match Avontus brand guidelines — so what you see in Figma isn't generic Material, it's our visual language.</p>
+    <div class="row g32 a" style="align-items: stretch;">
+      <div class="card f1">
+        <div class="col g16">
+          <h3>Switzer typeface</h3>
+          <p style="font-size: 16px; color: var(--text-secondary); letter-spacing: -0.01em; line-height: 1.5em;">Replaced default Roboto. Two weights: Regular (400) for body, Medium (500) for headings. Tight negative letter-spacing throughout for a sharp, modern feel.</p>
+        </div>
+      </div>
+      <div class="card f1">
+        <div class="col g16">
+          <h3>Monochromatic blue</h3>
+          <div class="row g8" style="align-items: center;">
+            <div class="swatch" style="background: #0A3EFF;"></div>
+            <div class="swatch" style="background: #10296E;"></div>
+            <div class="swatch" style="background: #202020;"></div>
+            <div class="swatch" style="background: #878787;"></div>
+            <div class="swatch" style="background: #E2E2E2;"></div>
+            <div class="swatch" style="background: #F4F4F4; border: 1px solid var(--border);"></div>
+          </div>
+          <p style="font-size: 16px; color: var(--text-secondary); letter-spacing: -0.01em; line-height: 1.5em;">One hue — #0A3EFF. Everything else is pure neutral gray. No gradients, no shadows. Flat and sharp.</p>
+        </div>
+      </div>
+      <div class="card f1">
+        <div class="col g16">
+          <h3 style="color: var(--blue);">0px corners</h3>
+          <p style="font-size: 16px; color: var(--text-secondary); letter-spacing: -0.01em; line-height: 1.5em;">Zero border-radius on every element — buttons, cards, inputs, modals. This is the defining visual trait of the Avontus brand. Sharp geometry, no softness.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 4. UX DECISIONS — THREE RULES -->
+<!-- ═══════════════════════════════════════ -->
+<div class="slide">
+  <div class="col g48">
+    <div class="col g16 a">
+      <div class="label">UX recommendations</div>
+      <h2>Three rules I recommend<br>we follow going forward</h2>
+    </div>
+    <div class="row g32 a" style="align-items: stretch;">
+      <div class="col g12 f1" style="padding: 36px; background: var(--surface2); border: 1px solid var(--border);">
+        <div class="stat blue">56px</div>
+        <h3 style="margin-top: 8px;">Minimum touch target</h3>
+        <p style="font-size: 16px; color: var(--text-secondary); letter-spacing: -0.01em; line-height: 1.5em; margin-top: 8px;">Every tappable row should be at least 56px tall. Gloved fingers on a wet screen need large, forgiving targets. No small icons, no tiny links.</p>
+      </div>
+      <div class="col g12 f1" style="padding: 36px; background: var(--surface2); border: 1px solid var(--border);">
+        <div class="stat blue">14px</div>
+        <h3 style="margin-top: 8px;">Minimum readable text</h3>
+        <p style="font-size: 16px; color: var(--text-secondary); letter-spacing: -0.01em; line-height: 1.5em; margin-top: 8px;">No readable text smaller than 14px — that includes error messages, labels, and helper text. Body text the user acts on should be 16px. Only truly ancillary content like copyright goes to 13px.</p>
+      </div>
+      <div class="col g12 f1" style="padding: 36px; background: var(--surface2); border: 1px solid var(--border);">
+        <div class="stat" style="color: var(--text-primary);">#777</div>
+        <h3 style="margin-top: 8px;">No invisible grays</h3>
+        <p style="font-size: 16px; color: var(--text-secondary); letter-spacing: -0.01em; line-height: 1.5em; margin-top: 8px;">Secondary text should never be lighter than #777777. In direct sunlight, anything lighter disappears. Primary text stays at #111 or #202020, secondary at #555, tertiary at #777.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 5. VALIDATION & OFFLINE -->
+<!-- ═══════════════════════════════════════ -->
+<div class="slide">
+  <div class="col g48">
+    <div class="col g16 a">
+      <div class="label">UX approach</div>
+      <h2>Inline validation, not modals.<br>Offline-first, not online-only.</h2>
+    </div>
+    <div class="row g40 a">
+      <div class="col g16 f1">
+        <h3>Why inline errors matter here</h3>
+        <p class="body" style="max-width: 100%; font-size: 18px;">A field worker standing at a scaffold can't deal with a popup listing 7 errors. I designed each error to appear directly under its field — red text, impossible to miss, clear about what's wrong. The form validation screen shows all 7 errors inline so developers can see the pattern.</p>
+      </div>
+      <div class="col g16 f1">
+        <h3>Why we need offline-first</h3>
+        <p class="body" style="max-width: 100%; font-size: 18px;">Job sites have spotty connectivity. I designed the Home screen with both online and offline states. When offline, users see exactly how many changes are waiting — "3 changes queued, will sync when online." The connection settings screen handles error and success states explicitly.</p>
+      </div>
+    </div>
+    <div class="line a"></div>
+    <p class="body a" style="font-size: 16px;">I also recommend keeping cognitive load minimal — the Home screen has exactly 3 navigation options. Login has 2 fields and 2 buttons. These users are busy, they need to get in, complete a task, and get out.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 6. THE SCREENS -->
+<!-- ═══════════════════════════════════════ -->
+<div class="slide">
+  <div class="col g40">
+    <div class="col g16 a">
+      <div class="label">Deliverables</div>
+      <h2>6 flows, 13 screens<br>covering every <span class="blue">state and edge case</span></h2>
+    </div>
+    <div class="col a">
+      <div class="screen-item">
+        <span class="screen-num">01</span>
+        <span class="screen-name">Login</span>
+        <span class="screen-desc">Username, password, SSO, connection status</span>
+        <span class="screen-badge">+ Validation</span>
+      </div>
+      <div class="screen-item">
+        <span class="screen-num">02</span>
+        <span class="screen-name">Connection</span>
+        <span class="screen-desc">Server URL input, SSL toggle, test connection</span>
+        <span class="screen-badge">+ Error + Success</span>
+      </div>
+      <div class="screen-item">
+        <span class="screen-num">03</span>
+        <span class="screen-name">Home</span>
+        <span class="screen-desc">Greeting, navigation, barcode scan, nav drawer</span>
+        <span class="screen-badge">+ Offline + Barcode + Unsaved</span>
+      </div>
+      <div class="screen-item">
+        <span class="screen-num">04</span>
+        <span class="screen-name">Who Am I</span>
+        <span class="screen-desc">Read-only profile, permissions, branch office assignments</span>
+        <span class="screen-badge">1 state</span>
+      </div>
+      <div class="screen-item">
+        <span class="screen-num">05</span>
+        <span class="screen-name">Sample Form</span>
+        <span class="screen-desc">Every input type: text, booleans, dates, numerics, attachments</span>
+        <span class="screen-badge">+ 7 errors</span>
+      </div>
+    </div>
+    <p class="body a" style="font-size: 16px;">Every screen includes its key states — not just the happy path. The sample form covers every field type the app needs, and the validation state shows how all 7 error types behave together.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 7. THE 40-COMPONENT CONSTRAINT -->
+<!-- ═══════════════════════════════════════ -->
+<div class="slide dark">
+  <div class="col g48">
+    <div class="col g16 a">
+      <div class="label">The constraint</div>
+      <h2>Everything you see is built from<br>roughly 40 Uno components</h2>
+    </div>
+    <p class="body a">Uno Platform provides a fixed set of UI controls. I can't invent new ones — I can only use what the library offers. Every control in these designs is a real Uno component that maps directly to a XAML control in your code.</p>
+    <div class="row a" style="gap: 6px; flex-wrap: wrap;">
+      <div class="pill on">Button</div>
+      <div class="pill on">TextBox</div>
+      <div class="pill on">PasswordBox</div>
+      <div class="pill on">ToggleSwitch</div>
+      <div class="pill on">NavigationBar</div>
+      <div class="pill on">ListItem</div>
+      <div class="pill on">MenuItem</div>
+      <div class="pill on">Divider</div>
+      <div class="pill on">Chip</div>
+      <div class="pill on">Card</div>
+      <div class="pill on">CheckBox</div>
+      <div class="pill on">DatePicker</div>
+      <div class="pill">Slider</div>
+      <div class="pill">ProgressRing</div>
+      <div class="pill">Snackbar</div>
+      <div class="pill">RadioButton</div>
+      <div class="pill">ComboBox</div>
+      <div class="pill">NumberBox</div>
+      <div class="pill">TabBar</div>
+      <div class="pill">Dialog</div>
+    </div>
+    <p class="a" style="font-size: 14px; color: rgba(255,255,255,0.35); letter-spacing: -0.01em;">Blue = used in current screens &nbsp;&middot;&nbsp; Gray = available but not yet needed</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 8. HOW VARIANTS WORK -->
+<!-- ═══════════════════════════════════════ -->
+<div class="slide">
+  <div class="col g48">
+    <div class="col g16 a">
+      <div class="label">How components work</div>
+      <h2>Each component has fixed properties.<br>I pick from what exists.</h2>
+    </div>
+    <p class="body a">Think of each component as a configurable control with a set of switches. The variant I select in Figma is the exact same variant you render in XAML. No guessing — it's a direct mapping.</p>
+    <div class="col a" style="background: var(--surface2); border: 1px solid var(--border); padding: 36px;">
+      <div style="margin-bottom: 20px;">
+        <h3>Button — variant properties</h3>
+      </div>
+      <div class="variant-row">
+        <span class="variant-key">Style</span>
+        <div class="variant-options">
+          <span class="variant-opt sel">Filled</span>
+          <span class="variant-opt">Outlined</span>
+          <span class="variant-opt">Text</span>
+          <span class="variant-opt">Tonal</span>
+          <span class="variant-opt">Elevated</span>
+        </div>
+      </div>
+      <div class="variant-row">
+        <span class="variant-key">State</span>
+        <div class="variant-options">
+          <span class="variant-opt sel">Enabled</span>
+        </div>
+      </div>
+      <div class="variant-row">
+        <span class="variant-key">Icon</span>
+        <div class="variant-options">
+          <span class="variant-opt">True</span>
+          <span class="variant-opt sel">False</span>
+        </div>
+      </div>
+      <div class="variant-row">
+        <span class="variant-key">Text slot</span>
+        <div class="variant-options">
+          <span class="variant-opt sel">Label &rarr; "Sign in"</span>
+        </div>
+      </div>
+    </div>
+    <p class="body a" style="font-size: 16px;">Every component works this way — TextBox has Type, State, Label, Populated, Placeholder, Multiline. ToggleSwitch has State and Selected. The properties are fixed, the values are finite.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 9. COMPOSITION -->
+<!-- ═══════════════════════════════════════ -->
+<div class="slide">
+  <div class="col g48">
+    <div class="col g16 a">
+      <div class="label">The challenge</div>
+      <h2>Complex UIs are built by <span class="blue">composing</span><br>simple parts together</h2>
+    </div>
+    <p class="body a">Some elements in the designs aren't a single component — they're layout frames wrapping multiple primitives. Here's how the three most complex elements break down:</p>
+    <div class="col a">
+      <div class="comp-flow">
+        <span class="comp-label">Offline indicator</span>
+        <span class="comp-item">Frame + border</span>
+        <span class="comp-arrow">&rarr;</span>
+        <span class="comp-item">Red dot (6px)</span>
+        <span class="comp-arrow">&rarr;</span>
+        <span class="comp-item">Text "Offline"</span>
+        <span class="comp-arrow">=</span>
+        <span class="comp-result">Status chip</span>
+      </div>
+      <div class="comp-flow">
+        <span class="comp-label">Server URL input</span>
+        <span class="comp-item">Frame "https://"</span>
+        <span class="comp-arrow">&rarr;</span>
+        <span class="comp-item">TextBox (Uno)</span>
+        <span class="comp-arrow">=</span>
+        <span class="comp-result">Prefixed input</span>
+      </div>
+      <div class="comp-flow">
+        <span class="comp-label">Error banner</span>
+        <span class="comp-item">Frame (red bg)</span>
+        <span class="comp-arrow">&rarr;</span>
+        <span class="comp-item">Text (red, medium)</span>
+        <span class="comp-arrow">=</span>
+        <span class="comp-result">Error message</span>
+      </div>
+    </div>
+    <p class="body a" style="font-size: 16px;">In your XAML, you'll do the same — StackPanels and Grids wrapping Uno controls. No custom renderers needed, just smart layout composition.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 10. FIGMA → XAML MAPPING -->
+<!-- ═══════════════════════════════════════ -->
+<div class="slide">
+  <div class="col g40">
+    <div class="col g16 a">
+      <div class="label">Translation</div>
+      <h2>Figma to XAML — the mental model</h2>
+    </div>
+    <p class="body a">Everything I designed has a direct equivalent in your code. No ambiguity, no interpretation needed.</p>
+    <div class="a">
+      <table>
+        <thead>
+          <tr>
+            <th>What I designed</th>
+            <th>What you write</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Vertical frame</td>
+            <td><code>&lt;StackPanel&gt;</code></td>
+          </tr>
+          <tr>
+            <td>Horizontal frame</td>
+            <td><code>&lt;StackPanel Orientation="Horizontal"&gt;</code></td>
+          </tr>
+          <tr>
+            <td>Button (Style=Filled)</td>
+            <td><code>&lt;Button Style="{StaticResource FilledButtonStyle}"&gt;</code></td>
+          </tr>
+          <tr>
+            <td>TextBox (Outlined)</td>
+            <td><code>&lt;TextBox PlaceholderText="..." /&gt;</code></td>
+          </tr>
+          <tr>
+            <td>Text label</td>
+            <td><code>&lt;TextBlock&gt;</code></td>
+          </tr>
+          <tr>
+            <td>stretch: true</td>
+            <td><code>HorizontalAlignment="Stretch"</code></td>
+          </tr>
+          <tr>
+            <td>gap / padding</td>
+            <td><code>Spacing</code> / <code>Padding</code> / <code>Margin</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 11. FUTURE -->
+<!-- ═══════════════════════════════════════ -->
+<div class="slide blue-bg">
+  <div class="col g48">
+    <div class="col g16 a">
+      <div class="label">Looking ahead</div>
+      <h2>What if we need more than<br>40 components?</h2>
+    </div>
+    <p class="body a" style="font-size: 22px; max-width: 700px;">Right now, the standard Uno component library covers everything we need. But if we ever need complex custom designs — data visualizations, specialized controls, things Material Design doesn't provide — there are AI-assisted approaches that can read Figma designs and help generate the corresponding XAML.</p>
+    <p class="body a" style="font-size: 22px; max-width: 700px;">We're not there yet. But the path exists when we need it.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 12. QUESTIONS -->
+<!-- ═══════════════════════════════════════ -->
+<div class="slide">
+  <div class="col g32" style="align-items: center; text-align: center; justify-content: center; height: 100%;">
+    <div class="a"><div class="logo" style="width: 64px; height: 64px; font-size: 32px; margin: 0 auto;">Q</div></div>
+    <div class="col g12 a" style="align-items: center;">
+      <h1>Questions<span class="blue">?</span></h1>
+      <p class="body" style="text-align: center;">All screens and states are in the Figma file.<br>Happy to walk through any specific screen in detail.</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const progress = document.getElementById('progress');
+  const counter = document.getElementById('counter');
+  let current = 0;
+
+  function goTo(i) {
+    if (i < 0 || i >= slides.length) return;
+    // Reset previous slide
+    slides[current].classList.remove('active');
+    slides[current].querySelectorAll('.a').forEach(el => {
+      el.style.animation = 'none';
+      void el.offsetHeight;
+      el.style.animation = '';
+      el.style.opacity = '0';
+    });
+    current = i;
+    slides[current].classList.add('active');
+    progress.style.width = ((current + 1) / slides.length * 100) + '%';
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+
+    // Update counter color for dark/blue slides
+    const isDark = slides[current].classList.contains('dark') || slides[current].classList.contains('blue-bg');
+    counter.style.color = isDark ? 'rgba(255,255,255,0.4)' : '';
+  }
+
+  goTo(0);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+    if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    if (e.key === 'End') { e.preventDefault(); goTo(slides.length - 1); }
+  });
+
+  document.addEventListener('click', e => {
+    if (e.clientX < window.innerWidth / 3) goTo(current - 1);
+    else goTo(current + 1);
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
+  document.addEventListener('touchend', e => {
+    const d = tx - e.changedTouches[0].clientX;
+    if (Math.abs(d) > 50) { d > 0 ? goTo(current + 1) : goTo(current - 1); }
+  });
+</script>
+
+</body>
+</html>

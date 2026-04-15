@@ -1,0 +1,420 @@
+[
+  {
+    "name": "V4-3b. Counting Screen — Flag On Row",
+    "width": 390,
+    "height": 1780,
+    "fill": "#F5F5F5",
+    "children": [
+      {
+        "type": "frame",
+        "name": "Header",
+        "layout": "horizontal",
+        "gap": 12,
+        "padding": { "top": 16, "bottom": 16, "left": 20, "right": 20 },
+        "stretch": true,
+        "fixedHeight": 64,
+        "fill": "#1E3FFF",
+        "crossAlign": "CENTER",
+        "mainAlign": "SPACE_BETWEEN",
+        "children": [
+          { "type": "icon", "icon": "arrow-left", "size": 24, "color": "#FFFFFF" },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "gap": 2,
+            "grow": true,
+            "hugHeight": true,
+            "crossAlign": "CENTER",
+            "children": [
+              { "type": "text", "content": "DEL-2401", "fontSize": 18, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" },
+              { "type": "text", "content": "Loading Truck 1 of 2", "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#FFFFFFCC" }
+            ]
+          },
+          { "type": "icon", "icon": "camera", "size": 24, "color": "#FFFFFF" }
+        ]
+      },
+      {
+        "type": "frame",
+        "name": "Progress",
+        "layout": "vertical",
+        "gap": 14,
+        "padding": { "top": 24, "bottom": 24, "left": 24, "right": 24 },
+        "stretch": true,
+        "hugHeight": true,
+        "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": 16,
+            "stretch": true,
+            "hugHeight": true,
+            "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "fixedWidth": 56,
+                "fixedHeight": 56,
+                "cornerRadius": 100,
+                "fill": "#EEF2FF",
+                "crossAlign": "CENTER",
+                "mainAlign": "CENTER",
+                "children": [{ "type": "text", "content": "38%", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#1E3FFF" }]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": 2,
+                "grow": true,
+                "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "3 of 8 items", "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  { "type": "text", "content": "165 of 342 units", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#737373" }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "stretch": true,
+            "fixedHeight": 8,
+            "cornerRadius": 100,
+            "fill": "#EFEFEF",
+            "children": [
+              { "type": "frame", "layout": "vertical", "fixedWidth": 130, "fixedHeight": 8, "cornerRadius": 100, "fill": "#1E3FFF" }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "height": 12 },
+      {
+        "type": "frame",
+        "name": "ItemList",
+        "layout": "vertical",
+        "gap": 0,
+        "stretch": true,
+        "hugHeight": true,
+        "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame",
+            "name": "Row-CuplokStandard",
+            "layout": "horizontal",
+            "gap": 14,
+            "padding": { "top": 20, "bottom": 20, "left": 20, "right": 20 },
+            "stretch": true,
+            "hugHeight": true,
+            "fill": "#FEF3C7",
+            "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": 6,
+                "grow": true,
+                "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Cuplok Standard 2.0m", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  { "type": "text", "content": "Vertical · 4 cup welded", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#737373" },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": 5,
+                    "padding": { "top": 4, "bottom": 4, "left": 9, "right": 10 },
+                    "hugWidth": true,
+                    "hugHeight": true,
+                    "cornerRadius": 6,
+                    "fill": "#F59E0B",
+                    "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "icon", "icon": "alert-triangle", "size": 11, "color": "#FFFFFF" },
+                      { "type": "text", "content": "Short 23", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "name": "FlagBtn",
+                "layout": "vertical",
+                "fixedWidth": 48,
+                "fixedHeight": 60,
+                "cornerRadius": 14,
+                "fill": "#FFFFFF",
+                "stroke": "#E5E5E5",
+                "strokeWeight": 1,
+                "crossAlign": "CENTER",
+                "mainAlign": "CENTER",
+                "children": [{ "type": "icon", "icon": "flag", "size": 20, "color": "#525252" }]
+              },
+              {
+                "type": "frame",
+                "name": "CountBox",
+                "layout": "vertical",
+                "gap": 0,
+                "fixedWidth": 72,
+                "fixedHeight": 60,
+                "cornerRadius": 14,
+                "fill": "#FFFFFF",
+                "stroke": "#F59E0B",
+                "strokeWeight": 2,
+                "crossAlign": "CENTER",
+                "mainAlign": "CENTER",
+                "children": [
+                  { "type": "text", "content": "25", "fontSize": 22, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  { "type": "text", "content": "of 48", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#737373" }
+                ]
+              }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "frame",
+            "name": "Row-CuplokLedger",
+            "layout": "horizontal",
+            "gap": 14,
+            "padding": { "top": 20, "bottom": 20, "left": 20, "right": 20 },
+            "stretch": true,
+            "hugHeight": true,
+            "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": 4,
+                "grow": true,
+                "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Cuplok Ledger 2.5m", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  { "type": "text", "content": "Horizontal · galvanized", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#737373" }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "fixedWidth": 48,
+                "fixedHeight": 60,
+                "cornerRadius": 14,
+                "fill": "#F5F5F5",
+                "crossAlign": "CENTER",
+                "mainAlign": "CENTER",
+                "children": [{ "type": "icon", "icon": "flag", "size": 20, "color": "#737373" }]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": 0,
+                "fixedWidth": 72,
+                "fixedHeight": 60,
+                "cornerRadius": 14,
+                "fill": "#EEF2FF",
+                "crossAlign": "CENTER",
+                "mainAlign": "CENTER",
+                "children": [
+                  { "type": "text", "content": "Tap", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#1E3FFF" },
+                  { "type": "text", "content": "of 96", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#1E3FFF" }
+                ]
+              }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "frame",
+            "name": "Row-CuplokTransom",
+            "layout": "horizontal",
+            "gap": 14,
+            "padding": { "top": 20, "bottom": 20, "left": 20, "right": 20 },
+            "stretch": true,
+            "hugHeight": true,
+            "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": 4,
+                "grow": true,
+                "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Cuplok Transom 1.3m", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  { "type": "text", "content": "Cross member · painted", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#737373" }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "fixedWidth": 48,
+                "fixedHeight": 60,
+                "cornerRadius": 14,
+                "fill": "#F5F5F5",
+                "crossAlign": "CENTER",
+                "mainAlign": "CENTER",
+                "children": [{ "type": "icon", "icon": "flag", "size": 20, "color": "#737373" }]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": 0,
+                "fixedWidth": 72,
+                "fixedHeight": 60,
+                "cornerRadius": 14,
+                "fill": "#EEF2FF",
+                "crossAlign": "CENTER",
+                "mainAlign": "CENTER",
+                "children": [
+                  { "type": "text", "content": "Tap", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#1E3FFF" },
+                  { "type": "text", "content": "of 24", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#1E3FFF" }
+                ]
+              }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "frame",
+            "name": "Row-LVL",
+            "layout": "horizontal",
+            "gap": 14,
+            "padding": { "top": 20, "bottom": 20, "left": 20, "right": 20 },
+            "stretch": true,
+            "hugHeight": true,
+            "fill": "#FEE2E2",
+            "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": 6,
+                "grow": true,
+                "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "LVL Plank 2.5m", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  { "type": "text", "content": "Laminated veneer lumber", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#737373" },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": 5,
+                    "padding": { "top": 4, "bottom": 4, "left": 9, "right": 10 },
+                    "hugWidth": true,
+                    "hugHeight": true,
+                    "cornerRadius": 6,
+                    "fill": "#DC2626",
+                    "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "icon", "icon": "alert-triangle", "size": 11, "color": "#FFFFFF" },
+                      { "type": "text", "content": "Damaged 18", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "fixedWidth": 48,
+                "fixedHeight": 60,
+                "cornerRadius": 14,
+                "fill": "#DC2626",
+                "crossAlign": "CENTER",
+                "mainAlign": "CENTER",
+                "children": [{ "type": "icon", "icon": "flag", "size": 20, "color": "#FFFFFF" }]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": 0,
+                "fixedWidth": 72,
+                "fixedHeight": 60,
+                "cornerRadius": 14,
+                "fill": "#FFFFFF",
+                "stroke": "#DC2626",
+                "strokeWeight": 2,
+                "crossAlign": "CENTER",
+                "mainAlign": "CENTER",
+                "children": [
+                  { "type": "text", "content": "42", "fontSize": 22, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  { "type": "text", "content": "of 60", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#737373" }
+                ]
+              }
+            ]
+          },
+          { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+          {
+            "type": "frame",
+            "name": "Row-SteelToe",
+            "layout": "horizontal",
+            "gap": 14,
+            "padding": { "top": 20, "bottom": 20, "left": 20, "right": 20 },
+            "stretch": true,
+            "hugHeight": true,
+            "crossAlign": "CENTER",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": 4,
+                "grow": true,
+                "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Steel Toe Board 2.5m", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#0A0A0A" },
+                  { "type": "text", "content": "Edge protection · steel", "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#737373" }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "fixedWidth": 48,
+                "fixedHeight": 60,
+                "cornerRadius": 14,
+                "fill": "#F5F5F5",
+                "crossAlign": "CENTER",
+                "mainAlign": "CENTER",
+                "children": [{ "type": "icon", "icon": "flag", "size": 20, "color": "#737373" }]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": 0,
+                "fixedWidth": 72,
+                "fixedHeight": 60,
+                "cornerRadius": 14,
+                "fill": "#EEF2FF",
+                "crossAlign": "CENTER",
+                "mainAlign": "CENTER",
+                "children": [
+                  { "type": "text", "content": "Tap", "fontSize": 16, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#1E3FFF" },
+                  { "type": "text", "content": "of 12", "fontSize": 11, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#1E3FFF" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "height": 24 },
+      {
+        "type": "frame",
+        "name": "Bottom",
+        "layout": "vertical",
+        "padding": { "top": 0, "bottom": 36, "left": 24, "right": 24 },
+        "stretch": true,
+        "hugHeight": true,
+        "children": [
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": 10,
+            "stretch": true,
+            "fixedHeight": 60,
+            "cornerRadius": 16,
+            "fill": "#1E3FFF",
+            "crossAlign": "CENTER",
+            "mainAlign": "CENTER",
+            "children": [
+              { "type": "text", "content": "Review", "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF" },
+              { "type": "icon", "icon": "arrow-right", "size": 20, "color": "#FFFFFF" }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

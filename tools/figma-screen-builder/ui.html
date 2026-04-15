@@ -173,8 +173,19 @@
       // If prompt is JSON, build directly without AI
       var trimmed = finalPrompt.trim();
       if (trimmed.charAt(0) === '[' || trimmed.charAt(0) === '{') {
-        addLog('JSON detected — building directly...');
-        parent.postMessage({ pluginMessage: { type: 'build', schema: trimmed } }, '*');
+        // Detect prototype-flow JSON: an object with a "flows" key
+        var isFlows = false;
+        try {
+          var parsed = JSON.parse(trimmed);
+          if (!Array.isArray(parsed) && parsed && Array.isArray(parsed.flows)) isFlows = true;
+        } catch (e) {}
+        if (isFlows) {
+          addLog('Prototype flows detected — wiring connections...');
+          parent.postMessage({ pluginMessage: { type: 'wirePrototype', schema: trimmed } }, '*');
+        } else {
+          addLog('JSON detected — building directly...');
+          parent.postMessage({ pluginMessage: { type: 'build', schema: trimmed } }, '*');
+        }
       } else {
         addLog('Sending to AI...');
         parent.postMessage({ pluginMessage: {
@@ -236,11 +247,36 @@
         btnBuild.classList.remove('running');
         if (msg.errors && msg.errors.length > 0) {
           banner.className = 'banner error';
-          banner.textContent = msg.errors.length + ' issue(s) — check log for details';
+          banner.textContent = msg.errors.length + ' issue(s) — see list below';
+          // Dump every error explicitly at the bottom of the log so user sees all of them
+          addLog('', '');
+          addLog('━━━ ERRORS (' + msg.errors.length + ') ━━━', 'err');
+          for (var i = 0; i < msg.errors.length; i++) {
+            addLog((i + 1) + '. ' + msg.errors[i], 'err');
+          }
         } else {
           banner.className = 'banner success';
           banner.textContent = 'Screen built with real Uno components';
         }
+      }
+
+      if (msg.type === 'fetchIcon') {
+        var iconName = msg.name;
+        var source = msg.source || 'lucide';
+        var url;
+        if (source === 'phosphor') {
+          url = 'https://unpkg.com/@phosphor-icons/core@2/assets/fill/' + encodeURIComponent(iconName) + '-fill.svg';
+        } else {
+          url = 'https://unpkg.com/lucide-static@latest/icons/' + encodeURIComponent(iconName) + '.svg';
+        }
+        fetch(url).then(function(r) {
+          if (!r.ok) return null;
+          return r.text();
+        }).then(function(svg) {
+          parent.postMessage({ pluginMessage: { type: 'iconSvg', source: source, name: iconName, svg: svg || null } }, '*');
+        }).catch(function() {
+          parent.postMessage({ pluginMessage: { type: 'iconSvg', source: source, name: iconName, svg: null } }, '*');
+        });
       }
 
       if (msg.type === 'error') {

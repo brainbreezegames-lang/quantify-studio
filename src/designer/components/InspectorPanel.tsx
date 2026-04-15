@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useDesigner } from '../designer-store'
 import { htmlToXaml } from '../utils/html-to-xaml'
+import { DESIGN_SYSTEM_CSS } from '../utils/build-artboard-doc'
 
 // ── Style field config ───
 
@@ -176,10 +177,25 @@ function CodeView() {
   const activeFormatted = tab === 'html' ? formatted : xaml
 
   const copy = useCallback(() => {
-    navigator.clipboard.writeText(activeCode)
+    if (tab === 'html') {
+      // Self-contained HTML for Figma import — fonts, CSS, no JS
+      const selfContained = `<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<style>
+html,body{margin:0;width:100%;height:100%;background:#FFFFFF;color:#202020;font-family:"Switzer","Segoe UI",Roboto,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;}
+#app{width:100%;height:100%;overflow:auto;}
+${DESIGN_SYSTEM_CSS}
+${artboard?.css || ''}
+</style></head><body><div id="app">${html}</div></body></html>`
+      navigator.clipboard.writeText(selfContained)
+    } else {
+      navigator.clipboard.writeText(xaml)
+    }
     setCopied(true)
     setTimeout(() => setCopied(false), 1500)
-  }, [activeCode])
+  }, [tab, html, xaml, artboard?.css])
 
   if (!artboard) {
     return <div className="p-4 text-[11px] text-white/25">Select an artboard to view code</div>
@@ -253,7 +269,7 @@ export default function InspectorPanel() {
   // Code view
   if (rightPanel === 'code') {
     return (
-      <div className="flex flex-col h-full bg-[#111114] border-l border-white/[0.06]" style={{ width: 380 }}>
+      <div className="flex flex-col h-full" style={{ width: 320, background: '#0e0e11' }}>
         <div className="flex-shrink-0 px-4 py-3 border-b border-white/[0.06] flex items-center justify-between">
           <span className="text-[13px] font-semibold text-white/90">Code</span>
           <button onClick={() => dispatch({ type: 'SET_RIGHT_PANEL', panel: 'chat' })}
@@ -271,7 +287,7 @@ export default function InspectorPanel() {
   // Inspector view (element selected)
   if (rightPanel === 'inspect' && selectedElement) {
     return (
-      <div className="flex flex-col h-full bg-[#111114] border-l border-white/[0.06]" style={{ width: 380 }}>
+      <div className="flex flex-col h-full" style={{ width: 320, background: '#0e0e11' }}>
         <div className="flex-shrink-0 px-4 py-3 border-b border-white/[0.06] flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-[13px] font-semibold text-white/90">Inspector</span>

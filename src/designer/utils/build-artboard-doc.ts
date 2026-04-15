@@ -2,7 +2,7 @@
 // Hardcoded to Quantify/Probe brand tokens. Includes the full design system CSS
 // and icon auto-fix script — extracted from PreviewPanel.tsx.
 
-const DESIGN_SYSTEM_CSS = `
+export const DESIGN_SYSTEM_CSS = `
 *{box-sizing:border-box}
 img{max-width:100%;display:block}
 img:not([src]),img[src=""],img[src^="http"]{min-height:80px;background:#F4F4F4}

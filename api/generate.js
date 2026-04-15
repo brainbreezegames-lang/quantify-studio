@@ -2642,114 +2642,109 @@ Return the complete improved HTML in the JSON format specified above.` },
         ? reqImageModel
         : 'google/gemini-3.1-pro-preview'
 
-      const IMAGE_RECREATE_SYSTEM = `You are a pixel-perfect visual cloning engineer. You receive a mobile app screenshot and produce HTML/CSS that looks IDENTICAL to it.
+      const IMAGE_RECREATE_SYSTEM = `You are a pixel-perfect visual cloning engineer. Receive a mobile app screenshot → produce SELF-CONTAINED HTML identical to it.
 
-⛔ ABSOLUTE PROHIBITION: NO JavaScript whatsoever. No <script> tags. No onclick, onload, or ANY on* attributes. Pure HTML and CSS only.
+SELF-CONTAINED: No external CSS, no JavaScript, no CDN scripts. Must render correctly in Figma and any browser with no network access.
 
-You will receive a screenshot of a mobile app screen. Your job is to recreate it EXACTLY as HTML/CSS.
-
-═══════════════════════════════════════════
-RESPONSE FORMAT
-═══════════════════════════════════════════
-
-ALWAYS respond with valid JSON in this exact format — no markdown fences, no extra text before/after:
-{
-  "artboards": [
-    {
-      "action": "create",
-      "name": "Screen Name",
-      "html": "<div class='screen'>...</div>",
-      "css": ""
-    }
-  ],
-  "reply": "Brief description of what screen you recreated."
-}
+⛔ NO JavaScript. No <script>, no on* attributes, no data-lucide (requires JS). Use inline SVGs for all icons.
 
 ═══════════════════════════════════════════
-RECREATION RULES — FOLLOW EXACTLY
+RESPONSE FORMAT — valid JSON only, no markdown fences
 ═══════════════════════════════════════════
-
-1. EXACT CONTENT: Copy every word of text exactly as it appears in the image. Do not paraphrase or change any text.
-2. EXACT LAYOUT: Preserve the exact top-to-bottom order of all elements.
-3. EXACT STRUCTURE: Count every list item, every row, every section. Recreate ALL of them — do not skip or consolidate.
-4. EXACT COLORS: Match the colors you see. Use inline styles that match.
-5. ICONS: Use Lucide icons — <i data-lucide="icon-name" style="width:20px;height:20px;color:#HEX;"></i>
-   Common names: arrow-left, x, check, plus, minus, info, alert-triangle, wifi, wifi-off, search, settings,
-   chevron-right, chevron-down, package, truck, clipboard, calendar, user, building, more-vertical, edit-2, trash-2
-6. NAME THE SCREEN: Look at the app bar title or overall context to name the artboard.
+{"artboards":[{"action":"create","name":"Screen Name","html":"<div style='...'>...</div>","css":""}],"reply":"Brief description."}
 
 ═══════════════════════════════════════════
-VISUAL ACCURACY — MOST CRITICAL RULES
+ICONS — INLINE SVG ONLY (copy-paste these, change stroke color as needed)
 ═══════════════════════════════════════════
+Arrow-left (back): <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+X/Close: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+Check (white, inside blue checkbox): <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+Info (blue): <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+Alert/Warning (amber): <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+Plus: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+Minus: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg>
+Chevron-right: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+Search: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+More-vertical (3 dots): <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+Wifi (change stroke for color): <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg>
 
-COLORS — you MUST use inline styles for every color you observe:
-- Text colors: add style="color:#XXXX" matching exactly what you see
-- Background colors: add style="background:#XXXX" for cards, badges, banners, buttons
-- Border colors: add style="border:1px solid #XXXX" matching the exact border shade
-- The CSS classes have default colors but you MUST override them with inline styles to match the image
+═══════════════════════════════════════════
+RECREATION RULES
+═══════════════════════════════════════════
+1. EXACT CONTENT: Copy every word verbatim. No paraphrasing.
+2. EXACT COUNT: Count every list item. Include ALL of them — never skip.
+3. EXACT COLORS: Match every color with inline styles — text, backgrounds, borders.
+4. NO CSS CLASSES for layout/colors — all structure must use inline styles.
+5. NAME THE SCREEN: Use the app bar title for the artboard name.
 
-ONLINE/OFFLINE STATUS:
-- "Online" green dot: <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#22C55E;flex-shrink:0;"></div><span style="color:#22C55E;font-size:13px;font-weight:500;">Online</span></div>
-- "Offline" red dot: same with #E64059
-- NEVER use yellow/amber for Offline — use the EXACT color you see
+═══════════════════════════════════════════
+SCREEN WRAPPER — always use this exact outer div
+═══════════════════════════════════════════
+<div style="display:flex;flex-direction:column;width:100%;min-height:100%;background:#FFFFFF;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;-webkit-font-smoothing:antialiased;color:#111827;">
 
-CHECKBOXES (blue square with checkmark):
-<div style="width:24px;height:24px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-  <i data-lucide="check" style="width:16px;height:16px;color:white;stroke-width:3;"></i>
+═══════════════════════════════════════════
+APP BAR
+═══════════════════════════════════════════
+<div style="position:sticky;top:0;z-index:10;height:56px;display:flex;align-items:center;padding:0 4px;background:#FFFFFF;border-bottom:1px solid #E2E2E2;gap:4px;flex-shrink:0;">
+  <button style="width:40px;height:40px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;">[arrow-left svg]</button>
+  <span style="flex:1;font-size:20px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 8px;">Title</span>
 </div>
 
-PRODUCT LIST ITEM (checkbox + name/id/swap + stepper — MUST be one horizontal row):
+═══════════════════════════════════════════
+SCROLLABLE CONTENT — wrap list items in this
+═══════════════════════════════════════════
+<div style="flex:1;overflow:auto;">[list items]</div>
+
+═══════════════════════════════════════════
+BOTTOM ACTION BAR — OUTSIDE scrollable div, flex-shrink:0
+═══════════════════════════════════════════
+<div style="padding:16px;background:#2563EB;flex-shrink:0;display:flex;flex-direction:column;gap:8px;">
+  <button style="width:100%;height:52px;background:#2563EB;border:none;color:white;font-size:17px;font-weight:600;cursor:pointer;">Button Text</button>
+  <div style="text-align:center;font-size:12px;color:rgba(255,255,255,0.7);">Subtitle</div>
+</div>
+
+═══════════════════════════════════════════
+PRODUCT LIST ITEM (checkbox + name + stepper — one horizontal row)
+═══════════════════════════════════════════
 <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #E5E7EB;">
-  <div style="width:24px;height:24px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-    <i data-lucide="check" style="width:16px;height:16px;color:white;stroke-width:3;"></i>
-  </div>
+  <div style="width:24px;height:24px;background:#2563EB;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">[check svg white]</div>
   <div style="flex:1;min-width:0;">
-    <div style="font-size:16px;font-weight:500;color:#111827;">Product Name</div>
-    <div style="font-size:13px;color:#6B7280;">123456 · Reserved: 100</div>
+    <div style="font-size:16px;font-weight:500;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Product Name</div>
+    <div style="font-size:13px;color:#6B7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">123456 · Reserved: 100</div>
     <div style="font-size:13px;color:#2563EB;">Swap product</div>
   </div>
-  <div style="display:flex;align-items:stretch;border:1px solid #E5E7EB;">
-    <button style="width:36px;height:40px;background:none;border:none;border-right:1px solid #E5E7EB;font-size:20px;cursor:pointer;">−</button>
+  <div style="display:flex;align-items:stretch;border:1px solid #E5E7EB;flex-shrink:0;">
+    <button style="width:36px;height:40px;background:#FFFFFF;border:none;border-right:1px solid #E5E7EB;font-size:20px;cursor:pointer;">−</button>
     <span style="min-width:52px;text-align:center;font-size:20px;font-weight:700;color:#111827;line-height:40px;">120</span>
-    <button style="width:36px;height:40px;background:none;border:none;border-left:1px solid #E5E7EB;font-size:20px;cursor:pointer;">+</button>
+    <button style="width:36px;height:40px;background:#FFFFFF;border:none;border-left:1px solid #E5E7EB;font-size:20px;cursor:pointer;">+</button>
   </div>
 </div>
 
-SHORTAGE HIGHLIGHTED ROW (yellow background):
+═══════════════════════════════════════════
+SHORTAGE ROW (yellow row — stepper buttons MUST be background:#FFFFFF not transparent)
+═══════════════════════════════════════════
 <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #E5E7EB;background:#FFFBEB;">
-
-SHORT/WARNING BADGE inline:
-<span style="background:#FEF3C7;color:#92400E;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;margin-left:8px;">Short 5</span>
-
-TOGGLE SWITCH (off state):
-<div style="width:44px;height:26px;background:#D1D5DB;border-radius:13px;position:relative;flex-shrink:0;">
-  <div style="width:22px;height:22px;background:white;border-radius:50%;position:absolute;top:2px;left:2px;box-shadow:0 1px 3px rgba(0,0,0,0.25);"></div>
+  [same checkbox + text structure]
+  <span style="background:#FEF3C7;color:#92400E;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;margin-left:4px;flex-shrink:0;">Short 5</span>
+  <div style="display:flex;align-items:stretch;border:1px solid #E5E7EB;flex-shrink:0;">
+    <button style="width:36px;height:40px;background:#FFFFFF;border:none;border-right:1px solid #E5E7EB;font-size:20px;cursor:pointer;">−</button>
+    <span style="min-width:52px;text-align:center;font-size:20px;font-weight:700;color:#111827;line-height:40px;">5</span>
+    <button style="width:36px;height:40px;background:#FFFFFF;border:none;border-left:1px solid #E5E7EB;font-size:20px;cursor:pointer;">+</button>
+  </div>
 </div>
 
-PROGRESS BARS:
-<div style="height:4px;background:#E5E7EB;overflow:hidden;">
-  <div style="height:100%;width:40%;background:#2563EB;"></div>
-</div>
+ONLINE/OFFLINE STATUS:
+Online: <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#22C55E;flex-shrink:0;"></div><span style="color:#22C55E;font-size:13px;font-weight:500;">Online</span></div>
+Offline: same with #E64059
 
-INFO BANNER (light blue):
-<div style="background:#EFF6FF;border:1px solid #BFDBFE;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;">
-  <i data-lucide="info" style="width:16px;height:16px;color:#3B82F6;flex-shrink:0;margin-top:2px;"></i>
-  <span style="font-size:14px;color:#1E40AF;line-height:1.4;">Info text</span>
-</div>
+INFO BANNER (blue): <div style="background:#EFF6FF;border:1px solid #BFDBFE;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;">[info svg] <span style="font-size:14px;color:#1E40AF;line-height:1.4;">text</span></div>
+WARNING BANNER (amber): <div style="background:#FFFBEB;border-left:3px solid #F59E0B;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;">[alert svg] <span style="font-size:14px;color:#92400E;line-height:1.4;">text</span></div>
 
-WARNING BANNER (amber/yellow):
-<div style="background:#FFFBEB;border-left:3px solid #F59E0B;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;">
-  <i data-lucide="alert-triangle" style="width:16px;height:16px;color:#F59E0B;flex-shrink:0;margin-top:2px;"></i>
-  <span style="font-size:14px;color:#92400E;line-height:1.4;">Warning text</span>
-</div>
+TOGGLE OFF: <div style="width:44px;height:26px;background:#D1D5DB;border-radius:13px;position:relative;flex-shrink:0;"><div style="width:22px;height:22px;background:white;border-radius:50%;position:absolute;top:2px;left:2px;box-shadow:0 1px 3px rgba(0,0,0,0.25);"></div></div>
+TOGGLE ON: <div style="width:44px;height:26px;background:#2563EB;border-radius:13px;position:relative;flex-shrink:0;"><div style="width:22px;height:22px;background:white;border-radius:50%;position:absolute;top:2px;left:22px;box-shadow:0 1px 3px rgba(0,0,0,0.25);"></div></div>
+PROGRESS BAR: <div style="height:4px;background:#E5E7EB;overflow:hidden;"><div style="height:100%;width:40%;background:#2563EB;"></div></div>
 
-BOTTOM ACTION BAR — always flex-shrink:0, never inside scrollable area:
-<div style="padding:16px;background:#2563EB;border-top:none;display:flex;flex-direction:column;gap:8px;flex-shrink:0;">
-  <button style="width:100%;height:52px;background:#2563EB;border:none;color:white;font-size:17px;font-weight:600;cursor:pointer;">Release and start rent</button>
-  <div style="text-align:center;font-size:12px;color:rgba(255,255,255,0.7);">Subtitle text below button</div>
-</div>
-
-WRAP ALL in <div class="screen">. Return COMPLETE HTML with EVERY element. Use inline styles for ALL colors that must match the image exactly.`
+Return COMPLETE HTML with EVERY element from the image. Never truncate.`
 
       try {
         res.writeHead(200, {
@@ -2767,7 +2762,7 @@ WRAP ALL in <div class="screen">. Return COMPLETE HTML with EVERY element. Use i
           {
             role: 'user',
             content: [
-              { type: 'text', text: 'Recreate this screen EXACTLY as shown — copy every element, every word, every color. Count all list items and include every one. Include the bottom action button if visible. Use Lucide icons (<i data-lucide="name">). Add inline style="color:#HEX" and style="background:#HEX" on every element to match the exact colors you see. Output valid JSON only.' },
+              { type: 'text', text: 'Recreate this screen EXACTLY as shown — copy every element, every word, every color. Count all list items and include every one. Include the bottom action button if visible. Use INLINE SVGs for icons (no data-lucide). Use background:#FFFFFF on all stepper buttons. Use white-space:nowrap on product names. Add inline style="color:#HEX" and style="background:#HEX" to match the exact colors you see. Output valid JSON only.' },
               { type: 'image_url', image_url: { url: imageUrl } },
             ],
           },
@@ -2794,36 +2789,38 @@ WRAP ALL in <div class="screen">. Return COMPLETE HTML with EVERY element. Use i
 
           const REFINE_IMAGE_SYSTEM = `You are a pixel-perfect QA engineer. Fix the HTML recreation to be VISUALLY IDENTICAL to the original screenshot.
 
-⛔ NO JavaScript. No <script> tags. No on* event handlers.
+⛔ NO JavaScript. No <script>, no on* attributes, no data-lucide. Use inline SVGs for icons.
+SELF-CONTAINED: no external CSS, no CDN. Must work in Figma with no network access.
 
 RESPONSE FORMAT — valid JSON only, no markdown fences:
-{
-  "artboards": [{ "action": "create", "name": "Screen Name", "html": "...", "css": "" }],
-  "reply": "What was fixed."
-}
+{"artboards":[{"action":"create","name":"Screen Name","html":"...","css":""}],"reply":"What was fixed."}
 
-ICONS: Use Lucide icons — <i data-lucide="icon-name" style="width:20px;height:20px;color:#HEX;"></i>
-Common: arrow-left, x, check, info, alert-triangle, wifi, wifi-off, plus, minus, check-square, package
+INLINE SVG ICONS (replace data-lucide if present):
+Arrow-left: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+Check (white): <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+Info (blue): <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+Alert (amber): <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
 
 COMPARE AND FIX EVERY DIFFERENCE:
 
 1. COLORS (most critical) — add inline styles:
-   - Wrong text color → add style="color:#EXACT_HEX"
-   - Wrong background → add style="background:#EXACT_HEX"
-   - Wrong border → add style="border:1px solid #EXACT_HEX"
+   - Wrong text color → style="color:#EXACT_HEX"
+   - Wrong background → style="background:#EXACT_HEX"
+   - Wrong border → style="border:1px solid #EXACT_HEX"
 
-2. MISSING ELEMENTS — add anything in image but missing from HTML:
-   - Bottom action button/bar (very commonly missing)
+2. MISSING ELEMENTS:
+   - Bottom action button/bar (commonly missing) — flex-shrink:0, OUTSIDE any scrollable div
    - Progress bars, badges, status indicators, banners
 
 3. WRONG TEXT — fix verbatim to match image exactly
 
-4. LAYOUT ISSUES:
-   - Product rows must be horizontal: checkbox | text | stepper
-   - Steppers: − | number | + horizontally
-   - Bottom bars must be sticky at bottom (flex-shrink:0)
+4. LAYOUT BUGS:
+   - Product rows: checkbox | text (flex:1;min-width:0) | stepper — all horizontal
+   - Product name/id: white-space:nowrap;overflow:hidden;text-overflow:ellipsis to prevent wrapping
+   - Stepper buttons: background:#FFFFFF always (NOT background:none — shortage rows have yellow parent background)
+   - Bottom bars: flex-shrink:0, never inside overflow:auto container
 
-5. SIZES — fix font sizes and heights that look obviously wrong
+5. Replace any <div class="screen"> with <div style="display:flex;flex-direction:column;width:100%;min-height:100%;background:#FFFFFF;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;color:#111827;">
 
 6. Return COMPLETE HTML — never truncate`
 

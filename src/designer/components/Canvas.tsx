@@ -155,17 +155,15 @@ export default function Canvas() {
   }, [artboards, dispatch])
 
   const cursor = isPanning ? 'grabbing' : spaceHeld ? 'grab' : 'default'
-  const canUndo = history.length > 0
-  const canRedo = future.length > 0
 
   return (
     <div
       ref={containerRef}
       className="flex-1 relative overflow-hidden"
       style={{
-        background: '#1a1a1e',
+        background: '#161619',
         cursor,
-        backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px)',
+        backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px)`,
         backgroundSize: `${20 * viewport.zoom}px ${20 * viewport.zoom}px`,
         backgroundPosition: `${viewport.panX}px ${viewport.panY}px`,
       }}
@@ -173,7 +171,7 @@ export default function Canvas() {
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
     >
-      {/* Transform layer — only canvas content is scaled, not the panels */}
+      {/* Transform layer */}
       <div
         style={{
           transform: `translate(${viewport.panX}px, ${viewport.panY}px) scale(${viewport.zoom})`,
@@ -193,31 +191,37 @@ export default function Canvas() {
         ))}
       </div>
 
-      {/* Zoom + undo/redo indicator */}
-      <div className="absolute bottom-4 left-4 flex items-center gap-3 select-none pointer-events-none">
-        <span className="text-[11px] text-white/30 font-mono">
+      {/* Bottom-left: zoom */}
+      <div className="absolute bottom-3 left-3 select-none pointer-events-none">
+        <span className="text-[10px] text-white/20 font-mono">
           {Math.round(viewport.zoom * 100)}%
         </span>
-        {(canUndo || canRedo) && (
-          <span className="text-[10px] text-white/20">
-            {canUndo ? `${history.length} undo` : ''}{canUndo && canRedo ? ' · ' : ''}{canRedo ? `${future.length} redo` : ''}
-          </span>
-        )}
       </div>
 
-      {/* Hint bar when artboard selected */}
+      {/* Bottom-center: keyboard hints */}
       {selectedArtboardId && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[11px] text-white/20 select-none pointer-events-none whitespace-nowrap">
-          Del to delete · drag header to move · ⌘Z to undo
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 select-none pointer-events-none">
+          <div className="flex items-center gap-3 text-[9px] text-white/15">
+            <span>Del delete</span>
+            <span>Drag move</span>
+            <span>Cmd+Z undo</span>
+          </div>
         </div>
       )}
 
       {/* Empty state */}
       {artboards.length === 0 && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="text-center text-white/20">
-            <div className="text-[14px] font-medium mb-1">No artboards yet</div>
-            <div className="text-[12px]">Click "+ Artboard" or ask the AI to create a screen</div>
+          <div className="text-center">
+            {/* Subtle glow */}
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full"
+              style={{ background: 'radial-gradient(circle, rgba(10,62,255,0.04) 0%, transparent 70%)' }}
+            />
+            <div className="relative">
+              <div className="text-[13px] font-medium text-white/15 mb-1">Empty canvas</div>
+              <div className="text-[11px] text-white/10">Type a prompt or add an artboard to start</div>
+            </div>
           </div>
         </div>
       )}

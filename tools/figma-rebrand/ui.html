@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Quantify Rebrand</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, 'Inter', sans-serif;
+      background: #FFFFFF;
+      color: #202020;
+      font-size: 13px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      padding: 24px 24px 0;
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .logo {
+      width: 28px;
+      height: 28px;
+      background: #0A3EFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo span {
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #202020;
+      letter-spacing: -0.3px;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: #787878;
+      line-height: 1.5;
+      margin-top: 4px;
+    }
+
+    .sections {
+      padding: 16px 24px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .section-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #ABABAB;
+      margin-bottom: 2px;
+    }
+    .mapping {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 10px;
+      background: #F8F8F8;
+      border: 1px solid #EEEEEE;
+      font-size: 11px;
+      color: #545454;
+    }
+    .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 2px;
+      flex-shrink: 0;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+    .arrow {
+      color: #ABABAB;
+      font-size: 10px;
+      flex-shrink: 0;
+    }
+    .mapping-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+    }
+
+    .log-wrap {
+      flex: 1;
+      padding: 16px 24px 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .log-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #ABABAB;
+      margin-bottom: 8px;
+    }
+    .log {
+      flex: 1;
+      overflow-y: auto;
+      background: #F8F8F8;
+      border: 1px solid #EEEEEE;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 1.8;
+      color: #545454;
+      font-family: 'SF Mono', 'JetBrains Mono', monospace;
+    }
+    .log .entry {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .log .entry.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .log .entry.done-entry { color: #14532D; font-weight: 600; }
+    .log .entry.error-entry { color: #E64059; }
+    .bullet { color: #0A3EFF; flex-shrink: 0; }
+    .bullet.done { color: #22C55E; }
+    .bullet.error { color: #E64059; }
+
+    .footer {
+      padding: 16px 24px 20px;
+      border-top: 1px solid #EEEEEE;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .btn-run {
+      flex: 1;
+      height: 40px;
+      background: #0A3EFF;
+      color: white;
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      letter-spacing: -0.2px;
+      transition: opacity 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-run:hover:not(:disabled) { opacity: 0.88; }
+    .btn-run:disabled { opacity: 0.38; cursor: not-allowed; }
+    .btn-close {
+      height: 40px;
+      width: 80px;
+      background: transparent;
+      color: #545454;
+      border: 1px solid #D4D4D4;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-close:hover { background: #F8F8F8; }
+
+    .spinner {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    .running .spinner { display: block; }
+    .running .run-label { display: none; }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .done-banner {
+      display: none;
+      padding: 10px 16px;
+      background: #DCFCE7;
+      border: 1px solid #22C55E;
+      color: #14532D;
+      font-size: 12px;
+      font-weight: 500;
+      margin: 0 24px;
+      align-items: center;
+      gap: 8px;
+    }
+    .done-banner.visible { display: flex; }
+
+    .stats {
+      padding: 0 24px;
+      font-size: 11px;
+      color: #878787;
+      display: none;
+    }
+    .stats.visible { display: block; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-top">
+      <div class="logo"><span>Q</span></div>
+      <div class="title">Quantify Rebrand</div>
+    </div>
+    <div class="subtitle">
+      Rebrands Uno Material Toolkit to Quantify design system.<br>
+      Colors, typography, 14px text floor, #777 gray floor.
+    </div>
+  </div>
+
+  <div class="sections">
+    <div class="section-label">Color Mapping</div>
+    <div class="mapping-grid">
+      <div class="mapping">
+        <div class="swatch" style="background:#5946D2"></div>
+        <span>Primary</span>
+        <span class="arrow">→</span>
+        <div class="swatch" style="background:#0A3EFF"></div>
+        <span>Blue Main</span>
+      </div>
+      <div class="mapping">
+        <div class="swatch" style="background:#E5DEFF"></div>
+        <span>Container</span>
+        <span class="arrow">→</span>
+        <div class="swatch" style="background:#D6E0FF"></div>
+        <span>Blue Light</span>
+      </div>
+      <div class="mapping">
+        <div class="swatch" style="background:#170065"></div>
+        <span>On Primary C.</span>
+        <span class="arrow">→</span>
+        <div class="swatch" style="background:#10296E"></div>
+        <span>Blue Dark</span>
+      </div>
+      <div class="mapping">
+        <div class="swatch" style="background:#1C1B1F"></div>
+        <span>On Surface</span>
+        <span class="arrow">→</span>
+        <div class="swatch" style="background:#202020"></div>
+        <span>Light Black</span>
+      </div>
+    </div>
+    <div class="section-label" style="margin-top:8px">Font</div>
+    <div class="mapping">
+      <span>Roboto (all weights)</span>
+      <span class="arrow">→</span>
+      <span>Switzer (Regular 400 / Medium 500)</span>
+    </div>
+  </div>
+
+  <div class="log-wrap">
+    <div class="log-label">Progress</div>
+    <div class="log" id="log">
+      <div class="entry visible" id="idle-msg">
+        <span class="bullet">›</span>
+        <span>Ready — press "Rebrand" to begin.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="done-banner" id="done-banner">
+    <span>✓</span>
+    <span id="done-text">Rebranding complete.</span>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="footer">
+    <button class="btn-run" id="btn-run" onclick="run()">
+      <div class="spinner"></div>
+      <span class="run-label">Rebrand to Quantify</span>
+    </button>
+    <button class="btn-close" onclick="close()">Close</button>
+  </div>
+
+  <script>
+    const log = document.getElementById('log');
+    const btn = document.getElementById('btn-run');
+    const banner = document.getElementById('done-banner');
+    const statsEl = document.getElementById('stats');
+
+    function addEntry(text, cls) {
+      const div = document.createElement('div');
+      div.className = 'entry' + (cls ? ' ' + cls : '');
+      const bullet = document.createElement('span');
+      bullet.className = 'bullet' + (cls === 'done-entry' ? ' done' : cls === 'error-entry' ? ' error' : '');
+      bullet.textContent = cls === 'done-entry' ? '✓' : cls === 'error-entry' ? '✕' : '›';
+      const span = document.createElement('span');
+      span.textContent = text;
+      div.appendChild(bullet);
+      div.appendChild(span);
+      log.appendChild(div);
+      requestAnimationFrame(() => div.classList.add('visible'));
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function run() {
+      const idleMsg = document.getElementById('idle-msg');
+      if (idleMsg) idleMsg.remove();
+
+      btn.disabled = true;
+      btn.classList.add('running');
+      banner.classList.remove('visible');
+      statsEl.classList.remove('visible');
+
+      parent.postMessage({ pluginMessage: { type: 'run' } }, '*');
+    }
+
+    function close() {
+      parent.postMessage({ pluginMessage: { type: 'close' } }, '*');
+    }
+
+    window.onmessage = (e) => {
+      const msg = e.data.pluginMessage;
+      if (!msg) return;
+
+      if (msg.type === 'step') {
+        const isDone = msg.text.startsWith('✅');
+        addEntry(msg.text, isDone ? 'done-entry' : '');
+      }
+      if (msg.type === 'done') {
+        btn.disabled = false;
+        btn.classList.remove('running');
+        banner.classList.add('visible');
+        if (msg.stats) {
+          var parts = [msg.stats.colors + ' color swaps', msg.stats.fonts + ' font swaps'];
+          if (msg.stats.textBumps) parts.push(msg.stats.textBumps + ' text sizes bumped to 14px');
+          if (msg.stats.grayDarkened) parts.push(msg.stats.grayDarkened + ' grays darkened to #777');
+          document.getElementById('done-text').textContent = 'Complete — ' + parts.join(', ') + '.';
+        }
+      }
+      if (msg.type === 'error') {
+        addEntry('Error: ' + msg.message, 'error-entry');
+        btn.disabled = false;
+        btn.classList.remove('running');
+      }
+    };
+  </script>
+</body>
+</html>

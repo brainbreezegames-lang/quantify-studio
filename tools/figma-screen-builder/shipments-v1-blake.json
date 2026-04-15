@@ -1,0 +1,356 @@
+[
+  {
+    "name": "S1. Shipments – List",
+    "width": 390,
+    "height": 844,
+    "fill": "#F2F2F2",
+    "children": [
+      {
+        "type": "frame", "name": "NavBar", "layout": "horizontal",
+        "gap": 0, "padding": { "top": 12, "bottom": 12, "left": 16, "right": 16 },
+        "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+        "fill": "#FFFFFF",
+        "children": [
+          { "type": "icon", "icon": "menu", "size": 24, "color": "#111111" },
+          { "type": "text", "content": "SHIPMENTS", "textStyle": "Body Large+", "fontSize": 18, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111", "grow": true, "align": "center" },
+          { "type": "icon", "icon": "more_vert", "size": 24, "color": "#555555" }
+        ]
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      {
+        "type": "frame", "name": "FilterArea", "layout": "vertical",
+        "gap": 0, "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "name": "FilterLabel", "layout": "horizontal",
+            "gap": 0, "padding": { "top": 12, "bottom": 6, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "LOCATION", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#777777" }
+            ]
+          },
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+            "text": { "Label": "New York (Branch Office)" }, "stretch": true
+          }
+        ]
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      { "type": "spacer", "height": 8 },
+      {
+        "type": "frame", "name": "ShipmentList", "layout": "vertical",
+        "gap": 8, "padding": { "top": 0, "bottom": 0, "left": 12, "right": 12 },
+        "stretch": true, "hugHeight": true,
+        "children": [
+          {
+            "type": "frame", "name": "Card1", "layout": "horizontal",
+            "gap": 14, "padding": { "top": 16, "bottom": 16, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "stroke": "#E2E2E2", "strokeWeight": 1,
+            "children": [
+              {
+                "type": "frame", "name": "StatusIcon", "layout": "vertical",
+                "fixedWidth": 40, "fixedHeight": 40, "cornerRadius": 100,
+                "stroke": "#2E7D32", "strokeWeight": 2,
+                "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [
+                  { "type": "icon", "icon": "check", "size": 20, "color": "#2E7D32" }
+                ]
+              },
+              {
+                "type": "frame", "name": "CardContent", "layout": "vertical",
+                "gap": 3, "grow": true, "hugHeight": true,
+                "children": [
+                  {
+                    "type": "frame", "name": "IdRow", "layout": "horizontal",
+                    "gap": 0, "stretch": true, "hugHeight": true, "mainAlign": "SPACE_BETWEEN", "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "text", "content": "RET-00756", "textStyle": "Body Large+", "fontSize": 18, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" },
+                      { "type": "text", "content": "7/5/2025", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#777777" }
+                    ]
+                  },
+                  { "type": "text", "content": "Titan Apex Industrial Services", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+                  { "type": "text", "content": "Eastgate Distribution Hub", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#777777" },
+                  {
+                    "type": "frame", "name": "AddressRow", "layout": "horizontal",
+                    "gap": 4, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "icon", "icon": "location_on", "size": 14, "color": "#0A3EFF" },
+                      { "type": "text", "content": "749 Stuart Way, Namidan, OH", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#0A3EFF" }
+                    ]
+                  },
+                  { "type": "spacer", "height": 2 },
+                  { "type": "text", "content": "274 pcs  ·  5,723.4 lbs", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#111111" }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "Card2", "layout": "horizontal",
+            "gap": 14, "padding": { "top": 16, "bottom": 16, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "stroke": "#E2E2E2", "strokeWeight": 1,
+            "children": [
+              {
+                "type": "frame", "name": "StatusIcon", "layout": "vertical",
+                "fixedWidth": 40, "fixedHeight": 40, "cornerRadius": 100,
+                "stroke": "#0A3EFF", "strokeWeight": 2,
+                "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [
+                  { "type": "icon", "icon": "local_shipping", "size": 20, "color": "#0A3EFF" }
+                ]
+              },
+              {
+                "type": "frame", "name": "CardContent", "layout": "vertical",
+                "gap": 3, "grow": true, "hugHeight": true,
+                "children": [
+                  {
+                    "type": "frame", "name": "IdRow", "layout": "horizontal",
+                    "gap": 0, "stretch": true, "hugHeight": true, "mainAlign": "SPACE_BETWEEN", "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "text", "content": "DEL-00802", "textStyle": "Body Large+", "fontSize": 18, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" },
+                      { "type": "text", "content": "7/9/2025", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#777777" }
+                    ]
+                  },
+                  { "type": "text", "content": "BlueRidge Fabrication & Erection", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+                  { "type": "text", "content": "Northwind Logistics Terminal", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#777777" },
+                  {
+                    "type": "frame", "name": "AddressRow", "layout": "horizontal",
+                    "gap": 4, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "icon", "icon": "location_on", "size": 14, "color": "#0A3EFF" },
+                      { "type": "text", "content": "8907 Maple Ridge Ct, Akron, OH", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#0A3EFF" }
+                    ]
+                  },
+                  { "type": "spacer", "height": 2 },
+                  { "type": "text", "content": "612 pcs  ·  2,874.9 lbs", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#111111" }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "Card3", "layout": "horizontal",
+            "gap": 14, "padding": { "top": 16, "bottom": 16, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "stroke": "#E2E2E2", "strokeWeight": 1,
+            "children": [
+              {
+                "type": "frame", "name": "StatusIcon", "layout": "vertical",
+                "fixedWidth": 40, "fixedHeight": 40, "cornerRadius": 100,
+                "stroke": "#F57F17", "strokeWeight": 2,
+                "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [
+                  { "type": "icon", "icon": "arrow_upward", "size": 20, "color": "#F57F17" }
+                ]
+              },
+              {
+                "type": "frame", "name": "CardContent", "layout": "vertical",
+                "gap": 3, "grow": true, "hugHeight": true,
+                "children": [
+                  {
+                    "type": "frame", "name": "IdRow", "layout": "horizontal",
+                    "gap": 0, "stretch": true, "hugHeight": true, "mainAlign": "SPACE_BETWEEN", "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "text", "content": "DEL-00791", "textStyle": "Body Large+", "fontSize": 18, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" },
+                      { "type": "text", "content": "7/11/2025", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#777777" }
+                    ]
+                  },
+                  { "type": "text", "content": "Titan Apex Industrial Services", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+                  { "type": "text", "content": "Eastgate Distribution Hub", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#777777" },
+                  {
+                    "type": "frame", "name": "AddressRow", "layout": "horizontal",
+                    "gap": 4, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "icon", "icon": "location_on", "size": 14, "color": "#0A3EFF" },
+                      { "type": "text", "content": "749 Stuart Way, Namidan, OH", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#0A3EFF" }
+                    ]
+                  },
+                  { "type": "spacer", "height": 2 },
+                  { "type": "text", "content": "589 pcs  ·  3,218.5 lbs", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#111111" }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "Card4", "layout": "horizontal",
+            "gap": 14, "padding": { "top": 16, "bottom": 16, "left": 16, "right": 16 },
+            "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+            "stroke": "#E2E2E2", "strokeWeight": 1,
+            "children": [
+              {
+                "type": "frame", "name": "StatusIcon", "layout": "vertical",
+                "fixedWidth": 40, "fixedHeight": 40, "cornerRadius": 100,
+                "stroke": "#777777", "strokeWeight": 2,
+                "crossAlign": "CENTER", "mainAlign": "CENTER",
+                "children": [
+                  { "type": "icon", "icon": "play_arrow", "size": 20, "color": "#777777" }
+                ]
+              },
+              {
+                "type": "frame", "name": "CardContent", "layout": "vertical",
+                "gap": 3, "grow": true, "hugHeight": true,
+                "children": [
+                  {
+                    "type": "frame", "name": "IdRow", "layout": "horizontal",
+                    "gap": 0, "stretch": true, "hugHeight": true, "mainAlign": "SPACE_BETWEEN", "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "text", "content": "DEL-00747", "textStyle": "Body Large+", "fontSize": 18, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111" },
+                      { "type": "text", "content": "7/15/2025", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#777777" }
+                    ]
+                  },
+                  { "type": "text", "content": "Ironcrest Solutions Group", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#555555" },
+                  { "type": "text", "content": "Falcon Ridge Wind Farm", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#777777" },
+                  {
+                    "type": "frame", "name": "AddressRow", "layout": "horizontal",
+                    "gap": 4, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+                    "children": [
+                      { "type": "icon", "icon": "location_on", "size": 14, "color": "#0A3EFF" },
+                      { "type": "text", "content": "513 Westbrook Ave, Cincinnati, OH", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#0A3EFF" }
+                    ]
+                  },
+                  { "type": "spacer", "height": 2 },
+                  { "type": "text", "content": "498 pcs  ·  3,415.7 lbs", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#111111" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      { "type": "spacer", "grow": true },
+      {
+        "type": "frame", "name": "BottomTabs", "layout": "horizontal",
+        "gap": 0, "stretch": true, "fixedHeight": 72,
+        "fill": "#FFFFFF", "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+        "padding": { "top": 8, "bottom": 16, "left": 20, "right": 20 },
+        "children": [
+          {
+            "type": "frame", "name": "Tab1", "layout": "vertical",
+            "gap": 4, "hugHeight": true, "fixedWidth": 76, "crossAlign": "CENTER",
+            "children": [
+              { "type": "icon", "icon": "local_shipping", "size": 24, "color": "#0A3EFF" },
+              { "type": "text", "content": "Shipments", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#0A3EFF", "align": "center" }
+            ]
+          },
+          {
+            "type": "frame", "name": "Tab2", "layout": "vertical",
+            "gap": 4, "hugHeight": true, "fixedWidth": 76, "crossAlign": "CENTER",
+            "children": [
+              { "type": "icon", "icon": "description", "size": 24, "color": "#777777" },
+              { "type": "text", "content": "Requests", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#777777", "align": "center" }
+            ]
+          },
+          {
+            "type": "frame", "name": "Tab3", "layout": "vertical",
+            "gap": 4, "hugHeight": true, "fixedWidth": 76, "crossAlign": "CENTER",
+            "children": [
+              { "type": "icon", "icon": "search", "size": 24, "color": "#777777" },
+              { "type": "text", "content": "Products", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#777777", "align": "center" }
+            ]
+          },
+          {
+            "type": "frame", "name": "Tab4", "layout": "vertical",
+            "gap": 4, "hugHeight": true, "fixedWidth": 76, "crossAlign": "CENTER",
+            "children": [
+              { "type": "icon", "icon": "settings", "size": 24, "color": "#777777" },
+              { "type": "text", "content": "Settings", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#777777", "align": "center" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "name": "S2. Shipments – Empty",
+    "width": 390,
+    "height": 844,
+    "fill": "#F2F2F2",
+    "children": [
+      {
+        "type": "frame", "name": "NavBar", "layout": "horizontal",
+        "gap": 0, "padding": { "top": 12, "bottom": 12, "left": 16, "right": 16 },
+        "stretch": true, "fixedHeight": 56, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+        "fill": "#FFFFFF",
+        "children": [
+          { "type": "icon", "icon": "menu", "size": 24, "color": "#111111" },
+          { "type": "text", "content": "SHIPMENTS", "textStyle": "Body Large+", "fontSize": 18, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111", "grow": true, "align": "center" },
+          { "type": "icon", "icon": "more_vert", "size": 24, "color": "#555555" }
+        ]
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      {
+        "type": "frame", "name": "FilterArea", "layout": "vertical",
+        "gap": 0, "stretch": true, "hugHeight": true, "fill": "#FFFFFF",
+        "children": [
+          {
+            "type": "frame", "name": "FilterLabel", "layout": "horizontal",
+            "gap": 0, "padding": { "top": 12, "bottom": 6, "left": 24, "right": 24 },
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "LOCATION", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#777777" }
+            ]
+          },
+          {
+            "type": "component", "component": "MenuItem",
+            "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+            "text": { "Label": "New York (Branch Office)" }, "stretch": true
+          }
+        ]
+      },
+      { "type": "component", "component": "Divider", "variant": { "Length": "Full" }, "stretch": true },
+      { "type": "spacer", "grow": true },
+      {
+        "type": "frame", "name": "EmptyState", "layout": "vertical",
+        "gap": 12, "stretch": true, "hugHeight": true, "crossAlign": "CENTER",
+        "padding": { "top": 0, "bottom": 0, "left": 48, "right": 48 },
+        "children": [
+          { "type": "icon", "icon": "local_shipping", "size": 48, "color": "#D4D4D4" },
+          { "type": "text", "content": "No shipments", "fontSize": 20, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#111111", "align": "center" },
+          { "type": "text", "content": "There are no shipments for this location.", "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#777777", "align": "center" }
+        ]
+      },
+      { "type": "spacer", "grow": true },
+      {
+        "type": "frame", "name": "BottomTabs", "layout": "horizontal",
+        "gap": 0, "stretch": true, "fixedHeight": 72,
+        "fill": "#FFFFFF", "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+        "padding": { "top": 8, "bottom": 16, "left": 20, "right": 20 },
+        "children": [
+          {
+            "type": "frame", "name": "Tab1", "layout": "vertical",
+            "gap": 4, "hugHeight": true, "fixedWidth": 76, "crossAlign": "CENTER",
+            "children": [
+              { "type": "icon", "icon": "local_shipping", "size": 24, "color": "#0A3EFF" },
+              { "type": "text", "content": "Shipments", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#0A3EFF", "align": "center" }
+            ]
+          },
+          {
+            "type": "frame", "name": "Tab2", "layout": "vertical",
+            "gap": 4, "hugHeight": true, "fixedWidth": 76, "crossAlign": "CENTER",
+            "children": [
+              { "type": "icon", "icon": "description", "size": 24, "color": "#777777" },
+              { "type": "text", "content": "Requests", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#777777", "align": "center" }
+            ]
+          },
+          {
+            "type": "frame", "name": "Tab3", "layout": "vertical",
+            "gap": 4, "hugHeight": true, "fixedWidth": 76, "crossAlign": "CENTER",
+            "children": [
+              { "type": "icon", "icon": "search", "size": 24, "color": "#777777" },
+              { "type": "text", "content": "Products", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#777777", "align": "center" }
+            ]
+          },
+          {
+            "type": "frame", "name": "Tab4", "layout": "vertical",
+            "gap": 4, "hugHeight": true, "fixedWidth": 76, "crossAlign": "CENTER",
+            "children": [
+              { "type": "icon", "icon": "settings", "size": 24, "color": "#777777" },
+              { "type": "text", "content": "Settings", "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Regular", "color": "#777777", "align": "center" }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

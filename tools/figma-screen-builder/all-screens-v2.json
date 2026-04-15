@@ -1,0 +1,639 @@
+[
+  {
+    "name": "01. Login",
+    "template": "auth_screen",
+    "width": 390,
+    "height": 844,
+    "surface": "surface",
+    "regions": {
+      "brand": {
+        "type": "brand_header",
+        "surface": "primary",
+        "height": 220,
+        "slots": {
+          "monogram": "Q",
+          "title": "Quantify",
+          "subtitle": "Scaffolding Management"
+        }
+      },
+      "content": {
+        "type": "form_section",
+        "spacing": "lg",
+        "padding": "screen-h",
+        "children": [
+          {
+            "type": "component",
+            "ref": "cmp.textbox",
+            "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+            "slots": { "label": "Username" },
+            "stretch": true
+          },
+          {
+            "type": "component",
+            "ref": "cmp.passwordbox",
+            "variant": { "Type": "Outlined", "Leading": "None" },
+            "slots": { "label": "Password" },
+            "stretch": true
+          },
+          { "type": "spacer", "size": "sm" },
+          {
+            "type": "component",
+            "ref": "cmp.button",
+            "variant": { "Style": "Filled", "State": "Enabled", "Icon": "False" },
+            "slots": { "label": "Sign In" },
+            "stretch": true
+          },
+          {
+            "type": "component",
+            "ref": "cmp.button",
+            "variant": { "Style": "Text", "State": "Enabled", "Icon": "False" },
+            "slots": { "label": "Connection Settings" },
+            "stretch": true
+          }
+        ]
+      },
+      "status": {
+        "type": "status_bar",
+        "slots": { "text": "Connected to mycompany.quantifycloud.com" }
+      },
+      "footer": {
+        "type": "app_footer",
+        "slots": { "version": "v1.2.3", "copyright": "2008-2026 Avontus Software Corp." }
+      }
+    }
+  },
+
+  {
+    "name": "01b. Login - Validation",
+    "template": "auth_screen",
+    "extends": "01. Login",
+    "state": "validation_error",
+    "width": 390,
+    "height": 844,
+    "surface": "surface",
+    "regions": {
+      "brand": {
+        "type": "brand_header",
+        "surface": "primary",
+        "height": 220,
+        "slots": {
+          "monogram": "Q",
+          "title": "Quantify",
+          "subtitle": "Scaffolding Management"
+        }
+      },
+      "content": {
+        "type": "form_section",
+        "spacing": "sm",
+        "padding": "screen-h",
+        "children": [
+          {
+            "type": "component",
+            "ref": "cmp.textbox",
+            "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+            "slots": { "label": "Username" },
+            "stretch": true,
+            "error": "Username is required"
+          },
+          { "type": "spacer", "size": "sm" },
+          {
+            "type": "component",
+            "ref": "cmp.passwordbox",
+            "variant": { "Type": "Outlined", "Leading": "None" },
+            "slots": { "label": "Password" },
+            "stretch": true,
+            "error": "Password is required"
+          },
+          { "type": "spacer", "size": "md" },
+          {
+            "type": "component",
+            "ref": "tpl.error_banner",
+            "slots": {
+              "title": "Sign in failed",
+              "message": "Please fill in all required fields."
+            }
+          },
+          { "type": "spacer", "size": "md" },
+          {
+            "type": "component",
+            "ref": "cmp.button",
+            "variant": { "Style": "Filled", "State": "Enabled", "Icon": "False" },
+            "slots": { "label": "Sign In" },
+            "stretch": true
+          },
+          {
+            "type": "component",
+            "ref": "cmp.button",
+            "variant": { "Style": "Text", "State": "Enabled", "Icon": "False" },
+            "slots": { "label": "Connection Settings" },
+            "stretch": true
+          }
+        ]
+      },
+      "status": {
+        "type": "status_bar",
+        "slots": { "text": "Connected to mycompany.quantifycloud.com" }
+      },
+      "footer": {
+        "type": "app_footer",
+        "slots": { "version": "v1.2.3", "copyright": "2008-2026 Avontus Software Corp." }
+      }
+    }
+  },
+
+  {
+    "name": "02. Connection Settings",
+    "template": "top_nav_screen",
+    "width": 390,
+    "height": 844,
+    "surface": "surface",
+    "regions": {
+      "nav": {
+        "type": "component",
+        "ref": "cmp.navigationbar",
+        "variant": { "Content": "Title" },
+        "slots": { "title": "Connection" }
+      },
+      "content": {
+        "type": "scroll_section",
+        "children": [
+          {
+            "type": "section",
+            "label": "SERVER",
+            "padding": "screen-h",
+            "spacing": "md",
+            "children": [
+              {
+                "type": "component",
+                "ref": "cmp.textbox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "True", "Placeholder": "False", "Multiline": "False" },
+                "slots": { "label": "Remote server", "value": "myinstance.mycompany.com" },
+                "stretch": true
+              },
+              { "type": "spacer", "size": "lg" },
+              {
+                "type": "setting_row",
+                "slots": { "label": "Protocol", "value": "https://" },
+                "valueStyle": "accent"
+              },
+              { "type": "component", "ref": "cmp.divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "setting_row",
+                "slots": { "label": "Use SSL" },
+                "trailing": {
+                  "type": "component",
+                  "ref": "cmp.toggleswitch",
+                  "variant": { "State": "Enabled", "Selected": "True" }
+                }
+              }
+            ]
+          },
+          { "type": "spacer", "size": "xl" },
+          {
+            "type": "action_section",
+            "padding": "screen-h",
+            "spacing": "lg",
+            "children": [
+              {
+                "type": "component",
+                "ref": "cmp.button",
+                "variant": { "Style": "Filled", "State": "Enabled", "Icon": "False" },
+                "slots": { "label": "Test Connection" },
+                "stretch": true
+              },
+              {
+                "type": "component",
+                "ref": "tpl.error_banner",
+                "slots": {
+                  "title": "Connection failed",
+                  "message": "Unable to reach server. Check your network and server address."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+
+  {
+    "name": "02b. Connection - Success",
+    "extends": "02. Connection Settings",
+    "state": "success",
+    "overrides": {
+      "content.action_section.1": {
+        "type": "component",
+        "ref": "tpl.success_banner",
+        "slots": {
+          "title": "Connected successfully",
+          "message": "Server is reachable. You can now sign in."
+        }
+      }
+    }
+  },
+
+  {
+    "name": "03. Home",
+    "template": "top_nav_screen",
+    "width": 390,
+    "height": 844,
+    "surface": "surface-dim",
+    "regions": {
+      "nav": {
+        "type": "component",
+        "ref": "cmp.navigationbar",
+        "variant": { "Content": "Title" },
+        "slots": { "title": "Home" }
+      },
+      "content": {
+        "type": "scroll_section",
+        "children": [
+          {
+            "type": "component",
+            "ref": "tpl.welcome_card",
+            "surface": "surface",
+            "slots": {
+              "initials": "MA",
+              "greeting": "Welcome back, Marcus",
+              "subtitle": "Yard Worker  ·  Portland"
+            }
+          },
+          { "type": "spacer", "size": "md" },
+          {
+            "type": "card",
+            "surface": "surface",
+            "children": [
+              {
+                "type": "section_header",
+                "slots": { "label": "QUICK ACTIONS" }
+              },
+              {
+                "type": "component",
+                "ref": "cmp.menuitem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "slots": { "label": "Who Am I" },
+                "stretch": true
+              },
+              { "type": "component", "ref": "cmp.divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "component",
+                "ref": "cmp.menuitem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "slots": { "label": "Sample Form" },
+                "stretch": true
+              },
+              { "type": "component", "ref": "cmp.divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "component",
+                "ref": "cmp.menuitem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "slots": { "label": "Scan Barcode" },
+                "stretch": true
+              }
+            ]
+          },
+          { "type": "spacer", "size": "md" },
+          {
+            "type": "card",
+            "surface": "surface",
+            "padding": "card",
+            "children": [
+              { "type": "section_header", "slots": { "label": "LAST SCAN" } },
+              { "type": "body_text", "style": "body-md", "color": "on-surface-dim", "slots": { "text": "No barcode scanned yet" } }
+            ]
+          }
+        ]
+      },
+      "footer": {
+        "type": "app_footer",
+        "slots": { "version": "v1.2.3", "copyright": "2008-2026 Avontus Software Corp." }
+      }
+    }
+  },
+
+  {
+    "name": "04. Who Am I",
+    "template": "top_nav_screen",
+    "width": 390,
+    "height": 844,
+    "surface": "surface-dim",
+    "regions": {
+      "nav": {
+        "type": "component",
+        "ref": "cmp.navigationbar",
+        "variant": { "Content": "Title" },
+        "slots": { "title": "Who Am I" }
+      },
+      "content": {
+        "type": "scroll_section",
+        "children": [
+          {
+            "type": "component",
+            "ref": "tpl.profile_card",
+            "surface": "surface",
+            "slots": {
+              "initials": "MA",
+              "name": "Marcus Aurelio",
+              "email": "marcus.aurelio@company.com"
+            }
+          },
+          { "type": "spacer", "size": "md" },
+          {
+            "type": "card",
+            "surface": "surface",
+            "padding": "card-h",
+            "children": [
+              { "type": "detail_row", "slots": { "label": "Role", "value": "Yard Worker" } },
+              { "type": "component", "ref": "cmp.divider", "variant": { "Length": "Full" }, "stretch": true },
+              { "type": "detail_row", "slots": { "label": "Permissions", "value": "Standard Access" } },
+              { "type": "component", "ref": "cmp.divider", "variant": { "Length": "Full" }, "stretch": true },
+              { "type": "detail_row", "slots": { "label": "Username", "value": "marcus.aurelio" } }
+            ]
+          },
+          { "type": "spacer", "size": "md" },
+          {
+            "type": "card",
+            "surface": "surface",
+            "padding": "card",
+            "children": [
+              { "type": "section_header", "slots": { "label": "BRANCH OFFICES" } },
+              {
+                "type": "chip_group",
+                "spacing": "sm",
+                "children": [
+                  { "type": "component", "ref": "cmp.chip", "variant": { "Type": "Outlined", "State": "Enabled", "Selected": "False" }, "slots": { "label": "Portland" } },
+                  { "type": "component", "ref": "cmp.chip", "variant": { "Type": "Outlined", "State": "Enabled", "Selected": "False" }, "slots": { "label": "Chicago" } },
+                  { "type": "component", "ref": "cmp.chip", "variant": { "Type": "Outlined", "State": "Enabled", "Selected": "False" }, "slots": { "label": "Salt Lake City" } }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "bottom_action": {
+        "type": "component",
+        "ref": "cmp.button",
+        "variant": { "Style": "Outlined", "State": "Enabled", "Icon": "False" },
+        "slots": { "label": "Sign Out" },
+        "stretch": true
+      }
+    }
+  },
+
+  {
+    "name": "05. Sample Form",
+    "template": "form_screen",
+    "width": 390,
+    "height": 1280,
+    "surface": "surface-dim",
+    "regions": {
+      "nav": {
+        "type": "component",
+        "ref": "cmp.navigationbar",
+        "variant": { "Content": "Title" },
+        "slots": { "title": "Parent" }
+      },
+      "content": {
+        "type": "form_body",
+        "sections": [
+          {
+            "label": "TEXT FIELDS",
+            "surface": "surface",
+            "children": [
+              {
+                "type": "component",
+                "ref": "cmp.textbox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+                "slots": { "label": "Alphanumeric (required)" },
+                "stretch": true
+              }
+            ]
+          },
+          {
+            "label": null,
+            "surface": "surface",
+            "children": [
+              {
+                "type": "component",
+                "ref": "cmp.menuitem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "slots": { "label": "Files and pictures (6)" },
+                "stretch": true
+              }
+            ]
+          },
+          {
+            "label": "BOOLEAN CONTROLS",
+            "surface": "surface",
+            "children": [
+              {
+                "type": "toggle_row",
+                "slots": { "label": "Must be turned true" },
+                "trailing": { "type": "component", "ref": "cmp.toggleswitch", "variant": { "State": "Enabled", "Selected": "False" } }
+              },
+              { "type": "component", "ref": "cmp.divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "toggle_row",
+                "slots": { "label": "Must be turned false" },
+                "trailing": { "type": "component", "ref": "cmp.toggleswitch", "variant": { "State": "Enabled", "Selected": "True" } }
+              }
+            ]
+          },
+          {
+            "label": null,
+            "surface": "surface",
+            "children": [
+              {
+                "type": "component",
+                "ref": "cmp.menuitem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "slots": { "label": "Combobox? Select widget (required)" },
+                "stretch": true
+              }
+            ]
+          },
+          {
+            "label": "DATE FIELDS",
+            "surface": "surface",
+            "children": [
+              { "type": "component", "ref": "cmp.menuitem", "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" }, "slots": { "label": "Minimum date (required)" }, "stretch": true },
+              { "type": "component", "ref": "cmp.divider", "variant": { "Length": "Full" }, "stretch": true },
+              { "type": "component", "ref": "cmp.menuitem", "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" }, "slots": { "label": "Maximum date (required)" }, "stretch": true },
+              { "type": "component", "ref": "cmp.divider", "variant": { "Length": "Full" }, "stretch": true },
+              { "type": "component", "ref": "cmp.menuitem", "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" }, "slots": { "label": "Minimum date (not required)" }, "stretch": true },
+              { "type": "component", "ref": "cmp.divider", "variant": { "Length": "Full" }, "stretch": true },
+              { "type": "component", "ref": "cmp.menuitem", "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" }, "slots": { "label": "Maximum date (not required)" }, "stretch": true }
+            ]
+          },
+          {
+            "label": "NUMERIC FIELDS",
+            "surface": "surface",
+            "children": [
+              {
+                "type": "component",
+                "ref": "cmp.textbox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+                "slots": { "label": "Numeric value (nullable - required)" },
+                "stretch": true
+              },
+              {
+                "type": "component",
+                "ref": "cmp.textbox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+                "slots": { "label": "Currency numeric (null - required)" },
+                "stretch": true
+              },
+              {
+                "type": "result_row",
+                "slots": { "label": "Result", "value": "$0.00" }
+              }
+            ]
+          }
+        ]
+      },
+      "bottom_actions": {
+        "type": "action_bar",
+        "children": [
+          { "type": "component", "ref": "cmp.button", "variant": { "Style": "Outlined", "State": "Enabled", "Icon": "False" }, "slots": { "label": "Cancel" }, "grow": true },
+          { "type": "component", "ref": "cmp.button", "variant": { "Style": "Filled", "State": "Enabled", "Icon": "False" }, "slots": { "label": "Save" }, "grow": true }
+        ]
+      }
+    }
+  },
+
+  {
+    "name": "05b. Form - Validation",
+    "extends": "05. Sample Form",
+    "state": "validation_error",
+    "width": 390,
+    "height": 1480,
+    "surface": "surface-dim",
+    "regions": {
+      "nav": {
+        "type": "component",
+        "ref": "cmp.navigationbar",
+        "variant": { "Content": "Title" },
+        "slots": { "title": "Parent" }
+      },
+      "error_summary": {
+        "type": "component",
+        "ref": "tpl.error_banner",
+        "slots": {
+          "title": "7 validation errors",
+          "message": "Fix the highlighted fields before saving."
+        }
+      },
+      "content": {
+        "type": "form_body",
+        "sections": [
+          {
+            "label": "TEXT FIELDS",
+            "surface": "surface",
+            "children": [
+              {
+                "type": "component",
+                "ref": "cmp.textbox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+                "slots": { "label": "Alphanumeric (required)" },
+                "stretch": true,
+                "error": "This field is required"
+              }
+            ]
+          },
+          {
+            "label": null,
+            "surface": "surface",
+            "children": [
+              {
+                "type": "component",
+                "ref": "cmp.menuitem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "slots": { "label": "Files and pictures (6)" },
+                "stretch": true
+              }
+            ]
+          },
+          {
+            "label": "BOOLEAN CONTROLS",
+            "surface": "surface",
+            "children": [
+              {
+                "type": "toggle_row",
+                "slots": { "label": "Must be turned true" },
+                "trailing": { "type": "component", "ref": "cmp.toggleswitch", "variant": { "State": "Enabled", "Selected": "False" } },
+                "error": "Must be set to true"
+              },
+              { "type": "component", "ref": "cmp.divider", "variant": { "Length": "Full" }, "stretch": true },
+              {
+                "type": "toggle_row",
+                "slots": { "label": "Must be turned false" },
+                "trailing": { "type": "component", "ref": "cmp.toggleswitch", "variant": { "State": "Enabled", "Selected": "True" } },
+                "error": "Must be set to false"
+              }
+            ]
+          },
+          {
+            "label": null,
+            "surface": "surface",
+            "children": [
+              {
+                "type": "component",
+                "ref": "cmp.menuitem",
+                "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" },
+                "slots": { "label": "Combobox? Select widget (required)" },
+                "stretch": true,
+                "error": "Selection is required"
+              }
+            ]
+          },
+          {
+            "label": "DATE FIELDS",
+            "surface": "surface",
+            "children": [
+              { "type": "component", "ref": "cmp.menuitem", "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" }, "slots": { "label": "Minimum date (required)" }, "stretch": true, "error": "Date is required" },
+              { "type": "component", "ref": "cmp.divider", "variant": { "Length": "Full" }, "stretch": true },
+              { "type": "component", "ref": "cmp.menuitem", "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" }, "slots": { "label": "Maximum date (required)" }, "stretch": true, "error": "Date is required" },
+              { "type": "component", "ref": "cmp.divider", "variant": { "Length": "Full" }, "stretch": true },
+              { "type": "component", "ref": "cmp.menuitem", "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" }, "slots": { "label": "Minimum date (not required)" }, "stretch": true },
+              { "type": "component", "ref": "cmp.divider", "variant": { "Length": "Full" }, "stretch": true },
+              { "type": "component", "ref": "cmp.menuitem", "variant": { "State": "Enabled", "Leading Icon": "False", "Trailing Icon": "True", "Label": "True" }, "slots": { "label": "Maximum date (not required)" }, "stretch": true }
+            ]
+          },
+          {
+            "label": "NUMERIC FIELDS",
+            "surface": "surface",
+            "children": [
+              {
+                "type": "component",
+                "ref": "cmp.textbox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+                "slots": { "label": "Numeric value (nullable - required)" },
+                "stretch": true,
+                "error": "Numeric value is required"
+              },
+              {
+                "type": "component",
+                "ref": "cmp.textbox",
+                "variant": { "Type": "Outlined", "State": "Enabled", "Label": "True", "Populated": "False", "Placeholder": "True", "Multiline": "False" },
+                "slots": { "label": "Currency numeric (null - required)" },
+                "stretch": true,
+                "error": "Currency value is required"
+              },
+              {
+                "type": "result_row",
+                "slots": { "label": "Result", "value": "$0.00" }
+              }
+            ]
+          }
+        ]
+      },
+      "bottom_actions": {
+        "type": "action_bar",
+        "children": [
+          { "type": "component", "ref": "cmp.button", "variant": { "Style": "Outlined", "State": "Enabled", "Icon": "False" }, "slots": { "label": "Cancel" }, "grow": true },
+          { "type": "component", "ref": "cmp.button", "variant": { "Style": "Filled", "State": "Enabled", "Icon": "False" }, "slots": { "label": "Save" }, "grow": true }
+        ]
+      }
+    }
+  }
+]

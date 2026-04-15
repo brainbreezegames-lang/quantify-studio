@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantify Mobile — Developer Reference</title>
+<link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --blue: #0A3EFF;
+    --blue-mid: #6F9DFF;
+    --blue-dark: #10296E;
+    --blue-bg: #E8EEFF;
+    --white: #FFFFFF;
+    --surface: #FAFAFA;
+    --surface2: #F3F3F3;
+    --border: #E2E2E2;
+    --border-light: #EEEEEE;
+    --text: #202020;
+    --text2: #4A4A4A;
+    --text3: #777777;
+    --error: #D32F2F;
+    --error-bg: #FDECEA;
+    --success: #2E7D32;
+    --success-bg: #E8F5E9;
+    --warn: #F57F17;
+    --warn-bg: #FFF8E1;
+    --mono: 'JetBrains Mono', 'SF Mono', 'Menlo', 'Consolas', monospace;
+  }
+
+  html {
+    font-family: 'Switzer', -apple-system, sans-serif;
+    background: var(--white);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+    font-size: 15px;
+  }
+
+  body { display: flex; min-height: 100vh; }
+
+  /* ── Sidebar ── */
+  nav {
+    width: 256px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+  }
+
+  .nav-brand {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-brand-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .q-mark {
+    width: 32px; height: 32px;
+    background: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 16px; font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .nav-title { font-size: 15px; font-weight: 500; letter-spacing: -0.02em; }
+  .nav-sub { font-size: 11px; color: var(--text3); letter-spacing: -0.01em; margin-top: 2px; }
+
+  .nav-group {
+    padding: 20px 0 4px;
+  }
+
+  .nav-group-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 0 24px 8px;
+  }
+
+  nav a {
+    display: block;
+    padding: 6px 24px 6px 28px;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: var(--text2);
+    text-decoration: none;
+    transition: all 0.12s;
+    border-left: 2px solid transparent;
+  }
+
+  nav a:hover { color: var(--text); background: var(--surface); }
+  nav a.active { color: var(--blue); font-weight: 500; border-left-color: var(--blue); background: var(--blue-bg); }
+
+  .nav-footer {
+    margin-top: auto;
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: -0.01em;
+  }
+
+  /* ── Main ── */
+  main {
+    flex: 1;
+    max-width: 860px;
+    padding: 48px 64px 160px;
+  }
+
+  /* ── Sections ── */
+  section { scroll-margin-top: 24px; }
+
+  section[id] {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: reveal 0.4s ease forwards;
+  }
+
+  @keyframes reveal {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Typography ── */
+  h1 {
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 1.2em;
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    margin-top: 72px;
+    margin-bottom: 8px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  h2:first-of-type { margin-top: 40px; }
+
+  h3 {
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-top: 32px;
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-size: 15px;
+    line-height: 1.65em;
+    letter-spacing: -0.015em;
+    color: var(--text2);
+    margin-bottom: 12px;
+    max-width: 640px;
+  }
+
+  strong { font-weight: 500; color: var(--text); }
+
+  .lead {
+    font-size: 17px;
+    line-height: 1.6em;
+    letter-spacing: -0.02em;
+    color: var(--text2);
+    max-width: 600px;
+    margin-bottom: 24px;
+  }
+
+  /* ── Table ── */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; }
+
+  th, td {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 13px;
+    letter-spacing: -0.01em;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+  }
+
+  th {
+    font-weight: 500;
+    font-size: 10px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text3);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  td { color: var(--text2); }
+  td:first-child { font-weight: 500; color: var(--text); }
+
+  /* ── Code ── */
+  code {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    background: var(--surface2);
+    padding: 2px 6px;
+    border: 1px solid var(--border-light);
+    color: var(--text);
+  }
+
+  pre {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    overflow-x: auto;
+    margin: 8px 0 20px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.75em;
+    color: var(--text2);
+    tab-size: 2;
+  }
+
+  pre .kw { color: var(--blue); }
+  pre .attr { color: #7B61FF; }
+  pre .str { color: var(--success); }
+  pre .cmt { color: var(--text3); font-style: italic; }
+
+  .copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text3);
+    cursor: pointer;
+    transition: all 0.15s;
+    opacity: 0;
+  }
+
+  pre:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { color: var(--blue); border-color: var(--blue); }
+  .copy-btn.copied { color: var(--success); border-color: var(--success); }
+
+  /* ── Swatches ── */
+  .swatches {
+    display: flex;
+    gap: 2px;
+    margin: 8px 0 20px;
+  }
+
+  .sw {
+    flex: 1;
+    padding: 14px 10px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-height: 64px;
+  }
+
+  .sw-name { font-size: 11px; font-weight: 500; letter-spacing: -0.01em; }
+  .sw-val { font-size: 10px; font-family: var(--mono); opacity: 0.65; }
+
+  /* ── Callout boxes ── */
+  .callout {
+    padding: 14px 18px;
+    margin: 12px 0 20px;
+    font-size: 13px;
+    line-height: 1.6em;
+    color: var(--text);
+  }
+
+  .callout-blue { background: var(--blue-bg); border-left: 3px solid var(--blue); }
+  .callout-warn { background: var(--warn-bg); border-left: 3px solid var(--warn); }
+  .callout-error { background: var(--error-bg); border-left: 3px solid var(--error); }
+  .callout-green { background: var(--success-bg); border-left: 3px solid var(--success); }
+
+  .callout strong { display: block; margin-bottom: 2px; }
+
+  /* ── Component card ── */
+  .comp {
+    border: 1px solid var(--border);
+    margin: 16px 0 28px;
+    overflow: hidden;
+  }
+
+  .comp-head {
+    padding: 14px 18px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .comp-title { font-size: 15px; font-weight: 500; letter-spacing: -0.02em; }
+
+  .comp-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--blue);
+    background: var(--blue-bg);
+    padding: 3px 8px;
+  }
+
+  .comp-body {
+    padding: 16px 18px;
+  }
+
+  .comp-body table { margin: 0 0 12px; }
+  .comp-body th { background: var(--white); }
+  .comp-body pre { margin: 4px 0 0; }
+
+  .v {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--blue-dark);
+    background: var(--blue-bg);
+    padding: 2px 7px;
+    display: inline-block;
+    margin: 1px;
+  }
+
+  /* ── Spacing scale ── */
+  .sp-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .sp-label { font-size: 13px; font-weight: 500; min-width: 44px; font-family: var(--mono); }
+  .sp-bar { height: 16px; background: var(--blue-bg); border: 1px solid var(--blue); flex-shrink: 0; }
+  .sp-desc { font-size: 12px; color: var(--text3); flex: 1; }
+
+  /* ── Rule card ── */
+  .rule {
+    display: flex;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-light);
+    align-items: flex-start;
+  }
+
+  .rule:last-child { border-bottom: none; }
+
+  .rule-num {
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--blue);
+    letter-spacing: -0.04em;
+    line-height: 1em;
+    min-width: 40px;
+    flex-shrink: 0;
+  }
+
+  .rule-text { flex: 1; }
+  .rule-title { font-size: 15px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 4px; }
+  .rule-desc { font-size: 13px; color: var(--text2); line-height: 1.55em; }
+
+  /* ── Lists ── */
+  ul { margin: 4px 0 12px 20px; }
+  li { font-size: 14px; color: var(--text2); line-height: 1.6em; margin-bottom: 4px; letter-spacing: -0.01em; }
+
+  /* ── Pill ── */
+  .pill { font-size: 11px; font-weight: 500; padding: 3px 10px; display: inline-block; margin: 2px; letter-spacing: -0.01em; }
+  .pill-blue { background: var(--blue); color: white; }
+  .pill-gray { background: var(--surface2); border: 1px solid var(--border); color: var(--text2); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <div class="nav-brand-row">
+      <div class="q-mark">Q</div>
+      <div>
+        <div class="nav-title">Quantify Mobile</div>
+        <div class="nav-sub">Developer Reference</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Start here</div>
+    <a href="#overview">What this document covers</a>
+    <a href="#stack">Platform + stack</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Design tokens</div>
+    <a href="#colors">Colors</a>
+    <a href="#typography">Typography</a>
+    <a href="#spacing">Spacing</a>
+    <a href="#shape">Shape (0px corners)</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Field-ready UX</div>
+    <a href="#ux-rules">The 6 rules</a>
+    <a href="#validation">Validation patterns</a>
+    <a href="#offline">Offline handling</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Components</div>
+    <a href="#components">What's Uno, what's custom</a>
+    <a href="#button">Button</a>
+    <a href="#textbox">TextBox</a>
+    <a href="#passwordbox">PasswordBox</a>
+    <a href="#toggleswitch">ToggleSwitch</a>
+    <a href="#menuitem">MenuItem</a>
+    <a href="#listitem">ListItem</a>
+    <a href="#divider">Divider</a>
+    <a href="#chip">Chip</a>
+    <a href="#card">Card</a>
+    <a href="#checkbox">CheckBox</a>
+    <a href="#datepicker">DatePicker</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Layout</div>
+    <a href="#figma-xaml">Figma → XAML mapping</a>
+    <a href="#custom">Custom compositions</a>
+    <a href="#screens">Screen inventory</a>
+  </div>
+
+  <div class="nav-footer">
+    Quantify v4.2 &middot; Uno Platform &middot; iOS + Android
+  </div>
+</nav>
+
+<main>
+
+<section id="overview">
+  <h1>Developer Design Reference</h1>
+  <p class="lead">Everything you need to implement the Quantify mobile screens. Exact Uno components, variant values, XAML code snippets, and layout translation rules — no guessing required.</p>
+
+  <div class="callout callout-blue">
+    <strong>How to use this page</strong>
+    Find the component or pattern you need in the sidebar. Each entry shows the Figma variant values and the corresponding XAML. Copy the code, adjust the content, ship it.
+  </div>
+</section>
+
+<section id="stack">
+  <h2>Platform and stack</h2>
+  <table>
+    <tbody>
+      <tr><td><strong>Framework</strong></td><td>Uno Platform (WinUI / XAML)</td></tr>
+      <tr><td><strong>Component library</strong></td><td>Uno Material Design 3, customized for Avontus</td></tr>
+      <tr><td><strong>Targets</strong></td><td>iOS and Android from a single codebase</td></tr>
+      <tr><td><strong>Design file</strong></td><td>Figma — "Quantify Mobile — Uno Platform Material"</td></tr>
+      <tr><td><strong>Screen size</strong></td><td>390 &times; 844 (iPhone 14)</td></tr>
+      <tr><td><strong>Font</strong></td><td>Switzer (Regular 400, Medium 500)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════ COLORS ═══════════════ -->
+<section id="colors">
+  <h2>Colors</h2>
+  <p>One hue — blue. Everything else is pure neutral gray. No gradients, no shadows.</p>
+
+  <h3>Brand</h3>
+  <div class="swatches">
+    <div class="sw" style="background:#0A3EFF; color:#FFF;"><span class="sw-name">Blue Main</span><span class="sw-val">#0A3EFF</span></div>
+    <div class="sw" style="background:#6F9DFF; color:#10296E;"><span class="sw-name">Blue Medium</span><span class="sw-val">#6F9DFF</span></div>
+    <div class="sw" style="background:#10296E; color:#FFF;"><span class="sw-name">Blue Dark</span><span class="sw-val">#10296E</span></div>
+    <div class="sw" style="background:#E8EEFF; color:#10296E;"><span class="sw-name">Blue Lightest</span><span class="sw-val">#E8EEFF</span></div>
+  </div>
+
+  <h3>Text</h3>
+  <div class="swatches">
+    <div class="sw" style="background:#111111; color:#FFF;"><span class="sw-name">Primary</span><span class="sw-val">#111111</span></div>
+    <div class="sw" style="background:#555555; color:#FFF;"><span class="sw-name">Secondary</span><span class="sw-val">#555555</span></div>
+    <div class="sw" style="background:#777777; color:#FFF;"><span class="sw-name">Tertiary (floor)</span><span class="sw-val">#777777</span></div>
+  </div>
+
+  <h3>Surfaces</h3>
+  <div class="swatches">
+    <div class="sw" style="background:#FFFFFF; color:#202020; border: 1px solid #E2E2E2;"><span class="sw-name">Background</span><span class="sw-val">#FFFFFF</span></div>
+    <div class="sw" style="background:#F8F8F8; color:#202020; border: 1px solid #E2E2E2;"><span class="sw-name">Surface</span><span class="sw-val">#F8F8F8</span></div>
+    <div class="sw" style="background:#F4F4F4; color:#202020; border: 1px solid #E2E2E2;"><span class="sw-name">Surface 2</span><span class="sw-val">#F4F4F4</span></div>
+    <div class="sw" style="background:#F2F2F2; color:#202020; border: 1px solid #E2E2E2;"><span class="sw-name">Screen BG</span><span class="sw-val">#F2F2F2</span></div>
+    <div class="sw" style="background:#E2E2E2; color:#202020;"><span class="sw-name">Border</span><span class="sw-val">#E2E2E2</span></div>
+  </div>
+
+  <h3>Semantic</h3>
+  <div class="swatches">
+    <div class="sw" style="background:#D32F2F; color:#FFF;"><span class="sw-name">Error</span><span class="sw-val">#D32F2F</span></div>
+    <div class="sw" style="background:#FDECEA; color:#D32F2F;"><span class="sw-name">Error BG</span><span class="sw-val">#FDECEA</span></div>
+    <div class="sw" style="background:#2E7D32; color:#FFF;"><span class="sw-name">Success</span><span class="sw-val">#2E7D32</span></div>
+    <div class="sw" style="background:#E8F5E9; color:#2E7D32;"><span class="sw-name">Success BG</span><span class="sw-val">#E8F5E9</span></div>
+  </div>
+
+  <div class="callout callout-warn">
+    <strong>Gray floor: no text lighter than #777777</strong>
+    Field workers use this app in direct sunlight. Anything lighter than #777 becomes invisible outdoors. This is enforced in the design system.
+  </div>
+</section>
+
+<!-- ═══════════════ TYPOGRAPHY ═══════════════ -->
+<section id="typography">
+  <h2>Typography</h2>
+  <p><strong>Switzer</strong> from Fontshare. Two weights: Regular (400) for body, Medium (500) for headings. Tight negative letter-spacing.</p>
+
+  <table>
+    <thead><tr><th>Style</th><th>Size</th><th>Weight</th><th>Line Height</th><th>Spacing</th><th>Use it for</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Nav title</strong></td><td>18px</td><td>500</td><td>1.2</td><td>-0.02em</td><td>Screen titles in nav bar</td></tr>
+      <tr><td><strong>Body</strong></td><td>16px</td><td>400</td><td>1.5</td><td>-0.02em</td><td>Labels, toggle text, body content</td></tr>
+      <tr><td><strong>Small</strong></td><td>14px</td><td>400/500</td><td>1.45</td><td>-0.01em</td><td>Helper text, captions, error messages, section labels</td></tr>
+      <tr><td><strong>Footer</strong></td><td>13px</td><td>400</td><td>1.4</td><td>-0.01em</td><td>Copyright only (absolute minimum)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-warn">
+    <strong>Text floor: nothing below 14px</strong>
+    Error messages, labels, helper text — all 14px minimum. The only exception is copyright text at 13px. This ensures readability on outdoor screens.
+  </div>
+</section>
+
+<!-- ═══════════════ SPACING ═══════════════ -->
+<section id="spacing">
+  <h2>Spacing</h2>
+  <div style="margin: 12px 0 20px;">
+    <div class="sp-row"><span class="sp-label">4</span><div class="sp-bar" style="width: 4px;"></div><span class="sp-desc">Between closely related text lines</span></div>
+    <div class="sp-row"><span class="sp-label">8</span><div class="sp-bar" style="width: 8px;"></div><span class="sp-desc">Helper text below fields</span></div>
+    <div class="sp-row"><span class="sp-label">12</span><div class="sp-bar" style="width: 12px;"></div><span class="sp-desc">Section gaps on grouped screens</span></div>
+    <div class="sp-row"><span class="sp-label">16</span><div class="sp-bar" style="width: 16px;"></div><span class="sp-desc">Form field gaps, card padding</span></div>
+    <div class="sp-row"><span class="sp-label">24</span><div class="sp-bar" style="width: 24px;"></div><span class="sp-desc">Horizontal page padding (standard)</span></div>
+    <div class="sp-row"><span class="sp-label">32</span><div class="sp-bar" style="width: 32px;"></div><span class="sp-desc">Between major sections</span></div>
+    <div class="sp-row"><span class="sp-label">56</span><div class="sp-bar" style="width: 56px;"></div><span class="sp-desc">Minimum height for tappable rows</span></div>
+  </div>
+</section>
+
+<!-- ═══════════════ SHAPE ═══════════════ -->
+<section id="shape">
+  <h2>Shape — 0px corners everywhere</h2>
+  <p>The defining visual trait of Avontus: sharp geometry. <strong>Every element has 0px border-radius</strong> — buttons, cards, inputs, modals.</p>
+  <div class="callout callout-blue">
+    <strong>Exceptions (only two)</strong>
+    Error/success banners use 12px radius. The avatar circle uses full radius. Everything else: 0px.
+  </div>
+</section>
+
+<!-- ═══════════════ UX RULES ═══════════════ -->
+<section id="ux-rules">
+  <h2>Field-ready UX — the 6 rules</h2>
+  <p>Users are yard workers, delivery drivers, and site supervisors. Outdoors, gloves on, direct sunlight, dirty screens. Every decision flows from this.</p>
+
+  <div class="rule"><span class="rule-num">01</span><div class="rule-text"><div class="rule-title">56px minimum touch target</div><div class="rule-desc">Every tappable row is at least 56px tall. Gloved fingers on wet screens miss small targets.</div></div></div>
+  <div class="rule"><span class="rule-num">02</span><div class="rule-text"><div class="rule-title">14px minimum readable text</div><div class="rule-desc">Error messages, labels, helper text — all 14px. Body text that users act on is 16px.</div></div></div>
+  <div class="rule"><span class="rule-num">03</span><div class="rule-text"><div class="rule-title">No gray lighter than #777</div><div class="rule-desc">In direct sunlight, light grays vanish. Primary text: #111. Secondary: #555. Tertiary floor: #777.</div></div></div>
+  <div class="rule"><span class="rule-num">04</span><div class="rule-text"><div class="rule-title">Inline validation, never modals</div><div class="rule-desc">Error text appears directly under its field. A worker at a scaffold can't navigate popups.</div></div></div>
+  <div class="rule"><span class="rule-num">05</span><div class="rule-text"><div class="rule-title">Offline-first with visible queue</div><div class="rule-desc">Show connection status always. When offline, show queued change count: "3 changes queued — will sync when online."</div></div></div>
+  <div class="rule"><span class="rule-num">06</span><div class="rule-text"><div class="rule-title">Minimal cognitive load</div><div class="rule-desc">Home: 3 nav items. Login: 2 fields, 2 buttons. Get in, complete the task, get out.</div></div></div>
+</section>
+
+<!-- ═══════════════ VALIDATION ═══════════════ -->
+<section id="validation">
+  <h2>How validation works</h2>
+
+  <h3>Inline field error</h3>
+  <p>14px Switzer Medium, <code>#D32F2F</code>, placed directly below the field with 6px top margin.</p>
+  <pre><span class="cmt">&lt;!-- Error appears right under the field --&gt;</span>
+<span class="kw">&lt;StackPanel&gt;</span>
+  <span class="kw">&lt;TextBox</span> <span class="attr">PlaceholderText</span>=<span class="str">"Username"</span> <span class="kw">/&gt;</span>
+  <span class="kw">&lt;TextBlock</span> <span class="attr">Text</span>=<span class="str">"Username required"</span>
+             <span class="attr">FontSize</span>=<span class="str">"14"</span> <span class="attr">FontWeight</span>=<span class="str">"Medium"</span>
+             <span class="attr">Foreground</span>=<span class="str">"#D32F2F"</span>
+             <span class="attr">Margin</span>=<span class="str">"0,6,0,0"</span> <span class="kw">/&gt;</span>
+<span class="kw">&lt;/StackPanel&gt;</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+
+  <h3>Error summary banner</h3>
+  <p>Sticky at top of form, shows total error count + clear instruction.</p>
+  <pre><span class="kw">&lt;StackPanel</span> <span class="attr">Background</span>=<span class="str">"#FDECEA"</span> <span class="attr">Padding</span>=<span class="str">"24,14"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;TextBlock</span> <span class="attr">Text</span>=<span class="str">"7 validation errors"</span>
+             <span class="attr">FontSize</span>=<span class="str">"16"</span> <span class="attr">FontWeight</span>=<span class="str">"SemiBold"</span>
+             <span class="attr">Foreground</span>=<span class="str">"#D32F2F"</span> <span class="kw">/&gt;</span>
+  <span class="kw">&lt;TextBlock</span> <span class="attr">Text</span>=<span class="str">"Fix the highlighted fields before saving."</span>
+             <span class="attr">FontSize</span>=<span class="str">"14"</span> <span class="attr">Foreground</span>=<span class="str">"#D32F2F"</span> <span class="kw">/&gt;</span>
+<span class="kw">&lt;/StackPanel&gt;</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+</section>
+
+<!-- ═══════════════ OFFLINE ═══════════════ -->
+<section id="offline">
+  <h2>How offline states work</h2>
+
+  <h3>Status dot in nav bar</h3>
+  <p>8px circle + 14px label. Green <code>#2E7D32</code> = online, Red <code>#D32F2F</code> = offline.</p>
+  <pre><span class="kw">&lt;StackPanel</span> <span class="attr">Orientation</span>=<span class="str">"Horizontal"</span> <span class="attr">Spacing</span>=<span class="str">"6"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;Ellipse</span> <span class="attr">Width</span>=<span class="str">"8"</span> <span class="attr">Height</span>=<span class="str">"8"</span> <span class="attr">Fill</span>=<span class="str">"#2E7D32"</span> <span class="kw">/&gt;</span>
+  <span class="kw">&lt;TextBlock</span> <span class="attr">Text</span>=<span class="str">"Online"</span> <span class="attr">FontSize</span>=<span class="str">"14"</span>
+             <span class="attr">FontWeight</span>=<span class="str">"Medium"</span> <span class="attr">Foreground</span>=<span class="str">"#2E7D32"</span> <span class="kw">/&gt;</span>
+<span class="kw">&lt;/StackPanel&gt;</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+
+  <h3>Offline banner</h3>
+  <p>Full-width red banner below nav bar. Shows "No connection" + queued count.</p>
+  <pre><span class="kw">&lt;StackPanel</span> <span class="attr">Background</span>=<span class="str">"#FDECEA"</span> <span class="attr">Padding</span>=<span class="str">"24,14"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;TextBlock</span> <span class="attr">Text</span>=<span class="str">"No connection"</span>
+             <span class="attr">FontSize</span>=<span class="str">"16"</span> <span class="attr">FontWeight</span>=<span class="str">"SemiBold"</span>
+             <span class="attr">Foreground</span>=<span class="str">"#D32F2F"</span> <span class="kw">/&gt;</span>
+  <span class="kw">&lt;TextBlock</span> <span class="attr">Text</span>=<span class="str">"3 changes queued — will sync when online"</span>
+             <span class="attr">FontSize</span>=<span class="str">"14"</span> <span class="attr">Foreground</span>=<span class="str">"#D32F2F"</span> <span class="kw">/&gt;</span>
+<span class="kw">&lt;/StackPanel&gt;</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+</section>
+
+<!-- ═══════════════ COMPONENTS ═══════════════ -->
+<section id="components">
+  <h2>What's an Uno component, what's custom layout</h2>
+  <p>About 30% of what you see on screen are Uno component instances. The other 70% is standard XAML layout — StackPanels, Grids, TextBlocks. Both are straightforward to implement.</p>
+
+  <h3>Uno components (interactive controls — you get behavior for free)</h3>
+  <p>
+    <span class="pill pill-blue">Button</span>
+    <span class="pill pill-blue">TextBox</span>
+    <span class="pill pill-blue">PasswordBox</span>
+    <span class="pill pill-blue">ToggleSwitch</span>
+    <span class="pill pill-blue">MenuItem</span>
+    <span class="pill pill-blue">ListItem</span>
+    <span class="pill pill-blue">Divider</span>
+    <span class="pill pill-blue">Chip</span>
+    <span class="pill pill-blue">Card</span>
+    <span class="pill pill-blue">CheckBox</span>
+    <span class="pill pill-blue">DatePicker</span>
+  </p>
+
+  <h3>Custom layout (just StackPanel + TextBlock — no special behavior needed)</h3>
+  <p>
+    <span class="pill pill-gray">Nav bars</span>
+    <span class="pill pill-gray">Error banners</span>
+    <span class="pill pill-gray">Success banners</span>
+    <span class="pill pill-gray">Offline banners</span>
+    <span class="pill pill-gray">Status dots</span>
+    <span class="pill pill-gray">Avatars</span>
+    <span class="pill pill-gray">Profile rows</span>
+    <span class="pill pill-gray">Footers</span>
+    <span class="pill pill-gray">Server URL prefix</span>
+    <span class="pill pill-gray">"or" divider</span>
+  </p>
+
+  <div class="callout callout-green">
+    <strong>Why this split is normal</strong>
+    Uno components handle the hard parts: text input, focus, keyboard, toggle animation, accessibility, cross-platform rendering. The custom layout is just positioning and text — 3-5 lines of XAML each.
+  </div>
+</section>
+
+<!-- ═══════════════ INDIVIDUAL COMPONENTS ═══════════════ -->
+<section id="button">
+  <div class="comp">
+    <div class="comp-head"><span class="comp-title">Button</span><span class="comp-tag">&lt;Button&gt;</span></div>
+    <div class="comp-body">
+      <table>
+        <thead><tr><th>Property</th><th>Values in Figma</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Style</strong></td><td><span class="v">Filled</span> <span class="v">Outlined</span> <span class="v">Text</span> <span class="v">Tonal</span> <span class="v">Elevated</span></td></tr>
+          <tr><td><strong>State</strong></td><td><span class="v">Enabled</span></td></tr>
+          <tr><td><strong>Icon</strong></td><td><span class="v">True</span> <span class="v">False</span></td></tr>
+          <tr><td><strong>Text slot</strong></td><td><code>Label</code></td></tr>
+        </tbody>
+      </table>
+      <pre><span class="kw">&lt;Button</span> <span class="attr">Style</span>=<span class="str">"{StaticResource FilledButtonStyle}"</span>
+        <span class="attr">Content</span>=<span class="str">"Sign in"</span> <span class="kw">/&gt;</span>
+
+<span class="kw">&lt;Button</span> <span class="attr">Style</span>=<span class="str">"{StaticResource OutlinedButtonStyle}"</span>
+        <span class="attr">Content</span>=<span class="str">"Test connection"</span> <span class="kw">/&gt;</span>
+
+<span class="kw">&lt;Button</span> <span class="attr">Style</span>=<span class="str">"{StaticResource TextButtonStyle}"</span>
+        <span class="attr">Content</span>=<span class="str">"Cancel"</span> <span class="kw">/&gt;</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    </div>
+  </div>
+</section>
+
+<section id="textbox">
+  <div class="comp">
+    <div class="comp-head"><span class="comp-title">TextBox</span><span class="comp-tag">&lt;TextBox&gt;</span></div>
+    <div class="comp-body">
+      <table>
+        <thead><tr><th>Property</th><th>Values in Figma</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Type</strong></td><td><span class="v">Outlined</span></td></tr>
+          <tr><td><strong>Label</strong></td><td><span class="v">True</span> <span class="v">False</span></td></tr>
+          <tr><td><strong>Populated</strong></td><td><span class="v">True</span> <span class="v">False</span></td></tr>
+          <tr><td><strong>Multiline</strong></td><td><span class="v">False</span></td></tr>
+          <tr><td><strong>Text slots</strong></td><td><code>Label</code> (field name) &middot; <code>Text</code> (value) &middot; <code>Placeholder</code> (hint)</td></tr>
+        </tbody>
+      </table>
+      <pre><span class="kw">&lt;TextBox</span> <span class="attr">Header</span>=<span class="str">"Username"</span>
+         <span class="attr">PlaceholderText</span>=<span class="str">"Enter username"</span>
+         <span class="attr">Style</span>=<span class="str">"{StaticResource OutlinedTextBoxStyle}"</span> <span class="kw">/&gt;</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    </div>
+  </div>
+</section>
+
+<section id="passwordbox">
+  <div class="comp">
+    <div class="comp-head"><span class="comp-title">PasswordBox</span><span class="comp-tag">&lt;PasswordBox&gt;</span></div>
+    <div class="comp-body">
+      <table>
+        <thead><tr><th>Property</th><th>Values in Figma</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Type</strong></td><td><span class="v">Outlined</span></td></tr>
+          <tr><td><strong>Leading</strong></td><td><span class="v">None</span></td></tr>
+          <tr><td><strong>Text slots</strong></td><td><code>Label</code> &middot; <code>Text</code> &middot; <code>Placeholder</code></td></tr>
+        </tbody>
+      </table>
+      <pre><span class="kw">&lt;PasswordBox</span> <span class="attr">Header</span>=<span class="str">"Password"</span>
+             <span class="attr">PlaceholderText</span>=<span class="str">"Enter password"</span> <span class="kw">/&gt;</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    </div>
+  </div>
+</section>
+
+<section id="toggleswitch">
+  <div class="comp">
+    <div class="comp-head"><span class="comp-title">ToggleSwitch</span><span class="comp-tag">&lt;ToggleSwitch&gt;</span></div>
+    <div class="comp-body">
+      <table>
+        <thead><tr><th>Property</th><th>Values in Figma</th></tr></thead>
+        <tbody>
+          <tr><td><strong>State</strong></td><td><span class="v">Enabled</span></td></tr>
+          <tr><td><strong>Selected</strong></td><td><span class="v">True</span> <span class="v">False</span></td></tr>
+        </tbody>
+      </table>
+      <pre><span class="kw">&lt;ToggleSwitch</span> <span class="attr">IsOn</span>=<span class="str">"True"</span> <span class="attr">Header</span>=<span class="str">"Use SSL"</span> <span class="kw">/&gt;</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    </div>
+  </div>
+</section>
+
+<section id="menuitem">
+  <div class="comp">
+    <div class="comp-head"><span class="comp-title">MenuItem</span><span class="comp-tag">&lt;NavigationViewItem&gt;</span></div>
+    <div class="comp-body">
+      <table>
+        <thead><tr><th>Property</th><th>Values in Figma</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Leading Icon</strong></td><td><span class="v">False</span></td></tr>
+          <tr><td><strong>Trailing Icon</strong></td><td><span class="v">True</span> (chevron) &middot; <span class="v">False</span></td></tr>
+          <tr><td><strong>Text slot</strong></td><td><code>Label</code></td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-error">
+        <strong>MenuItem vs ListItem — don't mix them up</strong>
+        Use <strong>MenuItem</strong> for navigation rows with chevrons. ListItem's Trailing=True shows a ToggleSwitch, not a chevron.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="listitem">
+  <div class="comp">
+    <div class="comp-head"><span class="comp-title">ListItem</span><span class="comp-tag">&lt;ListViewItem&gt;</span></div>
+    <div class="comp-body">
+      <table>
+        <thead><tr><th>Property</th><th>Values in Figma</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Leading</strong></td><td><span class="v">True</span> <span class="v">False</span></td></tr>
+          <tr><td><strong>Trailing</strong></td><td><span class="v">True</span> (shows ToggleSwitch!) &middot; <span class="v">False</span></td></tr>
+          <tr><td><strong>Text slots</strong></td><td><code>Subtitle</code> (title) &middot; <code>Secondary text</code> &middot; <code>OVERLINE</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="divider">
+  <div class="comp">
+    <div class="comp-head"><span class="comp-title">Divider</span><span class="comp-tag">&lt;MenuFlyoutSeparator&gt;</span></div>
+    <div class="comp-body">
+      <table>
+        <thead><tr><th>Property</th><th>Values in Figma</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Length</strong></td><td><span class="v">Full</span> <span class="v">Short</span></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 13px; color: var(--text2);">Always set <code>HorizontalAlignment="Stretch"</code>.</p>
+    </div>
+  </div>
+</section>
+
+<section id="chip">
+  <div class="comp">
+    <div class="comp-head"><span class="comp-title">Chip</span><span class="comp-tag">&lt;ChipControl&gt;</span></div>
+    <div class="comp-body">
+      <table>
+        <thead><tr><th>Property</th><th>Values in Figma</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Type</strong></td><td><span class="v">Outlined</span> <span class="v">Elevated</span></td></tr>
+          <tr><td><strong>Selected</strong></td><td><span class="v">True</span> <span class="v">False</span></td></tr>
+          <tr><td><strong>Text slot</strong></td><td><code>Label</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="card">
+  <div class="comp">
+    <div class="comp-head"><span class="comp-title">Card</span><span class="comp-tag">&lt;CardControl&gt;</span></div>
+    <div class="comp-body">
+      <table>
+        <thead><tr><th>Property</th><th>Values in Figma</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Type</strong></td><td><span class="v">Elevated</span> <span class="v">Filled</span> <span class="v">Outlined</span></td></tr>
+          <tr><td><strong>Leading</strong></td><td><span class="v">Icon</span> <span class="v">None</span> <span class="v">PersonPicture</span></td></tr>
+          <tr><td><strong>Text</strong></td><td><span class="v">1 Line</span> <span class="v">2 Lines</span> <span class="v">3 Lines</span></td></tr>
+          <tr><td><strong>Media</strong></td><td><span class="v">None</span> <span class="v">16:9</span> <span class="v">Full</span> <span class="v">Small</span></td></tr>
+          <tr><td><strong>Text slots</strong></td><td><code>Headline</code> &middot; <code>SubHeadline</code> &middot; <code>Supporting Text</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="checkbox">
+  <div class="comp">
+    <div class="comp-head"><span class="comp-title">CheckBox</span><span class="comp-tag">&lt;CheckBox&gt;</span></div>
+    <div class="comp-body">
+      <table>
+        <thead><tr><th>Property</th><th>Values in Figma</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Checked</strong></td><td><span class="v">On</span> <span class="v">Off</span></td></tr>
+          <tr><td><strong>Text slot</strong></td><td><code>Label</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="datepicker">
+  <div class="comp">
+    <div class="comp-head"><span class="comp-title">DatePicker</span><span class="comp-tag">&lt;DatePicker&gt;</span></div>
+    <div class="comp-body">
+      <table>
+        <thead><tr><th>Property</th><th>Values in Figma</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Type</strong></td><td><span class="v">Input</span></td></tr>
+          <tr><td><strong>Format</strong></td><td><span class="v">mm/dd/yyyy</span></td></tr>
+          <tr><td><strong>Display</strong></td><td><span class="v">In page</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FIGMA → XAML ═══════════════ -->
+<section id="figma-xaml">
+  <h2>Figma → XAML — the complete mapping</h2>
+  <p>Every Figma property has a direct XAML equivalent. No interpretation needed.</p>
+
+  <table>
+    <thead><tr><th>Figma</th><th>XAML</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Frame (vertical)</strong></td><td><code>&lt;StackPanel&gt;</code></td><td>Default orientation</td></tr>
+      <tr><td><strong>Frame (horizontal)</strong></td><td><code>&lt;StackPanel Orientation="Horizontal"&gt;</code></td><td></td></tr>
+      <tr><td><strong>Text node</strong></td><td><code>&lt;TextBlock&gt;</code></td><td></td></tr>
+      <tr><td><strong>Spacer (fixed)</strong></td><td><code>&lt;Grid Height="24" /&gt;</code></td><td></td></tr>
+      <tr><td><strong>Spacer (grow)</strong></td><td><code>Grid row with *</code></td><td>Use RowDefinition Height="*"</td></tr>
+      <tr><td><strong>stretch: true</strong></td><td><code>HorizontalAlignment="Stretch"</code></td><td></td></tr>
+      <tr><td><strong>grow: true</strong></td><td><code>Grid column with *</code></td><td></td></tr>
+      <tr><td><strong>gap: N</strong></td><td><code>Spacing="N"</code></td><td>On StackPanel</td></tr>
+      <tr><td><strong>padding</strong></td><td><code>Padding="L,T,R,B"</code></td><td></td></tr>
+      <tr><td><strong>fill</strong></td><td><code>Background</code></td><td></td></tr>
+      <tr><td><strong>cornerRadius</strong></td><td><code>CornerRadius</code></td><td></td></tr>
+      <tr><td><strong>stroke</strong></td><td><code>BorderBrush + BorderThickness</code></td><td></td></tr>
+      <tr><td><strong>fixedHeight</strong></td><td><code>Height</code></td><td></td></tr>
+      <tr><td><strong>mainAlign: SPACE_BETWEEN</strong></td><td>Use <code>Grid</code> with columns</td><td>StackPanel doesn't support this</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════ CUSTOM COMPOSITIONS ═══════════════ -->
+<section id="custom">
+  <h2>Custom compositions — copy-paste XAML</h2>
+  <p>These elements appear across multiple screens. They're not Uno components — they're standard layout code.</p>
+
+  <h3>Nav bar (used on every screen)</h3>
+  <pre><span class="cmt">&lt;!-- 56px custom nav bar with back/title/action --&gt;</span>
+<span class="kw">&lt;Grid</span> <span class="attr">Height</span>=<span class="str">"56"</span> <span class="attr">Padding</span>=<span class="str">"16,12"</span> <span class="attr">Background</span>=<span class="str">"White"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;Grid.ColumnDefinitions&gt;</span>
+    <span class="kw">&lt;ColumnDefinition</span> <span class="attr">Width</span>=<span class="str">"Auto"</span> <span class="kw">/&gt;</span>
+    <span class="kw">&lt;ColumnDefinition</span> <span class="attr">Width</span>=<span class="str">"*"</span> <span class="kw">/&gt;</span>
+    <span class="kw">&lt;ColumnDefinition</span> <span class="attr">Width</span>=<span class="str">"Auto"</span> <span class="kw">/&gt;</span>
+  <span class="kw">&lt;/Grid.ColumnDefinitions&gt;</span>
+
+  <span class="cmt">&lt;!-- Left: icon (close, back, or menu) --&gt;</span>
+  <span class="kw">&lt;Button</span> <span class="attr">Grid.Column</span>=<span class="str">"0"</span> <span class="attr">Style</span>=<span class="str">"{StaticResource IconButtonStyle}"</span> <span class="kw">/&gt;</span>
+
+  <span class="cmt">&lt;!-- Center: title --&gt;</span>
+  <span class="kw">&lt;TextBlock</span> <span class="attr">Grid.Column</span>=<span class="str">"1"</span> <span class="attr">Text</span>=<span class="str">"Connection settings"</span>
+             <span class="attr">FontSize</span>=<span class="str">"18"</span> <span class="attr">FontWeight</span>=<span class="str">"SemiBold"</span>
+             <span class="attr">HorizontalAlignment</span>=<span class="str">"Center"</span>
+             <span class="attr">VerticalAlignment</span>=<span class="str">"Center"</span> <span class="kw">/&gt;</span>
+
+  <span class="cmt">&lt;!-- Right: status or actions --&gt;</span>
+  <span class="kw">&lt;StackPanel</span> <span class="attr">Grid.Column</span>=<span class="str">"2"</span> <span class="attr">Orientation</span>=<span class="str">"Horizontal"</span> <span class="kw">/&gt;</span>
+<span class="kw">&lt;/Grid&gt;</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+
+  <h3>Server URL with "https://" prefix</h3>
+  <pre><span class="kw">&lt;Grid&gt;</span>
+  <span class="kw">&lt;Grid.ColumnDefinitions&gt;</span>
+    <span class="kw">&lt;ColumnDefinition</span> <span class="attr">Width</span>=<span class="str">"Auto"</span> <span class="kw">/&gt;</span>
+    <span class="kw">&lt;ColumnDefinition</span> <span class="attr">Width</span>=<span class="str">"*"</span> <span class="kw">/&gt;</span>
+  <span class="kw">&lt;/Grid.ColumnDefinitions&gt;</span>
+
+  <span class="kw">&lt;Border</span> <span class="attr">Grid.Column</span>=<span class="str">"0"</span>
+          <span class="attr">Background</span>=<span class="str">"#F5F5F5"</span>
+          <span class="attr">BorderBrush</span>=<span class="str">"#D4D4D4"</span> <span class="attr">BorderThickness</span>=<span class="str">"1"</span>
+          <span class="attr">Padding</span>=<span class="str">"14,14,10,14"</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;TextBlock</span> <span class="attr">Text</span>=<span class="str">"https://"</span>
+               <span class="attr">Foreground</span>=<span class="str">"#777777"</span>
+               <span class="attr">VerticalAlignment</span>=<span class="str">"Center"</span> <span class="kw">/&gt;</span>
+  <span class="kw">&lt;/Border&gt;</span>
+
+  <span class="kw">&lt;TextBox</span> <span class="attr">Grid.Column</span>=<span class="str">"1"</span>
+           <span class="attr">Text</span>=<span class="str">"myinstance.mycompany.com"</span> <span class="kw">/&gt;</span>
+<span class="kw">&lt;/Grid&gt;</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+
+  <h3>Avatar circle</h3>
+  <pre><span class="kw">&lt;Border</span> <span class="attr">Width</span>=<span class="str">"56"</span> <span class="attr">Height</span>=<span class="str">"56"</span>
+        <span class="attr">CornerRadius</span>=<span class="str">"28"</span> <span class="attr">Background</span>=<span class="str">"#0A3EFF"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;TextBlock</span> <span class="attr">Text</span>=<span class="str">"M"</span> <span class="attr">FontSize</span>=<span class="str">"24"</span>
+             <span class="attr">FontWeight</span>=<span class="str">"SemiBold"</span> <span class="attr">Foreground</span>=<span class="str">"White"</span>
+             <span class="attr">HorizontalAlignment</span>=<span class="str">"Center"</span>
+             <span class="attr">VerticalAlignment</span>=<span class="str">"Center"</span> <span class="kw">/&gt;</span>
+<span class="kw">&lt;/Border&gt;</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+</section>
+
+<!-- ═══════════════ SCREENS ═══════════════ -->
+<section id="screens">
+  <h2>Screen inventory</h2>
+  <p>All screens are 390 &times; 844. Standard structure: NavBar (56px) → Divider → Scrollable content → Footer.</p>
+
+  <table>
+    <thead><tr><th>Screen</th><th>States</th><th>Uno components used</th><th>Custom elements</th></tr></thead>
+    <tbody>
+      <tr><td><strong>01. Login</strong></td><td>Default + Validation</td><td>TextBox, PasswordBox, Button, ToggleSwitch</td><td>Logo, error banner, "or" divider, footer</td></tr>
+      <tr><td><strong>02. Connection</strong></td><td>Error + Success</td><td>TextBox, ToggleSwitch, Button, Divider</td><td>Nav bar, https:// prefix, banners, offline chip</td></tr>
+      <tr><td><strong>03. Home</strong></td><td>Online + Offline</td><td>MenuItem &times;3, Divider</td><td>Nav bar, status dot, avatar, welcome section, offline banner</td></tr>
+      <tr><td><strong>05. Who Am I</strong></td><td>Single</td><td>Divider</td><td>Nav bar, profile rows, permission list, branch list, badge</td></tr>
+      <tr><td><strong>06. Sample Form</strong></td><td>Default + 7 errors</td><td>TextBox, MenuItem, ToggleSwitch, Button, Divider</td><td>Nav bar, error summary, validation text</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</main>
+
+<script>
+  // Active nav on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a');
+
+  function updateNav() {
+    let current = '';
+    for (const s of sections) {
+      if (window.scrollY >= s.offsetTop - 120) current = s.id;
+    }
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }
+
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+
+  // Stagger reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.style.animationDelay = '0.05s';
+    });
+  }, { threshold: 0.1 });
+
+  sections.forEach(s => observer.observe(s));
+
+  // Copy button
+  function copyCode(btn) {
+    const pre = btn.parentElement;
+    const text = pre.textContent.replace('Copy', '').replace('Copied', '').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+    });
+  }
+</script>
+
+</body>
+</html>

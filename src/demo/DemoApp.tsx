@@ -249,6 +249,7 @@ export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
     {
       id: 'open',
       action: () => reset(),
+      image: '/present/yard-opening.jpg',
       text: "Imagine a yard worker. Six in the morning. It's raining. Gloves on. There's a truck, and a clipboard, and about three hundred pieces of scaffolding to count. Today, they count it on paper. Then they walk back to the office. Then they type it into a computer. We thought — they shouldn't have to.",
     },
     {

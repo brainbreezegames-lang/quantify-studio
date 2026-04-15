@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, 'Inter', sans-serif; background: #FFF; color: #202020; font-size: 13px; height: 100vh; display: flex; flex-direction: column; }
+
+    .header { padding: 20px 20px 0; }
+    .header-top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .logo { width: 28px; height: 28px; background: #0A3EFF; display: flex; align-items: center; justify-content: center; }
+    .logo span { color: white; font-size: 14px; font-weight: 600; }
+    .title { font-size: 15px; font-weight: 600; color: #202020; }
+    .subtitle { font-size: 12px; color: #787878; line-height: 1.5; margin-top: 4px; }
+
+    .log-wrap { flex: 1; padding: 12px 20px 0; overflow: hidden; display: flex; flex-direction: column; }
+    .log-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #ABABAB; margin-bottom: 6px; }
+    .log { flex: 1; overflow-y: auto; background: #F8F8F8; border: 1px solid #EEE; padding: 10px; font-size: 11px; line-height: 1.7; color: #545454; font-family: 'SF Mono', 'JetBrains Mono', monospace; }
+    .log .entry { opacity: 0; transform: translateY(4px); transition: opacity 0.2s, transform 0.2s; }
+    .log .entry.visible { opacity: 1; transform: translateY(0); }
+    .log .entry.done { color: #14532D; font-weight: 600; }
+
+    /* Registry output */
+    .registry-wrap { display: none; padding: 0 20px; }
+    .registry-wrap.visible { display: block; }
+    .registry-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #ABABAB; margin: 12px 0 6px; }
+    .registry-output { width: 100%; max-height: 200px; overflow-y: auto; background: #F8F8F8; border: 1px solid #EEE; padding: 8px; font-size: 10px; font-family: 'SF Mono', 'JetBrains Mono', monospace; color: #545454; resize: vertical; }
+
+    /* Stats grid */
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 0 20px; margin: 12px 0; }
+    .stats-grid.hidden { display: none; }
+    .stat-card { background: #F8F8F8; border: 1px solid #EEE; padding: 10px; text-align: center; }
+    .stat-val { font-size: 20px; font-weight: 600; color: #0A3EFF; }
+    .stat-label { font-size: 10px; color: #787878; margin-top: 2px; }
+
+    .footer { padding: 14px 20px 16px; border-top: 1px solid #EEE; display: flex; gap: 8px; }
+    .btn { flex: 1; height: 38px; border: none; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-scan { background: #0A3EFF; color: white; }
+    .btn-scan:hover:not(:disabled) { opacity: 0.88; }
+    .btn-scan:disabled { opacity: 0.38; cursor: not-allowed; }
+    .btn-copy { background: #F0F0F0; color: #404040; border: 1px solid #D4D4D4; }
+    .btn-copy:hover { background: #E8E8E8; }
+    .btn-copy:disabled { opacity: 0.38; cursor: not-allowed; }
+    .btn-close { width: 70px; background: transparent; color: #545454; border: 1px solid #D4D4D4; font-size: 13px; cursor: pointer; }
+
+    .spinner { width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+    .running .spinner { display: block; }
+    .running .btn-label { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-top">
+      <div class="logo"><span>R</span></div>
+      <div class="title">Uno Component Registry</div>
+    </div>
+    <div class="subtitle">
+      Scans this Figma file and catalogs every component set, variant, text slot, icon, and style. Outputs a JSON registry for the strict assembler.
+    </div>
+  </div>
+
+  <div class="stats-grid hidden" id="stats-grid">
+    <div class="stat-card"><div class="stat-val" id="stat-sets">0</div><div class="stat-label">Component Sets</div></div>
+    <div class="stat-card"><div class="stat-val" id="stat-variants">0</div><div class="stat-label">Variants</div></div>
+    <div class="stat-card"><div class="stat-val" id="stat-icons">0</div><div class="stat-label">Icons</div></div>
+  </div>
+
+  <div class="log-wrap">
+    <div class="log-label">Scan Progress</div>
+    <div class="log" id="log">
+      <div class="entry visible">› Ready — press "Scan" to catalog this file.</div>
+    </div>
+  </div>
+
+  <div class="registry-wrap" id="registry-wrap">
+    <div class="registry-label">Component Catalog (JSON)</div>
+    <textarea class="registry-output" id="registry-output" readonly></textarea>
+  </div>
+
+  <div class="footer">
+    <button class="btn btn-scan" id="btn-scan" onclick="scan()">
+      <div class="spinner"></div>
+      <span class="btn-label">Scan File</span>
+    </button>
+    <button class="btn btn-copy" id="btn-copy" onclick="copyRegistry()" disabled>Copy JSON</button>
+    <button class="btn btn-close" onclick="parent.postMessage({pluginMessage:{type:'close'}},'*')">Close</button>
+  </div>
+
+  <script>
+    var log = document.getElementById('log');
+    var btn = document.getElementById('btn-scan');
+    var btnCopy = document.getElementById('btn-copy');
+    var registryWrap = document.getElementById('registry-wrap');
+    var registryOutput = document.getElementById('registry-output');
+    var statsGrid = document.getElementById('stats-grid');
+    var registryData = null;
+
+    function addEntry(text, cls) {
+      var div = document.createElement('div');
+      div.className = 'entry' + (cls ? ' ' + cls : '');
+      div.textContent = (cls === 'done' ? '✓ ' : '› ') + text;
+      log.appendChild(div);
+      requestAnimationFrame(function() { div.classList.add('visible'); });
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function scan() {
+      log.innerHTML = '';
+      btn.disabled = true;
+      btn.classList.add('running');
+      btnCopy.disabled = true;
+      registryWrap.classList.remove('visible');
+      statsGrid.classList.add('hidden');
+      parent.postMessage({ pluginMessage: { type: 'scan' } }, '*');
+    }
+
+    function copyRegistry() {
+      if (!registryData) return;
+      registryOutput.select();
+      document.execCommand('copy');
+      btnCopy.textContent = 'Copied!';
+      setTimeout(function() { btnCopy.textContent = 'Copy JSON'; }, 2000);
+    }
+
+    window.onmessage = function(e) {
+      var msg = e.data.pluginMessage;
+      if (!msg) return;
+
+      if (msg.type === 'step') {
+        var isDone = msg.text.startsWith('✅');
+        addEntry(msg.text, isDone ? 'done' : '');
+      }
+      if (msg.type === 'registry') {
+        registryData = JSON.stringify(msg.data, null, 2);
+        registryOutput.value = registryData;
+        registryWrap.classList.add('visible');
+        btnCopy.disabled = false;
+
+        // Update stats
+        var s = msg.data._meta.stats;
+        document.getElementById('stat-sets').textContent = s.sets;
+        document.getElementById('stat-variants').textContent = s.variants;
+        document.getElementById('stat-icons').textContent = s.iconComponents;
+        statsGrid.classList.remove('hidden');
+      }
+      if (msg.type === 'done') {
+        btn.disabled = false;
+        btn.classList.remove('running');
+      }
+      if (msg.type === 'error') {
+        addEntry('Error: ' + msg.message, '');
+        btn.disabled = false;
+        btn.classList.remove('running');
+      }
+    };
+  </script>
+</body>
+</html>
