@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Play, Pause, SkipBack, SkipForward, X, Mic, Loader2 } from 'lucide-react'
-import { loadKokoro, synthesize, KOKORO_VOICES, LoadProgress } from './kokoroTts'
+import { Play, Pause, SkipBack, SkipForward, X, Mic } from 'lucide-react'
 
 export interface Segment {
   id: string
@@ -23,46 +22,49 @@ export default function PresenterMode({ segments, autoStart = false }: Props) {
   const [step, setStep] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [rate, setRate] = useState(1.0)
-  const [kokoroVoice, setKokoroVoice] = useState('bm_george')
+  const [voiceURI, setVoiceURI] = useState<string>('')
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([])
   const [rect, setRect] = useState<Rect | null>(null)
   const [caption, setCaption] = useState('')
   const [showSettings, setShowSettings] = useState(false)
-  const [loadState, setLoadState] = useState<LoadProgress | null>(null)
-  const [ttsModel, setTtsModel] = useState<any>(null)
 
   const latestStepRef = useRef(step)
   const latestPlayingRef = useRef(playing)
   const sentenceIdxRef = useRef(0)
   const sentencesRef = useRef<string[]>([])
-  const timerRef = useRef<number | null>(null)
-  const audioElRef = useRef<HTMLAudioElement | null>(null)
-  const objectUrlsRef = useRef<string[]>([])
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
 
   useEffect(() => { latestStepRef.current = step }, [step])
   useEffect(() => { latestPlayingRef.current = playing }, [playing])
 
-  // ── Kokoro model loading ──────────────────────────────────────────────────
+  // ── Load voices + pick a good male default ───────────────────────────────
   useEffect(() => {
-    if (!open) return
-    if (ttsModel) return
-    let cancelled = false
-    ;(async () => {
-      try {
-        const model = await loadKokoro((p) => {
-          if (!cancelled) setLoadState(p)
-        })
-        if (!cancelled) {
-          setTtsModel(model)
-          setLoadState({ stage: 'ready' })
-        }
-      } catch (e) {
-        if (!cancelled) {
-          setLoadState({ stage: 'error', detail: String(e) })
-        }
+    function loadVoices() {
+      const all = window.speechSynthesis.getVoices()
+      if (!all.length) return
+      const english = all.filter(v => v.lang.startsWith('en'))
+      setVoices(english)
+
+      // Pick best male English voice available
+      const preferred = [
+        'Google UK English Male',
+        'Daniel',
+        'Alex',
+        'Google US English',
+        'Fred',
+        'Google UK English Female', // fallback
+      ]
+      for (const name of preferred) {
+        const match = english.find(v => v.name === name)
+        if (match) { setVoiceURI(match.voiceURI); return }
       }
-    })()
-    return () => { cancelled = true }
-  }, [open, ttsModel])
+      if (english.length) setVoiceURI(english[0].voiceURI)
+    }
+
+    loadVoices()
+    window.speechSynthesis.addEventListener('voiceschanged', loadVoices)
+    return () => window.speechSynthesis.removeEventListener('voiceschanged', loadVoices)
+  }, [])
 
   // ── Spotlight measuring ──────────────────────────────────────────────────
   useEffect(() => {
@@ -116,87 +118,79 @@ export default function PresenterMode({ segments, autoStart = false }: Props) {
       .filter(Boolean)
   }
 
-  function clearTimer() {
-    if (timerRef.current !== null) {
-      window.clearTimeout(timerRef.current)
-      timerRef.current = null
-    }
+  function stopSpeech() {
+    window.speechSynthesis.cancel()
+    utteranceRef.current = null
   }
 
-  function stopAudio() {
-    if (audioElRef.current) {
-      audioElRef.current.onended = null
-      audioElRef.current.onerror = null
-      audioElRef.current.pause()
-      audioElRef.current.src = ''
-      audioElRef.current = null
-    }
-    objectUrlsRef.current.forEach(u => URL.revokeObjectURL(u))
-    objectUrlsRef.current = []
-  }
-
-  async function speakSentence() {
-    if (!ttsModel) return
+  function speakSentence() {
     const sentences = sentencesRef.current
     const i = sentenceIdxRef.current
+    if (!latestPlayingRef.current) return
     if (i >= sentences.length) {
-      if (!latestPlayingRef.current) return
-      if (step < segments.length - 1) setStep(s => s + 1)
-      else setPlaying(false)
+      if (latestStepRef.current < segments.length - 1) {
+        setStep(s => s + 1)
+      } else {
+        setPlaying(false)
+      }
       return
     }
     const sentence = sentences[i]
     setCaption(sentence)
 
-    const afterSentence = () => {
+    const utter = new SpeechSynthesisUtterance(sentence)
+    utter.rate = rate
+    utter.lang = 'en-GB'
+
+    const voice = voices.find(v => v.voiceURI === voiceURI)
+    if (voice) utter.voice = voice
+
+    utter.onend = () => {
       if (!latestPlayingRef.current) return
-      if (latestStepRef.current !== step) return
+      if (latestStepRef.current !== latestStepRef.current) return
       sentenceIdxRef.current = i + 1
-      const pause = Math.min(480, 180 + sentence.length * 1.5)
-      clearTimer()
-      timerRef.current = window.setTimeout(speakSentence, pause)
+      speakSentence()
+    }
+    utter.onerror = () => {
+      sentenceIdxRef.current = i + 1
+      speakSentence()
     }
 
-    try {
-      const { url } = await synthesize(ttsModel, sentence, kokoroVoice)
-      if (!latestPlayingRef.current || latestStepRef.current !== step) {
-        URL.revokeObjectURL(url)
-        return
-      }
-      objectUrlsRef.current.push(url)
-      const audio = new Audio(url)
-      audio.playbackRate = rate
-      audioElRef.current = audio
-      audio.onended = afterSentence
-      audio.onerror = () => {
-        console.error('Kokoro audio playback failed')
-        afterSentence()
-      }
-      await audio.play()
-    } catch (e) {
-      console.error('Kokoro synth failed:', e)
-      // Skip to the next sentence rather than falling back
-      afterSentence()
-    }
+    utteranceRef.current = utter
+    window.speechSynthesis.speak(utter)
   }
 
   useEffect(() => {
-    clearTimer()
-    stopAudio()
+    stopSpeech()
     if (!playing) return
     const seg = segments[step]
     if (!seg) { setPlaying(false); return }
-    if (!ttsModel) return // Wait for model
 
     try { seg.action?.() } catch (e) { console.error(e) }
 
     sentencesRef.current = splitSentences(seg.text)
     sentenceIdxRef.current = 0
-    clearTimer()
-    timerRef.current = window.setTimeout(speakSentence, 420)
-    return () => { clearTimer(); stopAudio() }
+
+    // Small delay so the segment action renders before speech starts
+    const t = window.setTimeout(speakSentence, 350)
+    return () => {
+      window.clearTimeout(t)
+      stopSpeech()
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing, step, ttsModel, kokoroVoice, rate])
+  }, [playing, step, voiceURI, rate])
+
+  // ── Keep speech synthesis alive (Chrome pauses after ~15s) ───────────────
+  useEffect(() => {
+    if (!playing) return
+    const id = window.setInterval(() => {
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.pause()
+        window.speechSynthesis.resume()
+      }
+    }, 10000)
+    return () => window.clearInterval(id)
+  }, [playing])
 
   // ── Keyboard ─────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -223,31 +217,13 @@ export default function PresenterMode({ segments, autoStart = false }: Props) {
   function close() {
     setOpen(false)
     setPlaying(false)
-    stopAudio()
-    clearTimer()
+    stopSpeech()
   }
   function next() { if (step < segments.length - 1) setStep(step + 1) }
   function prev() { if (step > 0) setStep(step - 1) }
   function toggle() { setPlaying(p => !p) }
 
   const current = segments[step]
-  const isLoading = !ttsModel && loadState?.stage !== 'error'
-  const hasError = loadState?.stage === 'error'
-  const loadingText = (() => {
-    if (!loadState) return 'Preparing voice engine…'
-    if (loadState.stage === 'importing') return 'Loading voice engine…'
-    if (loadState.stage === 'downloading') {
-      if (typeof loadState.percent === 'number') {
-        return `Downloading neural voice… ${Math.round(loadState.percent * 100) / 100}%`
-      }
-      return 'Downloading neural voice model…'
-    }
-    if (loadState.stage === 'initializing') return 'Warming up voice…'
-    if (loadState.stage === 'ready') return 'Ready'
-    return `Voice failed to load: ${loadState.detail ?? 'unknown error'}`
-  })()
-
-  // ── Scene image (first segments with an image field) ─────────────────────
   const sceneImage = current?.image
 
   // Launcher
@@ -271,10 +247,10 @@ export default function PresenterMode({ segments, autoStart = false }: Props) {
 
   return (
     <>
-      {/* Scene image — full-screen behind the phone, fades between segments */}
+      {/* Scene image — full-screen behind the phone */}
       <div
         key={sceneImage ?? 'no-image'}
-        className="fixed inset-0 z-[45] pointer-events-none transition-opacity"
+        className="fixed inset-0 z-[45] pointer-events-none"
         style={{
           opacity: sceneImage ? 1 : 0,
           transition: 'opacity 1400ms cubic-bezier(0.23, 1, 0.32, 1)',
@@ -322,10 +298,10 @@ export default function PresenterMode({ segments, autoStart = false }: Props) {
       {/* Caption */}
       <div className="fixed inset-x-0 bottom-[52px] z-[60] px-8 pointer-events-none flex justify-center">
         <p
-          key={caption || 'loading'}
+          key={caption}
           className="fade-in-caption text-center"
           style={{
-            color: hasError ? 'rgba(255,120,120,0.85)' : isLoading ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.92)',
+            color: 'rgba(255,255,255,0.92)',
             fontSize: 15,
             fontWeight: 400,
             lineHeight: 1.42,
@@ -335,7 +311,7 @@ export default function PresenterMode({ segments, autoStart = false }: Props) {
             fontFamily: 'Switzer, sans-serif',
           }}
         >
-          {hasError ? loadingText : isLoading ? loadingText : (caption || current?.text || '')}
+          {caption || current?.text || ''}
         </p>
       </div>
 
@@ -351,17 +327,15 @@ export default function PresenterMode({ segments, autoStart = false }: Props) {
           fontFamily: 'Switzer, sans-serif',
         }}
       >
-        <button onClick={prev} disabled={step === 0 || isLoading} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-white/8 disabled:opacity-25">
+        <button onClick={prev} disabled={step === 0} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-white/8 disabled:opacity-25">
           <SkipBack size={13} color="rgba(255,255,255,0.8)" strokeWidth={2.2} />
         </button>
-        <button onClick={toggle} disabled={isLoading || hasError} className="w-7 h-7 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 disabled:opacity-40">
-          {isLoading
-            ? <Loader2 size={12} color="#fff" strokeWidth={2.2} className="animate-spin" />
-            : playing
-              ? <Pause size={12} color="#fff" strokeWidth={2.2} fill="#fff" />
-              : <Play size={12} color="#fff" strokeWidth={2.2} fill="#fff" />}
+        <button onClick={toggle} className="w-7 h-7 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20">
+          {playing
+            ? <Pause size={12} color="#fff" strokeWidth={2.2} fill="#fff" />
+            : <Play size={12} color="#fff" strokeWidth={2.2} fill="#fff" />}
         </button>
-        <button onClick={next} disabled={step === segments.length - 1 || isLoading} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-white/8 disabled:opacity-25">
+        <button onClick={next} disabled={step === segments.length - 1} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-white/8 disabled:opacity-25">
           <SkipForward size={13} color="rgba(255,255,255,0.8)" strokeWidth={2.2} />
         </button>
         <span className="text-[11px] font-medium tabular-nums px-1.5" style={{ color: 'rgba(255,255,255,0.55)' }}>
@@ -406,22 +380,20 @@ export default function PresenterMode({ segments, autoStart = false }: Props) {
             <option value={1.2}>1.2×</option>
           </select>
 
-          <label className="block text-[10px] font-semibold tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.45)' }}>VOICE (NEURAL)</label>
-          <select
-            value={kokoroVoice}
-            onChange={e => setKokoroVoice(e.target.value)}
-            className="w-full px-2 py-1.5 rounded bg-white/5 text-[13px] outline-none"
-            style={{ color: 'rgba(255,255,255,0.9)' }}
-          >
-            {KOKORO_VOICES.map(v => (
-              <option key={v.id} value={v.id}>{v.label}</option>
-            ))}
-          </select>
-
-          {(loadState && loadState.stage !== 'ready') && (
-            <p className="text-[11px] mt-2" style={{ color: hasError ? 'rgba(255,120,120,0.85)' : 'rgba(255,255,255,0.55)' }}>
-              {loadingText}
-            </p>
+          {voices.length > 0 && (
+            <>
+              <label className="block text-[10px] font-semibold tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.45)' }}>VOICE</label>
+              <select
+                value={voiceURI}
+                onChange={e => setVoiceURI(e.target.value)}
+                className="w-full px-2 py-1.5 rounded bg-white/5 text-[13px] outline-none"
+                style={{ color: 'rgba(255,255,255,0.9)' }}
+              >
+                {voices.map(v => (
+                  <option key={v.voiceURI} value={v.voiceURI}>{v.name}</option>
+                ))}
+              </select>
+            </>
           )}
         </div>
       )}
