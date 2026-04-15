@@ -79,7 +79,7 @@ export default function CreateNewSheet({ onClose, onSelect }: Props) {
   )
 }
 
-function OptionCard({ accent, icon, iconBg, title, subtitle, onTap }: {
+function OptionCard({ icon, iconBg, title, subtitle, onTap }: {
   accent: string; icon: JSX.Element; iconBg: string; title: string; subtitle: string; onTap: () => void
 }) {
   return (
@@ -88,7 +88,6 @@ function OptionCard({ accent, icon, iconBg, title, subtitle, onTap }: {
       className="rounded-[14px] bg-white overflow-hidden text-left no-select pressable"
       style={{ border: '1px solid #EAEAEA' }}
     >
-      <div className="w-full h-1" style={{ backgroundColor: accent }} />
       <div className="flex items-center gap-3.5 px-4 py-4">
         <div className="w-11 h-11 rounded-[12px] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: iconBg }}>
           {icon}

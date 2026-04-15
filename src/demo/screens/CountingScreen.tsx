@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { ChevronLeft, Camera, Search, Plus, Flag, Check, AlertTriangle } from 'lucide-react'
 import { Shipment, ShipmentItem, shortfall, isShort, isExplained, flagBadge, countedItems, countedUnits, totalExpected } from '../data'
-import NumericKeypad from '../components/NumericKeypad'
 import StickyCTA from '../components/StickyCTA'
 
 type TabFilter = 'all' | 'pending' | 'done' | 'flagged'
@@ -10,13 +9,8 @@ interface Props {
   shipment: Shipment
   items: ShipmentItem[]
   activeItemId: string | null
-  keypadValue: string
   onBack: () => void
   onTapItem: (itemId: string) => void
-  onKeypadInput: (digit: string) => void
-  onKeypadBackspace: () => void
-  onKeypadConfirm: () => void
-  onKeypadClose: () => void
   onFlag: (itemId: string) => void
   onPhoto: (itemId: string) => void
   onAddItem: () => void
@@ -24,9 +18,8 @@ interface Props {
 }
 
 export default function CountingScreen({
-  shipment, items, activeItemId, keypadValue,
-  onBack, onTapItem, onKeypadInput, onKeypadBackspace, onKeypadConfirm, onKeypadClose,
-  onFlag, onPhoto, onAddItem, onReview,
+  shipment, items, activeItemId,
+  onBack, onTapItem, onFlag, onPhoto, onAddItem, onReview,
 }: Props) {
   const [tabFilter, setTabFilter] = useState<TabFilter>('all')
   const [search, setSearch] = useState('')
@@ -43,8 +36,6 @@ export default function CountingScreen({
 
   const hasUnresolvedFlags = items.some(i => isShort(i) && !isExplained(i))
   const canReview = totalItems > 0 && doneItems === totalItems && !hasUnresolvedFlags
-
-  const activeItem = items.find(i => i.id === activeItemId) ?? null
 
   const TABS: { key: TabFilter; label: string; count: number }[] = [
     { key: 'all', label: 'All', count: items.length },
@@ -182,19 +173,6 @@ export default function CountingScreen({
       >
         {canReview ? 'Review' : doneItems === 0 ? 'Tap an item to start' : `${totalItems - doneItems} items left`}
       </StickyCTA>
-
-      {/* Numeric keypad */}
-      {activeItem && (
-        <NumericKeypad
-          item={activeItem}
-          value={keypadValue}
-          accentColor={accentColor}
-          onInput={onKeypadInput}
-          onBackspace={onKeypadBackspace}
-          onConfirm={onKeypadConfirm}
-          onClose={onKeypadClose}
-        />
-      )}
     </div>
   )
 }
