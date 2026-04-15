@@ -95,7 +95,8 @@ export default function ReviewScreen({ shipment, items, onBack, onConfirm }: Pro
           <p className="text-[#0A0A0A] text-sm font-semibold mb-2">Note for office</p>
           <textarea
             placeholder="Optional — add any context..."
-            className="w-full text-sm text-[#0A0A0A] placeholder:text-[#A3A3A3] resize-none outline-none"
+            className="w-full text-sm resize-none outline-none bg-white text-[#0A0A0A] placeholder:text-[#A3A3A3]"
+            style={{ backgroundColor: '#FFFFFF', color: '#0A0A0A', WebkitAppearance: 'none', appearance: 'none', colorScheme: 'light' }}
             rows={2}
           />
         </div>

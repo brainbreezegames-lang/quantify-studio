@@ -206,8 +206,8 @@ function ItemRow({ item, isReturn, accentColor, isActive, isLast, onTap, onFlag 
     flagFilled = true
   } else if (hasShortfall) {
     flagBg = explained ? '#DCFCE7' : '#F59E0B'
-    flagColor = '#FFFFFF'
-    flagFilled = true
+    flagColor = explained ? '#16A34A' : '#FFFFFF'
+    flagFilled = !explained
   }
 
   let boxBg = '#EEF2FF'

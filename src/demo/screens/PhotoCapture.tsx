@@ -11,7 +11,7 @@ export default function PhotoCapture({ itemName, shipmentId, onClose }: Props) {
   const [captured, setCaptured] = useState(false)
 
   return (
-    <div className="flex flex-col h-full bg-black">
+    <div className="absolute inset-0 flex flex-col bg-black">
       {/* Top bar */}
       <div className="flex items-center justify-between px-5 pt-5 pb-3 bg-gradient-to-b from-black/70 to-transparent absolute top-0 left-0 right-0 z-10">
         <button onClick={onClose} className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center no-select pressable">
