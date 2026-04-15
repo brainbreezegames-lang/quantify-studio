@@ -29,7 +29,7 @@ export async function loadKokoro(
       const model = await KokoroTTS.from_pretrained(
         'onnx-community/Kokoro-82M-v1.0-ONNX',
         {
-          dtype: device === 'webgpu' ? 'fp32' : 'q8',
+          dtype: device === 'webgpu' ? 'q8' : 'q4',
           device,
           progress_callback: (progress: any) => {
             if (progress?.status === 'progress' && typeof progress.progress === 'number') {

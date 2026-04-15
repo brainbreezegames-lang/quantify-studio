@@ -23,7 +23,7 @@ export default function PresenterMode({ segments, autoStart = false }: Props) {
   const [step, setStep] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [rate, setRate] = useState(1.0)
-  const [kokoroVoice, setKokoroVoice] = useState('af_heart')
+  const [kokoroVoice, setKokoroVoice] = useState('bm_george')
   const [rect, setRect] = useState<Rect | null>(null)
   const [caption, setCaption] = useState('')
   const [showSettings, setShowSettings] = useState(false)
@@ -152,7 +152,7 @@ export default function PresenterMode({ segments, autoStart = false }: Props) {
       if (!latestPlayingRef.current) return
       if (latestStepRef.current !== step) return
       sentenceIdxRef.current = i + 1
-      const pause = Math.min(900, 420 + sentence.length * 3)
+      const pause = Math.min(480, 180 + sentence.length * 1.5)
       clearTimer()
       timerRef.current = window.setTimeout(speakSentence, pause)
     }
