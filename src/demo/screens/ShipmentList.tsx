@@ -163,12 +163,19 @@ function FilterChip({ label, count, active, onClick }: { label: string; count: n
   )
 }
 
-// ─── Card — white, gray border, pills + dot carry color (per memory) ────────
+// ─── Card — white body + colored 4px accent bar + direction dot ─────────────
 function ShipmentCard({ shipment, idx, onTap }: { shipment: Shipment; idx: number; onTap: () => void }) {
   const total = totalExpected(shipment.items)
   const isDiscrepancy = shipment.status === 'DISCREPANCY'
   const isPreReturn = shipment.type === 'PRE-RETURN'
   const isEmptyBOM = shipment.items.length === 0
+
+  // Thin accent stripe on top of card — signals status at a glance
+  const accent =
+    isDiscrepancy ? '#DC2626' :
+    isPreReturn ? '#F59E0B' :
+    shipment.status === 'IN-TRANSIT' ? '#0EA5E9' :
+    '#1E3FFF'
 
   // Direction dot — outbound vs inbound + state
   const dot: { bg: string; color: string; icon: JSX.Element } =
@@ -202,6 +209,8 @@ function ShipmentCard({ shipment, idx, onTap }: { shipment: Shipment; idx: numbe
         animationDelay: `${idx * 40}ms`,
       }}
     >
+      {/* 4px colored accent — color-codes status at a glance */}
+      <div className="h-1 w-full" style={{ backgroundColor: accent }} />
       <div className="flex flex-col gap-3.5 px-5 py-5">
         {/* Top row: direction dot + ID + badge + chevron */}
         <div className="flex items-center gap-3">

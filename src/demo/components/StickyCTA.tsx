@@ -34,8 +34,8 @@ export default function StickyCTA({
 
   return (
     <div
-      className="sticky bottom-0 left-0 right-0 mt-auto px-4 pt-3 pb-5 bg-white border-t border-[#EAEAEA] z-10"
-      style={{ paddingBottom: 'max(20px, env(safe-area-inset-bottom))' }}
+      className="sticky bottom-0 left-0 right-0 mt-auto px-4 pt-3 bg-white border-t border-[#EAEAEA] z-10"
+      style={{ paddingBottom: 'calc(28px + env(safe-area-inset-bottom, 0px))' }}
     >
       {secondary && (
         <button
