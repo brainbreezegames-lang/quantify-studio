@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { SHIPMENTS, Shipment, ShipmentItem, ItemFlag } from './data'
+import { SHIPMENTS, CATALOG, Shipment, ShipmentItem, ItemFlag, CatalogItem } from './data'
 import PhoneFrame from './PhoneFrame'
 import ShipmentList from './screens/ShipmentList'
 import ShipmentDetail from './screens/ShipmentDetail'
@@ -7,45 +7,81 @@ import CountingScreen from './screens/CountingScreen'
 import MissingItems from './screens/MissingItems'
 import ConditionCheck from './screens/ConditionCheck'
 import ReviewScreen from './screens/ReviewScreen'
+import ToBeReceived from './screens/ToBeReceived'
+import DiscrepancyDetail from './screens/DiscrepancyDetail'
+import SelectLocation from './screens/SelectLocation'
+import PhotoCapture from './screens/PhotoCapture'
+import AddItemPicker from './screens/AddItemPicker'
+import SideNav from './screens/SideNav'
+import ProfileSheet from './screens/ProfileSheet'
+import CreateNewSheet from './screens/CreateNewSheet'
 import './demo.css'
 
-export type Screen = 'list' | 'detail' | 'counting' | 'missing' | 'condition' | 'review' | 'done'
+export type Screen =
+  | 'list' | 'detail' | 'counting'
+  | 'missing' | 'condition'
+  | 'review' | 'to-be-received'
+  | 'discrepancy' | 'select-location'
+  | 'photo' | 'add-item'
 
-export interface DemoState {
+export type Overlay = 'side-nav' | 'profile' | 'create-new' | null
+
+interface DemoState {
   screen: Screen
   direction: 'forward' | 'back'
-  shipment: Shipment | null
-  items: ShipmentItem[]
-  activeItemId: string | null   // item whose keypad is open
+  overlay: Overlay
+  currentShipmentId: string | null
+  items: ShipmentItem[]       // mutable copy of current shipment items
+  activeItemId: string | null
   keypadValue: string
-  flaggingItemId: string | null // item open in missing/condition screen
+  flaggingItemId: string | null
+  photoItemId: string | null
+  selectedLocation: string
+  submittedSummary: { units: number; variances: number; flagged: number } | null
 }
 
 const INITIAL: DemoState = {
   screen: 'list',
   direction: 'forward',
-  shipment: null,
+  overlay: null,
+  currentShipmentId: null,
   items: [],
   activeItemId: null,
   keypadValue: '',
   flaggingItemId: null,
+  photoItemId: null,
+  selectedLocation: 'New York Branch Office',
+  submittedSummary: null,
 }
 
 export default function DemoApp() {
   const [state, setState] = useState<DemoState>(INITIAL)
 
+  // ── Navigation ──────────────────────────────────────────────────────────────
+
   function goTo(screen: Screen, dir: 'forward' | 'back' = 'forward') {
-    setState(s => ({ ...s, screen, direction: dir }))
+    setState(s => ({ ...s, screen, direction: dir, overlay: null }))
   }
+
+  function setOverlay(overlay: Overlay) {
+    setState(s => ({ ...s, overlay }))
+  }
+
+  // ── Shipment selection ───────────────────────────────────────────────────────
 
   function selectShipment(id: string) {
     const shipment = SHIPMENTS.find(s => s.id === id)!
+    if (shipment.status === 'DISCREPANCY') {
+      setState(s => ({ ...s, currentShipmentId: id, screen: 'discrepancy', direction: 'forward', overlay: null }))
+      return
+    }
     setState(s => ({
       ...s,
-      shipment,
+      currentShipmentId: id,
       items: shipment.items.map(i => ({ ...i })),
       screen: 'detail',
       direction: 'forward',
+      overlay: null,
     }))
   }
 
@@ -66,10 +102,8 @@ export default function DemoApp() {
 
   function keypadInput(digit: string) {
     setState(s => {
-      const next = s.keypadValue + digit
-      // Max 4 digits
-      if (next.length > 4) return s
-      return { ...s, keypadValue: next }
+      if (s.keypadValue.length >= 4) return s
+      return { ...s, keypadValue: s.keypadValue + digit }
     })
   }
 
@@ -82,13 +116,8 @@ export default function DemoApp() {
     setState(s => {
       const items = s.items.map(item => {
         if (item.id !== s.activeItemId) return item
-        // If count changed and there was a flag, reset it
         const sameCount = item.counted === counted
-        return {
-          ...item,
-          counted,
-          flag: sameCount ? item.flag : null,
-        }
+        return { ...item, counted, flag: sameCount ? item.flag : null }
       })
       return { ...s, items, activeItemId: null, keypadValue: '' }
     })
@@ -101,8 +130,8 @@ export default function DemoApp() {
   // ── Flag ────────────────────────────────────────────────────────────────────
 
   function openFlag(itemId: string) {
-    const targetScreen = state.shipment?.type === 'PRE-RETURN' ? 'condition' : 'missing'
-    setState(s => ({ ...s, flaggingItemId: itemId, screen: targetScreen, direction: 'forward' }))
+    const targetScreen: Screen = currentShipment?.type === 'PRE-RETURN' ? 'condition' : 'missing'
+    setState(s => ({ ...s, flaggingItemId: itemId, screen: targetScreen, direction: 'forward', overlay: null }))
   }
 
   function saveFlag(itemId: string, flag: ItemFlag) {
@@ -116,52 +145,104 @@ export default function DemoApp() {
     setState(s => ({ ...s, flaggingItemId: null, screen: 'counting', direction: 'back' }))
   }
 
-  // ── Review ──────────────────────────────────────────────────────────────────
+  // ── Photo ────────────────────────────────────────────────────────────────────
+
+  function openPhoto(itemId: string) {
+    setState(s => ({ ...s, photoItemId: itemId, screen: 'photo', direction: 'forward', overlay: null }))
+  }
+
+  function closePhoto() {
+    setState(s => ({ ...s, photoItemId: null, screen: 'counting', direction: 'back' }))
+  }
+
+  // ── Add item (pre-return empty BOM) ─────────────────────────────────────────
+
+  function addItemFromCatalog(catalogItem: CatalogItem, qty: number) {
+    const newItem: ShipmentItem = {
+      id: `added-${catalogItem.id}-${Date.now()}`,
+      name: catalogItem.name,
+      subtitle: catalogItem.subtitle,
+      expected: qty,
+      counted: qty,
+      flag: null,
+    }
+    setState(s => ({
+      ...s,
+      items: [...s.items, newItem],
+      screen: 'counting',
+      direction: 'back',
+    }))
+  }
+
+  // ── Review / submit ──────────────────────────────────────────────────────────
 
   function goToReview() {
     goTo('review')
   }
 
   function confirmSubmit() {
-    goTo('done')
+    const units = state.items.reduce((s, i) => s + (i.counted ?? 0), 0)
+    const variances = state.items.filter(i => i.counted !== null && i.counted !== i.expected).length
+    const flagged = state.items.filter(i => i.flag !== null).length
+    setState(s => ({
+      ...s,
+      screen: 'to-be-received',
+      direction: 'forward',
+      submittedSummary: { units, variances, flagged },
+    }))
+  }
+
+  function selectLocation(name: string) {
+    setState(s => ({ ...s, selectedLocation: name, screen: 'list', direction: 'back' }))
   }
 
   function reset() {
     setState(INITIAL)
   }
 
-  // ── Render ──────────────────────────────────────────────────────────────────
+  // ── Derived ─────────────────────────────────────────────────────────────────
 
-  const { screen, direction, shipment, items, activeItemId, keypadValue, flaggingItemId } = state
-  const screenKey = screen  // changing key re-mounts with animation
+  const currentShipment: Shipment | null = state.currentShipmentId
+    ? (SHIPMENTS.find(s => s.id === state.currentShipmentId) ?? null)
+    : null
 
-  const flaggingItem = items.find(i => i.id === flaggingItemId) ?? null
+  const flaggingItem = state.items.find(i => i.id === state.flaggingItemId) ?? null
+  const photoItem = state.items.find(i => i.id === state.photoItemId) ?? null
+
+  const { screen, direction, overlay } = state
 
   return (
     <PhoneFrame>
-      <div key={screenKey} className={direction === 'forward' ? 'screen-enter' : 'screen-enter-back'} style={{ height: '100%' }}>
+      {/* Screen layer */}
+      <div key={screen} className={direction === 'forward' ? 'screen-enter' : 'screen-enter-back'} style={{ height: '100%' }}>
 
         {screen === 'list' && (
           <ShipmentList
             shipments={SHIPMENTS}
+            selectedLocation={state.selectedLocation}
             onSelect={selectShipment}
+            onOpenMenu={() => setOverlay('side-nav')}
+            onOpenProfile={() => setOverlay('profile')}
+            onOpenLocation={() => goTo('select-location')}
+            onOpenCreateNew={() => setOverlay('create-new')}
           />
         )}
 
-        {screen === 'detail' && shipment && (
+        {screen === 'detail' && currentShipment && (
           <ShipmentDetail
-            shipment={shipment}
+            shipment={currentShipment}
+            items={state.items}
             onBack={() => goTo('list', 'back')}
             onStart={startCounting}
           />
         )}
 
-        {screen === 'counting' && shipment && (
+        {screen === 'counting' && currentShipment && (
           <CountingScreen
-            shipment={shipment}
-            items={items}
-            activeItemId={activeItemId}
-            keypadValue={keypadValue}
+            shipment={currentShipment}
+            items={state.items}
+            activeItemId={state.activeItemId}
+            keypadValue={state.keypadValue}
             onBack={() => goTo('detail', 'back')}
             onTapItem={openKeypad}
             onKeypadInput={keypadInput}
@@ -169,6 +250,8 @@ export default function DemoApp() {
             onKeypadConfirm={keypadConfirm}
             onKeypadClose={closeKeypad}
             onFlag={openFlag}
+            onPhoto={openPhoto}
+            onAddItem={() => goTo('add-item')}
             onReview={goToReview}
           />
         )}
@@ -178,6 +261,7 @@ export default function DemoApp() {
             item={flaggingItem}
             onSave={(flag) => saveFlag(flaggingItem.id, flag)}
             onBack={closeFlag}
+            onPhoto={() => openPhoto(flaggingItem.id)}
           />
         )}
 
@@ -189,43 +273,80 @@ export default function DemoApp() {
           />
         )}
 
-        {screen === 'review' && shipment && (
+        {screen === 'review' && currentShipment && (
           <ReviewScreen
-            shipment={shipment}
-            items={items}
+            shipment={currentShipment}
+            items={state.items}
             onBack={() => goTo('counting', 'back')}
             onConfirm={confirmSubmit}
           />
         )}
 
-        {screen === 'done' && (
-          <DoneScreen onReset={reset} />
+        {screen === 'to-be-received' && currentShipment && state.submittedSummary && (
+          <ToBeReceived
+            shipment={currentShipment}
+            summary={state.submittedSummary}
+            onDone={reset}
+          />
         )}
 
-      </div>
-    </PhoneFrame>
-  )
-}
+        {screen === 'discrepancy' && currentShipment && (
+          <DiscrepancyDetail
+            shipment={currentShipment}
+            onBack={() => goTo('list', 'back')}
+          />
+        )}
 
-function DoneScreen({ onReset }: { onReset: () => void }) {
-  return (
-    <div className="flex flex-col items-center justify-center h-full bg-white px-8 text-center gap-6">
-      <div className="w-20 h-20 rounded-full bg-[#DCFCE7] flex items-center justify-center">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="20 6 9 17 4 12" />
-        </svg>
+        {screen === 'select-location' && (
+          <SelectLocation
+            selectedLocation={state.selectedLocation}
+            onSelect={selectLocation}
+            onBack={() => goTo('list', 'back')}
+          />
+        )}
+
+        {screen === 'photo' && currentShipment && (
+          <PhotoCapture
+            itemName={photoItem?.name ?? ''}
+            shipmentId={currentShipment.id}
+            onClose={closePhoto}
+          />
+        )}
+
+        {screen === 'add-item' && (
+          <AddItemPicker
+            catalog={CATALOG}
+            onAdd={addItemFromCatalog}
+            onBack={() => goTo('counting', 'back')}
+          />
+        )}
       </div>
-      <div>
-        <p className="text-2xl font-semibold text-[#0A0A0A]" style={{ fontFamily: 'Switzer, sans-serif' }}>Count submitted</p>
-        <p className="text-sm text-[#737373] mt-2" style={{ fontFamily: 'Switzer, sans-serif' }}>The office will review and confirm. Rent doesn't start until they approve.</p>
-      </div>
-      <button
-        onClick={onReset}
-        className="mt-4 px-6 py-3 rounded-xl bg-[#1E3FFF] text-white text-sm font-semibold"
-        style={{ fontFamily: 'Switzer, sans-serif' }}
-      >
-        Back to shipments
-      </button>
-    </div>
+
+      {/* Overlay layer — renders on top of current screen */}
+      {overlay === 'side-nav' && (
+        <SideNav
+          selectedLocation={state.selectedLocation}
+          onClose={() => setOverlay(null)}
+          onProfile={() => setState(s => ({ ...s, overlay: 'profile' }))}
+          onSelectLocation={() => { setState(s => ({ ...s, overlay: null, screen: 'select-location', direction: 'forward' })) }}
+        />
+      )}
+
+      {overlay === 'profile' && (
+        <ProfileSheet onClose={() => setOverlay(null)} />
+      )}
+
+      {overlay === 'create-new' && (
+        <CreateNewSheet
+          onClose={() => setOverlay(null)}
+          onSelect={(type) => {
+            // For demo: select the right shipment based on type
+            if (type === 'delivery') selectShipment('DEL-2401')
+            else if (type === 'pre-return') selectShipment('RET-1892')
+            else setOverlay(null)
+          }}
+        />
+      )}
+    </PhoneFrame>
   )
 }
