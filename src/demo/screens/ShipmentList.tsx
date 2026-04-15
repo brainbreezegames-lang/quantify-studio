@@ -46,7 +46,7 @@ export default function ShipmentList({ shipments, selectedLocation, onSelect, on
   return (
     <div className="flex flex-col min-h-full bg-[#F5F5F5]">
       {/* Blue Header */}
-      <div className="bg-[#1E3FFF] px-5 pt-[18px] pb-[22px]">
+      <div data-spot="app-header" className="bg-[#1E3FFF] px-5 pt-[18px] pb-[22px]">
         <div className="flex items-center justify-between mb-4">
           <button onClick={onOpenMenu} className="w-10 h-10 rounded-full bg-white/[0.12] flex items-center justify-center no-select pressable">
             <Menu size={20} color="#fff" strokeWidth={2} />
@@ -67,6 +67,7 @@ export default function ShipmentList({ shipments, selectedLocation, onSelect, on
 
       {/* Location Bar */}
       <button
+        data-spot="location-bar"
         onClick={onOpenLocation}
         className="bg-white flex items-center gap-3 px-5 py-4 w-full no-select pressable"
       >
@@ -83,7 +84,7 @@ export default function ShipmentList({ shipments, selectedLocation, onSelect, on
       <div className="h-px bg-[#EAEAEA]" />
 
       {/* Filter chips */}
-      <div className="bg-white px-5 py-3.5 overflow-x-auto">
+      <div data-spot="filter-chips" className="bg-white px-5 py-3.5 overflow-x-auto">
         <div className="flex gap-2 w-max">
           {FILTERS.map(f => {
             const active = filter === f.key
@@ -127,6 +128,7 @@ export default function ShipmentList({ shipments, selectedLocation, onSelect, on
 
       {/* FAB */}
       <button
+        data-spot="fab"
         onClick={onOpenCreateNew}
         className="fixed bottom-7 right-6 md:absolute w-[60px] h-[60px] rounded-full bg-[#1E3FFF] flex items-center justify-center no-select pressable z-10"
         style={{ boxShadow: '0 8px 20px rgba(30,63,255,0.35), 0 2px 6px rgba(0,0,0,0.10)' }}
@@ -202,6 +204,7 @@ function ShipmentCard({ shipment, idx, onTap }: { shipment: Shipment; idx: numbe
 
   return (
     <button
+      data-spot={`card-${shipment.id}`}
       onClick={onTap}
       className="stagger-item w-full bg-white rounded-2xl text-left no-select active:scale-[0.99] transition-transform overflow-hidden"
       style={{

@@ -102,7 +102,7 @@ export default function ReviewScreen({ shipment, items, onBack, onConfirm }: Pro
         </div>
 
         {/* Info banner */}
-        <div className="bg-[#EEF2FF] rounded-2xl px-5 py-4 flex items-start gap-3">
+        <div data-spot="rent-info" className="bg-[#EEF2FF] rounded-2xl px-5 py-4 flex items-start gap-3">
           <Info size={18} color="#1E3FFF" strokeWidth={2} className="mt-0.5 flex-shrink-0" />
           <p className="text-[#1E3FFF] text-sm">
             {isReturn

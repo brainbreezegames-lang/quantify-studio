@@ -56,7 +56,11 @@ const INITIAL: DemoState = {
   submittedSummary: null,
 }
 
-export default function DemoApp() {
+interface DemoAppProps {
+  presentMode?: boolean
+}
+
+export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
   const [state, setState] = useState<DemoState>(INITIAL)
 
   function goTo(screen: Screen, dir: 'forward' | 'back' = 'forward') {
@@ -245,48 +249,59 @@ export default function DemoApp() {
     {
       id: 'open',
       action: () => reset(),
-      text: "What you're about to see is scoped exactly to what Brian and Lee defined — a yard-side companion, not a second Quantify. Four things, done well: open a reservation or pre-return, count with a real keypad, capture photos and driver info, and submit. Everything I cut, I cut on purpose.",
+      text: "This is Quantify Mobile. It replaces a paper clipboard. That's it. A yard worker, in the rain, with gloves on — today they walk back to the office to type numbers into a computer. We thought they shouldn't have to.",
     },
     {
       id: 'list-overview',
       action: () => reset(),
-      text: "This is what a yard worker sees when they open the app. List first. No hero banner, no promo strip. A yard worker with gloves on, in direct sunlight, doesn't want chrome. They want the list.",
+      target: 'app-header',
+      text: "The first thing they see. No dashboard. No banners. Just the work.",
     },
     {
-      id: 'discrepancy',
-      text: "Look at RET double-oh eight-two-nine. Red stripe, red dot, 'Count mismatch minus twelve,' and inline: 'Resolve on desktop.' The mobile is deliberately read-only for discrepancies. Michelle was emphatic. Destructive and corrective actions stay on desktop.",
-    },
-    {
-      id: 'needs-count',
-      text: "DEL double-oh seven-nine-one. Amber stripe, amber dot, 'Needs your count.' At-a-glance triage. What do I have to do today?",
+      id: 'location-bar',
+      target: 'location-bar',
+      text: "One branch. One scope. They don't re-select this every time they open the app. That would be insulting.",
     },
     {
       id: 'filters',
-      text: "Filter counts live in their own pill — the number doesn't blend into the label. 'All' is first and default, because that's what a yard worker wants to see on arrival.",
+      target: 'filter-chips',
+      text: "All first. Because on a busy Monday, you don't want to start filtered.",
     },
     {
-      id: 'fab-open',
-      action: () => { goTo('list'); setOverlay('create-new') },
-      text: "The plus button. Going Out. Coming In. Delivery, Reservation, Return, Pre-Return. Spoken language that matches Quantify desktop exactly — no invented terms.",
+      id: 'discrepancy',
+      target: 'card-RET-00829',
+      padding: 10,
+      text: "This one's red. What came off the truck didn't match what was sent. And right there on the card — resolve on desktop. Because the yard worker shouldn't fix this on a phone. Their job is to count. Someone else's job is to reconcile.",
     },
     {
-      id: 'fab-close',
-      action: () => setOverlay(null),
-      text: "Notice what's not here. There's no free-text 'new shipment.' Yard workers never create records from scratch. That's the Brian and Lee rule. Every shipment originates on desktop.",
+      id: 'needs-count',
+      target: 'card-DEL-00791',
+      padding: 10,
+      text: "Amber. Needs your count. This is why they opened the app.",
     },
     {
       id: 'detail-open',
       action: () => selectShipment('DEL-00791'),
-      text: "Tap a shipment. From, To, Rent Start — the three things a yard worker needs before loading. Driver and Vehicle are inline fields, tap to set. Brian flagged that driver capture can happen at loading start or at submit. I put it at both touchpoints so it's never missed.",
+      text: "A delivery. From a branch, to a job site, with a rent start date. Driver and vehicle, tap to set. We argued about when to capture the driver — at loading, or at submit. The answer was both.",
     },
     {
       id: 'sticky-cta-detail',
-      text: "Notice Start Loading stays pinned to the bottom. Sticky CTAs with real states — disabled, loading, success — across every action screen in the app.",
+      target: 'sticky-cta',
+      text: "And notice — this button never leaves the bottom. You never scroll down to find the action.",
     },
     {
       id: 'counting-open',
       action: () => goTo('counting'),
-      text: "This is where the real work happens. Three hundred plus parts per shipment on average. Which is why counting is keypad first — not plus and minus alone. Brian was explicit on this.",
+      text: "This is where they actually live. A typical shipment is three hundred parts. Some are four.",
+    },
+    {
+      id: 'counting-row',
+      action: () => {
+        const sh = SHIPMENTS.find(s => s.id === 'DEL-00791')
+        if (sh) setState(s => ({ ...s, items: sh.items.map(i => ({ ...i })) }))
+      },
+      target: 'counting-row-d1a',
+      text: "One row, one item. Big targets. Gloved thumbs don't hit tiny buttons.",
     },
     {
       id: 'keypad-open',
@@ -294,42 +309,54 @@ export default function DemoApp() {
         const first = SHIPMENTS.find(s => s.id === 'DEL-00791')?.items[0]
         if (first) openKeypad(first.id)
       },
-      text: "Tap the count box and you get a numeric sheet. Direct entry. Plus and minus are still available in the row for micro-adjustments, because seasoned yard workers tweak. But the primary interaction is the keypad.",
+      target: 'keypad',
+      text: "Tap a count box and you get this. A real numeric keypad. Not plus-minus buttons tapped ninety-six times to enter ninety-six.",
     },
     {
-      id: 'keypad-close',
+      id: 'tabs',
       action: () => closeKeypad(),
-      text: "Filter tabs above the list — All, Pending, Done, Flagged. Search collapses to an icon until you tap it. No stacked control strips. The list dominates the viewport.",
+      target: 'counting-tabs',
+      text: "All. Pending. Done. Flagged. Search is there when you need it. Hidden when you don't.",
     },
     {
       id: 'flag-open',
       action: () => {
-        const damaged = SHIPMENTS.find(s => s.id === 'DEL-00791')?.items.find(i => i.flag)
-        if (damaged) {
-          setState(s => ({
-            ...s,
-            flaggingItemId: damaged.id,
-            screen: 'missing',
-            direction: 'forward',
-            overlay: null,
-          }))
-        }
+        const sh = SHIPMENTS.find(s => s.id === 'DEL-00791')
+        if (!sh) return
+        const items = sh.items.map(i =>
+          i.id === 'd1a' ? { ...i, counted: 65 } : { ...i }
+        )
+        setState(s => ({
+          ...s,
+          items,
+          flaggingItemId: 'd1a',
+          screen: 'missing',
+          direction: 'forward',
+          overlay: null,
+        }))
       },
-      text: "Here's the damage flow. Four destinations — Loaded, Damaged, Scrapped, Lost-missing. Exact Quantify desktop vocabulary. Earlier drafts called this 'Split count.' I killed that. If it's not in Quantify, it's not in the app.",
-    },
-    {
-      id: 'flag-close',
-      action: () => goTo('counting', 'back'),
-      text: "Back to counting. Notice the CTA — it adapts. 'N items left' while counting, 'Review' when complete. The button tells the user what state they're in.",
+      text: "When something's damaged, they flag it. Four destinations — loaded, damaged, scrapped, lost. These aren't my words. They're Quantify's words.",
     },
     {
       id: 'review-open',
-      action: () => goTo('review'),
-      text: "Review. Three numbers — Units, Variances, Flagged. Then line-level detail. Note field is optional. The office doesn't need essays from the yard.",
+      action: () => {
+        const sh = SHIPMENTS.find(s => s.id === 'DEL-00791')
+        if (!sh) return
+        setState(s => ({
+          ...s,
+          items: sh.items.map(i => ({ ...i })),
+          screen: 'review',
+          direction: 'forward',
+          overlay: null,
+          flaggingItemId: null,
+        }))
+      },
+      text: "When counting's done, they review. Three numbers that matter. Everything else in a list below.",
     },
     {
-      id: 'review-key-line',
-      text: "This is the most important sentence in the entire app. 'Rent doesn't start until the office confirms and the truck reaches the customer.' Two-stage trust. Lee, Michelle, and Andrej all flagged this independently during the AT-PAC call. The old flow went Reserved straight to Completed. That was wrong. The office reviews first.",
+      id: 'rent-info',
+      target: 'rent-info',
+      text: "And this. This sentence. Before we wrote this, yard workers thought submit meant done. It didn't. The office still had to confirm. This sentence makes that honest.",
     },
     {
       id: 'submit',
@@ -346,16 +373,17 @@ export default function DemoApp() {
           submittedSummary: { units, variances, flagged },
         }))
       },
-      text: "Submit. Three-dot stepper: Yard counted, Office reviewing, In Transit. The eyebrow says 'To Be Received' — that is the official Quantify status, not something I invented.",
+      target: 'stepper',
+      text: "They submit. And the shipment moves to a state called To Be Received. The yard's done their part. Now it's the office's turn.",
     },
     {
       id: 'closing',
       action: () => goTo('list', 'back'),
-      text: "A few things I chose not to build. No void — Michelle said so. No billing, no consumables, no prorate — Andrej endorsed the eighty percent rule. Practical basics first. Every pattern you saw came from internal Quantify vocabulary or the AT-PAC interview. No competitor references anywhere, per Brian's rule.",
+      text: "What's not in here. No void. No billing. No consumables. None of the things the desktop already does better. That's deliberate.",
     },
     {
       id: 'questions',
-      text: "Three open questions for you. One: the interim status when mobile submits but the office hasn't confirmed — is 'To Be Received' correct, or does it need a new name? Two: customer pickup versus driver delivery — version one or version two? Three: video capture — Andrej mentioned some yards use it. Version one or version two? Happy to walk through the code, the data model, or any screen in detail.",
+      text: "Three things I still need your input on. What do we call this interim state. Whether customer pickup belongs in version one. And whether video capture belongs in version one. Those are conversations — not decisions.",
     },
   ]
 
@@ -464,7 +492,7 @@ export default function DemoApp() {
         )}
       </div>
     </PhoneFrame>
-    <PresenterMode segments={presenterSegments} />
+    {presentMode && <PresenterMode segments={presenterSegments} autoStart={false} />}
     </>
   )
 }

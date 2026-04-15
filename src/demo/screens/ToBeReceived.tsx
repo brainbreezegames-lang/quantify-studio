@@ -42,6 +42,7 @@ export default function ToBeReceived({ shipment, summary, onDone }: Props) {
         <div className="bg-white rounded-2xl overflow-hidden">
           <div className="px-5 pt-5 pb-4 border-b border-[#F0F0F0]">
             <span
+              data-spot="to-be-received-pill"
               className="text-[10px] font-bold px-2 py-0.5 rounded-full inline-block mb-3"
               style={{ backgroundColor: isReturn ? '#FEF3C7' : '#EEF2FF', color: accentColor }}
             >
@@ -51,7 +52,7 @@ export default function ToBeReceived({ shipment, summary, onDone }: Props) {
           </div>
 
           {/* Stepper */}
-          <div className="px-5 py-5 flex flex-col gap-0">
+          <div data-spot="stepper" className="px-5 py-5 flex flex-col gap-0">
             {steps.map((step, idx) => (
               <div key={idx} className="flex gap-4">
                 {/* Timeline */}

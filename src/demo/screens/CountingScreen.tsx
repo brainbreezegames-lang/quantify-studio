@@ -110,7 +110,7 @@ export default function CountingScreen({
 
       {/* Filter tabs */}
       {!isEmptyBOM && (
-        <div className="bg-white px-4 py-2.5 overflow-x-auto border-b border-[#F0F0F0]">
+        <div data-spot="counting-tabs" className="bg-white px-4 py-2.5 overflow-x-auto border-b border-[#F0F0F0]">
           <div className="flex gap-2 w-max">
             {TABS.map(tab => {
               const active = tabFilter === tab.key
@@ -226,7 +226,7 @@ function ItemRow({ item, isReturn, accentColor, isActive, isLast, onTap, onFlag 
   }
 
   return (
-    <div>
+    <div data-spot={`counting-row-${item.id}`}>
       <div className="flex items-center gap-3 px-5 py-5" style={{ backgroundColor: rowBg }}>
         <div className="flex-1 min-w-0 flex flex-col gap-1.5">
           <p className="text-[#0A0A0A] text-base font-semibold leading-snug">{item.name}</p>

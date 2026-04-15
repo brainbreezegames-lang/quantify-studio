@@ -33,7 +33,7 @@ export default function NumericKeypad({ item, value, accentColor, onInput, onBac
       />
 
       {/* Sheet */}
-      <div className="absolute bottom-0 left-0 right-0 bg-white z-30 rounded-t-3xl sheet-enter overflow-hidden">
+      <div data-spot="keypad" className="absolute bottom-0 left-0 right-0 bg-white z-30 rounded-t-3xl sheet-enter overflow-hidden">
         {/* Handle */}
         <div className="flex justify-center pt-3 pb-1">
           <div className="w-10 h-1 bg-[#D4D4D4] rounded-full" />
