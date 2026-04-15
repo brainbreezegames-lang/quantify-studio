@@ -31,9 +31,9 @@ export default function PhoneFrame({ children, overlay }: Props) {
   useEffect(() => {
     function update() {
       const h = window.innerHeight
-      // Leave headroom for subtitles (~160px) and top bar (~40px)
-      const usable = h - 200
-      const s = Math.min(1, usable / 870)
+      // Leave just enough for the caption (~90px) and top pill (~40px)
+      const usable = h - 130
+      const s = Math.min(1.05, usable / 870)
       setScale(s)
     }
     update()
