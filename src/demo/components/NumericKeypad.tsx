@@ -1,6 +1,5 @@
+import { Check } from 'lucide-react'
 import { ShipmentItem } from '../data'
-
-const SW = { fontFamily: 'Switzer, sans-serif' }
 
 interface Props {
   item: ShipmentItem
@@ -42,22 +41,22 @@ export default function NumericKeypad({ item, value, accentColor, onInput, onBac
 
         {/* Item name */}
         <div className="px-6 pt-2 pb-4">
-          <p className="text-[#737373] text-sm" style={SW}>{item.name}</p>
+          <p className="text-[#737373] text-sm">{item.name}</p>
 
           {/* Count display */}
           <div className="flex items-baseline gap-2 mt-1">
             <span
               className="text-5xl font-semibold"
-              style={{ color: isOver ? '#DC2626' : '#0A0A0A', fontFamily: 'Switzer, sans-serif' }}
+              style={{ color: isOver ? '#DC2626' : '#0A0A0A' }}
             >
               {displayValue}
             </span>
-            <span className="text-lg text-[#737373]" style={SW}>of {item.expected}</span>
+            <span className="text-lg text-[#737373]">of {item.expected}</span>
           </div>
 
           {/* Over-count warning */}
           {isOver && (
-            <p className="text-[#DC2626] text-sm mt-1" style={SW}>
+            <p className="text-[#DC2626] text-sm mt-1">
               Over by {parsed! - item.expected} — double-check your count
             </p>
           )}
@@ -76,8 +75,9 @@ export default function NumericKeypad({ item, value, accentColor, onInput, onBac
                     <button
                       key={ki}
                       onClick={onBackspace}
-                      className="flex-1 h-14 rounded-2xl bg-[#F5F5F5] flex items-center justify-center no-select active:bg-[#E5E5E5] transition-colors"
+                      className="flex-1 h-14 rounded-2xl bg-[#F5F5F5] flex items-center justify-center no-select pressable"
                     >
+                      {/* Custom backspace SVG — unique keypad element */}
                       <svg width="22" height="16" viewBox="0 0 24 20" fill="none" stroke="#0A0A0A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M21 4H8l-7 8 7 8h13a2 2 0 002-2V6a2 2 0 00-2-2z"/>
                         <line x1="18" y1="9" x2="12" y2="15"/>
@@ -90,8 +90,7 @@ export default function NumericKeypad({ item, value, accentColor, onInput, onBac
                   <button
                     key={ki}
                     onClick={() => onInput(key)}
-                    className="flex-1 h-14 rounded-2xl bg-[#F5F5F5] text-xl font-semibold text-[#0A0A0A] no-select active:bg-[#E5E5E5] transition-colors"
-                    style={SW}
+                    className="flex-1 h-14 rounded-2xl bg-[#F5F5F5] text-xl font-semibold text-[#0A0A0A] no-select pressable"
                   >
                     {key}
                   </button>
@@ -106,11 +105,11 @@ export default function NumericKeypad({ item, value, accentColor, onInput, onBac
           <button
             onClick={onConfirm}
             disabled={isZero}
-            className="w-full h-14 rounded-2xl text-white text-base font-semibold flex items-center justify-center gap-2 no-select active:opacity-90 transition-opacity disabled:opacity-40"
-            style={{ backgroundColor: accentColor, fontFamily: 'Switzer, sans-serif' }}
+            className="w-full h-14 rounded-2xl text-white text-base font-semibold flex items-center justify-center gap-2 no-select pressable disabled:opacity-40"
+            style={{ backgroundColor: accentColor }}
           >
             Confirm
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <Check size={18} color="#fff" strokeWidth={2.5} />
           </button>
         </div>
       </div>

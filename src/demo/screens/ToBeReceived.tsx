@@ -1,6 +1,5 @@
+import { Check } from 'lucide-react'
 import { Shipment } from '../data'
-
-const SW = { fontFamily: 'Switzer, sans-serif' }
 
 interface Props {
   shipment: Shipment
@@ -31,8 +30,8 @@ export default function ToBeReceived({ shipment, summary, onDone }: Props) {
       <div className="px-5 pt-4 pb-5 flex items-center gap-3" style={{ backgroundColor: accentColor }}>
         <div className="w-9" />
         <div className="flex-1 text-center">
-          <p className="text-white text-base font-semibold" style={SW}>{shipment.id}</p>
-          <p className="text-white/70 text-xs" style={SW}>{statusText}</p>
+          <p className="text-white text-base font-semibold">{shipment.id}</p>
+          <p className="text-white/70 text-xs">{statusText}</p>
         </div>
         <div className="w-9" />
       </div>
@@ -43,11 +42,11 @@ export default function ToBeReceived({ shipment, summary, onDone }: Props) {
           <div className="px-5 pt-5 pb-4 border-b border-[#F0F0F0]">
             <span
               className="text-[10px] font-bold px-2 py-0.5 rounded-full inline-block mb-3"
-              style={{ backgroundColor: isReturn ? '#FEF3C7' : '#EEF2FF', color: accentColor, fontFamily: 'Switzer, sans-serif' }}
+              style={{ backgroundColor: isReturn ? '#FEF3C7' : '#EEF2FF', color: accentColor }}
             >
               {isReturn ? 'RETURN SUBMITTED' : 'TO BE RECEIVED'}
             </span>
-            <p className="text-[#0A0A0A] text-xl font-semibold" style={SW}>{shipment.jobsite}</p>
+            <p className="text-[#0A0A0A] text-xl font-semibold">{shipment.jobsite}</p>
           </div>
 
           {/* Stepper */}
@@ -61,7 +60,7 @@ export default function ToBeReceived({ shipment, summary, onDone }: Props) {
                     style={{ backgroundColor: step.done ? accentColor : '#F0F0F0' }}
                   >
                     {step.done ? (
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <Check size={12} color="#fff" strokeWidth={3} />
                     ) : (
                       <div className="w-2 h-2 rounded-full bg-[#D4D4D4]" />
                     )}
@@ -72,8 +71,8 @@ export default function ToBeReceived({ shipment, summary, onDone }: Props) {
                 </div>
                 {/* Label */}
                 <div className="pb-8 last:pb-0">
-                  <p className="text-[#0A0A0A] text-sm font-semibold" style={SW}>{step.label}</p>
-                  <p className="text-[#737373] text-xs mt-0.5" style={SW}>{step.sub}</p>
+                  <p className="text-[#0A0A0A] text-sm font-semibold">{step.label}</p>
+                  <p className="text-[#737373] text-xs mt-0.5">{step.sub}</p>
                 </div>
               </div>
             ))}
@@ -81,7 +80,7 @@ export default function ToBeReceived({ shipment, summary, onDone }: Props) {
 
           {/* Info */}
           <div className="px-5 py-4 bg-[#EEF2FF] border-t border-[#F0F0F0]">
-            <p className="text-[#1E3FFF] text-sm" style={SW}>
+            <p className="text-[#1E3FFF] text-sm">
               {isReturn
                 ? 'Rent stops after the office confirms this return.'
                 : "Rent doesn't start until the office confirms and the truck arrives at the customer."}
@@ -92,16 +91,16 @@ export default function ToBeReceived({ shipment, summary, onDone }: Props) {
         {/* Truck note (delivery only) */}
         {!isReturn && (
           <div className="bg-white rounded-2xl px-5 py-4">
-            <p className="text-[#0A0A0A] text-sm font-semibold" style={SW}>{shipment.truckLabel} sent</p>
-            <p className="text-[#737373] text-sm mt-1" style={SW}>Quantify will auto-generate the next loading session for the remaining items on Truck 2.</p>
+            <p className="text-[#0A0A0A] text-sm font-semibold">{shipment.truckLabel} sent</p>
+            <p className="text-[#737373] text-sm mt-1">Quantify will auto-generate the next loading session for the remaining items on Truck 2.</p>
           </div>
         )}
 
         {/* Summary */}
         <div className="bg-white rounded-2xl overflow-hidden">
           <div className="px-5 py-4 border-b border-[#F0F0F0] flex items-center justify-between">
-            <p className="text-[#0A0A0A] text-sm font-semibold" style={SW}>Submitted summary</p>
-            <span className="text-[#1E3FFF] text-sm font-semibold" style={SW}>View all</span>
+            <p className="text-[#0A0A0A] text-sm font-semibold">Submitted summary</p>
+            <span className="text-[#1E3FFF] text-sm font-semibold">View all</span>
           </div>
           <div className="grid grid-cols-3 divide-x divide-[#F0F0F0]">
             <StatCell value={String(summary.units)} label="Units" color="#0A0A0A" />
@@ -113,8 +112,8 @@ export default function ToBeReceived({ shipment, summary, onDone }: Props) {
         {/* Back button */}
         <button
           onClick={onDone}
-          className="w-full h-14 rounded-2xl text-white text-base font-semibold no-select active:opacity-90"
-          style={{ backgroundColor: accentColor, fontFamily: 'Switzer, sans-serif' }}
+          className="w-full h-14 rounded-2xl text-white text-base font-semibold no-select pressable"
+          style={{ backgroundColor: accentColor }}
         >
           View other shipments
         </button>
@@ -126,8 +125,8 @@ export default function ToBeReceived({ shipment, summary, onDone }: Props) {
 function StatCell({ value, label, color }: { value: string; label: string; color: string }) {
   return (
     <div className="py-4 flex flex-col items-center gap-0.5">
-      <span className="text-xl font-semibold" style={{ color, fontFamily: 'Switzer, sans-serif' }}>{value}</span>
-      <span className="text-xs text-[#737373]" style={SW}>{label}</span>
+      <span className="text-xl font-semibold" style={{ color }}>{value}</span>
+      <span className="text-xs text-[#737373]">{label}</span>
     </div>
   )
 }

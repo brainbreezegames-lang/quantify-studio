@@ -1,7 +1,6 @@
 import { useState } from 'react'
+import { Menu, MapPin, ChevronRight, Plus, Inbox } from 'lucide-react'
 import { Shipment, ShipmentStatus, totalExpected, statusLabel, statusColors } from '../data'
-
-const SW = { fontFamily: 'Switzer, sans-serif' }
 
 const FILTERS: { key: ShipmentStatus | 'all'; label: string }[] = [
   { key: 'all', label: 'All' },
@@ -37,34 +36,34 @@ export default function ShipmentList({ shipments, selectedLocation, onSelect, on
       {/* Blue Header */}
       <div className="bg-[#1E3FFF] px-5 pt-4 pb-5">
         <div className="flex items-center justify-between mb-3">
-          <button onClick={onOpenMenu} className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center no-select">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <button onClick={onOpenMenu} className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center no-select pressable">
+            <Menu size={18} color="#fff" strokeWidth={2} />
           </button>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5 bg-white/15 rounded-full px-3 py-1">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="10"/></svg>
-              <span className="text-white text-xs font-semibold" style={SW}>Synced 11:05</span>
+              <div className="w-2 h-2 rounded-full bg-white" />
+              <span className="text-white text-xs font-semibold">Synced 11:05</span>
             </div>
-            <button onClick={onOpenProfile} className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center no-select">
-              <span className="text-white text-xs font-bold" style={SW}>JD</span>
+            <button onClick={onOpenProfile} className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center no-select pressable">
+              <span className="text-white text-xs font-bold">JD</span>
             </button>
           </div>
         </div>
-        <h1 className="text-white text-2xl font-semibold" style={SW}>Shipments</h1>
-        <p className="text-white/70 text-sm mt-0.5" style={SW}>{shipments.length} shipments · Apr 7 – Apr 28</p>
+        <h1 className="text-white text-2xl font-semibold">Shipments</h1>
+        <p className="text-white/70 text-sm mt-0.5">{shipments.length} shipments · Apr 7 – Apr 28</p>
       </div>
 
       {/* Location Bar */}
       <button
         onClick={onOpenLocation}
-        className="bg-white flex items-center gap-3 px-5 py-3.5 w-full no-select active:bg-[#F5F5F5] transition-colors"
+        className="bg-white flex items-center gap-3 px-5 py-3.5 w-full no-select pressable"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1E3FFF" strokeWidth="2" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <MapPin size={16} color="#1E3FFF" strokeWidth={2} />
         <div className="flex-1 text-left">
-          <p className="text-[#0A0A0A] text-sm font-semibold leading-none" style={SW}>{selectedLocation.replace(' Branch Office', '').replace(' Branch', '')}</p>
-          <p className="text-[#737373] text-xs mt-0.5" style={SW}>Branch Office · tap to change</p>
+          <p className="text-[#0A0A0A] text-sm font-semibold leading-none">{selectedLocation.replace(' Branch Office', '').replace(' Branch', '')}</p>
+          <p className="text-[#737373] text-xs mt-0.5">Branch Office · tap to change</p>
         </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#737373" strokeWidth="2" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        <ChevronRight size={16} color="#737373" strokeWidth={2} />
       </button>
 
       <div className="h-px bg-[#F0F0F0]" />
@@ -82,14 +81,13 @@ export default function ShipmentList({ shipments, selectedLocation, onSelect, on
                 style={{
                   backgroundColor: active ? '#1E3FFF' : '#F5F5F5',
                   color: active ? '#FFFFFF' : '#525252',
-                  fontFamily: 'Switzer, sans-serif',
                 }}
               >
                 {f.label}
                 {f.key === 'NEEDS-COUNT' && needsCount > 0 && (
                   <span
                     className="text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: active ? 'rgba(255,255,255,0.3)' : '#1E3FFF', color: active ? '#fff' : '#fff' }}
+                    style={{ backgroundColor: active ? 'rgba(255,255,255,0.3)' : '#1E3FFF', color: '#fff' }}
                   >
                     {needsCount}
                   </span>
@@ -107,29 +105,36 @@ export default function ShipmentList({ shipments, selectedLocation, onSelect, on
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="w-14 h-14 rounded-full bg-[#F5F5F5] flex items-center justify-center mb-3">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#A3A3A3" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+              <Inbox size={24} color="#A3A3A3" strokeWidth={1.5} />
             </div>
-            <p className="text-[#0A0A0A] text-base font-semibold" style={SW}>No shipments</p>
-            <p className="text-[#737373] text-sm mt-1" style={SW}>Nothing matching this filter.</p>
+            <p className="text-[#0A0A0A] text-base font-semibold">No shipments</p>
+            <p className="text-[#737373] text-sm mt-1">Nothing matching this filter.</p>
           </div>
         ) : (
-          filtered.map(s => <ShipmentCard key={s.id} shipment={s} onTap={() => onSelect(s.id)} />)
+          filtered.map((s, idx) => (
+            <ShipmentCard
+              key={s.id}
+              shipment={s}
+              idx={idx}
+              onTap={() => onSelect(s.id)}
+            />
+          ))
         )}
       </div>
 
       {/* FAB */}
       <button
         onClick={onOpenCreateNew}
-        className="fixed bottom-8 right-6 md:absolute w-14 h-14 rounded-full bg-[#1E3FFF] shadow-lg flex items-center justify-center no-select active:scale-95 transition-transform z-10"
+        className="fixed bottom-8 right-6 md:absolute w-14 h-14 rounded-full bg-[#1E3FFF] shadow-lg flex items-center justify-center no-select pressable z-10"
         style={{ boxShadow: '0 4px 20px rgba(30,63,255,0.4)' }}
       >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <Plus size={24} color="#fff" strokeWidth={2.5} />
       </button>
     </div>
   )
 }
 
-function ShipmentCard({ shipment, onTap }: { shipment: Shipment; onTap: () => void }) {
+function ShipmentCard({ shipment, idx, onTap }: { shipment: Shipment; idx: number; onTap: () => void }) {
   const colors = statusColors(shipment.status)
   const label = statusLabel(shipment.status)
   const total = totalExpected(shipment.items)
@@ -139,44 +144,44 @@ function ShipmentCard({ shipment, onTap }: { shipment: Shipment; onTap: () => vo
   return (
     <button
       onClick={onTap}
-      className="w-full bg-white rounded-2xl p-4 text-left no-select active:scale-[0.98] transition-transform"
-      style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
+      className="stagger-item w-full bg-white rounded-2xl p-4 text-left no-select active:scale-[0.98] transition-transform"
+      style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.06)', animationDelay: `${idx * 40}ms` }}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           {/* Top row: ID + badge */}
           <div className="flex items-center gap-2 mb-2 flex-wrap">
-            <span className="text-[#737373] text-xs font-medium" style={SW}>{shipment.id}</span>
+            <span className="text-[#737373] text-xs font-medium">{shipment.id}</span>
             <span
               className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-              style={{ backgroundColor: colors.bg, color: colors.text, fontFamily: 'Switzer, sans-serif' }}
+              style={{ backgroundColor: colors.bg, color: colors.text }}
             >
               {label}
             </span>
           </div>
 
           {/* Job site */}
-          <p className="text-[#0A0A0A] text-base font-semibold leading-snug" style={SW}>{shipment.jobsiteId} — {shipment.jobsite}</p>
-          <p className="text-[#737373] text-sm mt-0.5" style={SW}>{shipment.location}</p>
+          <p className="text-[#0A0A0A] text-base font-semibold leading-snug">{shipment.jobsiteId} — {shipment.jobsite}</p>
+          <p className="text-[#737373] text-sm mt-0.5">{shipment.location}</p>
 
           {/* Meta */}
           <div className="flex items-center gap-3 mt-2 flex-wrap">
-            <span className="text-[#737373] text-xs" style={SW}>Planned {shipment.date.replace(/\w+, /, '')}</span>
-            {total > 0 && <span className="text-[#737373] text-xs" style={SW}>{total} pcs</span>}
-            {shipment.items.length === 0 && <span className="text-[#737373] text-xs" style={SW}>BOM blank</span>}
+            <span className="text-[#737373] text-xs">Planned {shipment.date.replace(/\w+, /, '')}</span>
+            {total > 0 && <span className="text-[#737373] text-xs">{total} pcs</span>}
+            {shipment.items.length === 0 && <span className="text-[#737373] text-xs">BOM blank</span>}
           </div>
 
           {/* Sub-label */}
           {needsCount && (
-            <p className="text-[#1E3FFF] text-xs font-semibold mt-2" style={SW}>Needs your count</p>
+            <p className="text-[#1E3FFF] text-xs font-semibold mt-2">Needs your count</p>
           )}
           {isDiscrepancy && shipment.discrepancy && (
-            <p className="text-[#DC2626] text-xs font-semibold mt-2" style={SW}>
+            <p className="text-[#DC2626] text-xs font-semibold mt-2">
               Count mismatch (−{shipment.discrepancy.expected - shipment.discrepancy.counted}) · Resolve on desktop
             </p>
           )}
           {shipment.status === 'IN-TRANSIT' && (
-            <p className="text-[#0369A1] text-xs font-semibold mt-2" style={SW}>En route to job site</p>
+            <p className="text-[#0369A1] text-xs font-semibold mt-2">En route to job site</p>
           )}
         </div>
 
@@ -186,7 +191,7 @@ function ShipmentCard({ shipment, onTap }: { shipment: Shipment; onTap: () => vo
             className="w-8 h-8 rounded-full flex items-center justify-center"
             style={{ backgroundColor: colors.bg }}
           >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={colors.text} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            <ChevronRight size={13} color={colors.text} strokeWidth={2.5} />
           </div>
         </div>
       </div>

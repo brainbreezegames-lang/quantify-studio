@@ -1,6 +1,5 @@
 import { useState } from 'react'
-
-const SW = { fontFamily: 'Switzer, sans-serif' }
+import { X, Check } from 'lucide-react'
 
 interface Props {
   itemName: string
@@ -15,12 +14,12 @@ export default function PhotoCapture({ itemName, shipmentId, onClose }: Props) {
     <div className="flex flex-col h-full bg-black">
       {/* Top bar */}
       <div className="flex items-center justify-between px-5 pt-5 pb-3 bg-gradient-to-b from-black/70 to-transparent absolute top-0 left-0 right-0 z-10">
-        <button onClick={onClose} className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center no-select">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <button onClick={onClose} className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center no-select pressable">
+          <X size={18} color="#fff" strokeWidth={2} />
         </button>
         <div className="text-center">
-          <p className="text-white text-sm font-semibold" style={SW}>Photo for</p>
-          <p className="text-white/70 text-xs" style={SW}>{itemName} · {shipmentId}</p>
+          <p className="text-white text-sm font-semibold">Photo for</p>
+          <p className="text-white/70 text-xs">{itemName} · {shipmentId}</p>
         </div>
         <div className="w-9" />
       </div>
@@ -55,9 +54,9 @@ export default function PhotoCapture({ itemName, shipmentId, onClose }: Props) {
           <div className="w-full h-full bg-[#3D3D3D] flex items-center justify-center">
             <div className="text-center">
               <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-3">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <Check size={32} color="#fff" strokeWidth={2} />
               </div>
-              <p className="text-white text-base font-semibold" style={SW}>Photo captured</p>
+              <p className="text-white text-base font-semibold">Photo captured</p>
             </div>
           </div>
         )}
@@ -68,7 +67,7 @@ export default function PhotoCapture({ itemName, shipmentId, onClose }: Props) {
         {/* Tags */}
         <div className="flex items-center gap-2 mb-6 flex-wrap">
           {[shipmentId, itemName.split(' ').slice(0, 2).join(' '), 'Damaged'].map(tag => (
-            <span key={tag} className="px-3 py-1 rounded-full bg-white/20 text-white text-xs font-semibold" style={SW}>{tag}</span>
+            <span key={tag} className="px-3 py-1 rounded-full bg-white/20 text-white text-xs font-semibold">{tag}</span>
           ))}
         </div>
 
@@ -79,10 +78,10 @@ export default function PhotoCapture({ itemName, shipmentId, onClose }: Props) {
             {/* Shutter */}
             <button
               onClick={() => setCaptured(true)}
-              className="w-18 h-18 rounded-full border-4 border-white flex items-center justify-center no-select active:scale-95 transition-transform"
+              className="rounded-full border-4 border-white flex items-center justify-center no-select pressable"
               style={{ width: 72, height: 72 }}
             >
-              <div className="w-14 h-14 rounded-full bg-white" style={{ width: 56, height: 56 }} />
+              <div className="rounded-full bg-white" style={{ width: 56, height: 56 }} />
             </button>
             <div className="w-10 h-10" />
           </div>
@@ -90,15 +89,13 @@ export default function PhotoCapture({ itemName, shipmentId, onClose }: Props) {
           <div className="flex gap-3">
             <button
               onClick={() => setCaptured(false)}
-              className="flex-1 h-12 rounded-2xl bg-white/20 text-white text-sm font-semibold no-select"
-              style={SW}
+              className="flex-1 h-12 rounded-2xl bg-white/20 text-white text-sm font-semibold no-select pressable"
             >
               Retake
             </button>
             <button
               onClick={onClose}
-              className="flex-1 h-12 rounded-2xl bg-white text-[#0A0A0A] text-sm font-semibold no-select"
-              style={SW}
+              className="flex-1 h-12 rounded-2xl bg-white text-[#0A0A0A] text-sm font-semibold no-select pressable"
             >
               Use photo
             </button>
@@ -106,7 +103,7 @@ export default function PhotoCapture({ itemName, shipmentId, onClose }: Props) {
         )}
 
         {!captured && (
-          <p className="text-white/50 text-xs text-center mt-3" style={SW}>Tags auto-attached. Just tap.</p>
+          <p className="text-white/50 text-xs text-center mt-3">Tags auto-attached. Just tap.</p>
         )}
       </div>
     </div>

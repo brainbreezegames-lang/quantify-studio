@@ -1,35 +1,130 @@
-/* Screen slide animations */
+/* ─── Custom easing curves (Emil Kowalski) ──────────────────────────────────── */
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* ─── Screen slide animations ───────────────────────────────────────────────── */
 @keyframes screenSlideInRight {
-  from { transform: translateX(100%); }
-  to   { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+    opacity: 0.85;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @keyframes screenSlideInLeft {
-  from { transform: translateX(-30%); opacity: 0.7; }
-  to   { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(-24%);
+    opacity: 0.7;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 .screen-enter {
-  animation: screenSlideInRight 280ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation: screenSlideInRight 300ms var(--ease-out) forwards;
 }
 
 .screen-enter-back {
-  animation: screenSlideInLeft 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation: screenSlideInLeft 260ms var(--ease-out) forwards;
 }
 
-/* Keypad bottom sheet */
+/* ─── Bottom sheet ──────────────────────────────────────────────────────────── */
 @keyframes sheetSlideUp {
-  from { transform: translateY(100%); }
-  to   { transform: translateY(0); }
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 .sheet-enter {
-  animation: sheetSlideUp 300ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  animation: sheetSlideUp 320ms var(--ease-drawer) forwards;
 }
 
-/* Prevent text selection on tap targets */
+/* ─── Side nav (from left) ──────────────────────────────────────────────────── */
+@keyframes navSlideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0.7;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.nav-enter {
+  animation: navSlideIn 280ms var(--ease-out) forwards;
+}
+
+/* ─── Button press ──────────────────────────────────────────────────────────── */
+.pressable {
+  transition: transform 160ms var(--ease-out), opacity 160ms ease;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pressable:active {
+  transform: scale(0.97);
+}
+
+/* ─── No select (tap targets) ───────────────────────────────────────────────── */
 .no-select {
   -webkit-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .screen-enter,
+  .screen-enter-back,
+  .sheet-enter,
+  .nav-enter {
+    animation: none !important;
+  }
+
+  .pressable:active {
+    transform: none;
+    opacity: 0.7;
+  }
+}
+
+/* ─── Staggered list item entrance ──────────────────────────────────────────── */
+@keyframes itemFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-item {
+  animation: itemFadeUp 240ms var(--ease-out) both;
+}
+
+.stagger-item:nth-child(1) { animation-delay: 0ms; }
+.stagger-item:nth-child(2) { animation-delay: 40ms; }
+.stagger-item:nth-child(3) { animation-delay: 80ms; }
+.stagger-item:nth-child(4) { animation-delay: 120ms; }
+.stagger-item:nth-child(5) { animation-delay: 160ms; }
+.stagger-item:nth-child(6) { animation-delay: 200ms; }
+.stagger-item:nth-child(7) { animation-delay: 240ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .stagger-item { animation: none; }
 }

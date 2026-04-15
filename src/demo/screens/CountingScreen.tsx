@@ -1,8 +1,7 @@
 import { useState } from 'react'
+import { ChevronLeft, Camera, Search, Plus, Flag, Check, AlertTriangle } from 'lucide-react'
 import { Shipment, ShipmentItem, shortfall, isShort, isExplained, flagBadge, countedItems, countedUnits, totalExpected } from '../data'
 import NumericKeypad from '../components/NumericKeypad'
-
-const SW = { fontFamily: 'Switzer, sans-serif' }
 
 type TabFilter = 'all' | 'pending' | 'done' | 'flagged'
 
@@ -67,15 +66,15 @@ export default function CountingScreen({
     <div className="flex flex-col min-h-full bg-[#F5F5F5] relative">
       {/* Header */}
       <div className="px-5 pt-4 pb-4 flex items-center gap-3" style={{ backgroundColor: accentColor }}>
-        <button onClick={onBack} className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center no-select flex-shrink-0">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        <button onClick={onBack} className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center no-select pressable flex-shrink-0">
+          <ChevronLeft size={20} color="#fff" strokeWidth={2} />
         </button>
         <div className="flex-1 text-center">
-          <p className="text-white text-base font-semibold" style={SW}>{shipment.id}</p>
-          <p className="text-white/70 text-xs" style={SW}>{isReturn ? 'Pre-Return · Counting' : `${shipment.truckLabel}`}</p>
+          <p className="text-white text-base font-semibold">{shipment.id}</p>
+          <p className="text-white/70 text-xs">{isReturn ? 'Pre-Return · Counting' : `${shipment.truckLabel}`}</p>
         </div>
-        <button onClick={() => onPhoto(items[0]?.id ?? '')} className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center no-select flex-shrink-0">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <button onClick={() => onPhoto(items[0]?.id ?? '')} className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center no-select pressable flex-shrink-0">
+          <Camera size={18} color="#fff" strokeWidth={2} />
         </button>
       </div>
 
@@ -85,11 +84,11 @@ export default function CountingScreen({
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0"
               style={{ backgroundColor: isReturn ? '#FEF3C7' : '#EEF2FF' }}>
-              <span className="text-sm font-semibold" style={{ color: accentColor, fontFamily: 'Switzer, sans-serif' }}>{pct}%</span>
+              <span className="text-sm font-semibold" style={{ color: accentColor }}>{pct}%</span>
             </div>
             <div className="flex-1">
-              <p className="text-[#0A0A0A] text-base font-semibold" style={SW}>{doneItems} of {totalItems} items</p>
-              <p className="text-[#737373] text-sm" style={SW}>{doneUnits} of {totalUnits} units</p>
+              <p className="text-[#0A0A0A] text-base font-semibold">{doneItems} of {totalItems} items</p>
+              <p className="text-[#737373] text-sm">{doneUnits} of {totalUnits} units</p>
             </div>
           </div>
           <div className="h-2 bg-[#EFEFEF] rounded-full overflow-hidden">
@@ -98,22 +97,21 @@ export default function CountingScreen({
         </div>
       ) : (
         <div className="bg-white px-5 py-4">
-          <p className="text-[#0A0A0A] text-base font-semibold" style={SW}>0 items added</p>
-          <p className="text-[#737373] text-sm mt-0.5" style={SW}>Add items as you count them off the truck</p>
+          <p className="text-[#0A0A0A] text-base font-semibold">0 items added</p>
+          <p className="text-[#737373] text-sm mt-0.5">Add items as you count them off the truck</p>
         </div>
       )}
 
       {/* Search */}
       <div className="bg-white px-4 pb-3 border-b border-[#F0F0F0]">
         <div className="flex items-center gap-3 bg-[#F5F5F5] rounded-xl px-3 py-2.5">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#A3A3A3" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <Search size={15} color="#A3A3A3" strokeWidth={2} />
           <input
             type="text"
             placeholder="Search items…"
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="flex-1 bg-transparent text-sm text-[#0A0A0A] placeholder:text-[#A3A3A3] outline-none"
-            style={SW}
           />
         </div>
       </div>
@@ -132,7 +130,6 @@ export default function CountingScreen({
                   style={{
                     backgroundColor: active ? accentColor : '#F5F5F5',
                     color: active ? '#FFFFFF' : '#525252',
-                    fontFamily: 'Switzer, sans-serif',
                   }}
                 >
                   {tab.label}
@@ -151,10 +148,10 @@ export default function CountingScreen({
         {isEmptyBOM || items.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center px-8">
             <div className="w-14 h-14 rounded-full bg-[#F5F5F5] flex items-center justify-center mb-3">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#A3A3A3" strokeWidth="1.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <Plus size={24} color="#A3A3A3" strokeWidth={1.5} />
             </div>
-            <p className="text-[#0A0A0A] text-base font-semibold" style={SW}>Nothing counted yet</p>
-            <p className="text-[#737373] text-sm mt-1" style={SW}>Tap the button below to add items as they come off the truck.</p>
+            <p className="text-[#0A0A0A] text-base font-semibold">Nothing counted yet</p>
+            <p className="text-[#737373] text-sm mt-1">Tap the button below to add items as they come off the truck.</p>
           </div>
         ) : (
           visibleItems.map((item, idx) => (
@@ -177,21 +174,21 @@ export default function CountingScreen({
         {isReturn && (
           <button
             onClick={onAddItem}
-            className="w-full h-12 rounded-2xl border-2 text-sm font-semibold flex items-center justify-center gap-2 no-select"
-            style={{ borderColor: accentColor, color: accentColor, fontFamily: 'Switzer, sans-serif' }}
+            className="w-full h-12 rounded-2xl border-2 text-sm font-semibold flex items-center justify-center gap-2 no-select pressable"
+            style={{ borderColor: accentColor, color: accentColor }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <Plus size={16} strokeWidth={2.5} />
             Add item from catalog
           </button>
         )}
         {canReview && (
           <button
             onClick={onReview}
-            className="w-full h-14 rounded-2xl text-white text-base font-semibold flex items-center justify-center gap-2 no-select active:opacity-90"
-            style={{ backgroundColor: accentColor, fontFamily: 'Switzer, sans-serif' }}
+            className="w-full h-14 rounded-2xl text-white text-base font-semibold flex items-center justify-center gap-2 no-select pressable"
+            style={{ backgroundColor: accentColor }}
           >
             Review
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            <ChevronLeft size={18} color="#fff" strokeWidth={2.5} style={{ transform: 'rotate(180deg)' }} />
           </button>
         )}
       </div>
@@ -264,19 +261,19 @@ function ItemRow({ item, isReturn, accentColor, isActive, isLast, onTap, onFlag 
     <div>
       <div className="flex items-center gap-3 px-5 py-5" style={{ backgroundColor: rowBg }}>
         <div className="flex-1 min-w-0 flex flex-col gap-1.5">
-          <p className="text-[#0A0A0A] text-base font-semibold leading-snug" style={SW}>{item.name}</p>
-          <p className="text-[#737373] text-sm" style={SW}>{item.subtitle}</p>
+          <p className="text-[#0A0A0A] text-base font-semibold leading-snug">{item.name}</p>
+          <p className="text-[#737373] text-sm">{item.subtitle}</p>
           {badge && (
             <div
               className="flex items-center gap-1 px-2 py-1 rounded-md self-start"
               style={{ backgroundColor: badge.color === 'red' ? '#DC2626' : badge.color === 'green' ? '#16A34A' : '#F59E0B' }}
             >
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-              <span className="text-white text-[11px] font-semibold" style={SW}>{badge.label}</span>
+              <AlertTriangle size={10} color="#fff" strokeWidth={2.5} />
+              <span className="text-white text-[11px] font-semibold">{badge.label}</span>
             </div>
           )}
           {hasShortfall && !explained && (
-            <p className="text-[#92400E] text-xs" style={SW}>Short {gap} · tap flag to explain</p>
+            <p className="text-[#92400E] text-xs">Short {gap} · tap flag to explain</p>
           )}
         </div>
 
@@ -284,31 +281,31 @@ function ItemRow({ item, isReturn, accentColor, isActive, isLast, onTap, onFlag 
         <button
           onClick={onFlag}
           disabled={!isCounted && !isReturn}
-          className="w-12 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 no-select active:opacity-70 transition-opacity disabled:opacity-25"
+          className="w-12 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 no-select pressable disabled:opacity-25"
           style={{ backgroundColor: flagBg }}
         >
           {explained && !isReturn ? (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={flagColor} strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <Check size={20} color={flagColor} strokeWidth={2.5} />
           ) : (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill={flagFilled ? flagColor : 'none'} stroke={flagColor} strokeWidth="2" strokeLinecap="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+            <Flag size={20} color={flagColor} strokeWidth={2} fill={flagFilled ? flagColor : 'none'} />
           )}
         </button>
 
         {/* Count box */}
         <button
           onClick={onTap}
-          className="w-[72px] h-14 rounded-2xl flex flex-col items-center justify-center no-select active:opacity-70 transition-opacity flex-shrink-0"
+          className="w-[72px] h-14 rounded-2xl flex flex-col items-center justify-center no-select pressable flex-shrink-0"
           style={{ backgroundColor: boxBg, border: boxBorder, outline: isActive ? `2px solid ${accentColor}` : 'none' }}
         >
           {isCounted ? (
             <>
-              <span className="text-xl font-semibold" style={{ color: boxTextPrimary, fontFamily: 'Switzer, sans-serif' }}>{item.counted}</span>
-              <span className="text-[11px] font-medium text-[#737373]" style={SW}>of {item.expected}</span>
+              <span className="text-xl font-semibold" style={{ color: boxTextPrimary }}>{item.counted}</span>
+              <span className="text-[11px] font-medium text-[#737373]">of {item.expected}</span>
             </>
           ) : (
             <>
-              <span className="text-base font-semibold" style={{ color: boxTextPrimary, fontFamily: 'Switzer, sans-serif' }}>Tap</span>
-              <span className="text-[11px] font-medium" style={{ color: boxTextPrimary, fontFamily: 'Switzer, sans-serif' }}>of {item.expected}</span>
+              <span className="text-base font-semibold" style={{ color: boxTextPrimary }}>Tap</span>
+              <span className="text-[11px] font-medium" style={{ color: boxTextPrimary }}>of {item.expected}</span>
             </>
           )}
         </button>

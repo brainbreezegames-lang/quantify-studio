@@ -1,4 +1,4 @@
-const SW = { fontFamily: 'Switzer, sans-serif' }
+import { X } from 'lucide-react'
 
 interface Props {
   onClose: () => void
@@ -16,21 +16,21 @@ export default function ProfileSheet({ onClose }: Props) {
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#F0F0F0]">
-          <p className="text-[#0A0A0A] text-lg font-semibold" style={SW}>Profile</p>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F5F5F5] flex items-center justify-center no-select">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#737373" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <p className="text-[#0A0A0A] text-lg font-semibold">Profile</p>
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F5F5F5] flex items-center justify-center no-select pressable">
+            <X size={14} color="#737373" strokeWidth={2} />
           </button>
         </div>
 
         {/* Identity */}
         <div className="px-6 py-5 flex items-center gap-4 border-b border-[#F0F0F0]">
           <div className="w-16 h-16 rounded-full bg-[#1E3FFF] flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-xl font-bold" style={SW}>JD</span>
+            <span className="text-white text-xl font-bold">JD</span>
           </div>
           <div>
-            <p className="text-[#0A0A0A] text-lg font-semibold" style={SW}>John Doe</p>
-            <p className="text-[#737373] text-sm" style={SW}>Yard Worker</p>
-            <p className="text-[#A3A3A3] text-xs mt-0.5" style={SW}>Active since Jan 2024</p>
+            <p className="text-[#0A0A0A] text-lg font-semibold">John Doe</p>
+            <p className="text-[#737373] text-sm">Yard Worker</p>
+            <p className="text-[#A3A3A3] text-xs mt-0.5">Active since Jan 2024</p>
           </div>
         </div>
 
@@ -43,7 +43,7 @@ export default function ProfileSheet({ onClose }: Props) {
 
         {/* Today's stats */}
         <div className="px-6 py-4 border-b border-[#F0F0F0]">
-          <p className="text-[#737373] text-[11px] font-bold tracking-widest mb-3" style={SW}>TODAY'S STATS</p>
+          <p className="text-[#737373] text-[11px] font-bold tracking-widest mb-3">TODAY'S STATS</p>
           <div className="flex gap-4">
             <StatPill value="1" label="Submitted" color="#16A34A" />
             <StatPill value="2" label="In Progress" color="#D97706" />
@@ -53,7 +53,7 @@ export default function ProfileSheet({ onClose }: Props) {
 
         {/* Sign out */}
         <div className="px-6 py-5">
-          <button className="w-full h-12 rounded-2xl border border-[#F0F0F0] text-sm font-semibold text-[#DC2626] no-select" style={SW}>
+          <button className="w-full h-12 rounded-2xl border border-[#F0F0F0] text-sm font-semibold text-[#DC2626] no-select pressable">
             Sign Out
           </button>
         </div>
@@ -65,8 +65,8 @@ export default function ProfileSheet({ onClose }: Props) {
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-[#737373] text-sm" style={SW}>{label}</span>
-      <span className="text-[#0A0A0A] text-sm font-medium" style={SW}>{value}</span>
+      <span className="text-[#737373] text-sm">{label}</span>
+      <span className="text-[#0A0A0A] text-sm font-medium">{value}</span>
     </div>
   )
 }
@@ -74,8 +74,8 @@ function DetailRow({ label, value }: { label: string; value: string }) {
 function StatPill({ value, label, color }: { value: string; label: string; color: string }) {
   return (
     <div className="flex-1 bg-[#F5F5F5] rounded-2xl py-3 flex flex-col items-center gap-0.5">
-      <span className="text-xl font-semibold" style={{ color, fontFamily: 'Switzer, sans-serif' }}>{value}</span>
-      <span className="text-[10px] text-[#737373] text-center leading-snug" style={SW}>{label}</span>
+      <span className="text-xl font-semibold" style={{ color }}>{value}</span>
+      <span className="text-[10px] text-[#737373] text-center leading-snug">{label}</span>
     </div>
   )
 }
