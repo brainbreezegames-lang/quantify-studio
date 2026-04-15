@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 interface Props {
   children: ReactNode
@@ -6,7 +6,9 @@ interface Props {
 }
 
 export default function PhoneFrame({ children, overlay }: Props) {
-  // Lock body scroll on mobile so only the phone frame scrolls
+  const [scale, setScale] = useState(1)
+
+  // Lock body scroll
   useEffect(() => {
     const htmlEl = document.documentElement
     const bodyEl = document.body
@@ -23,6 +25,20 @@ export default function PhoneFrame({ children, overlay }: Props) {
       htmlEl.style.position = prevHtmlPos
       htmlEl.style.width = ''
     }
+  }, [])
+
+  // Auto-scale the phone to fit available viewport height on desktop
+  useEffect(() => {
+    function update() {
+      const h = window.innerHeight
+      // Leave headroom for subtitles (~160px) and top bar (~40px)
+      const usable = h - 200
+      const s = Math.min(1, usable / 870)
+      setScale(s)
+    }
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
   }, [])
 
   const statusBar = (
@@ -43,46 +59,36 @@ export default function PhoneFrame({ children, overlay }: Props) {
 
   return (
     <>
-      {/* Desktop: phone frame centered on gray bg */}
+      {/* Desktop */}
       <div className="hidden md:flex fixed inset-0 bg-[#E5E7EB] items-center justify-center" style={{ fontFamily: 'Switzer, sans-serif' }}>
         <div
           className="relative bg-[#1A1A1A] rounded-[52px] p-[10px] shadow-2xl"
-          style={{ width: 410, height: 870 }}
+          style={{ width: 410, height: 870, transform: `scale(${scale})`, transformOrigin: 'center center' }}
         >
-          {/* Notch */}
           <div className="absolute top-[22px] left-1/2 -translate-x-1/2 w-[100px] h-[30px] bg-[#1A1A1A] rounded-full z-30" />
-          {/* Screen */}
-          <div
-            className="relative bg-white rounded-[44px] overflow-hidden"
-            style={{ width: 390, height: 848 }}
-          >
+          <div className="relative bg-white rounded-[44px] overflow-hidden" style={{ width: 390, height: 848 }}>
             {statusBar}
-            {/* Scroll layer */}
             <div className="absolute inset-0 overflow-y-auto overflow-x-hidden pt-[44px] z-0">
               {children}
             </div>
-            {/* Overlay layer — above scroll, doesn't scroll */}
             {overlay && (
               <div className="absolute inset-0 z-20">
                 {overlay}
               </div>
             )}
-            {/* Home indicator */}
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[120px] h-[4px] bg-[#0A0A0A] rounded-full opacity-25 z-30 pointer-events-none" />
           </div>
         </div>
       </div>
 
-      {/* Mobile: pinned to the real viewport, no outer body scroll */}
+      {/* Mobile */}
       <div
         className="md:hidden fixed inset-0 bg-white overflow-hidden"
         style={{ fontFamily: 'Switzer, sans-serif' }}
       >
-        {/* Scroll layer */}
         <div className="absolute inset-0 overflow-y-auto overflow-x-hidden z-0">
           {children}
         </div>
-        {/* Overlay layer */}
         {overlay && (
           <div className="absolute inset-0 z-20">
             {overlay}

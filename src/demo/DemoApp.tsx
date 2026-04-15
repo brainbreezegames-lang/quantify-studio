@@ -244,55 +244,55 @@ export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
     </>
   ) : undefined
 
-  // ── Presentation script ─────────────────────────────────────────────────────
+  // ── Presentation script — Jobs as a UX designer ───────────────────────────
   const presenterSegments: Segment[] = [
     {
       id: 'open',
       action: () => reset(),
-      text: "This is Quantify Mobile. It replaces a paper clipboard. That's it. A yard worker, in the rain, with gloves on — today they walk back to the office to type numbers into a computer. We thought they shouldn't have to.",
+      text: "Imagine a yard worker. Six in the morning. It's raining. Gloves on. There's a truck, and a clipboard, and about three hundred pieces of scaffolding to count. Today, they count it on paper. Then they walk back to the office. Then they type it into a computer. We thought — they shouldn't have to.",
     },
     {
       id: 'list-overview',
       action: () => reset(),
       target: 'app-header',
-      text: "The first thing they see. No dashboard. No banners. Just the work.",
+      text: "So this is what they open. There's no dashboard. No banner. No welcome screen. We fought hard to keep this empty. Because at six in the morning, a yard worker doesn't want a tutorial. They want the list.",
     },
     {
       id: 'location-bar',
       target: 'location-bar',
-      text: "One branch. One scope. They don't re-select this every time they open the app. That would be insulting.",
+      text: "One branch, one scope. We could have put a location picker on every screen. We didn't. Because asking someone to re-pick their location twelve times a day is not a design choice. It's a tax.",
     },
     {
       id: 'filters',
       target: 'filter-chips',
-      text: "All first. Because on a busy Monday, you don't want to start filtered.",
+      text: "All first. Because on a busy Monday morning, you don't want to start filtered.",
     },
     {
       id: 'discrepancy',
       target: 'card-RET-00829',
       padding: 10,
-      text: "This one's red. What came off the truck didn't match what was sent. And right there on the card — resolve on desktop. Because the yard worker shouldn't fix this on a phone. Their job is to count. Someone else's job is to reconcile.",
+      text: "This card is red. Something went wrong. What came off the truck didn't match what was sent. And we had an argument about what to do here. Do we show the variances? Let them fix it? We said no. Because fixing a discrepancy is an office job. A phone on a loading dock is not the place to reconcile inventory. So the card says one thing. Resolve on desktop. And we step out of the way.",
     },
     {
       id: 'needs-count',
       target: 'card-DEL-00791',
       padding: 10,
-      text: "Amber. Needs your count. This is why they opened the app.",
+      text: "This one's amber. Needs your count. Three words, doing the work of a paragraph.",
     },
     {
       id: 'detail-open',
       action: () => selectShipment('DEL-00791'),
-      text: "A delivery. From a branch, to a job site, with a rent start date. Driver and vehicle, tap to set. We argued about when to capture the driver — at loading, or at submit. The answer was both.",
+      text: "Tap in. A delivery. From a branch, to a job site, on a date. We started this screen with fifteen fields. Cut it to nine. Cut it to six. Ended at four. Because the yard worker doesn't need the billing address before they load the truck.",
     },
     {
       id: 'sticky-cta-detail',
       target: 'sticky-cta',
-      text: "And notice — this button never leaves the bottom. You never scroll down to find the action.",
+      text: "And this button. Start loading. It stays pinned. Always visible. Always ready. A yard worker has a phone in one hand and a clipboard in the other. They don't have time to hunt for the next step.",
     },
     {
       id: 'counting-open',
       action: () => goTo('counting'),
-      text: "This is where they actually live. A typical shipment is three hundred parts. Some are four.",
+      text: "And here's the heart of it. The counting screen. A typical shipment is three hundred parts. Some are four. This one screen is the reason the app exists.",
     },
     {
       id: 'counting-row',
@@ -301,7 +301,7 @@ export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
         if (sh) setState(s => ({ ...s, items: sh.items.map(i => ({ ...i })) }))
       },
       target: 'counting-row-d1a',
-      text: "One row, one item. Big targets. Gloved thumbs don't hit tiny buttons.",
+      text: "Every row — one item. One count box. We tested these at thirty-two pixels. Gloves missed. We tested at forty-four. Still too small. Fifty-six pixels — that's what worked.",
     },
     {
       id: 'keypad-open',
@@ -310,13 +310,13 @@ export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
         if (first) openKeypad(first.id)
       },
       target: 'keypad',
-      text: "Tap a count box and you get this. A real numeric keypad. Not plus-minus buttons tapped ninety-six times to enter ninety-six.",
+      text: "Tap the count box. You get this. A real keypad. Not plus-minus buttons. Try tapping plus ninety-six times, in the cold. We did. It's not a count — it's a punishment.",
     },
     {
       id: 'tabs',
       action: () => closeKeypad(),
       target: 'counting-tabs',
-      text: "All. Pending. Done. Flagged. Search is there when you need it. Hidden when you don't.",
+      text: "All. Pending. Done. Flagged. That's it. Search is behind an icon — because search is the exception. And when it's the exception, it shouldn't take space.",
     },
     {
       id: 'flag-open',
@@ -335,7 +335,7 @@ export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
           overlay: null,
         }))
       },
-      text: "When something's damaged, they flag it. Four destinations — loaded, damaged, scrapped, lost. These aren't my words. They're Quantify's words.",
+      text: "Things break. Things go missing. Things get scrapped. So when a count doesn't match, this opens. Four destinations. Loaded, damaged, scrapped, lost. These aren't our words. They're Quantify's words. We checked.",
     },
     {
       id: 'review-open',
@@ -351,12 +351,12 @@ export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
           flaggingItemId: null,
         }))
       },
-      text: "When counting's done, they review. Three numbers that matter. Everything else in a list below.",
+      text: "When it's done, you review. Three numbers. Everything else, in a list underneath.",
     },
     {
       id: 'rent-info',
       target: 'rent-info',
-      text: "And this. This sentence. Before we wrote this, yard workers thought submit meant done. It didn't. The office still had to confirm. This sentence makes that honest.",
+      text: "And this one sentence. This is the most important line in the entire app. Before we wrote it, workers thought submit meant done. It didn't. The office still had to confirm. Billing hadn't started. This sentence makes that honest. It's the kind of thing a designer writes in thirty seconds — and quietly prevents a month of support tickets.",
     },
     {
       id: 'submit',
@@ -374,16 +374,16 @@ export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
         }))
       },
       target: 'stepper',
-      text: "They submit. And the shipment moves to a state called To Be Received. The yard's done their part. Now it's the office's turn.",
+      text: "Submit. And the shipment moves into a state called To Be Received. The yard's done their part. Now it's the office's turn. Two stages of trust — honest about where the work sits at every moment.",
     },
     {
       id: 'closing',
       action: () => goTo('list', 'back'),
-      text: "What's not in here. No void. No billing. No consumables. None of the things the desktop already does better. That's deliberate.",
+      text: "What's not in here. No void. No billing. No consumables. No prorate. None of the things the desktop already does. Faster. Because the fastest way to make a mobile app feel bad — is to ask it to do everything.",
     },
     {
       id: 'questions',
-      text: "Three things I still need your input on. What do we call this interim state. Whether customer pickup belongs in version one. And whether video capture belongs in version one. Those are conversations — not decisions.",
+      text: "A few things I still need your input on. What we call this interim state. Whether customer pickup belongs in version one. Whether video capture does. Those aren't decisions I can make alone. They're conversations.",
     },
   ]
 
