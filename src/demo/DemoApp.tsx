@@ -16,6 +16,7 @@ import SideNav from './screens/SideNav'
 import ProfileSheet from './screens/ProfileSheet'
 import CreateNewSheet from './screens/CreateNewSheet'
 import NumericKeypad from './components/NumericKeypad'
+import PresenterMode, { Segment } from './presenter/PresenterMode'
 import './demo.css'
 
 export type Screen =
@@ -239,7 +240,127 @@ export default function DemoApp() {
     </>
   ) : undefined
 
+  // ── Presentation script ─────────────────────────────────────────────────────
+  const presenterSegments: Segment[] = [
+    {
+      id: 'open',
+      action: () => reset(),
+      text: "What you're about to see is scoped exactly to what Brian and Lee defined — a yard-side companion, not a second Quantify. Four things, done well: open a reservation or pre-return, count with a real keypad, capture photos and driver info, and submit. Everything I cut, I cut on purpose.",
+    },
+    {
+      id: 'list-overview',
+      action: () => reset(),
+      text: "This is what a yard worker sees when they open the app. List first. No hero banner, no promo strip. A yard worker with gloves on, in direct sunlight, doesn't want chrome. They want the list.",
+    },
+    {
+      id: 'discrepancy',
+      text: "Look at RET double-oh eight-two-nine. Red stripe, red dot, 'Count mismatch minus twelve,' and inline: 'Resolve on desktop.' The mobile is deliberately read-only for discrepancies. Michelle was emphatic. Destructive and corrective actions stay on desktop.",
+    },
+    {
+      id: 'needs-count',
+      text: "DEL double-oh seven-nine-one. Amber stripe, amber dot, 'Needs your count.' At-a-glance triage. What do I have to do today?",
+    },
+    {
+      id: 'filters',
+      text: "Filter counts live in their own pill — the number doesn't blend into the label. 'All' is first and default, because that's what a yard worker wants to see on arrival.",
+    },
+    {
+      id: 'fab-open',
+      action: () => { goTo('list'); setOverlay('create-new') },
+      text: "The plus button. Going Out. Coming In. Delivery, Reservation, Return, Pre-Return. Spoken language that matches Quantify desktop exactly — no invented terms.",
+    },
+    {
+      id: 'fab-close',
+      action: () => setOverlay(null),
+      text: "Notice what's not here. There's no free-text 'new shipment.' Yard workers never create records from scratch. That's the Brian and Lee rule. Every shipment originates on desktop.",
+    },
+    {
+      id: 'detail-open',
+      action: () => selectShipment('DEL-00791'),
+      text: "Tap a shipment. From, To, Rent Start — the three things a yard worker needs before loading. Driver and Vehicle are inline fields, tap to set. Brian flagged that driver capture can happen at loading start or at submit. I put it at both touchpoints so it's never missed.",
+    },
+    {
+      id: 'sticky-cta-detail',
+      text: "Notice Start Loading stays pinned to the bottom. Sticky CTAs with real states — disabled, loading, success — across every action screen in the app.",
+    },
+    {
+      id: 'counting-open',
+      action: () => goTo('counting'),
+      text: "This is where the real work happens. Three hundred plus parts per shipment on average. Which is why counting is keypad first — not plus and minus alone. Brian was explicit on this.",
+    },
+    {
+      id: 'keypad-open',
+      action: () => {
+        const first = SHIPMENTS.find(s => s.id === 'DEL-00791')?.items[0]
+        if (first) openKeypad(first.id)
+      },
+      text: "Tap the count box and you get a numeric sheet. Direct entry. Plus and minus are still available in the row for micro-adjustments, because seasoned yard workers tweak. But the primary interaction is the keypad.",
+    },
+    {
+      id: 'keypad-close',
+      action: () => closeKeypad(),
+      text: "Filter tabs above the list — All, Pending, Done, Flagged. Search collapses to an icon until you tap it. No stacked control strips. The list dominates the viewport.",
+    },
+    {
+      id: 'flag-open',
+      action: () => {
+        const damaged = SHIPMENTS.find(s => s.id === 'DEL-00791')?.items.find(i => i.flag)
+        if (damaged) {
+          setState(s => ({
+            ...s,
+            flaggingItemId: damaged.id,
+            screen: 'missing',
+            direction: 'forward',
+            overlay: null,
+          }))
+        }
+      },
+      text: "Here's the damage flow. Four destinations — Loaded, Damaged, Scrapped, Lost-missing. Exact Quantify desktop vocabulary. Earlier drafts called this 'Split count.' I killed that. If it's not in Quantify, it's not in the app.",
+    },
+    {
+      id: 'flag-close',
+      action: () => goTo('counting', 'back'),
+      text: "Back to counting. Notice the CTA — it adapts. 'N items left' while counting, 'Review' when complete. The button tells the user what state they're in.",
+    },
+    {
+      id: 'review-open',
+      action: () => goTo('review'),
+      text: "Review. Three numbers — Units, Variances, Flagged. Then line-level detail. Note field is optional. The office doesn't need essays from the yard.",
+    },
+    {
+      id: 'review-key-line',
+      text: "This is the most important sentence in the entire app. 'Rent doesn't start until the office confirms and the truck reaches the customer.' Two-stage trust. Lee, Michelle, and Andrej all flagged this independently during the AT-PAC call. The old flow went Reserved straight to Completed. That was wrong. The office reviews first.",
+    },
+    {
+      id: 'submit',
+      action: () => {
+        const items = SHIPMENTS.find(s => s.id === 'DEL-00791')?.items ?? []
+        const units = items.reduce((s, i) => s + (i.counted ?? 0), 0)
+        const variances = items.filter(i => i.counted !== null && i.counted !== i.expected).length
+        const flagged = items.filter(i => i.flag !== null).length
+        setState(s => ({
+          ...s,
+          items: items.map(i => ({ ...i })),
+          screen: 'to-be-received',
+          direction: 'forward',
+          submittedSummary: { units, variances, flagged },
+        }))
+      },
+      text: "Submit. Three-dot stepper: Yard counted, Office reviewing, In Transit. The eyebrow says 'To Be Received' — that is the official Quantify status, not something I invented.",
+    },
+    {
+      id: 'closing',
+      action: () => goTo('list', 'back'),
+      text: "A few things I chose not to build. No void — Michelle said so. No billing, no consumables, no prorate — Andrej endorsed the eighty percent rule. Practical basics first. Every pattern you saw came from internal Quantify vocabulary or the AT-PAC interview. No competitor references anywhere, per Brian's rule.",
+    },
+    {
+      id: 'questions',
+      text: "Three open questions for you. One: the interim status when mobile submits but the office hasn't confirmed — is 'To Be Received' correct, or does it need a new name? Two: customer pickup versus driver delivery — version one or version two? Three: video capture — Andrej mentioned some yards use it. Version one or version two? Happy to walk through the code, the data model, or any screen in detail.",
+    },
+  ]
+
   return (
+    <>
     <PhoneFrame overlay={overlays}>
       <div key={screen} className={direction === 'forward' ? 'screen-enter' : 'screen-enter-back'} style={{ minHeight: '100%' }}>
         {screen === 'list' && (
@@ -343,5 +464,7 @@ export default function DemoApp() {
         )}
       </div>
     </PhoneFrame>
+    <PresenterMode segments={presenterSegments} />
+    </>
   )
 }
