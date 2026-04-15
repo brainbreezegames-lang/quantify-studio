@@ -199,8 +199,12 @@ export default function DemoApp() {
   const isReturn = currentShipment?.type === 'PRE-RETURN'
   const accentColor = isReturn ? '#D97706' : '#1E3FFF'
 
-  // Overlays render outside the scroll container so they pin properly.
-  const overlays = (
+  // Only render an overlay element when one is actually active,
+  // otherwise the empty wrapper would block scroll + clicks on the screen.
+  const hasKeypad = !!activeItem && screen === 'counting'
+  const hasOverlay = overlay !== null || hasKeypad
+
+  const overlays = hasOverlay ? (
     <>
       {overlay === 'side-nav' && (
         <SideNav
@@ -221,7 +225,7 @@ export default function DemoApp() {
           }}
         />
       )}
-      {activeItem && screen === 'counting' && (
+      {hasKeypad && activeItem && (
         <NumericKeypad
           item={activeItem}
           value={state.keypadValue}
@@ -233,7 +237,7 @@ export default function DemoApp() {
         />
       )}
     </>
-  )
+  ) : undefined
 
   return (
     <PhoneFrame overlay={overlays}>
