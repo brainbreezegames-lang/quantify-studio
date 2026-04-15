@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { ChevronLeft, AlertTriangle, Flag, Info, Check } from 'lucide-react'
-import { Shipment, ShipmentItem, flagBadge, totalExpected, countedUnits } from '../data'
+import { Shipment, ShipmentItem, flagBadge } from '../data'
+import StickyCTA from '../components/StickyCTA'
 
 interface Props {
   shipment: Shipment
@@ -9,8 +11,14 @@ interface Props {
 }
 
 export default function ReviewScreen({ shipment, items, onBack, onConfirm }: Props) {
+  const [submitting, setSubmitting] = useState(false)
   const isReturn = shipment.type === 'PRE-RETURN'
   const accentColor = isReturn ? '#D97706' : '#1E3FFF'
+
+  function handleConfirm() {
+    setSubmitting(true)
+    setTimeout(() => onConfirm(), 800)
+  }
 
   const variances = items.filter(i => i.counted !== null && i.counted !== i.expected)
   const flagged = items.filter(i => i.flag !== null)
@@ -28,7 +36,7 @@ export default function ReviewScreen({ shipment, items, onBack, onConfirm }: Pro
         <div className="w-9" />
       </div>
 
-      <div className="flex flex-col gap-3 p-4 pb-8">
+      <div className="flex flex-col gap-3 p-4 pb-4">
         {/* Summary card */}
         <div className="bg-white rounded-2xl overflow-hidden">
           <div className="px-5 pt-5 pb-4 border-b border-[#F0F0F0]">
@@ -102,16 +110,18 @@ export default function ReviewScreen({ shipment, items, onBack, onConfirm }: Pro
           </p>
         </div>
 
-        {/* Confirm button */}
-        <button
-          onClick={onConfirm}
-          className="w-full h-14 rounded-2xl text-white text-base font-semibold flex items-center justify-center gap-2 no-select pressable"
-          style={{ backgroundColor: accentColor }}
-        >
-          Confirm & submit
-          <Check size={18} color="#fff" strokeWidth={2.5} />
-        </button>
       </div>
+
+      <div className="flex-1" />
+
+      <StickyCTA
+        accentColor={accentColor}
+        loading={submitting}
+        onClick={handleConfirm}
+        icon={!submitting ? <Check size={18} color="#fff" strokeWidth={2.5} /> : undefined}
+      >
+        Confirm & submit
+      </StickyCTA>
     </div>
   )
 }

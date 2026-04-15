@@ -1,5 +1,6 @@
 import { ChevronLeft, Monitor } from 'lucide-react'
 import { Shipment } from '../data'
+import StickyCTA from '../components/StickyCTA'
 
 interface Props {
   shipment: Shipment
@@ -78,16 +79,17 @@ export default function DiscrepancyDetail({ shipment, onBack }: Props) {
           ))}
         </div>
 
-        {/* Actions */}
-        <div className="flex flex-col gap-2 mt-2">
-          <button className="w-full h-14 rounded-2xl bg-[#DC2626] text-white text-base font-semibold no-select pressable">
-            Open on desktop
-          </button>
-          <button onClick={onBack} className="w-full h-12 rounded-2xl text-[#737373] text-sm font-semibold no-select pressable">
-            ← Back to shipments
-          </button>
-        </div>
       </div>
+
+      <div className="flex-1" />
+
+      <StickyCTA
+        variant="destructive"
+        onClick={() => {}}
+        secondary={{ label: '← Back to shipments', onClick: onBack }}
+      >
+        Open on desktop
+      </StickyCTA>
     </div>
   )
 }

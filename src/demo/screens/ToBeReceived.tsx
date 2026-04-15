@@ -1,5 +1,6 @@
 import { Check } from 'lucide-react'
 import { Shipment } from '../data'
+import StickyCTA from '../components/StickyCTA'
 
 interface Props {
   shipment: Shipment
@@ -36,7 +37,7 @@ export default function ToBeReceived({ shipment, summary, onDone }: Props) {
         <div className="w-9" />
       </div>
 
-      <div className="flex flex-col gap-3 p-4 pb-8">
+      <div className="flex flex-col gap-3 p-4 pb-4">
         {/* Status card */}
         <div className="bg-white rounded-2xl overflow-hidden">
           <div className="px-5 pt-5 pb-4 border-b border-[#F0F0F0]">
@@ -109,15 +110,13 @@ export default function ToBeReceived({ shipment, summary, onDone }: Props) {
           </div>
         </div>
 
-        {/* Back button */}
-        <button
-          onClick={onDone}
-          className="w-full h-14 rounded-2xl text-white text-base font-semibold no-select pressable"
-          style={{ backgroundColor: accentColor }}
-        >
-          View other shipments
-        </button>
       </div>
+
+      <div className="flex-1" />
+
+      <StickyCTA accentColor={accentColor} onClick={onDone}>
+        View other shipments
+      </StickyCTA>
     </div>
   )
 }

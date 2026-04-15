@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { X, Check, Wrench, Trash2, HelpCircle, Camera, Minus, Plus, CheckCircle } from 'lucide-react'
+import { X, Check, Wrench, Trash2, HelpCircle, Camera, Minus, Plus } from 'lucide-react'
 import { ShipmentItem, ItemFlag, shortfall } from '../data'
+import StickyCTA from '../components/StickyCTA'
 
 interface Props {
   item: ShipmentItem
@@ -124,17 +125,15 @@ export default function MissingItems({ item, onSave, onBack, onPhoto }: Props) {
         </button>
       </div>
 
-      {/* Save */}
-      <div className="px-6 pt-4 pb-8 mt-auto">
-        <button
-          onClick={() => onSave({ kind: 'shortfall', data: { good: counted, damaged, scrapped, lostMissing } })}
-          disabled={!isComplete}
-          className="w-full h-14 rounded-2xl text-white text-base font-semibold no-select pressable disabled:opacity-40"
-          style={{ backgroundColor: '#1E3FFF' }}
-        >
-          Save split
-        </button>
-      </div>
+      <div className="flex-1" />
+
+      <StickyCTA
+        accentColor="#1E3FFF"
+        disabled={!isComplete}
+        onClick={() => onSave({ kind: 'shortfall', data: { good: counted, damaged, scrapped, lostMissing } })}
+      >
+        {isComplete ? 'Save split' : `${Math.abs(remaining)} ${remaining > 0 ? 'unaccounted' : 'over'}`}
+      </StickyCTA>
     </div>
   )
 }

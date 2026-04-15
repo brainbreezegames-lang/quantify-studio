@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { X, Check, CheckCircle2, Wrench, AlertTriangle, Trash2, MapPin, Minus, Plus } from 'lucide-react'
 import { ShipmentItem, ItemFlag } from '../data'
+import StickyCTA from '../components/StickyCTA'
 
 interface Props {
   item: ShipmentItem
@@ -133,17 +134,15 @@ export default function ConditionCheck({ item, onSave, onBack }: Props) {
         )}
       </div>
 
-      {/* Done button */}
-      <div className="px-6 pt-4 pb-8 mt-auto">
-        <button
-          onClick={handleSave}
-          disabled={!isComplete}
-          className="w-full h-14 rounded-2xl text-white text-base font-semibold no-select pressable disabled:opacity-40"
-          style={{ backgroundColor: accentColor }}
-        >
-          Done
-        </button>
-      </div>
+      <div className="flex-1" />
+
+      <StickyCTA
+        accentColor={accentColor}
+        disabled={!isComplete}
+        onClick={handleSave}
+      >
+        {isComplete ? 'Done' : `${Math.abs(remaining)} ${remaining > 0 ? 'left to account for' : 'over'}`}
+      </StickyCTA>
     </div>
   )
 }

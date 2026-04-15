@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ChevronLeft, Camera, Search, Plus, Flag, Check, AlertTriangle } from 'lucide-react'
 import { Shipment, ShipmentItem, shortfall, isShort, isExplained, flagBadge, countedItems, countedUnits, totalExpected } from '../data'
 import NumericKeypad from '../components/NumericKeypad'
+import StickyCTA from '../components/StickyCTA'
 
 type TabFilter = 'all' | 'pending' | 'done' | 'flagged'
 
@@ -169,29 +170,18 @@ export default function CountingScreen({
         )}
       </div>
 
-      {/* Bottom actions */}
-      <div className="pb-8 mt-auto px-4 flex flex-col gap-3 pt-4">
-        {isReturn && (
-          <button
-            onClick={onAddItem}
-            className="w-full h-12 rounded-2xl border-2 text-sm font-semibold flex items-center justify-center gap-2 no-select pressable"
-            style={{ borderColor: accentColor, color: accentColor }}
-          >
-            <Plus size={16} strokeWidth={2.5} />
-            Add item from catalog
-          </button>
-        )}
-        {canReview && (
-          <button
-            onClick={onReview}
-            className="w-full h-14 rounded-2xl text-white text-base font-semibold flex items-center justify-center gap-2 no-select pressable"
-            style={{ backgroundColor: accentColor }}
-          >
-            Review
-            <ChevronLeft size={18} color="#fff" strokeWidth={2.5} style={{ transform: 'rotate(180deg)' }} />
-          </button>
-        )}
-      </div>
+      <div className="flex-1" />
+
+      {/* Sticky action bar */}
+      <StickyCTA
+        accentColor={accentColor}
+        disabled={!canReview}
+        onClick={onReview}
+        icon={<ChevronLeft size={18} color="#fff" strokeWidth={2.5} style={{ transform: 'rotate(180deg)' }} />}
+        secondary={isReturn ? { label: '+ Add item from catalog', onClick: onAddItem } : undefined}
+      >
+        {canReview ? 'Review' : doneItems === 0 ? 'Tap an item to start' : `${totalItems - doneItems} items left`}
+      </StickyCTA>
 
       {/* Numeric keypad */}
       {activeItem && (

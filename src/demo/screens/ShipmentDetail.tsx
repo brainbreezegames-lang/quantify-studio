@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight, Truck } from 'lucide-react'
 import { Shipment, ShipmentItem, totalExpected, countedItems, statusLabel, statusColors } from '../data'
+import StickyCTA from '../components/StickyCTA'
 
 interface Props {
   shipment: Shipment
@@ -33,7 +34,7 @@ export default function ShipmentDetail({ shipment, items, onBack, onStart }: Pro
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 p-4 pb-28">
+      <div className="flex flex-col gap-3 p-4 pb-2">
         {/* Hero card */}
         <div className="bg-white rounded-2xl overflow-hidden">
           <div className="px-5 pt-5 pb-4 border-b border-[#F0F0F0]">
@@ -114,17 +115,13 @@ export default function ShipmentDetail({ shipment, items, onBack, onStart }: Pro
         </div>
       </div>
 
-      {/* Sticky CTA */}
-      <div className="absolute bottom-0 left-0 right-0 px-4 pb-8 pt-4 bg-gradient-to-t from-[#F5F5F5] to-transparent">
-        <button
-          onClick={onStart}
-          className="w-full h-14 rounded-2xl text-white text-base font-semibold flex items-center justify-center gap-2 no-select pressable"
-          style={{ backgroundColor: accentColor }}
-        >
-          {isReturn ? 'Start receiving' : 'Start loading'}
-          <ChevronRight size={18} color="#fff" strokeWidth={2.5} />
-        </button>
-      </div>
+      <StickyCTA
+        accentColor={accentColor}
+        onClick={onStart}
+        icon={<ChevronRight size={18} color="#fff" strokeWidth={2.5} />}
+      >
+        {isReturn ? 'Start receiving' : 'Start loading'}
+      </StickyCTA>
     </div>
   )
 }

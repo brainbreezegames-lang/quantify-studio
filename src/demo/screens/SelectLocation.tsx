@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X, Search, Check, Home, Briefcase, Package, ChevronRight } from 'lucide-react'
+import { ArrowLeft, Search, Check, Home, Briefcase, Package, ChevronRight } from 'lucide-react'
 import { LOCATIONS, Location } from '../data'
 
 interface Props {
@@ -17,41 +17,41 @@ export default function SelectLocation({ selectedLocation, onSelect, onBack }: P
 
   return (
     <div className="flex flex-col min-h-full bg-white">
-      {/* Header */}
-      <div className="bg-[#1E3FFF] px-5 pt-4 pb-5 flex items-center gap-3">
-        <button onClick={onBack} className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center no-select pressable">
-          <X size={20} color="#fff" strokeWidth={2} />
+      {/* White header */}
+      <div className="bg-white px-4 pt-[18px] pb-[18px] flex items-center gap-3.5 border-b border-[#EAEAEA]">
+        <button onClick={onBack} className="w-10 h-10 rounded-full bg-[#F5F5F5] flex items-center justify-center no-select pressable flex-shrink-0">
+          <ArrowLeft size={20} color="#0A0A0A" strokeWidth={2} />
         </button>
-        <p className="text-white text-lg font-semibold flex-1 text-center">Select location</p>
-        <div className="w-9" />
+        <p className="text-[#0A0A0A] text-[19px] font-semibold flex-1">Select location</p>
       </div>
 
       {/* Search */}
-      <div className="px-4 py-3 border-b border-[#F0F0F0]">
-        <div className="flex items-center gap-3 bg-[#F5F5F5] rounded-xl px-3 py-2.5">
-          <Search size={15} color="#A3A3A3" strokeWidth={2} />
+      <div className="px-5 pt-4 pb-3">
+        <div className="flex items-center gap-3 bg-[#F5F5F5] rounded-[14px] px-4 py-3.5">
+          <Search size={18} color="#737373" strokeWidth={2} />
           <input
             type="text"
             placeholder="Search jobsite or branch…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="flex-1 bg-transparent text-sm outline-none placeholder:text-[#A3A3A3]"
+            className="flex-1 bg-transparent text-sm outline-none placeholder:text-[#999999] text-[#0A0A0A]"
           />
         </div>
       </div>
 
       {/* Currently selected */}
-      <div className="px-4 py-3">
+      <div className="px-4 pt-1">
         <div
-          className="flex items-center gap-4 p-4 rounded-2xl border-2 border-[#1E3FFF] bg-[#EEF2FF] cursor-pointer no-select"
+          className="flex items-center gap-3.5 px-4 py-4 rounded-[14px] bg-[#EEF2FF] cursor-pointer no-select"
+          style={{ border: '1.5px solid #1E3FFF' }}
           onClick={() => onSelect('New York Branch Office')}
         >
           <div className="w-10 h-10 rounded-full bg-[#1E3FFF] flex items-center justify-center flex-shrink-0">
-            <Check size={18} color="#fff" strokeWidth={2.5} />
+            <Check size={22} color="#fff" strokeWidth={2.5} />
           </div>
           <div className="flex-1">
-            <p className="text-[#1E3FFF] text-base font-semibold">New York</p>
-            <p className="text-[#1E3FFF]/70 text-sm">Branch Office · Currently selected</p>
+            <p className="text-[#1E3FFF] text-[17px] font-semibold leading-tight">New York</p>
+            <p className="text-[#1E3FFF] text-xs font-medium mt-0.5">Branch Office · Currently selected</p>
           </div>
         </div>
       </div>
@@ -70,16 +70,18 @@ export default function SelectLocation({ selectedLocation, onSelect, onBack }: P
       <Section title="LAYDOWN YARDS">
         {laydowns.map(loc => <LocationRow key={loc.id} location={loc} onSelect={onSelect} />)}
       </Section>
+
+      <div className="h-8" />
     </div>
   )
 }
 
 function Section({ title, actionLabel, children }: { title: string; actionLabel?: string; children: React.ReactNode }) {
   return (
-    <div className="px-4 mb-4">
-      <div className="flex items-center justify-between mb-2 px-1">
-        <p className="text-[#737373] text-[11px] font-bold tracking-widest">{title}</p>
-        {actionLabel && <p className="text-[#1E3FFF] text-sm font-semibold">{actionLabel}</p>}
+    <div className="px-4 mt-7">
+      <div className="flex items-center justify-between px-2 mb-2.5">
+        <p className="text-[#737373] text-[11px] font-semibold" style={{ letterSpacing: 1 }}>{title}</p>
+        {actionLabel && <p className="text-[#1E3FFF] text-[13px] font-semibold">{actionLabel}</p>}
       </div>
       <div className="flex flex-col gap-2">{children}</div>
     </div>
@@ -87,7 +89,7 @@ function Section({ title, actionLabel, children }: { title: string; actionLabel?
 }
 
 function LocationRow({ location, onSelect }: { location: Location; onSelect: (name: string) => void }) {
-  const iconColor = location.type === 'laydown' ? '#D97706' : '#1E3FFF'
+  const iconColor = location.type === 'laydown' ? '#92400E' : '#1E3FFF'
   const iconBg = location.type === 'laydown' ? '#FEF3C7' : '#EEF2FF'
 
   const icon = location.type === 'branch'
@@ -99,16 +101,17 @@ function LocationRow({ location, onSelect }: { location: Location; onSelect: (na
   return (
     <button
       onClick={() => onSelect(location.name)}
-      className="flex items-center gap-3 p-3.5 rounded-2xl border border-[#F0F0F0] bg-white no-select pressable text-left"
+      className="flex items-center gap-3 p-3.5 rounded-[14px] bg-white no-select pressable text-left"
+      style={{ border: '1px solid #EAEAEA' }}
     >
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: iconBg }}>
+      <div className="w-10 h-10 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: iconBg }}>
         {icon}
       </div>
-      <div className="flex-1">
-        <p className="text-[#0A0A0A] text-sm font-semibold">{location.name}</p>
-        <p className="text-[#737373] text-xs capitalize">{location.type === 'laydown' ? 'Laydown yard' : location.type}</p>
+      <div className="flex-1 min-w-0">
+        <p className="text-[#0A0A0A] text-[14px] font-semibold truncate">{location.name}</p>
+        <p className="text-[#737373] text-xs capitalize mt-0.5">{location.type === 'laydown' ? 'Laydown yard' : location.type}</p>
       </div>
-      <ChevronRight size={14} color="#A3A3A3" strokeWidth={2} />
+      <ChevronRight size={16} color="#999999" strokeWidth={2} />
     </button>
   )
 }

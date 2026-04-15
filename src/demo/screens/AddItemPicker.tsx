@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { X, Search, ChevronLeft } from 'lucide-react'
 import { CatalogItem } from '../data'
+import StickyCTA from '../components/StickyCTA'
 
 const CATEGORIES = ['All', 'Cuplok', 'Boards', 'Accessories', 'Ringlock']
 
@@ -156,16 +157,13 @@ function QtySheet({ item, qty, onQty, onConfirm, onBack }: {
         ))}
       </div>
 
-      <div className="px-4 pb-8 pt-3">
-        <button
-          onClick={onConfirm}
-          disabled={parsed === 0}
-          className="w-full h-14 rounded-2xl text-white text-base font-semibold no-select pressable disabled:opacity-40"
-          style={{ backgroundColor: '#D97706' }}
-        >
-          Add {parsed > 0 ? `${parsed} ` : ''}to count
-        </button>
-      </div>
+      <StickyCTA
+        accentColor="#D97706"
+        disabled={parsed === 0}
+        onClick={onConfirm}
+      >
+        Add {parsed > 0 ? `${parsed} ` : ''}to count
+      </StickyCTA>
     </div>
   )
 }
