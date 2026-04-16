@@ -79,6 +79,29 @@ function buildIssueMessage(jobId: string, issue: Issue): string {
   ].join('\n')
 }
 
+// ── Demo data ──────────────────────────────────────────────────────────────────
+const DEMO_JOB: Job = {
+  id: 'DEL-2401', type: 'DEL', number: '2401',
+  createdAt: Date.now() - 1800000,
+  issues: [
+    {
+      id: 'demo-1', item: 'Cuplok Standard 2.0m', issueType: 'Damage', severity: 'High',
+      description: 'Cracked weld at the cup joint on 4 pieces. Cannot bear load safely — must not be loaded.',
+      action: 'Remove from service', timestamp: Date.now() - 900000,
+    },
+    {
+      id: 'demo-2', item: 'LVL Plank 2.5m', issueType: 'Damage', severity: 'Medium',
+      description: 'Surface delamination on 5 planks, edge peeling visible. Usable with caution but needs sign-off.',
+      action: 'Flag for inspection', timestamp: Date.now() - 600000,
+    },
+  ],
+}
+const DEMO_LAST_ISSUE: Issue = {
+  id: 'demo-3', item: 'Steel Toe Board 2.5m', issueType: 'Wear', severity: 'Low',
+  description: 'Surface rust on 19 boards — structurally intact but will need treatment before next deployment.',
+  action: 'Monitor', timestamp: Date.now(),
+}
+
 function buildFullReport(job: Job): string {
   const date = new Date(job.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
   const sevEmoji = (s: Severity) => s === 'High' ? '🔴' : s === 'Medium' ? '🟡' : '🟢'
@@ -244,6 +267,18 @@ export default function FieldDocApp() {
     setCapturedImage(null); setTranscript(''); setError(null); setView('job')
   }, [])
 
+  const startDemo = useCallback(() => {
+    const job = { ...DEMO_JOB, issues: [...DEMO_JOB.issues, { ...DEMO_LAST_ISSUE, timestamp: Date.now() }] }
+    setJobs(prev => {
+      const without = prev.filter(j => j.id !== job.id)
+      return [job, ...without]
+    })
+    setCurrentJobId(job.id)
+    setLastIssue({ ...DEMO_LAST_ISSUE, timestamp: Date.now() })
+    setSendState('idle')
+    setView('send')
+  }, [])
+
   // ── VIEWS ──────────────────────────────────────────────────────────────────
 
   // HOME ──────────────────────────────────────────────────────────────────────
@@ -269,6 +304,27 @@ export default function FieldDocApp() {
           </div>
           {jobInputError && <span style={{ fontSize: 13, color: '#DC2626' }}>{jobInputError}</span>}
         </div>
+
+        {/* Demo */}
+        <div style={{
+          background: '#F0F4FF', borderRadius: 16, padding: '18px 20px',
+          display: 'flex', flexDirection: 'column', gap: 8,
+          border: '1.5px solid #C7D7FF',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: '#1E3FFF', letterSpacing: '0.07em' }}>DEMO</span>
+            <span style={{ fontSize: 13, color: '#525252' }}>See the full flow with realistic data</span>
+          </div>
+          <button style={{
+            height: 52, background: '#1E3FFF', color: '#FFFFFF', border: 'none',
+            borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: 'pointer',
+            fontFamily: 'inherit', WebkitTapHighlightColor: 'transparent',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+          }} onClick={startDemo}>
+            <Send size={16} color="#fff" />Watch the full flow →
+          </button>
+        </div>
+
         {jobs.length > 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <span style={s.sectionLabel}>RECENT</span>
@@ -461,6 +517,14 @@ export default function FieldDocApp() {
             <span style={{ fontSize: 13, color: '#737373' }}>
               {isRecording ? 'Listening… tap to stop' : hasText ? 'Tap to add more' : 'Tap to start speaking'}
             </span>
+            {!hasText && !isRecording && (
+              <button
+                style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px 0', WebkitTapHighlightColor: 'transparent' }}
+                onClick={() => setTranscript('Cuplok standard 2 meter, cracked weld on the cup joint, four pieces, cannot use them')}
+              >
+                <span style={{ fontSize: 13, color: '#1E3FFF', textDecoration: 'underline' }}>Use example note instead</span>
+              </button>
+            )}
           </div>
         </div>
         <div style={{ padding: '16px 20px 40px', display: 'flex', flexDirection: 'column', gap: 10 }}>
