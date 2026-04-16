@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react'
-import { Camera, Mic, ArrowLeft, AlertTriangle, CheckCircle, ChevronRight, RotateCcw, Send, X } from 'lucide-react'
+import { Camera, Mic, ArrowLeft, AlertTriangle, CheckCircle, ChevronRight, RotateCcw, Send, X, MessageCircle, Mail, Copy } from 'lucide-react'
 
 // ── CSS keyframes — injected once at module load ───────────────────────────────
 const FIELD_CSS = `
@@ -320,14 +320,32 @@ export default function FieldDocApp() {
   }, [currentJobId])
 
   // ── Send ───────────────────────────────────────────────────────────────────
-  const doSend = useCallback((single?: Issue) => {
-    if (!currentJob) return
-    const text = buildShareText(currentJob, single ?? lastIssue ?? undefined)
-    const finish = () => { single ? setSendDone(true) : setAllSendDone(true) }
-    if (navigator.share) {
-      navigator.share({ title: `${currentJob.id} Report`, text }).then(finish).catch(() => { navigator.clipboard.writeText(text); finish() })
-    } else { navigator.clipboard.writeText(text); finish() }
+  const getShareText = useCallback((single?: Issue) => {
+    if (!currentJob) return ''
+    return buildShareText(currentJob, single ?? lastIssue ?? undefined)
   }, [currentJob, lastIssue])
+
+  const sendViaWhatsApp = useCallback((single?: Issue) => {
+    const text = getShareText(single)
+    if (!text) return
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener')
+    single ? setSendDone(true) : setAllSendDone(true)
+  }, [getShareText])
+
+  const sendViaEmail = useCallback((single?: Issue) => {
+    const text = getShareText(single)
+    if (!text || !currentJob) return
+    const subject = encodeURIComponent(`${currentJob.id} — Field Report`)
+    window.location.href = `mailto:?subject=${subject}&body=${encodeURIComponent(text)}`
+    single ? setSendDone(true) : setAllSendDone(true)
+  }, [getShareText, currentJob])
+
+  const copyReport = useCallback((single?: Issue) => {
+    const text = getShareText(single)
+    if (!text) return
+    navigator.clipboard.writeText(text).catch(() => {})
+    single ? setSendDone(true) : setAllSendDone(true)
+  }, [getShareText])
 
   // ── Nav ────────────────────────────────────────────────────────────────────
   const goHome = useCallback(() => {
@@ -634,14 +652,14 @@ export default function FieldDocApp() {
 
       <div className="fd-s5" style={{ padding: '0 20px 40px', display: 'flex', flexDirection: 'column', gap: 10 }}>
         <button className="fd-tap" style={s.primaryBtn} onClick={confirm}>
-          <Send size={17} color="#fff" style={{ marginRight: 10 }} />Send to office
+          <Send size={17} color="#fff" style={{ marginRight: 10 }} />Confirm report
         </button>
         <button className="fd-tap" style={s.ghostBtn} onClick={discard}>Discard</button>
       </div>
     </div>
   )
 
-  // SEND — report ready, staggered reveal
+  // SEND — send to office with explicit channels
   if (view === 'send' && lastIssue && currentJob) {
     const sev = SEV[lastIssue.severity]
     return (
@@ -649,60 +667,107 @@ export default function FieldDocApp() {
         <div style={s.topBar}>
           <button className="fd-tap" style={s.iconBtn} onClick={goJob}><ArrowLeft size={22} color="#fff" /></button>
           <div style={{ flex: 1, textAlign: 'center' }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: '#fff' }}>Report ready</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#fff' }}>Send to office</div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>{currentJob.id}</div>
           </div>
           <div style={{ width: 48 }} />
         </div>
 
-        <div style={{ flex: 1, padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+        {/* Progress tracker */}
+        <div style={{ display: 'flex', alignItems: 'center', padding: '14px 24px 12px', background: '#fff', borderBottom: '1px solid #F0F0F0' }}>
+          {['Documented', 'Reviewed', 'Sent'].map((label, i, arr) => (
+            <React.Fragment key={label}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
+                <div style={{
+                  width: 20, height: 20, borderRadius: '50%', border: 'none',
+                  background: sendDone ? '#16A34A' : i < 2 ? '#16A34A' : '#1E3FFF',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  {(sendDone || i < 2) && <CheckCircle size={12} color="#fff" strokeWidth={3} />}
+                  {!sendDone && i === 2 && <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#fff' }} />}
+                </div>
+                <span style={{ fontSize: 10, fontWeight: 600, color: sendDone ? '#16A34A' : i < 2 ? '#16A34A' : '#1E3FFF', whiteSpace: 'nowrap' }}>
+                  {label}
+                </span>
+              </div>
+              {i < arr.length - 1 && (
+                <div style={{ flex: 1, height: 2, background: i === 0 ? '#16A34A' : sendDone ? '#16A34A' : '#E5E5E5', margin: '0 4px', marginBottom: 16, transition: 'background 0.4s ease-out' }} />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+
+        <div style={{ flex: 1, padding: '20px 20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 14 }}>
           {/* Issue card */}
           <div className="fd-s1" style={s.card}>
-            <div style={{ padding: '18px 0 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ padding: '16px 0 12px', display: 'flex', alignItems: 'center', gap: 10 }}>
               <span style={{ fontSize: 11, fontWeight: 700, color: sev.color, background: sev.bg, padding: '3px 10px', borderRadius: 20 }}>
                 {sev.label}
               </span>
               <span style={{ fontSize: 17, fontWeight: 700, color: '#0A0A0A' }}>{lastIssue.item}</span>
             </div>
             <div style={{ height: 1, background: '#F0F0F0' }} />
-            <div style={{ padding: '14px 0' }}>
+            <div style={{ padding: '12px 0' }}>
               <span style={{ fontSize: 15, color: '#0A0A0A', lineHeight: 1.65 }}>{lastIssue.description}</span>
             </div>
             <div style={{ height: 1, background: '#F0F0F0' }} />
-            <div style={{ padding: '14px 0' }}>
+            <div style={{ padding: '12px 0' }}>
               <span style={{ fontSize: 15, fontWeight: 600, color: '#1E3FFF' }}>→ {lastIssue.action}</span>
             </div>
             {lastIssue.photo && (
               <>
                 <div style={{ height: 1, background: '#F0F0F0' }} />
-                <div style={{ padding: '14px 0' }}>
-                  <img src={lastIssue.photo} alt="" style={{ width: '100%', height: 160, objectFit: 'cover', borderRadius: 10 }} />
+                <div style={{ padding: '12px 0' }}>
+                  <img src={lastIssue.photo} alt="" style={{ width: '100%', height: 140, objectFit: 'cover', borderRadius: 10 }} />
                 </div>
               </>
             )}
           </div>
 
-          {/* Where it goes */}
-          <div className="fd-s2" style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '0 4px' }}>
-            <Send size={15} color="#A3A3A3" style={{ marginTop: 1, flexShrink: 0 }} />
-            <span style={{ fontSize: 13, color: '#737373', lineHeight: 1.55 }}>
-              Goes to WhatsApp, email, or wherever your team works. The office sees what was damaged and what to do about it.
-            </span>
-          </div>
+          {/* Sent confirmation */}
+          {sendDone && (
+            <div className="fd-s1" style={{ ...s.card, border: 'none', background: '#F0FDF4', padding: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                <CheckCircle size={20} color="#16A34A" strokeWidth={2.5} />
+                <span style={{ fontSize: 16, fontWeight: 700, color: '#16A34A' }}>Report sent</span>
+              </div>
+              <p style={{ fontSize: 14, color: '#166534', lineHeight: 1.6, margin: 0 }}>
+                The office will receive this report, review the item, and act on it in Quantify.
+              </p>
+            </div>
+          )}
         </div>
 
-        <div className="fd-s3" style={{ padding: '0 20px 40px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <button
-            className="fd-tap"
-            style={{ ...s.primaryBtn, background: sendDone ? '#16A34A' : '#1E3FFF', transition: 'background 0.25s ease-out' }}
-            onClick={() => doSend()}
-          >
-            {sendDone
-              ? <><CheckCircle size={18} color="#fff" style={{ marginRight: 10 }} />Sent</>
-              : <><Send size={18} color="#fff" style={{ marginRight: 10 }} />Send to office</>
-            }
-          </button>
-          <button className="fd-tap" style={s.ghostBtn} onClick={goJob}>Log another issue</button>
+        <div className="fd-s2" style={{ padding: '0 20px 40px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {!sendDone ? (
+            <>
+              <p style={{ ...s.label, marginBottom: 2 }}>SEND VIA</p>
+              <button className="fd-tap" style={{ ...s.primaryBtn, background: '#1BA756', gap: 12 }}
+                onClick={() => sendViaWhatsApp(lastIssue)}>
+                <MessageCircle size={18} color="#fff" strokeWidth={2} />
+                WhatsApp
+              </button>
+              <button className="fd-tap" style={{ ...s.primaryBtn, background: '#1E3FFF', gap: 12 }}
+                onClick={() => sendViaEmail(lastIssue)}>
+                <Mail size={18} color="#fff" strokeWidth={2} />
+                Email
+              </button>
+              <button className="fd-tap" style={{ ...s.ghostBtn, gap: 10 }}
+                onClick={() => copyReport(lastIssue)}>
+                <Copy size={15} color="#525252" strokeWidth={2} />
+                Copy report text
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="fd-tap" style={s.primaryBtn} onClick={goJob}>
+                Log another issue
+              </button>
+              <button className="fd-tap" style={s.ghostBtn} onClick={goJob}>
+                Back to {currentJob.id}
+              </button>
+            </>
+          )}
         </div>
       </div>
     )
@@ -745,13 +810,34 @@ export default function FieldDocApp() {
       </div>
 
       <div style={{ padding: '0 20px 40px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <button className="fd-tap" style={{ ...s.primaryBtn, background: allSendDone ? '#16A34A' : '#1E3FFF', transition: 'background 0.25s ease-out' }} onClick={() => doSend()}>
-          {allSendDone
-            ? <><CheckCircle size={18} color="#fff" style={{ marginRight: 8 }} />Sent to office</>
-            : <><Send size={18} color="#fff" style={{ marginRight: 8 }} />Send full report to office</>
-          }
-        </button>
-        <button className="fd-tap" style={s.ghostBtn} onClick={() => setView('job')}>Back</button>
+        {!allSendDone ? (
+          <>
+            <p style={{ ...s.label, marginBottom: 2 }}>SEND FULL REPORT VIA</p>
+            <button className="fd-tap" style={{ ...s.primaryBtn, background: '#1BA756', gap: 12 }}
+              onClick={() => sendViaWhatsApp()}>
+              <MessageCircle size={18} color="#fff" strokeWidth={2} />
+              WhatsApp
+            </button>
+            <button className="fd-tap" style={{ ...s.primaryBtn, background: '#1E3FFF', gap: 12 }}
+              onClick={() => sendViaEmail()}>
+              <Mail size={18} color="#fff" strokeWidth={2} />
+              Email
+            </button>
+            <button className="fd-tap" style={{ ...s.ghostBtn, gap: 10 }}
+              onClick={() => copyReport()}>
+              <Copy size={15} color="#525252" strokeWidth={2} />
+              Copy report text
+            </button>
+          </>
+        ) : (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '14px 20px', background: '#F0FDF4', borderRadius: 14 }}>
+              <CheckCircle size={18} color="#16A34A" strokeWidth={2.5} />
+              <span style={{ fontSize: 15, fontWeight: 600, color: '#16A34A' }}>Full report sent</span>
+            </div>
+            <button className="fd-tap" style={s.ghostBtn} onClick={() => setView('job')}>Back to {currentJob.id}</button>
+          </>
+        )}
       </div>
     </div>
   )
