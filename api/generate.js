@@ -2165,6 +2165,58 @@ export default async function handler(req, res) {
     const qualitySections = buildQualitySections(qualityToggles, designTokens)
     const qualityChecklist = buildQualityChecklist(qualityToggles, designTokens)
 
+    // ── Field documentation (photo damage analysis + voice note structuring) ──
+    if (action === 'field-doc') {
+      const { imageBase64, transcript } = req.body
+
+      if (!imageBase64 && !transcript) {
+        return res.status(400).json({ error: 'Image or transcript is required' })
+      }
+      if (!rk && !process.env.OPENROUTER_API_KEY) {
+        return res.status(503).json({ error: 'No API key configured' })
+      }
+
+      const FIELD_PROMPT = `You are a scaffolding equipment inspector assistant. Analyze the provided input and return a structured issue report.
+
+Return ONLY a valid JSON object, no other text:
+{
+  "item": "specific item name if identifiable, or null",
+  "issueType": "Damage | Missing | Defect | Wear | Other",
+  "severity": "High | Medium | Low",
+  "description": "clear 1-2 sentence factual description of the issue",
+  "action": "Remove from service | Flag for inspection | Return to supplier | Monitor | No action needed"
+}
+
+Severity guide — High: safety risk, cannot be used, immediate action; Medium: usable with caution, needs attention; Low: minor, monitor over time.`
+
+      try {
+        let messages
+        if (imageBase64) {
+          messages = [{
+            role: 'user',
+            content: [
+              { type: 'image_url', image_url: { url: imageBase64 } },
+              { type: 'text', text: FIELD_PROMPT },
+            ],
+          }]
+        } else {
+          messages = [{
+            role: 'user',
+            content: `${FIELD_PROMPT}\n\nWorker's spoken note: "${transcript}"`,
+          }]
+        }
+
+        const { text } = await llmWithRetry('google/gemini-3.1-flash-lite-preview', messages, 300, 2, rk)
+        const match = text.match(/\{[\s\S]*?\}/)
+        if (!match) return res.status(500).json({ error: 'Could not parse AI response' })
+        const report = JSON.parse(match[0])
+        return res.json({ report })
+      } catch (err) {
+        console.error('Field doc error:', err)
+        return res.status(500).json({ error: err?.message || 'Analysis failed' })
+      }
+    }
+
     // ── Prompt enhancement (lightweight, fast path) ──────────────────────────
     if (action === 'enhance') {
       if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {

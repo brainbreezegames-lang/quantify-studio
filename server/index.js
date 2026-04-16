@@ -13,14 +13,14 @@ const PORT = process.env.PORT || 3001
 app.use(cors({
   origin: ['http://localhost:5173', 'http://localhost:3001'],
 }))
-app.use(express.json({ limit: '2mb' }))
+app.use(express.json({ limit: '10mb' }))
 
 app.post('/api/generate', async (req, res) => {
   try {
     const { action, prompt, designTokens, currentTree, designBrief, imageUrl, qualityToggles } = req.body
 
     // Actions handled exclusively in the Vercel handler — delegate
-    if (action === 'variants' || action === 'improve' || action === 'enhance' || action === 'chat' || action === 'designer' || action === 'designer-chat' || action === 'designer-image') {
+    if (action === 'variants' || action === 'improve' || action === 'enhance' || action === 'chat' || action === 'designer' || action === 'designer-chat' || action === 'designer-image' || action === 'field-doc') {
       try {
         const { default: handler } = await import('../api/generate.js')
         return await handler(req, res)

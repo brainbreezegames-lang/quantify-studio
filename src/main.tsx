@@ -11,6 +11,7 @@ const Designer = React.lazy(() => import('./designer/DesignerApp'))
 const SignIn = React.lazy(() => import('./auth/SignInPage'))
 const Demo = React.lazy(() => import('./demo/DemoApp'))
 const Present = React.lazy(() => import('./demo/PresentApp'))
+const FieldDoc = React.lazy(() => import('./components/FieldDoc/FieldDocApp'))
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -18,6 +19,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <React.Suspense fallback={<div className="min-h-screen bg-white" />}>
           <Routes>
+            <Route path="/field" element={<FieldDoc />} />
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/demo" element={<Demo />} />
             <Route path="/present" element={<Present />} />
