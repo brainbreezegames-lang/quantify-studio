@@ -370,55 +370,128 @@ export default function FieldDocApp() {
   // ══════════════════════════════════════════════════════════════════════════
 
   // HOME
-  if (view === 'home') return (
-    <div style={s.screen}>
-      <div style={s.topBar}>
-        <span style={s.brand}>QUANTIFY</span>
-        <span style={s.brandSub}>Field Doc</span>
-      </div>
-      <div style={{ flex: 1, padding: '28px 20px 40px', display: 'flex', flexDirection: 'column', gap: 24 }}>
-        <div>
-          <p style={s.label}>OPEN A JOB</p>
-          <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-            <input
-              style={{ ...s.jobInput, flex: 1, borderColor: jobInputError ? '#DC2626' : '#E5E5E5' }}
-              placeholder="DEL-2401 or RET-1892"
-              value={jobInput}
-              onChange={e => { setJobInput(e.target.value.toUpperCase()); setJobInputError('') }}
-              onKeyDown={e => e.key === 'Enter' && openJob(jobInput)}
-              autoCapitalize="characters" autoComplete="off"
-            />
-            <button className="fd-tap" style={s.openBtn} onClick={() => openJob(jobInput)}>Open</button>
-          </div>
-          {jobInputError && <p style={{ fontSize: 13, color: '#DC2626', marginTop: 6 }}>{jobInputError}</p>}
+  if (view === 'home') {
+    const [showInput, setShowInput] = useState(false)
+    const activeJobs = jobs.filter(j => j.issues.length > 0)
+    const latestJob = activeJobs[0] ?? null
+    const otherActiveJobs = activeJobs.slice(1, 4)
+    const topSeverity = (job: Job): Severity =>
+      job.issues.reduce<Severity>((m, i) => i.severity === 'High' ? 'High' : i.severity === 'Medium' && m !== 'High' ? 'Medium' : m, 'Low')
+
+    return (
+      <div style={s.screen}>
+        <div style={s.topBar}>
+          <span style={s.brand}>QUANTIFY</span>
+          <span style={s.brandSub}>Field Doc</span>
         </div>
-        {jobs.length > 0 && (
-          <div>
-            <p style={s.label}>RECENT</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8 }}>
-              {jobs.slice(0, 5).map(job => {
-                const top: Severity = job.issues.reduce<Severity>(
-                  (m, i) => i.severity === 'High' ? 'High' : i.severity === 'Medium' && m !== 'High' ? 'Medium' : m,
-                  'Low'
-                )
-                return (
+
+        <div style={{ flex: 1, padding: '24px 20px 40px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+          {/* Latest active job — big continue card */}
+          {latestJob && (
+            <div>
+              <p style={s.label}>CONTINUE</p>
+              <button className="fd-tap" style={{
+                marginTop: 8, width: '100%', background: '#1E3FFF', borderRadius: 18,
+                border: 'none', cursor: 'pointer', padding: '20px 20px', textAlign: 'left',
+                display: 'flex', flexDirection: 'column', gap: 10,
+                WebkitTapHighlightColor: 'transparent',
+              }} onClick={() => { setCurrentJobId(latestJob.id); setView('job') }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: 22, fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>
+                    {latestJob.id}
+                  </span>
+                  <span style={{
+                    fontSize: 11, fontWeight: 700,
+                    color: SEV[topSeverity(latestJob)].color,
+                    background: SEV[topSeverity(latestJob)].bg,
+                    padding: '3px 10px', borderRadius: 20,
+                  }}>
+                    {SEV[topSeverity(latestJob)].label}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)' }}>
+                    {latestJob.type === 'DEL' ? 'Delivery' : 'Return'} · {latestJob.issues.length} report{latestJob.issues.length !== 1 ? 's' : ''}
+                  </span>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>Add report →</span>
+                </div>
+              </button>
+            </div>
+          )}
+
+          {/* Other active jobs */}
+          {otherActiveJobs.length > 0 && (
+            <div>
+              <p style={s.label}>OTHER ACTIVE JOBS</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8 }}>
+                {otherActiveJobs.map(job => (
                   <button key={job.id} className="fd-tap" style={s.recentRow}
                     onClick={() => { setCurrentJobId(job.id); setView('job') }}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: job.issues.length > 0 ? SEV[top].color : '#D4D4D4', flexShrink: 0 }} />
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: SEV[topSeverity(job)].color, flexShrink: 0 }} />
                     <span style={{ fontSize: 16, fontWeight: 700, color: '#0A0A0A', flex: 1, textAlign: 'left' }}>{job.id}</span>
-                    <span style={{ fontSize: 13, color: '#737373' }}>
-                      {job.issues.length === 0 ? 'No reports' : `${job.issues.length} report${job.issues.length !== 1 ? 's' : ''}`}
-                    </span>
+                    <span style={{ fontSize: 13, color: '#737373' }}>{job.issues.length} report{job.issues.length !== 1 ? 's' : ''}</span>
                     <ChevronRight size={16} color="#C4C4C4" />
                   </button>
-                )
-              })}
+                ))}
+              </div>
             </div>
+          )}
+
+          {/* New job */}
+          <div style={{ marginTop: latestJob ? 0 : 8 }}>
+            {!showInput && !latestJob ? (
+              // First-time / no jobs: show input directly
+              <>
+                <p style={s.label}>OPEN A JOB</p>
+                <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+                  <input
+                    style={{ ...s.jobInput, flex: 1, borderColor: jobInputError ? '#DC2626' : '#E5E5E5' }}
+                    placeholder="DEL-2401 or RET-1892"
+                    value={jobInput}
+                    onChange={e => { setJobInput(e.target.value.toUpperCase()); setJobInputError('') }}
+                    onKeyDown={e => e.key === 'Enter' && openJob(jobInput)}
+                    autoCapitalize="characters" autoComplete="off" autoFocus
+                  />
+                  <button className="fd-tap" style={s.openBtn} onClick={() => openJob(jobInput)}>Open</button>
+                </div>
+                {jobInputError && <p style={{ fontSize: 13, color: '#DC2626', marginTop: 6 }}>{jobInputError}</p>}
+              </>
+            ) : showInput ? (
+              // Expanded input (user tapped "New job")
+              <>
+                <p style={s.label}>NEW JOB</p>
+                <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+                  <input
+                    style={{ ...s.jobInput, flex: 1, borderColor: jobInputError ? '#DC2626' : '#E5E5E5' }}
+                    placeholder="DEL-2401 or RET-1892"
+                    value={jobInput}
+                    onChange={e => { setJobInput(e.target.value.toUpperCase()); setJobInputError('') }}
+                    onKeyDown={e => e.key === 'Enter' && openJob(jobInput)}
+                    autoCapitalize="characters" autoComplete="off" autoFocus
+                  />
+                  <button className="fd-tap" style={s.openBtn} onClick={() => openJob(jobInput)}>Open</button>
+                </div>
+                {jobInputError && <p style={{ fontSize: 13, color: '#DC2626', marginTop: 6 }}>{jobInputError}</p>}
+                <button className="fd-tap" style={{ ...s.ghostBtn, marginTop: 8, height: 40, fontSize: 13, color: '#A3A3A3' }}
+                  onClick={() => { setShowInput(false); setJobInput(''); setJobInputError('') }}>
+                  Cancel
+                </button>
+              </>
+            ) : (
+              // Has active jobs: show "New job" as secondary action
+              <button className="fd-tap" style={{ ...s.ghostBtn, height: 52, gap: 8 }}
+                onClick={() => setShowInput(true)}>
+                <span style={{ fontSize: 22, fontWeight: 300, color: '#525252', lineHeight: 1 }}>+</span>
+                New job
+              </button>
+            )}
           </div>
-        )}
+
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   // JOB
   if (view === 'job' && currentJob) {
