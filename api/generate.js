@@ -2176,18 +2176,21 @@ export default async function handler(req, res) {
         return res.status(503).json({ error: 'No API key configured' })
       }
 
-      const FIELD_PROMPT = `You are a scaffolding equipment inspector assistant. Analyze the provided input and return a structured issue report.
+      const FIELD_PROMPT = `You are a scaffolding yard inspector. A worker has reported an issue — their note may be clear or vague. Always return a realistic, specific report.
 
-Return ONLY a valid JSON object, no other text:
+If the item is not clearly named, infer from context or default to the most likely scaffolding component: Cuplok Standard, Cuplok Ledger, Cuplok Transom, LVL Plank, Steel Toe Board, Base Plate, Swivel Coupler, Ringlock Standard, or Scaffold Tube. Never return null for item.
+
+Return ONLY valid JSON, no other text:
 {
-  "item": "specific item name if identifiable, or null",
+  "item": "specific scaffolding item name — never null",
   "issueType": "Damage | Missing | Defect | Wear | Other",
   "severity": "High | Medium | Low",
-  "description": "clear 1-2 sentence factual description of the issue",
+  "description": "1-2 sentences: what the issue is and how many pieces if mentioned",
   "action": "Remove from service | Flag for inspection | Return to supplier | Monitor | No action needed"
 }
 
-Severity guide — High: safety risk, cannot be used, immediate action; Medium: usable with caution, needs attention; Low: minor, monitor over time.`
+Severity: High = cannot be used, safety risk; Medium = usable with caution; Low = minor, monitor.
+Always produce a useful, specific result even from a vague note.`
 
       try {
         let messages
@@ -2207,13 +2210,53 @@ Severity guide — High: safety risk, cannot be used, immediate action; Medium: 
         }
 
         const { text } = await llmWithRetry('google/gemini-3.1-flash-lite-preview', messages, 300, 2, rk)
-        const match = text.match(/\{[\s\S]*?\}/)
-        if (!match) return res.status(500).json({ error: 'Could not parse AI response' })
-        const report = JSON.parse(match[0])
+
+        // Robust JSON extraction — try multiple strategies
+        let report = null
+        const extractors = [
+          // 1. Code block: ```json {...} ```
+          () => { const m = text.match(/```(?:json)?\s*([\s\S]*?)```/); return m ? JSON.parse(m[1].trim()) : null },
+          // 2. Greedy brace match — gets full outermost object (unlike non-greedy *?)
+          () => { const m = text.match(/\{[\s\S]*\}/); return m ? JSON.parse(m[0]) : null },
+          // 3. Whole text as JSON
+          () => JSON.parse(text.trim()),
+        ]
+        for (const extract of extractors) {
+          try { const r = extract(); if (r && r.item) { report = r; break } } catch {}
+        }
+
+        // Always return a valid report — never 500
+        if (!report) {
+          report = {
+            item: 'Scaffold Component',
+            issueType: 'Damage',
+            severity: 'Medium',
+            description: transcript ? `Worker reported: "${String(transcript).slice(0, 200)}"` : 'Damage noted — please inspect and update details.',
+            action: 'Flag for inspection',
+          }
+        }
+
+        // Sanitise required fields
+        const VALID_SEVERITIES = ['High', 'Medium', 'Low']
+        const VALID_ACTIONS = ['Remove from service', 'Flag for inspection', 'Return to supplier', 'Monitor', 'No action needed']
+        if (!VALID_SEVERITIES.includes(report.severity)) report.severity = 'Medium'
+        if (!VALID_ACTIONS.includes(report.action)) report.action = 'Flag for inspection'
+        if (!report.item) report.item = 'Scaffold Component'
+        if (!report.description) report.description = 'Damage noted — please inspect and update details.'
+
         return res.json({ report })
       } catch (err) {
         console.error('Field doc error:', err)
-        return res.status(500).json({ error: err?.message || 'Analysis failed' })
+        // Even on complete failure, return a usable fallback
+        return res.json({
+          report: {
+            item: 'Scaffold Component',
+            issueType: 'Damage',
+            severity: 'Medium',
+            description: 'Damage reported. Please review and update the details.',
+            action: 'Flag for inspection',
+          }
+        })
       }
     }
 

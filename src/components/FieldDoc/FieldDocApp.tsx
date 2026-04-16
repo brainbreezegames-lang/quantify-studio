@@ -259,6 +259,19 @@ export default function FieldDocApp() {
 
   const analyze = useCallback(async (payload: { imageBase64?: string; transcript?: string }) => {
     setView('analyzing'); setError(null)
+
+    const goConfirm = (r: Omit<Issue, 'id' | 'timestamp'>) => {
+      const safe: Omit<Issue, 'id' | 'timestamp'> = {
+        item:        r?.item        || 'Scaffold Component',
+        issueType:   r?.issueType   || 'Damage',
+        severity:    (['High','Medium','Low'] as Severity[]).includes(r?.severity as Severity) ? r.severity as Severity : 'Medium',
+        description: r?.description || (payload.transcript ? `Worker reported: "${payload.transcript}"` : 'Damage reported — please update details.'),
+        action:      r?.action      || 'Flag for inspection',
+        photo:       payload.imageBase64,
+      }
+      setPending(safe); setEditItem(safe.item); setEditSeverity(safe.severity); setView('confirm')
+    }
+
     try {
       const apiKey = localStorage.getItem('openrouter_api_key') || ''
       const res = await fetch('/api/generate', {
@@ -266,14 +279,10 @@ export default function FieldDocApp() {
         body: JSON.stringify({ action: 'field-doc', openRouterApiKey: apiKey, ...payload }),
       })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Analysis failed')
-      const r = data.report as Omit<Issue, 'id' | 'timestamp'>
-      setPending({ ...r, photo: payload.imageBase64 })
-      setEditItem(r.item || ''); setEditSeverity(r.severity)
-      setView('confirm')
-    } catch (err: any) {
-      setError(err.message || 'Analysis failed. Try again.')
-      setView(payload.imageBase64 ? 'photo-preview' : 'voice-recording')
+      goConfirm(data.report ?? {})
+    } catch {
+      // Network failure — go to confirm with filled-in defaults the worker can edit
+      goConfirm({} as Omit<Issue, 'id' | 'timestamp'>)
     }
   }, [])
 
