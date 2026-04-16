@@ -232,6 +232,7 @@ export default function FieldDocApp() {
   const [error, setError] = useState<string | null>(null)
   const [sendDone, setSendDone] = useState(false)
   const [allSendDone, setAllSendDone] = useState(false)
+  const [showInput, setShowInput] = useState(false)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const recogRef = useRef<any>(null)
@@ -371,7 +372,6 @@ export default function FieldDocApp() {
 
   // HOME
   if (view === 'home') {
-    const [showInput, setShowInput] = useState(false)
     const activeJobs = jobs.filter(j => j.issues.length > 0)
     const latestJob = activeJobs[0] ?? null
     const otherActiveJobs = activeJobs.slice(1, 4)
