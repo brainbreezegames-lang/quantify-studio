@@ -12,6 +12,7 @@ const SignIn = React.lazy(() => import('./auth/SignInPage'))
 const Demo = React.lazy(() => import('./demo/DemoApp'))
 const Present = React.lazy(() => import('./demo/PresentApp'))
 const FieldDoc = React.lazy(() => import('./components/FieldDoc/FieldDocApp'))
+const OfficeAI = React.lazy(() => import('./components/OfficeAI/OfficeApp'))
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -20,6 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <React.Suspense fallback={<div className="min-h-screen bg-white" />}>
           <Routes>
             <Route path="/field" element={<FieldDoc />} />
+            <Route path="/office" element={<OfficeAI />} />
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/demo" element={<Demo />} />
             <Route path="/present" element={<Present />} />

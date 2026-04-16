@@ -2260,6 +2260,132 @@ Always produce a useful, specific result even from a vague note.`
       }
     }
 
+    // ── Office AI briefing — summarise field reports for office team ──────────
+    if (action === 'office-brief') {
+      const reports = Array.isArray(req.body.reports) ? req.body.reports : []
+
+      const OFFICE_BRIEF_SYSTEM = `You are an AI assistant for a scaffolding company's office team. You receive field damage reports from yard workers.
+
+Return ONLY valid JSON:
+{
+  "headline": "short one-liner like '3 urgent reports across 2 jobs'",
+  "briefing": "2-3 specific sentences. Name critical items and job numbers. Tell office what to do today.",
+  "priorities": [
+    { "jobId": "DEL-1234", "item": "item name", "severity": "High|Medium|Low", "nextStep": "action in 4 words max" }
+  ]
+}
+Sort: High first. Max 8 priorities.`
+
+      const reportsText = reports.map(r =>
+        `Job ${r.jobId} (${r.jobType}): ${r.item} — ${r.severity} — ${r.description} → ${r.action}`
+      ).join('\n')
+
+      try {
+        const messages = [{
+          role: 'user',
+          content: `${OFFICE_BRIEF_SYSTEM}\n\nField reports:\n${reportsText || 'No reports submitted yet.'}`,
+        }]
+
+        const { text } = await llmWithRetry('google/gemini-3.1-flash-lite-preview', messages, 600, 2, rk)
+
+        // Robust JSON extraction — 3 strategies
+        let briefingData = null
+        const extractors = [
+          () => { const m = text.match(/```(?:json)?\s*([\s\S]*?)```/); return m ? JSON.parse(m[1].trim()) : null },
+          () => { const m = text.match(/\{[\s\S]*\}/); return m ? JSON.parse(m[0]) : null },
+          () => JSON.parse(text.trim()),
+        ]
+        for (const extract of extractors) {
+          try { const r = extract(); if (r && r.headline) { briefingData = r; break } } catch {}
+        }
+
+        if (!briefingData) {
+          // Fallback: build briefing from raw input data
+          const highCount = reports.filter(r => r.severity === 'High').length
+          const jobIds = [...new Set(reports.map(r => r.jobId))]
+          briefingData = {
+            headline: highCount > 0 ? `${highCount} urgent report${highCount !== 1 ? 's' : ''} across ${jobIds.length} job${jobIds.length !== 1 ? 's' : ''}` : `${reports.length} report${reports.length !== 1 ? 's' : ''} across ${jobIds.length} job${jobIds.length !== 1 ? 's' : ''}`,
+            briefing: `Field workers have submitted ${reports.length} damage report${reports.length !== 1 ? 's' : ''} across ${jobIds.join(', ')}. Review high-severity items immediately and flag equipment for removal from service. Inspect all medium-severity items before next deployment.`,
+            priorities: reports
+              .sort((a, b) => {
+                const o = { High: 0, Medium: 1, Low: 2 }
+                return (o[a.severity] ?? 1) - (o[b.severity] ?? 1)
+              })
+              .slice(0, 8)
+              .map(r => ({ jobId: r.jobId, item: r.item, severity: r.severity, nextStep: r.action.split(' ').slice(0, 4).join(' ') })),
+          }
+        }
+
+        // Sanitise priorities
+        if (Array.isArray(briefingData.priorities)) {
+          briefingData.priorities = briefingData.priorities
+            .map(p => ({
+              jobId: String(p.jobId || ''),
+              item: String(p.item || 'Component'),
+              severity: ['High', 'Medium', 'Low'].includes(p.severity) ? p.severity : 'Medium',
+              nextStep: String(p.nextStep || 'Review'),
+            }))
+            .slice(0, 8)
+        } else {
+          briefingData.priorities = []
+        }
+
+        return res.json({ briefing: briefingData })
+      } catch (err) {
+        console.error('Office brief error:', err)
+        // Always return something useful — never error
+        const highCount = reports.filter(r => r.severity === 'High').length
+        const jobIds = [...new Set(reports.map(r => r.jobId))]
+        return res.json({
+          briefing: {
+            headline: `${reports.length} field report${reports.length !== 1 ? 's' : ''} ready for review`,
+            briefing: `Your yard workers have submitted damage reports across ${jobIds.length || 'several'} jobs. Review the prioritised list below and take action on high-severity items today.`,
+            priorities: reports.slice(0, 8).map(r => ({
+              jobId: r.jobId, item: r.item,
+              severity: ['High', 'Medium', 'Low'].includes(r.severity) ? r.severity : 'Medium',
+              nextStep: r.action.split(' ').slice(0, 4).join(' '),
+            })),
+          },
+        })
+      }
+    }
+
+    // ── Office AI draft — customer notification email ─────────────────────────
+    if (action === 'office-draft') {
+      const { jobId, jobType, issues } = req.body
+      const issueList = Array.isArray(issues) ? issues : []
+
+      const DRAFT_PROMPT = `Write a brief professional customer notification for damaged equipment. Address as "Hi," (no placeholder names). 4-6 sentences. Mention job number ${jobId || 'the job'}, list damaged items, explain next steps. Sign off "The Avontus Quantify Team". Return ONLY plain text, no JSON, no markdown.
+
+Job: ${jobId} (${jobType || 'Job'})
+Issues:
+${issueList.map(i => `- ${i.item} (${i.severity}): ${i.description} → ${i.action}`).join('\n') || 'No specific issues listed.'}`
+
+      try {
+        const messages = [{ role: 'user', content: DRAFT_PROMPT }]
+        const { text } = await llmWithRetry('google/gemini-3.1-flash-lite-preview', messages, 400, 2, rk)
+
+        if (text && text.trim().length > 20) {
+          return res.json({ draft: text.trim() })
+        }
+        throw new Error('Empty draft')
+      } catch (err) {
+        console.error('Office draft error:', err)
+        // Hand-compose fallback from issues data — never error
+        const highItems = issueList.filter(i => i.severity === 'High')
+        const otherItems = issueList.filter(i => i.severity !== 'High')
+        let draft = `Hi,\n\nWe are writing regarding your ${jobType || ''} job ${jobId || ''}. During our yard inspection, our team identified equipment issues that require your attention.\n\n`
+        if (highItems.length > 0) {
+          draft += `The following items have been removed from service due to safety concerns: ${highItems.map(i => i.item).join(', ')}.\n\n`
+        }
+        if (otherItems.length > 0) {
+          draft += `The following items have been flagged for inspection: ${otherItems.map(i => i.item).join(', ')}.\n\n`
+        }
+        draft += `We will be in touch shortly to confirm next steps. Please do not use any flagged equipment until it has been cleared by our team.\n\nThe Avontus Quantify Team`
+        return res.json({ draft })
+      }
+    }
+
     // ── Prompt enhancement (lightweight, fast path) ──────────────────────────
     if (action === 'enhance') {
       if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
