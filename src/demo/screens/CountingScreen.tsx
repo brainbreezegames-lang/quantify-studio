@@ -230,7 +230,12 @@ function ItemRow({ item, isReturn, accentColor, isActive, isLast, onTap, onFlag 
       <div className="flex items-center gap-3 px-5 py-5" style={{ backgroundColor: rowBg }}>
         <div className="flex-1 min-w-0 flex flex-col gap-1.5">
           <p className="text-[#0A0A0A] text-base font-semibold leading-snug">{item.name}</p>
-          <p className="text-[#737373] text-sm">{item.subtitle}</p>
+          {/* Brian: "Part number is missing, as well as weight each" */}
+          <p className="text-[#737373] text-sm">
+            {item.partNumber
+              ? `${item.partNumber}${item.weightEach ? `  ·  ${item.weightEach} kg each` : ''}`
+              : item.subtitle}
+          </p>
           {badge && (
             <div
               className="flex items-center gap-1 px-2 py-1 rounded-md self-start"

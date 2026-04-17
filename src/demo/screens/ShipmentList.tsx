@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import {
-  Menu, MapPin, ChevronRight, Plus, Inbox, Wifi, CircleDot,
+  Menu, MapPin, ChevronRight, Plus, Inbox, CircleDot,
   Calendar, Package, PackageOpen, AlertTriangle, Truck, ArrowRight, ArrowDown, ArrowUp,
+  Weight,
 } from 'lucide-react'
-import { Shipment, ShipmentStatus, totalExpected } from '../data'
+import { Shipment, ShipmentStatus, statusColors } from '../data'
 
-type FilterKey = 'all' | 'needs-count' | 'reserved' | 'pre-return' | 'in-transit'
+type FilterKey = 'all' | 'reserved' | 'to-be-received' | 'in-transit' | 'needs-count' | 'discrepancy' | 'pre-return'
 
 interface Props {
   shipments: Shipment[]
@@ -17,31 +18,44 @@ interface Props {
   onOpenCreateNew: () => void
 }
 
+const FILTER_DEFS: { key: FilterKey; label: string; statuses: ShipmentStatus[] }[] = [
+  { key: 'all',           label: 'All',             statuses: [] },
+  { key: 'reserved',      label: 'Reserved',        statuses: ['RESERVED'] },
+  { key: 'to-be-received',label: 'To Be Received',  statuses: ['TO-BE-RECEIVED'] },
+  { key: 'in-transit',    label: 'In Transit',       statuses: ['IN-TRANSIT'] },
+  { key: 'needs-count',   label: 'Needs Count',      statuses: ['NEEDS-COUNT'] },
+  { key: 'discrepancy',   label: 'Discrepancy',      statuses: ['DISCREPANCY'] },
+  { key: 'pre-return',    label: 'Pre-Return',       statuses: ['PRE-RETURN'] },
+]
+
+// Active chip colors per status — Brian: "Maybe show all statuses? Zero next to ones that don't have any?"
+const FILTER_ACTIVE_COLOR: Record<FilterKey, { bg: string; text: string }> = {
+  'all':            { bg: '#1E3FFF', text: '#FFFFFF' },
+  'reserved':       { bg: '#1E3FFF', text: '#FFFFFF' },
+  'to-be-received': { bg: '#15803D', text: '#FFFFFF' },
+  'in-transit':     { bg: '#0369A1', text: '#FFFFFF' },
+  'needs-count':    { bg: '#92400E', text: '#FFFFFF' },
+  'discrepancy':    { bg: '#DC2626', text: '#FFFFFF' },
+  'pre-return':     { bg: '#D97706', text: '#FFFFFF' },
+}
+
 export default function ShipmentList({ shipments, selectedLocation, onSelect, onOpenMenu, onOpenProfile, onOpenLocation, onOpenCreateNew }: Props) {
   const [filter, setFilter] = useState<FilterKey>('all')
 
   const counts: Record<FilterKey, number> = {
-    'all': shipments.length,
-    'needs-count': shipments.filter(s => s.status === 'NEEDS-COUNT' || s.status === 'PRE-RETURN').length,
-    'reserved': shipments.filter(s => s.status === 'RESERVED').length,
-    'pre-return': shipments.filter(s => s.status === 'PRE-RETURN').length,
-    'in-transit': shipments.filter(s => s.status === 'IN-TRANSIT').length,
+    'all':            shipments.length,
+    'reserved':       shipments.filter(s => s.status === 'RESERVED').length,
+    'to-be-received': shipments.filter(s => s.status === 'TO-BE-RECEIVED').length,
+    'in-transit':     shipments.filter(s => s.status === 'IN-TRANSIT').length,
+    'needs-count':    shipments.filter(s => s.status === 'NEEDS-COUNT').length,
+    'discrepancy':    shipments.filter(s => s.status === 'DISCREPANCY').length,
+    'pre-return':     shipments.filter(s => s.status === 'PRE-RETURN').length,
   }
 
-  const FILTERS: { key: FilterKey; label: string }[] = [
-    { key: 'all', label: 'All' },
-    { key: 'needs-count', label: 'Needs your count' },
-    { key: 'reserved', label: 'Reserved' },
-    { key: 'pre-return', label: 'Pre-Return' },
-    { key: 'in-transit', label: 'In Transit' },
-  ]
-
   const filtered =
-    filter === 'all' ? shipments :
-    filter === 'needs-count' ? shipments.filter(s => s.status === 'NEEDS-COUNT' || s.status === 'PRE-RETURN') :
-    filter === 'reserved' ? shipments.filter(s => s.status === 'RESERVED') :
-    filter === 'pre-return' ? shipments.filter(s => s.status === 'PRE-RETURN') :
-    shipments.filter(s => s.status === 'IN-TRANSIT')
+    filter === 'all'
+      ? shipments
+      : shipments.filter(s => FILTER_DEFS.find(f => f.key === filter)!.statuses.includes(s.status))
 
   return (
     <div className="flex flex-col min-h-full bg-[#F5F5F5]">
@@ -51,15 +65,9 @@ export default function ShipmentList({ shipments, selectedLocation, onSelect, on
           <button onClick={onOpenMenu} className="w-10 h-10 rounded-full bg-white/[0.12] flex items-center justify-center no-select pressable">
             <Menu size={20} color="#fff" strokeWidth={2} />
           </button>
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 bg-white/[0.12] rounded-full pl-3 pr-3.5 py-1.5">
-              <Wifi size={13} color="#fff" strokeWidth={2.2} />
-              <span className="text-white text-xs font-semibold">Synced 11:05</span>
-            </div>
-            <button onClick={onOpenProfile} className="w-10 h-10 rounded-full bg-white/[0.18] flex items-center justify-center no-select pressable">
-              <span className="text-white text-[14px] font-semibold">JD</span>
-            </button>
-          </div>
+          <button onClick={onOpenProfile} className="w-10 h-10 rounded-full bg-white/[0.18] flex items-center justify-center no-select pressable">
+            <span className="text-white text-[14px] font-semibold">JD</span>
+          </button>
         </div>
         <h1 className="text-white text-[30px] font-semibold leading-tight">Shipments</h1>
         <p className="text-white/80 text-[13px] mt-1">{shipments.length} shipments  ·  Apr 7 – Apr 28</p>
@@ -83,18 +91,21 @@ export default function ShipmentList({ shipments, selectedLocation, onSelect, on
 
       <div className="h-px bg-[#EAEAEA]" />
 
-      {/* Filter chips */}
+      {/* All-status filter chips — Brian: "Maybe show all statuses? Zero next to ones that don't have any?" */}
       <div data-spot="filter-chips" className="bg-white px-5 py-3.5 overflow-x-auto">
         <div className="flex gap-2 w-max">
-          {FILTERS.map(f => {
+          {FILTER_DEFS.map(f => {
             const active = filter === f.key
             const count = counts[f.key]
+            const activeColors = FILTER_ACTIVE_COLOR[f.key]
             return (
               <FilterChip
                 key={f.key}
                 label={f.label}
                 count={count}
                 active={active}
+                activeBg={activeColors.bg}
+                activeText={activeColors.text}
                 onClick={() => setFilter(f.key)}
               />
             )
@@ -139,16 +150,19 @@ export default function ShipmentList({ shipments, selectedLocation, onSelect, on
   )
 }
 
-// ─── Filter chip with proper count pill ──────────────────────────────────────
-function FilterChip({ label, count, active, onClick }: { label: string; count: number; active: boolean; onClick: () => void }) {
+// ─── Filter chip ──────────────────────────────────────────────────────────────
+function FilterChip({ label, count, active, activeBg, activeText, onClick }: {
+  label: string; count: number; active: boolean
+  activeBg: string; activeText: string; onClick: () => void
+}) {
   return (
     <button
       onClick={onClick}
       className="flex items-center gap-2 pl-3.5 pr-2 py-2 rounded-full text-[13px] font-semibold no-select transition-colors flex-shrink-0 border"
       style={{
-        backgroundColor: active ? '#1E3FFF' : '#FFFFFF',
-        color: active ? '#FFFFFF' : '#525252',
-        borderColor: active ? '#1E3FFF' : '#EAEAEA',
+        backgroundColor: active ? activeBg : '#FFFFFF',
+        color: active ? activeText : '#525252',
+        borderColor: active ? activeBg : '#EAEAEA',
       }}
     >
       <span>{label}</span>
@@ -165,21 +179,19 @@ function FilterChip({ label, count, active, onClick }: { label: string; count: n
   )
 }
 
-// ─── Card — white body + colored 4px accent bar + direction dot ─────────────
+// ─── Card ─────────────────────────────────────────────────────────────────────
 function ShipmentCard({ shipment, idx, onTap }: { shipment: Shipment; idx: number; onTap: () => void }) {
-  const total = totalExpected(shipment.items)
+  const total = shipment.pcsTotal
   const isDiscrepancy = shipment.status === 'DISCREPANCY'
   const isPreReturn = shipment.type === 'PRE-RETURN'
   const isEmptyBOM = shipment.items.length === 0
 
-  // Thin accent stripe on top of card — signals status at a glance
   const accent =
     isDiscrepancy ? '#DC2626' :
     isPreReturn ? '#F59E0B' :
     shipment.status === 'IN-TRANSIT' ? '#0EA5E9' :
     '#1E3FFF'
 
-  // Direction dot — outbound vs inbound + state
   const dot: { bg: string; color: string; icon: JSX.Element } =
     isDiscrepancy
       ? { bg: '#FEE2E2', color: '#991B1B', icon: <AlertTriangle size={14} color="#991B1B" strokeWidth={2.2} /> }
@@ -189,18 +201,11 @@ function ShipmentCard({ shipment, idx, onTap }: { shipment: Shipment; idx: numbe
           ? { bg: '#E0F2FE', color: '#0369A1', icon: <Truck size={14} color="#0369A1" strokeWidth={2.2} /> }
           : { bg: '#EEF2FF', color: '#1E3FFF', icon: <ArrowUp size={14} color="#1E3FFF" strokeWidth={2.2} /> }
 
-  let badge: { label: string; bg: string; color: string }
-  if (shipment.status === 'DISCREPANCY') badge = { label: 'DISCREPANCY', bg: '#FEE2E2', color: '#991B1B' }
-  else if (shipment.status === 'PRE-RETURN') badge = { label: 'PRE-RETURN', bg: '#FEF3C7', color: '#92400E' }
-  else if (shipment.status === 'RESERVED') badge = { label: 'RESERVED', bg: '#E5ECFF', color: '#1E3FFF' }
-  else if (shipment.status === 'IN-TRANSIT') badge = { label: 'IN TRANSIT', bg: '#E0F2FE', color: '#0369A1' }
-  else if (shipment.status === 'TO-BE-RECEIVED') badge = { label: 'TO BE RECEIVED', bg: '#EEF2FF', color: '#4F46E5' }
-  else if (shipment.status === 'NEEDS-COUNT') badge = { label: 'NEEDS COUNT', bg: '#FEF3C7', color: '#92400E' }
-  else badge = { label: 'RESERVED', bg: '#E5ECFF', color: '#1E3FFF' }
+  const sc = statusColors(shipment.status)
+  const badge = { label: shipment.status.replace('-', ' '), bg: sc.bg, color: sc.text }
 
   const [city, state] = (shipment.location ?? '').split(',').map(s => s.trim())
   const cityLabel = state ? `${city}, ${state}` : (shipment.location ?? '')
-  const plannedLabel = shipment.date.replace(/\w+, /, '').replace(/(\w+ \d+).*/, 'Planned $1')
 
   return (
     <button
@@ -212,20 +217,16 @@ function ShipmentCard({ shipment, idx, onTap }: { shipment: Shipment; idx: numbe
         animationDelay: `${idx * 40}ms`,
       }}
     >
-      {/* 4px colored accent — color-codes status at a glance */}
       <div className="h-1 w-full" style={{ backgroundColor: accent }} />
       <div className="flex flex-col gap-3.5 px-5 py-5">
-        {/* Top row: direction dot + ID + badge + chevron */}
+        {/* Top row */}
         <div className="flex items-center gap-3">
-          <div
-            className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-            style={{ backgroundColor: dot.bg }}
-          >
+          <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: dot.bg }}>
             {dot.icon}
           </div>
           <span className="text-[#0A0A0A] text-[18px] font-semibold leading-none">{shipment.id}</span>
           <span
-            className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+            className="text-[10px] font-bold px-2 py-0.5 rounded-full"
             style={{ backgroundColor: badge.bg, color: badge.color, letterSpacing: 0.3 }}
           >
             {badge.label}
@@ -239,16 +240,23 @@ function ShipmentCard({ shipment, idx, onTap }: { shipment: Shipment; idx: numbe
           {shipment.jobsiteId} — {shipment.jobsite}
         </p>
 
-        {/* Meta — icons replace word-dense text */}
+        {/* Meta */}
         <div className="flex items-center gap-4 flex-wrap -mt-1">
           <MetaPill icon={<MapPin size={13} color="#737373" strokeWidth={2} />} text={cityLabel || '—'} />
-          <MetaPill icon={<Calendar size={13} color="#737373" strokeWidth={2} />} text={plannedLabel} />
+          <MetaPill icon={<Calendar size={13} color="#737373" strokeWidth={2} />} text={shipment.date} />
           {isEmptyBOM && isPreReturn
             ? <MetaPill icon={<PackageOpen size={13} color="#92400E" strokeWidth={2} />} text="BOM blank" color="#92400E" />
             : <MetaPill icon={<Package size={13} color="#737373" strokeWidth={2} />} text={`${total} pcs`} />}
         </div>
 
-        {/* Status text — color carried by text, not background */}
+        {/* Weight row — Brian: "Weight is also very important" */}
+        {shipment.weight && (
+          <div className="flex items-center gap-1.5 -mt-1">
+            <Weight size={13} color="#737373" strokeWidth={2} />
+            <span className="text-[13px] text-[#525252]">{shipment.weight}</span>
+          </div>
+        )}
+
         {isDiscrepancy && shipment.discrepancy && (
           <div className="flex items-center gap-2 pt-0.5 border-t border-[#F0F0F0] -mx-5 px-5 pt-3">
             <span className="text-[#991B1B] text-[13px] font-semibold">

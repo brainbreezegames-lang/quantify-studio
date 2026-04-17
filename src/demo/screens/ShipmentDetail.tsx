@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Truck } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Camera, Paperclip } from 'lucide-react'
 import { Shipment, ShipmentItem, totalExpected, countedItems, statusLabel, statusColors } from '../data'
 import StickyCTA from '../components/StickyCTA'
 
@@ -15,7 +15,6 @@ export default function ShipmentDetail({ shipment, items, onBack, onStart }: Pro
   const label = statusLabel(shipment.status)
   const colors = statusColors(shipment.status)
   const total = totalExpected(items)
-  const doneItems = countedItems(items)
   const isEmptyBOM = items.length === 0
 
   return (
@@ -30,7 +29,10 @@ export default function ShipmentDetail({ shipment, items, onBack, onStart }: Pro
             <p className="text-white text-base font-semibold">{shipment.id}</p>
             <p className="text-white/70 text-xs">{isReturn ? 'Pre-Return' : 'Delivery'}</p>
           </div>
-          <div className="w-9" />
+          {/* Brian: "Something to allow them to take and attached photos and docs even when not editing" */}
+          <button className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center no-select pressable">
+            <Camera size={18} color="#fff" strokeWidth={2} />
+          </button>
         </div>
       </div>
 
@@ -48,25 +50,14 @@ export default function ShipmentDetail({ shipment, items, onBack, onStart }: Pro
             <p className="text-[#737373] text-sm mt-0.5">{shipment.location}</p>
           </div>
 
-          {/* Stats */}
+          {/* Stats — Brian: "We don't have time yet, only a date" */}
           <div className="grid grid-cols-3 divide-x divide-[#F0F0F0] border-b border-[#F0F0F0]">
-            <StatCell label="Scheduled" value={shipment.time} />
+            <StatCell label="Scheduled" value={shipment.date.replace('Planned ', '')} />
             <StatCell label="Items" value={isEmptyBOM ? '—' : String(items.length)} />
             <StatCell label="Units" value={isEmptyBOM ? '—' : String(total)} />
           </div>
 
-          {/* Truck card */}
-          {doneItems > 0 && (
-            <div className="mx-5 my-4 px-4 py-3 bg-[#EEF2FF] rounded-xl flex items-center gap-3">
-              <Truck size={18} color="#1E3FFF" strokeWidth={2} />
-              <div>
-                <p className="text-[#1E3FFF] text-sm font-semibold">{shipment.truckLabel}</p>
-                <p className="text-[#1E3FFF]/70 text-xs">{doneItems} item{doneItems !== 1 ? 's' : ''} counted so far</p>
-              </div>
-            </div>
-          )}
-
-          {/* Details */}
+          {/* Details — Salesperson + Weight (Brian requests), no truck tracking */}
           <div className="px-5 py-4 flex flex-col gap-3 border-b border-[#F0F0F0]">
             {isReturn ? (
               <>
@@ -77,18 +68,20 @@ export default function ShipmentDetail({ shipment, items, onBack, onStart }: Pro
               <>
                 <DetailRow label="From (Branch)" value="New York Branch Office" />
                 <DetailRow label="To (Job Site)" value={shipment.jobsite} />
-                <DetailRow label="Rent Start Date" value={shipment.date} />
               </>
             )}
-            <DetailRow label="Driver" value={shipment.driver ?? 'Tap to set'} muted={!shipment.driver} />
-            <DetailRow label="Vehicle" value={shipment.vehicle ?? 'Tap to set'} muted={!shipment.vehicle} />
+            <DetailRow label="Rent Start Date" value={shipment.date.replace('Planned ', '')} />
+            {/* Brian: "How about adding Salesperson here also" */}
+            <DetailRow label="Salesperson" value={shipment.salesperson ?? '—'} muted={!shipment.salesperson} />
+            {/* Brian: "Need a weight here" */}
+            {shipment.weight && <DetailRow label="Est. Weight" value={shipment.weight} />}
           </div>
 
-          {/* Expected items */}
+          {/* Expected items — Brian: "Part number is missing, as well as weight each" */}
           <div className="px-5 py-4">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-[#0A0A0A] text-sm font-semibold">Expected items</p>
-              {!isEmptyBOM && <p className="text-[#737373] text-sm">{items.length} total</p>}
+              <p className="text-[#0A0A0A] text-sm font-semibold">Products</p>
+              {!isEmptyBOM && <p className="text-[#737373] text-sm">{items.length} items</p>}
             </div>
             {isEmptyBOM ? (
               <div className="py-4 text-center">
@@ -97,30 +90,46 @@ export default function ShipmentDetail({ shipment, items, onBack, onStart }: Pro
               </div>
             ) : (
               <div className="flex flex-col gap-2">
-                {items.slice(0, 3).map(item => (
-                  <div key={item.id} className="flex items-center justify-between py-1">
-                    <div>
-                      <p className="text-[#0A0A0A] text-sm font-medium">{item.name}</p>
-                      <p className="text-[#737373] text-xs">{item.subtitle}</p>
+                {items.slice(0, 4).map(item => (
+                  <div key={item.id} className="flex items-center justify-between py-1.5 border-b border-[#F5F5F5] last:border-0">
+                    <div className="flex-1 min-w-0 pr-3">
+                      <p className="text-[#0A0A0A] text-sm font-semibold leading-snug">{item.name}</p>
+                      {/* Part number + weight each — Brian's request */}
+                      <p className="text-[#737373] text-xs mt-0.5">
+                        {item.partNumber ? item.partNumber : ''}
+                        {item.partNumber && item.weightEach ? '  ·  ' : ''}
+                        {item.weightEach ? `${item.weightEach} kg each` : ''}
+                        {!item.partNumber && !item.weightEach ? item.subtitle : ''}
+                      </p>
                     </div>
-                    <span className="text-[#0A0A0A] text-sm font-semibold">×{item.expected}</span>
+                    <span className="text-[#0A0A0A] text-sm font-semibold flex-shrink-0">×{item.expected}</span>
                   </div>
                 ))}
-                {items.length > 3 && (
-                  <p className="text-[#1E3FFF] text-sm font-semibold mt-1">+ {items.length - 3} more items</p>
+                {items.length > 4 && (
+                  <p className="text-[#1E3FFF] text-sm font-semibold mt-1">+ {items.length - 4} more items</p>
                 )}
               </div>
             )}
           </div>
+
+          {/* Attachments */}
+          <div className="px-5 py-3 border-t border-[#F0F0F0]">
+            <button className="flex items-center gap-2 text-[#1E3FFF] text-sm font-semibold no-select pressable py-1">
+              <Paperclip size={15} color="#1E3FFF" strokeWidth={2} />
+              <span>Attachments</span>
+            </button>
+          </div>
         </div>
       </div>
 
+      {/* Brian: "Ship Reservation" as primary CTA + "Create Reservation for Shortage" as secondary */}
       <StickyCTA
         accentColor={accentColor}
         onClick={onStart}
         icon={<ChevronRight size={18} color="#fff" strokeWidth={2.5} />}
+        secondary={!isReturn ? { label: 'Create Reservation for Shortage', onClick: () => {} } : undefined}
       >
-        {isReturn ? 'Start receiving' : 'Start loading'}
+        {isReturn ? 'Start receiving' : 'Ship Reservation'}
       </StickyCTA>
     </div>
   )
