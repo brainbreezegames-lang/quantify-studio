@@ -232,7 +232,7 @@
           },
 
           { "type": "frame", "name": "Card-RentInfo",
-            "layout": "horizontal", "gap": 12, "crossAlign": "START",
+            "layout": "horizontal", "gap": 12, "crossAlign": "MIN",
             "fill": "#EEF2FF", "cornerRadius": 20,
             "stroke": "#C7D2FE", "strokeWeight": 1,
             "padding": { "top": 18, "bottom": 18, "left": 20, "right": 20 },
