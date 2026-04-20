@@ -5,6 +5,7 @@ import {
   Weight, Inbox as MoveToInbox,
 } from 'lucide-react'
 import { Shipment, ShipmentStatus, statusColors, needsCount } from '../data'
+import { formatJobsite } from './Settings'
 
 type FilterKey = 'all' | 'reserved' | 'to-be-received' | 'in-transit' | 'discrepancy' | 'pre-return'
 
@@ -248,9 +249,9 @@ function ShipmentCard({ shipment, idx, onTap }: { shipment: Shipment; idx: numbe
           <ChevronRight size={20} color="#737373" strokeWidth={2} />
         </div>
 
-        {/* Jobsite — Brian: subtitle shows the jobsite number, not the delivery */}
+        {/* Jobsite — follows Settings pick (name / number-name / name-number) */}
         <p className="text-[#0A0A0A] text-base font-bold tracking-[-0.1px] leading-snug">
-          {shipment.jobsiteId} - {shipment.jobsite}
+          {formatJobsite(shipment.jobsiteId, shipment.jobsite)}
         </p>
 
         {/* Meta */}

@@ -3,7 +3,23 @@ import { ChevronLeft, Check } from 'lucide-react'
 
 // Brian: "all we need is a page that allows them to customize the display
 // of the jobsite (name, number-name, name-number)."
-type JobSiteDisplay = 'name' | 'number-name' | 'name-number'
+export type JobSiteDisplay = 'name' | 'number-name' | 'name-number'
+
+const STORAGE_KEY = 'quantify-demo-jobsite-display'
+
+export function readJobsiteDisplay(): JobSiteDisplay {
+  if (typeof window === 'undefined') return 'name'
+  const v = window.localStorage.getItem(STORAGE_KEY)
+  if (v === 'number-name' || v === 'name-number' || v === 'name') return v
+  return 'name'
+}
+
+export function formatJobsite(id: string, name: string, display?: JobSiteDisplay): string {
+  const d = display ?? readJobsiteDisplay()
+  if (d === 'number-name') return `${id} - ${name}`
+  if (d === 'name-number') return `${name} - ${id}`
+  return name
+}
 
 const OPTIONS: { key: JobSiteDisplay; label: string; preview: string }[] = [
   { key: 'name',          label: 'Name',              preview: 'Vanguard Plant Systems' },
@@ -12,7 +28,12 @@ const OPTIONS: { key: JobSiteDisplay; label: string; preview: string }[] = [
 ]
 
 export default function Settings({ onBack }: { onBack: () => void }) {
-  const [value, setValue] = useState<JobSiteDisplay>('name')
+  const [value, setValue] = useState<JobSiteDisplay>(() => readJobsiteDisplay())
+
+  function choose(next: JobSiteDisplay) {
+    setValue(next)
+    if (typeof window !== 'undefined') window.localStorage.setItem(STORAGE_KEY, next)
+  }
 
   return (
     <div className="flex flex-col min-h-full bg-[#F5F5F5]">
@@ -44,7 +65,7 @@ export default function Settings({ onBack }: { onBack: () => void }) {
             return (
               <button
                 key={opt.key}
-                onClick={() => setValue(opt.key)}
+                onClick={() => choose(opt.key)}
                 className="w-full flex items-center gap-4 px-[22px] py-[18px] text-left no-select pressable"
                 style={{ backgroundColor: active ? '#EEF2FF' : 'transparent' }}
               >

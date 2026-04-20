@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ChevronLeft, ChevronRight, Camera, Paperclip, StickyNote, Plus, Check } from 'lucide-react'
 import { Shipment, ShipmentItem, totalExpected, statusLabel, statusColors } from '../data'
+import { formatJobsite } from './Settings'
 import StickyCTA from '../components/StickyCTA'
 
 interface Props {
@@ -76,14 +77,15 @@ export default function ShipmentDetail({ shipment, items, onBack, onStart }: Pro
           <div className="px-[22px]">
             {isReturn ? (
               <>
-                <DetailRow label="From" value={shipment.jobsite} />
+                {/* Brian: jobsite display follows user options name / number-name / name-number */}
+                <DetailRow label="From" value={formatJobsite(shipment.jobsiteId, shipment.jobsite)} />
                 <DetailRow label="To" value="New York Branch Office" />
               </>
             ) : (
               <>
                 <DetailRow label="Type" value="Delivery" />
                 <DetailRow label="From" value="New York Branch Office" />
-                <DetailRow label="To" value={shipment.jobsite} />
+                <DetailRow label="To" value={formatJobsite(shipment.jobsiteId, shipment.jobsite)} />
               </>
             )}
             <DetailRow label="Salesperson" value={shipment.salesperson ?? '-'} muted={!shipment.salesperson} />
