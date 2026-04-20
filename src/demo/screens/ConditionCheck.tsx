@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X, Check, CheckCircle2, Wrench, AlertTriangle, Trash2, MapPin, Minus, Plus } from 'lucide-react'
+import { ChevronLeft, Check, CheckCircle2, Wrench, AlertTriangle, Trash2, MapPin, Minus, Plus, AlertCircle } from 'lucide-react'
 import { ShipmentItem, ItemFlag } from '../data'
 import StickyCTA from '../components/StickyCTA'
 
@@ -24,166 +24,165 @@ export default function ConditionCheck({ item, onSave, onBack }: Props) {
   const isComplete = total === expected
   const remaining = expected - total
 
-  function handleSave() {
-    onSave({
-      kind: 'condition',
-      data: { good, needsService, damaged, scrapped, lost },
-    })
-  }
-
   const accentColor = '#D97706'
 
   return (
-    <div className="flex flex-col min-h-full bg-white">
-      {/* Header */}
-      <div className="px-5 pt-4 pb-5 flex items-center gap-3" style={{ backgroundColor: accentColor }}>
-        <button onClick={onBack} className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center no-select pressable">
-          <X size={20} color="#fff" strokeWidth={2} />
-        </button>
-        <p className="text-white text-lg font-semibold flex-1 text-center">Condition check</p>
-        <div className="w-9" />
-      </div>
-
-      {/* Item header */}
-      <div className="px-6 pt-6 pb-4 border-b border-[#F0F0F0]">
-        <p className="text-[#0A0A0A] text-2xl font-semibold">{item.name}</p>
-        <p className="text-[#737373] text-sm mt-1">{item.subtitle}</p>
-      </div>
-
-      {/* Question */}
-      <div className="px-6 py-5 bg-[#FEF3C7] border-b border-[#FDE68A]">
-        <p className="text-[#92400E] text-sm font-semibold">You counted {counted} back.</p>
-        <p className="text-[#0A0A0A] text-xl font-semibold mt-1">How are they coming back?</p>
-        <p className="text-[#525252] text-sm mt-2">
-          Account for all {expected} expected — use Lost for anything that didn't come back.
+    <div className="flex flex-col min-h-full bg-[#F5F5F5]">
+      {/* Amber hero header — pre-return context */}
+      <div className="px-5 pt-[18px] pb-7" style={{ backgroundColor: accentColor }}>
+        <div className="flex items-center justify-between mb-[18px]">
+          <button onClick={onBack} className="w-11 h-11 rounded-full bg-white/[0.15] flex items-center justify-center no-select pressable">
+            <ChevronLeft size={22} color="#fff" strokeWidth={2} />
+          </button>
+          <div className="w-11" />
+        </div>
+        <h1 className="text-white text-[28px] font-semibold leading-[1.15] tracking-[-0.6px]">How are they coming back?</h1>
+        <p className="text-white/90 text-sm font-semibold mt-[14px]">
+          Counted {counted} of {expected} back  ·  account for all {expected}
         </p>
       </div>
 
-      {/* Condition buckets */}
-      <div className="flex flex-col">
-        <ConditionRow
-          icon={<CheckCircle2 size={22} color="#16A34A" strokeWidth={2} />}
-          bg="#DCFCE7"
-          title="Good"
-          subtitle="Back in stock"
-          value={good}
-          onChange={setGood}
-          max={expected}
-        />
-        <div className="h-px bg-[#F0F0F0] mx-6" />
-        <ConditionRow
-          icon={<Wrench size={22} color="#D97706" strokeWidth={2} />}
-          bg="#FEF3C7"
-          title="Needs service"
-          subtitle="To be inspected before reuse"
-          value={needsService}
-          onChange={setNeedsService}
-          max={expected}
-        />
-        <div className="h-px bg-[#F0F0F0] mx-6" />
-        <ConditionRow
-          icon={<AlertTriangle size={22} color="#EA580C" strokeWidth={2} />}
-          bg="#FFF7ED"
-          title="Damaged"
-          subtitle="Out of service"
-          value={damaged}
-          onChange={setDamaged}
-          max={expected}
-        />
-        <div className="h-px bg-[#F0F0F0] mx-6" />
-        <ConditionRow
-          icon={<Trash2 size={22} color="#DC2626" strokeWidth={2} />}
-          bg="#FEE2E2"
-          title="Scrapped"
-          subtitle="Written off"
-          value={scrapped}
-          onChange={setScrapped}
-          max={expected}
-        />
-        <div className="h-px bg-[#F0F0F0] mx-6" />
-        <ConditionRow
-          icon={<MapPin size={22} color="#7C3AED" strokeWidth={2} />}
-          bg="#F5F3FF"
-          title="Lost"
-          subtitle="Didn't come back · customer charged"
-          value={lost}
-          onChange={setLost}
-          max={expected}
-        />
-      </div>
-
-      {/* Total bar */}
-      <div
-        className="mx-6 mt-4 px-5 py-4 rounded-2xl flex items-center justify-between"
-        style={{ backgroundColor: isComplete ? '#F0FDF4' : '#FEF3C7' }}
-      >
-        <p
-          className="text-base font-semibold"
-          style={{ color: isComplete ? '#15803D' : '#92400E' }}
-        >
-          {isComplete
-            ? `All ${expected} accounted for`
-            : remaining > 0
-              ? `${remaining} still unaccounted for`
-              : `${Math.abs(remaining)} over — reduce a bucket`}
-        </p>
-        {isComplete && (
-          <div className="w-8 h-8 rounded-full bg-[#16A34A] flex items-center justify-center flex-shrink-0">
-            <Check size={16} color="#fff" strokeWidth={2.5} />
+      <div className="flex flex-col gap-[14px] p-4 pb-[120px]">
+        {/* Item card */}
+        <div className="bg-white rounded-[20px] border border-[#EAEAEA] shadow-[0_4px_16px_rgba(10,13,30,0.04)] overflow-hidden">
+          <div className="h-1 w-full" style={{ backgroundColor: accentColor }} />
+          <div className="px-[22px] py-[18px]">
+            <p className="text-[#0A0A0A] text-[17px] font-bold tracking-[-0.2px] leading-snug">{item.name}</p>
+            <p className="text-[#737373] text-[13px] font-medium mt-1">
+              {item.partNumber
+                ? `${item.partNumber}${item.weightEach ? `  ·  ${item.weightEach} kg each` : ''}`
+                : item.subtitle}
+            </p>
           </div>
-        )}
-      </div>
+        </div>
 
-      <div className="flex-1" />
+        <ConditionCard
+          stripe="#16A34A" iconBg="#DCFCE7" iconColor="#16A34A"
+          icon={<CheckCircle2 size={18} strokeWidth={2.2} />}
+          title="Good" subtitle="Back in stock"
+          value={good} max={expected} onChange={setGood}
+        />
+
+        <ConditionCard
+          stripe="#D97706" iconBg="#FEF3C7" iconColor="#D97706"
+          icon={<Wrench size={18} strokeWidth={2.2} />}
+          title="Needs service" subtitle="To be inspected before reuse"
+          value={needsService} max={expected} onChange={setNeedsService}
+        />
+
+        <ConditionCard
+          stripe="#EA580C" iconBg="#FFF7ED" iconColor="#EA580C"
+          icon={<AlertTriangle size={18} strokeWidth={2.2} />}
+          title="Damaged" subtitle="Out of service"
+          value={damaged} max={expected} onChange={setDamaged}
+        />
+
+        <ConditionCard
+          stripe="#DC2626" iconBg="#FEE2E2" iconColor="#DC2626"
+          icon={<Trash2 size={18} strokeWidth={2.2} />}
+          title="Scrapped" subtitle="Written off"
+          value={scrapped} max={expected} onChange={setScrapped}
+        />
+
+        <ConditionCard
+          stripe="#7C3AED" iconBg="#F5F3FF" iconColor="#7C3AED"
+          icon={<MapPin size={18} strokeWidth={2.2} />}
+          title="Lost" subtitle="Didn't come back · customer charged"
+          value={lost} max={expected} onChange={setLost}
+        />
+
+        {/* Running total */}
+        <div
+          className="rounded-[20px] border overflow-hidden shadow-[0_4px_16px_rgba(10,13,30,0.04)]"
+          style={{
+            backgroundColor: isComplete ? '#F0FDF4' : '#FEF3C7',
+            borderColor: isComplete ? '#BBF7D0' : '#FDE68A',
+          }}
+        >
+          <div className="h-1 w-full" style={{ backgroundColor: isComplete ? '#15803D' : '#F59E0B' }} />
+          <div className="px-[22px] py-[18px] flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                style={{ backgroundColor: isComplete ? '#DCFCE7' : '#FDE68A' }}
+              >
+                {isComplete
+                  ? <Check size={16} color="#15803D" strokeWidth={2.5} />
+                  : <AlertCircle size={16} color="#92400E" strokeWidth={2.2} />}
+              </div>
+              <div className="min-w-0">
+                <p className="text-[15px] font-bold leading-tight" style={{ color: isComplete ? '#15803D' : '#92400E' }}>
+                  {isComplete
+                    ? `All ${expected} accounted for`
+                    : remaining > 0
+                      ? `${remaining} still unaccounted`
+                      : `${Math.abs(remaining)} over — reduce a bucket`}
+                </p>
+                <p className="text-[12px] font-semibold mt-0.5" style={{ color: isComplete ? '#15803D' : '#92400E', opacity: 0.8 }}>
+                  {total} of {expected} explained
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <StickyCTA
         accentColor={accentColor}
         disabled={!isComplete}
-        onClick={handleSave}
+        onClick={() => onSave({ kind: 'condition', data: { good, needsService, damaged, scrapped, lost } })}
       >
-        {isComplete ? 'Done' : `${Math.abs(remaining)} ${remaining > 0 ? 'left to account for' : 'over'}`}
+        {isComplete ? 'Done' : `${Math.abs(remaining)} ${remaining > 0 ? 'left' : 'over'}`}
       </StickyCTA>
     </div>
   )
 }
 
-interface ConditionRowProps {
+function ConditionCard({
+  stripe, iconBg, iconColor, icon, title, subtitle, value, max, onChange,
+}: {
+  stripe: string
+  iconBg: string
+  iconColor: string
   icon: JSX.Element
-  bg: string
   title: string
   subtitle: string
   value: number
   max: number
   onChange: (v: number) => void
-}
-
-function ConditionRow({ icon, bg, title, subtitle, value, max, onChange }: ConditionRowProps) {
+}) {
   return (
-    <div className="flex items-center gap-4 px-6 py-4">
-      <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: bg }}>
-        {icon}
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-[#0A0A0A] text-base font-semibold">{title}</p>
-        <p className="text-[#737373] text-sm">{subtitle}</p>
-      </div>
-      {/* Stepper */}
-      <div className="flex items-center rounded-2xl border border-[#D4D4D4] bg-white overflow-hidden flex-shrink-0">
-        <button
-          onClick={() => onChange(Math.max(0, value - 1))}
-          className="w-11 h-11 flex items-center justify-center no-select pressable"
+    <div className="bg-white rounded-[20px] border border-[#EAEAEA] shadow-[0_4px_16px_rgba(10,13,30,0.04)] overflow-hidden">
+      <div className="h-1 w-full" style={{ backgroundColor: stripe }} />
+      <div className="px-[22px] py-[18px] flex items-center gap-3">
+        <div
+          className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+          style={{ backgroundColor: iconBg }}
         >
-          <Minus size={18} color="#525252" strokeWidth={2} />
-        </button>
-        <div className="w-12 h-11 bg-[#FAFAFA] flex items-center justify-center border-x border-[#D4D4D4]">
-          <span className="text-base font-semibold" style={{ color: value === 0 ? '#999' : '#0A0A0A' }}>{value}</span>
+          <span style={{ color: iconColor }}>{icon}</span>
         </div>
-        <button
-          onClick={() => onChange(Math.min(max, value + 1))}
-          className="w-11 h-11 flex items-center justify-center no-select pressable"
-        >
-          <Plus size={18} color="#D97706" strokeWidth={2} />
-        </button>
+        <div className="flex-1 min-w-0">
+          <p className="text-[#0A0A0A] text-[15px] font-bold leading-tight">{title}</p>
+          <p className="text-[#737373] text-[12px] font-medium mt-0.5">{subtitle}</p>
+        </div>
+        <div className="flex items-center rounded-full bg-[#F5F5F5] flex-shrink-0 overflow-hidden">
+          <button
+            onClick={() => onChange(Math.max(0, value - 1))}
+            disabled={value === 0}
+            className="w-11 h-11 flex items-center justify-center no-select pressable disabled:opacity-30"
+          >
+            <Minus size={18} color="#525252" strokeWidth={2.2} />
+          </button>
+          <span className="min-w-[40px] text-center text-[#0A0A0A] text-[17px] font-bold">{value}</span>
+          <button
+            onClick={() => onChange(Math.min(max, value + 1))}
+            disabled={value >= max}
+            className="w-11 h-11 flex items-center justify-center no-select pressable disabled:opacity-30"
+            style={{ backgroundColor: '#FEF3C7' }}
+          >
+            <Plus size={18} color="#D97706" strokeWidth={2.4} />
+          </button>
+        </div>
       </div>
     </div>
   )

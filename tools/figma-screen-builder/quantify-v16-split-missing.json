@@ -1,0 +1,307 @@
+[
+  {
+    "name": "V16 — Split missing items",
+    "width": 390,
+    "height": 844,
+    "fill": "#F5F5F5",
+    "children": [
+
+      { "type": "component", "component": "Status Bar",
+        "variant": { "OS": "iOS", "Foreground Color": "Light" },
+        "stretch": true },
+
+      { "type": "frame", "name": "Header",
+        "layout": "vertical", "gap": 14,
+        "padding": { "top": 14, "bottom": 26, "left": 20, "right": 20 },
+        "fill": "#1E3FFF", "stretch": true, "hugHeight": true,
+        "children": [
+          { "type": "frame", "layout": "horizontal", "mainAlign": "SPACE_BETWEEN", "crossAlign": "CENTER", "stretch": true, "hugHeight": true, "children": [
+            { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+              "fill": "#FFFFFF26", "cornerRadius": 999, "fixedWidth": 44, "fixedHeight": 44,
+              "children": [ { "type": "icon", "icon": "chevron_left", "size": 22, "color": "#FFFFFF" } ] },
+            { "type": "frame", "fixedWidth": 44, "fixedHeight": 44, "children": [] }
+          ]},
+          { "type": "text", "content": "Where are the other 2?",
+            "fontSize": 28, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFF",
+            "letterSpacing": -0.6, "stretch": true },
+          { "type": "text", "content": "Counted 62 of 64  ·  2 unaccounted",
+            "fontSize": 14, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#FFFFFFE6", "stretch": true }
+        ]
+      },
+
+      { "type": "frame", "name": "Content",
+        "layout": "vertical", "gap": 14,
+        "padding": { "top": 16, "bottom": 28, "left": 16, "right": 16 },
+        "fill": "#F5F5F5", "stretch": true, "grow": true, "hugHeight": true,
+        "children": [
+
+          { "type": "frame", "name": "Card-Item",
+            "layout": "vertical", "gap": 0,
+            "fill": "#FFFFFF", "cornerRadius": 20,
+            "stroke": "#EAEAEA", "strokeWeight": 1, "clip": true,
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "frame", "fill": "#1E3FFF", "fixedHeight": 4, "stretch": true, "children": [] },
+              { "type": "frame", "layout": "vertical", "gap": 4,
+                "padding": { "top": 16, "bottom": 16, "left": 20, "right": 20 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  { "type": "text", "content": "Cuplock Standard 2m",
+                    "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#0A0A0A",
+                    "letterSpacing": -0.2, "stretch": true },
+                  { "type": "text", "content": "CPL-S200  ·  11.2 kg each",
+                    "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#737373", "stretch": true }
+                ]
+              }
+            ]
+          },
+
+          { "type": "frame", "name": "Card-Loaded",
+            "layout": "vertical", "gap": 0,
+            "fill": "#FFFFFF", "cornerRadius": 20,
+            "stroke": "#EAEAEA", "strokeWeight": 1, "clip": true,
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "frame", "fill": "#15803D", "fixedHeight": 4, "stretch": true, "children": [] },
+              { "type": "frame", "layout": "horizontal", "gap": 12, "crossAlign": "CENTER",
+                "padding": { "top": 16, "bottom": 16, "left": 20, "right": 16 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+                    "fill": "#DCFCE7", "cornerRadius": 999, "fixedWidth": 40, "fixedHeight": 40,
+                    "children": [ { "type": "icon", "icon": "check", "size": 18, "color": "#15803D" } ] },
+                  { "type": "frame", "layout": "vertical", "gap": 2, "grow": true, "hugHeight": true, "children": [
+                    { "type": "text", "content": "Loaded",
+                      "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#0A0A0A" },
+                    { "type": "text", "content": "Goes to the job site",
+                      "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#737373" }
+                  ]},
+                  { "type": "text", "content": "62",
+                    "fontSize": 22, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#0A0A0A",
+                    "letterSpacing": -0.3 },
+                  { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+                    "padding": { "top": 3, "bottom": 3, "left": 8, "right": 8 },
+                    "cornerRadius": 999, "fill": "#F3F4F6",
+                    "hugWidth": true, "hugHeight": true,
+                    "children": [ { "type": "text", "content": "FIXED",
+                      "fontSize": 10, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#525252", "letterSpacing": 0.5 } ] }
+                ]
+              }
+            ]
+          },
+
+          { "type": "frame", "name": "Card-Damaged",
+            "layout": "vertical", "gap": 0,
+            "fill": "#FFFFFF", "cornerRadius": 20,
+            "stroke": "#EAEAEA", "strokeWeight": 1, "clip": true,
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "frame", "fill": "#F59E0B", "fixedHeight": 4, "stretch": true, "children": [] },
+              { "type": "frame", "layout": "horizontal", "gap": 12, "crossAlign": "CENTER",
+                "padding": { "top": 16, "bottom": 16, "left": 20, "right": 16 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+                    "fill": "#FEF3C7", "cornerRadius": 999, "fixedWidth": 40, "fixedHeight": 40,
+                    "children": [ { "type": "icon", "icon": "build", "size": 18, "color": "#D97706" } ] },
+                  { "type": "frame", "layout": "vertical", "gap": 2, "grow": true, "hugHeight": true, "children": [
+                    { "type": "text", "content": "Damaged",
+                      "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#0A0A0A" },
+                    { "type": "text", "content": "Returnable for repair",
+                      "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#737373" }
+                  ]},
+                  { "type": "frame", "layout": "horizontal", "gap": 0, "crossAlign": "CENTER",
+                    "cornerRadius": 999, "fill": "#F5F5F5",
+                    "hugWidth": true, "hugHeight": true, "clip": true,
+                    "children": [
+                      { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+                        "fixedWidth": 44, "fixedHeight": 44,
+                        "children": [ { "type": "icon", "icon": "remove", "size": 18, "color": "#525252" } ] },
+                      { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+                        "fixedWidth": 40, "fixedHeight": 44,
+                        "children": [ { "type": "text", "content": "2",
+                          "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#0A0A0A" } ] },
+                      { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+                        "fill": "#EEF2FF", "fixedWidth": 44, "fixedHeight": 44,
+                        "children": [ { "type": "icon", "icon": "add", "size": 18, "color": "#1E3FFF" } ] }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+
+          { "type": "frame", "name": "Card-Scrapped",
+            "layout": "vertical", "gap": 0,
+            "fill": "#FFFFFF", "cornerRadius": 20,
+            "stroke": "#EAEAEA", "strokeWeight": 1, "clip": true,
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "frame", "fill": "#DC2626", "fixedHeight": 4, "stretch": true, "children": [] },
+              { "type": "frame", "layout": "horizontal", "gap": 12, "crossAlign": "CENTER",
+                "padding": { "top": 16, "bottom": 16, "left": 20, "right": 16 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+                    "fill": "#FEE2E2", "cornerRadius": 999, "fixedWidth": 40, "fixedHeight": 40,
+                    "children": [ { "type": "icon", "icon": "delete", "size": 18, "color": "#DC2626" } ] },
+                  { "type": "frame", "layout": "vertical", "gap": 2, "grow": true, "hugHeight": true, "children": [
+                    { "type": "text", "content": "Scrapped",
+                      "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#0A0A0A" },
+                    { "type": "text", "content": "Write-off — beyond repair",
+                      "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#737373" }
+                  ]},
+                  { "type": "frame", "layout": "horizontal", "gap": 0, "crossAlign": "CENTER",
+                    "cornerRadius": 999, "fill": "#F5F5F5",
+                    "hugWidth": true, "hugHeight": true, "clip": true,
+                    "children": [
+                      { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+                        "fixedWidth": 44, "fixedHeight": 44,
+                        "children": [ { "type": "icon", "icon": "remove", "size": 18, "color": "#A3A3A3" } ] },
+                      { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+                        "fixedWidth": 40, "fixedHeight": 44,
+                        "children": [ { "type": "text", "content": "0",
+                          "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#737373" } ] },
+                      { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+                        "fill": "#EEF2FF", "fixedWidth": 44, "fixedHeight": 44,
+                        "children": [ { "type": "icon", "icon": "add", "size": 18, "color": "#1E3FFF" } ] }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+
+          { "type": "frame", "name": "Card-Lost",
+            "layout": "vertical", "gap": 0,
+            "fill": "#FFFFFF", "cornerRadius": 20,
+            "stroke": "#EAEAEA", "strokeWeight": 1, "clip": true,
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "frame", "fill": "#7C3AED", "fixedHeight": 4, "stretch": true, "children": [] },
+              { "type": "frame", "layout": "horizontal", "gap": 12, "crossAlign": "CENTER",
+                "padding": { "top": 16, "bottom": 16, "left": 20, "right": 16 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+                    "fill": "#F5F3FF", "cornerRadius": 999, "fixedWidth": 40, "fixedHeight": 40,
+                    "children": [ { "type": "icon", "icon": "help", "size": 18, "color": "#7C3AED" } ] },
+                  { "type": "frame", "layout": "vertical", "gap": 2, "grow": true, "hugHeight": true, "children": [
+                    { "type": "text", "content": "Lost / missing",
+                      "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#0A0A0A" },
+                    { "type": "text", "content": "Customer may be charged",
+                      "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#737373" }
+                  ]},
+                  { "type": "frame", "layout": "horizontal", "gap": 0, "crossAlign": "CENTER",
+                    "cornerRadius": 999, "fill": "#F5F5F5",
+                    "hugWidth": true, "hugHeight": true, "clip": true,
+                    "children": [
+                      { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+                        "fixedWidth": 44, "fixedHeight": 44,
+                        "children": [ { "type": "icon", "icon": "remove", "size": 18, "color": "#A3A3A3" } ] },
+                      { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+                        "fixedWidth": 40, "fixedHeight": 44,
+                        "children": [ { "type": "text", "content": "0",
+                          "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#737373" } ] },
+                      { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+                        "fill": "#EEF2FF", "fixedWidth": 44, "fixedHeight": 44,
+                        "children": [ { "type": "icon", "icon": "add", "size": 18, "color": "#1E3FFF" } ] }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+
+          { "type": "frame", "name": "KeypadHint",
+            "layout": "horizontal", "gap": 8, "crossAlign": "CENTER", "mainAlign": "CENTER",
+            "padding": { "top": 2, "bottom": 2, "left": 0, "right": 0 },
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "icon", "icon": "dialpad", "size": 14, "color": "#737373" },
+              { "type": "text", "content": "Tap the number to use the keypad",
+                "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#737373" }
+            ]
+          },
+
+          { "type": "frame", "name": "Card-Total",
+            "layout": "vertical", "gap": 0,
+            "fill": "#F0FDF4", "cornerRadius": 20,
+            "stroke": "#BBF7D0", "strokeWeight": 1, "clip": true,
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "frame", "fill": "#15803D", "fixedHeight": 4, "stretch": true, "children": [] },
+              { "type": "frame", "layout": "horizontal", "gap": 12, "crossAlign": "CENTER",
+                "padding": { "top": 16, "bottom": 16, "left": 20, "right": 20 },
+                "stretch": true, "hugHeight": true,
+                "children": [
+                  { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+                    "fill": "#DCFCE7", "cornerRadius": 999, "fixedWidth": 32, "fixedHeight": 32,
+                    "children": [ { "type": "icon", "icon": "check", "size": 16, "color": "#15803D" } ] },
+                  { "type": "frame", "layout": "vertical", "gap": 2, "grow": true, "hugHeight": true, "children": [
+                    { "type": "text", "content": "All 64 accounted for",
+                      "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#15803D" },
+                    { "type": "text", "content": "2 of 2 explained",
+                      "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Semibold", "color": "#15803D" }
+                  ]}
+                ]
+              }
+            ]
+          },
+
+          { "type": "frame", "name": "Card-Photo",
+            "layout": "horizontal", "gap": 12, "crossAlign": "CENTER", "mainAlign": "SPACE_BETWEEN",
+            "padding": { "top": 16, "bottom": 16, "left": 20, "right": 14 },
+            "fill": "#FFFFFF", "cornerRadius": 20,
+            "stroke": "#EAEAEA", "strokeWeight": 1,
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "frame", "layout": "vertical", "gap": 2, "hugWidth": true, "hugHeight": true, "children": [
+                { "type": "text", "content": "Photo evidence",
+                  "fontSize": 15, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#0A0A0A" },
+                { "type": "text", "content": "Recommended for damaged / scrapped",
+                  "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#737373" }
+              ]},
+              { "type": "frame", "layout": "horizontal", "gap": 8, "crossAlign": "CENTER",
+                "padding": { "top": 10, "bottom": 10, "left": 14, "right": 16 },
+                "cornerRadius": 999, "fill": "#EEF2FF",
+                "hugWidth": true, "hugHeight": true,
+                "children": [
+                  { "type": "icon", "icon": "photo_camera", "size": 16, "color": "#1E3FFF" },
+                  { "type": "text", "content": "Take photo",
+                    "fontSize": 13, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#1E3FFF" }
+                ]
+              }
+            ]
+          }
+
+        ]
+      },
+
+      { "type": "frame", "name": "StickyCTA",
+        "layout": "vertical", "gap": 0,
+        "padding": { "top": 14, "bottom": 20, "left": 16, "right": 16 },
+        "fill": "#FFFFFF",
+        "stretch": true, "hugHeight": true,
+        "stroke": "#EAEAEA", "strokeWeight": 1,
+        "children": [
+          { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+            "padding": { "top": 16, "bottom": 16, "left": 20, "right": 20 },
+            "cornerRadius": 16, "fill": "#1E3FFF",
+            "stretch": true, "hugHeight": true,
+            "children": [
+              { "type": "text", "content": "Save split",
+                "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#FFFFFF",
+                "letterSpacing": -0.1 }
+            ]
+          }
+        ]
+      },
+
+      { "type": "component", "component": "Bottom Bar",
+        "variant": { "OS": "iOS", "Theme": "Light", "Nav Type": "Gesture Nav" },
+        "stretch": true }
+
+    ]
+  }
+]

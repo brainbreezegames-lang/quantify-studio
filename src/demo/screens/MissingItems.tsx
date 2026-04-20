@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X, Check, Wrench, Trash2, HelpCircle, Camera, Minus, Plus } from 'lucide-react'
+import { ChevronLeft, Check, Wrench, Trash2, HelpCircle, Camera, Minus, Plus, AlertCircle } from 'lucide-react'
 import { ShipmentItem, ItemFlag, shortfall } from '../data'
 import StickyCTA from '../components/StickyCTA'
 
@@ -24,108 +24,139 @@ export default function MissingItems({ item, onSave, onBack, onPhoto }: Props) {
   const isComplete = explained === gap
 
   return (
-    <div className="flex flex-col min-h-full bg-white">
-      {/* Header */}
-      <div className="bg-[#1E3FFF] px-5 pt-4 pb-5 flex items-center gap-3">
-        <button onClick={onBack} className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center no-select pressable">
-          <X size={20} color="#fff" strokeWidth={2} />
-        </button>
-        <p className="text-white text-lg font-semibold flex-1 text-center">Missing items</p>
-        <div className="w-9" />
-      </div>
-
-      {/* Item */}
-      <div className="px-6 pt-6 pb-4 border-b border-[#F0F0F0]">
-        <p className="text-[#0A0A0A] text-2xl font-semibold">{item.name}</p>
-        <p className="text-[#737373] text-sm mt-1">{item.subtitle}</p>
-      </div>
-
-      {/* Question */}
-      <div className="px-6 py-5 bg-[#FEF3C7] border-b border-[#FDE68A]">
-        <p className="text-[#92400E] text-sm font-semibold">You counted {counted}.</p>
-        <p className="text-[#0A0A0A] text-2xl font-semibold mt-1">Where are the other {gap}?</p>
-        <p className="text-[#525252] text-sm mt-2">Adjust the buckets below until they add up to {gap}.</p>
-      </div>
-
-      {/* Loaded good — fixed */}
-      <div className="flex items-center gap-4 px-6 py-5 border-b border-[#F0F0F0]">
-        <div className="w-12 h-12 rounded-full bg-[#DCFCE7] flex items-center justify-center flex-shrink-0">
-          <Check size={22} color="#16A34A" strokeWidth={2.5} />
+    <div className="flex flex-col min-h-full bg-[#F5F5F5]">
+      {/* Blue hero header — primary screen style */}
+      <div className="bg-[#1E3FFF] px-5 pt-[18px] pb-7">
+        <div className="flex items-center justify-between mb-[18px]">
+          <button onClick={onBack} className="w-11 h-11 rounded-full bg-white/[0.15] flex items-center justify-center no-select pressable">
+            <ChevronLeft size={22} color="#fff" strokeWidth={2} />
+          </button>
+          <div className="w-11" />
         </div>
-        <div className="flex-1">
-          <p className="text-[#0A0A0A] text-base font-semibold">Loaded ({counted} good)</p>
-          <p className="text-[#737373] text-sm">Goes to job site as expected</p>
-        </div>
-        <div className="px-4 py-2 rounded-full bg-[#F5F5F5]">
-          <span className="text-[#525252] text-sm font-semibold">Done</span>
-        </div>
-      </div>
-
-      {/* Damaged */}
-      <Bucket
-        icon={<Wrench size={22} color="#D97706" strokeWidth={2} />}
-        bg="#FEF3C7"
-        title="Damaged"
-        subtitle="Returnable for repair / inspection"
-        value={damaged} max={gap} onChange={setDamaged}
-      />
-      <div className="h-px bg-[#F0F0F0] mx-6" />
-
-      {/* Scrapped */}
-      <Bucket
-        icon={<Trash2 size={22} color="#DC2626" strokeWidth={2} />}
-        bg="#FEE2E2"
-        title="Scrapped"
-        subtitle="Write-off — beyond repair"
-        value={scrapped} max={gap} onChange={setScrapped}
-      />
-      <div className="h-px bg-[#F0F0F0] mx-6" />
-
-      {/* Lost / missing */}
-      <Bucket
-        icon={<HelpCircle size={22} color="#737373" strokeWidth={2} />}
-        bg="#F0F0F0"
-        title="Lost / missing"
-        subtitle="Customer may be charged"
-        value={lostMissing} max={gap} onChange={setLostMissing}
-      />
-
-      {/* Total bar */}
-      <div
-        className="mx-6 mt-4 px-5 py-4 rounded-2xl flex items-center justify-between"
-        style={{ backgroundColor: isComplete ? '#F0FDF4' : '#FEF3C7' }}
-      >
-        <p className="text-base font-semibold" style={{ color: isComplete ? '#15803D' : '#92400E' }}>
-          {isComplete
-            ? `Total: ${item.expected} of ${item.expected} — Balanced`
-            : remaining > 0
-              ? `${remaining} still unaccounted for`
-              : `${Math.abs(remaining)} over — reduce a bucket`}
+        <h1 className="text-white text-[28px] font-semibold leading-[1.15] tracking-[-0.6px]">Where are the other {gap}?</h1>
+        <p className="text-white/90 text-sm font-semibold mt-[14px]">
+          Counted {counted} of {item.expected}  ·  {gap} unaccounted
         </p>
-        {isComplete && (
-          <div className="w-8 h-8 rounded-full bg-[#16A34A] flex items-center justify-center flex-shrink-0">
-            <Check size={16} color="#fff" strokeWidth={2.5} />
+      </div>
+
+      <div className="flex flex-col gap-[14px] p-4 pb-[120px]">
+        {/* Item card */}
+        <div className="bg-white rounded-[20px] border border-[#EAEAEA] shadow-[0_4px_16px_rgba(10,13,30,0.04)] overflow-hidden">
+          <div className="h-1 w-full bg-[#1E3FFF]" />
+          <div className="px-[22px] py-[18px]">
+            <p className="text-[#0A0A0A] text-[17px] font-bold tracking-[-0.2px] leading-snug">{item.name}</p>
+            <p className="text-[#737373] text-[13px] font-medium mt-1">
+              {item.partNumber
+                ? `${item.partNumber}${item.weightEach ? `  ·  ${item.weightEach} kg each` : ''}`
+                : item.subtitle}
+            </p>
           </div>
-        )}
-      </div>
-
-      {/* Photo evidence */}
-      <div className="px-6 pt-5 pb-2">
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-[#0A0A0A] text-sm font-semibold">Photo evidence</p>
-          <span className="text-[#A3A3A3] text-xs">Recommended</span>
         </div>
-        <p className="text-[#737373] text-xs mb-3">Helps the office see what happened.</p>
-        <button
-          onClick={onPhoto}
-          className="w-24 h-24 rounded-2xl border border-dashed border-[#1E3FFF] bg-[#EEF2FF] flex flex-col items-center justify-center gap-1 no-select pressable"
-        >
-          <Camera size={24} color="#1E3FFF" strokeWidth={1.8} />
-          <span className="text-[#1E3FFF] text-[11px] font-semibold">Take photo</span>
-        </button>
-      </div>
 
-      <div className="flex-1" />
+        {/* Loaded — read-only */}
+        <BucketCard
+          stripe="#15803D"
+          iconBg="#DCFCE7"
+          iconColor="#15803D"
+          icon={<Check size={18} strokeWidth={2.5} />}
+          title="Loaded"
+          subtitle="Goes to the job site"
+          value={counted}
+          lockedBadge="FIXED"
+        />
+
+        {/* Damaged */}
+        <BucketCard
+          stripe="#F59E0B"
+          iconBg="#FEF3C7"
+          iconColor="#D97706"
+          icon={<Wrench size={18} strokeWidth={2.2} />}
+          title="Damaged"
+          subtitle="Returnable for repair / inspection"
+          value={damaged}
+          max={gap}
+          onChange={setDamaged}
+        />
+
+        {/* Scrapped */}
+        <BucketCard
+          stripe="#DC2626"
+          iconBg="#FEE2E2"
+          iconColor="#DC2626"
+          icon={<Trash2 size={18} strokeWidth={2.2} />}
+          title="Scrapped"
+          subtitle="Write-off — beyond repair"
+          value={scrapped}
+          max={gap}
+          onChange={setScrapped}
+        />
+
+        {/* Lost / missing */}
+        <BucketCard
+          stripe="#7C3AED"
+          iconBg="#F5F3FF"
+          iconColor="#7C3AED"
+          icon={<HelpCircle size={18} strokeWidth={2.2} />}
+          title="Lost / missing"
+          subtitle="Customer may be charged"
+          value={lostMissing}
+          max={gap}
+          onChange={setLostMissing}
+        />
+
+        {/* Running total */}
+        <div
+          className="rounded-[20px] border overflow-hidden shadow-[0_4px_16px_rgba(10,13,30,0.04)]"
+          style={{
+            backgroundColor: isComplete ? '#F0FDF4' : '#FEF3C7',
+            borderColor: isComplete ? '#BBF7D0' : '#FDE68A',
+          }}
+        >
+          <div className="h-1 w-full" style={{ backgroundColor: isComplete ? '#15803D' : '#F59E0B' }} />
+          <div className="px-[22px] py-[18px] flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                style={{ backgroundColor: isComplete ? '#DCFCE7' : '#FDE68A' }}
+              >
+                {isComplete
+                  ? <Check size={16} color="#15803D" strokeWidth={2.5} />
+                  : <AlertCircle size={16} color="#92400E" strokeWidth={2.2} />}
+              </div>
+              <div className="min-w-0">
+                <p className="text-[15px] font-bold leading-tight" style={{ color: isComplete ? '#15803D' : '#92400E' }}>
+                  {isComplete
+                    ? `All ${item.expected} accounted for`
+                    : remaining > 0
+                      ? `${remaining} still unaccounted`
+                      : `${Math.abs(remaining)} over — reduce a bucket`}
+                </p>
+                <p className="text-[12px] font-semibold mt-0.5" style={{ color: isComplete ? '#15803D' : '#92400E', opacity: 0.8 }}>
+                  {explained} of {gap} explained
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Photo evidence */}
+        <div className="bg-white rounded-[20px] border border-[#EAEAEA] shadow-[0_4px_16px_rgba(10,13,30,0.04)] overflow-hidden">
+          <div className="px-[22px] py-[18px] flex items-center justify-between">
+            <div>
+              <p className="text-[#0A0A0A] text-[15px] font-bold">Photo evidence</p>
+              <p className="text-[#737373] text-[12px] font-medium mt-0.5">Recommended for damaged / scrapped</p>
+            </div>
+            <button
+              onClick={onPhoto}
+              className="flex items-center gap-2 px-4 py-[10px] rounded-full no-select pressable"
+              style={{ backgroundColor: '#EEF2FF' }}
+            >
+              <Camera size={16} color="#1E3FFF" strokeWidth={2.2} />
+              <span className="text-[#1E3FFF] text-[13px] font-bold">Take photo</span>
+            </button>
+          </div>
+        </div>
+      </div>
 
       <StickyCTA
         accentColor="#1E3FFF"
@@ -138,27 +169,68 @@ export default function MissingItems({ item, onSave, onBack, onPhoto }: Props) {
   )
 }
 
-function Bucket({ icon, bg, title, subtitle, value, max, onChange }: {
-  icon: JSX.Element; bg: string; title: string; subtitle: string
-  value: number; max: number; onChange: (v: number) => void
+function BucketCard({
+  stripe, iconBg, iconColor, icon, title, subtitle, value, max, onChange, lockedBadge,
+}: {
+  stripe: string
+  iconBg: string
+  iconColor: string
+  icon: JSX.Element
+  title: string
+  subtitle: string
+  value: number
+  max?: number
+  onChange?: (v: number) => void
+  lockedBadge?: string
 }) {
+  const readOnly = !onChange
   return (
-    <div className="flex items-center gap-4 px-6 py-5">
-      <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: bg }}>{icon}</div>
-      <div className="flex-1">
-        <p className="text-[#0A0A0A] text-base font-semibold">{title}</p>
-        <p className="text-[#737373] text-sm">{subtitle}</p>
-      </div>
-      <div className="flex items-center rounded-2xl border border-[#D4D4D4] bg-white overflow-hidden flex-shrink-0">
-        <button onClick={() => onChange(Math.max(0, value - 1))} className="w-12 h-12 flex items-center justify-center no-select pressable">
-          <Minus size={18} color="#525252" strokeWidth={2} />
-        </button>
-        <div className="w-14 h-12 bg-[#FAFAFA] flex items-center justify-center border-x border-[#D4D4D4]">
-          <span className="text-lg font-semibold" style={{ color: value === 0 ? '#999' : '#0A0A0A' }}>{value}</span>
+    <div className="bg-white rounded-[20px] border border-[#EAEAEA] shadow-[0_4px_16px_rgba(10,13,30,0.04)] overflow-hidden">
+      <div className="h-1 w-full" style={{ backgroundColor: stripe }} />
+      <div className="px-[22px] py-[18px] flex items-center gap-3">
+        <div
+          className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+          style={{ backgroundColor: iconBg, color: iconColor }}
+        >
+          <span style={{ color: iconColor }}>{icon}</span>
         </div>
-        <button onClick={() => onChange(Math.min(max, value + 1))} className="w-12 h-12 flex items-center justify-center no-select pressable">
-          <Plus size={18} color="#1E3FFF" strokeWidth={2} />
-        </button>
+        <div className="flex-1 min-w-0">
+          <p className="text-[#0A0A0A] text-[15px] font-bold leading-tight">{title}</p>
+          <p className="text-[#737373] text-[12px] font-medium mt-0.5">{subtitle}</p>
+        </div>
+
+        {readOnly ? (
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <span className="text-[#0A0A0A] text-[22px] font-bold tracking-[-0.3px]">{value}</span>
+            {lockedBadge && (
+              <span
+                className="text-[10px] font-bold px-2 py-[3px] rounded-full"
+                style={{ backgroundColor: '#F3F4F6', color: '#525252', letterSpacing: 0.5 }}
+              >
+                {lockedBadge}
+              </span>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center rounded-full bg-[#F5F5F5] flex-shrink-0 overflow-hidden">
+            <button
+              onClick={() => onChange(Math.max(0, value - 1))}
+              disabled={value === 0}
+              className="w-11 h-11 flex items-center justify-center no-select pressable disabled:opacity-30"
+            >
+              <Minus size={18} color="#525252" strokeWidth={2.2} />
+            </button>
+            <span className="min-w-[40px] text-center text-[#0A0A0A] text-[17px] font-bold">{value}</span>
+            <button
+              onClick={() => onChange(Math.min(max ?? 999, value + 1))}
+              disabled={value >= (max ?? 999)}
+              className="w-11 h-11 flex items-center justify-center no-select pressable disabled:opacity-30"
+              style={{ backgroundColor: '#EEF2FF' }}
+            >
+              <Plus size={18} color="#1E3FFF" strokeWidth={2.4} />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
