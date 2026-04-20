@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X, Search, ChevronLeft } from 'lucide-react'
+import { X, Search, ChevronLeft, Delete } from 'lucide-react'
 import { CatalogItem } from '../data'
 import StickyCTA from '../components/StickyCTA'
 
@@ -30,30 +30,30 @@ export default function AddItemPicker({ catalog, onAdd, onBack }: Props) {
   return (
     <div className="flex flex-col min-h-full bg-white">
       {/* Header */}
-      <div className="bg-[#D97706] px-5 pt-4 pb-5 flex items-center gap-3">
-        <button onClick={onBack} className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center no-select pressable">
-          <X size={20} color="#fff" strokeWidth={2} />
+      <div className="bg-[#D97706] px-3 pt-3 pb-[18px] flex items-center gap-3">
+        <button onClick={onBack} className="w-11 h-11 rounded-full bg-white/[0.15] flex items-center justify-center no-select pressable">
+          <X size={22} color="#fff" strokeWidth={2} />
         </button>
-        <p className="text-white text-lg font-semibold flex-1 text-center">Add to DEL-2401</p>
-        <div className="w-9" />
+        <p className="text-white text-lg font-bold flex-1 text-center">Add to DEL-2401</p>
+        <div className="w-11" />
       </div>
 
       {/* Search */}
-      <div className="px-4 py-3 border-b border-[#F0F0F0]">
-        <div className="flex items-center gap-3 bg-[#F5F5F5] rounded-xl px-3 py-2.5">
-          <Search size={15} color="#A3A3A3" strokeWidth={2} />
+      <div className="bg-white px-4 pt-3.5 pb-3.5 border-b border-[#F0F0F0]">
+        <div className="flex items-center gap-3 bg-[#F5F5F5] rounded-[14px] px-4 py-3.5">
+          <Search size={20} color="#737373" strokeWidth={2} />
           <input
             type="text"
             placeholder="Search catalog…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="flex-1 bg-transparent text-sm outline-none placeholder:text-[#A3A3A3]"
+            className="flex-1 bg-transparent text-[15px] font-medium text-[#0A0A0A] outline-none placeholder:text-[#737373]"
           />
         </div>
       </div>
 
       {/* Category filters */}
-      <div className="px-4 py-2.5 overflow-x-auto border-b border-[#F0F0F0]">
+      <div className="px-4 py-3 overflow-x-auto border-b border-[#F0F0F0]">
         <div className="flex gap-2 w-max">
           {CATEGORIES.map(cat => {
             const active = category === cat
@@ -61,10 +61,12 @@ export default function AddItemPicker({ catalog, onAdd, onBack }: Props) {
               <button
                 key={cat}
                 onClick={() => setCategory(cat)}
-                className="px-3.5 py-1.5 rounded-full text-xs font-semibold no-select transition-colors flex-shrink-0"
+                className="pl-4 pr-4 py-2 rounded-full text-[13px] font-bold no-select transition-all flex-shrink-0 border"
                 style={{
-                  backgroundColor: active ? '#D97706' : '#F5F5F5',
+                  backgroundColor: active ? '#D97706' : '#FFFFFF',
                   color: active ? '#FFFFFF' : '#525252',
+                  borderColor: active ? '#D97706' : '#EAEAEA',
+                  boxShadow: active ? '0 4px 10px rgba(217,119,6,0.25)' : 'none',
                 }}
               >
                 {cat}
@@ -80,22 +82,22 @@ export default function AddItemPicker({ catalog, onAdd, onBack }: Props) {
           <div key={item.id}>
             <button
               onClick={() => { setSelectedItem(item); setQty('') }}
-              className="w-full flex items-center gap-4 px-5 py-4 text-left no-select pressable"
+              className="w-full flex items-center gap-4 px-[22px] py-4 text-left no-select pressable"
             >
-              <div className="flex-1">
-                <p className="text-[#0A0A0A] text-base font-semibold">{item.name}</p>
-                <p className="text-[#737373] text-sm mt-0.5">{item.subtitle}</p>
+              <div className="flex-1 min-w-0 flex flex-col gap-1">
+                <p className="text-[#0A0A0A] text-base font-bold">{item.name}</p>
+                <p className="text-[#737373] text-xs font-semibold">{item.subtitle}</p>
               </div>
               <div className="text-right flex-shrink-0">
                 <p
-                  className="text-sm font-semibold"
+                  className="text-sm font-bold"
                   style={{ color: item.isLow ? '#DC2626' : '#16A34A' }}
                 >
                   {item.available} avail{item.isLow ? ' · low' : ''}
                 </p>
               </div>
             </button>
-            {idx < filtered.length - 1 && <div className="h-px bg-[#F0F0F0] mx-5" />}
+            {idx < filtered.length - 1 && <div className="h-px bg-[#F5F5F5] mx-[22px]" />}
           </div>
         ))}
       </div>
@@ -110,45 +112,79 @@ function QtySheet({ item, qty, onQty, onConfirm, onBack }: {
   onConfirm: () => void
   onBack: () => void
 }) {
-  const KEYS = [['1','2','3'],['4','5','6'],['7','8','9'],['','0','⌫']]
+  const KEYS = [['1','2','3'],['4','5','6'],['7','8','9'],['clear','0','back']]
   const parsed = parseInt(qty) || 0
+  const accent = '#D97706'
+  const over = parsed > item.available
 
   return (
-    <div className="flex flex-col min-h-full bg-white">
-      <div className="bg-[#D97706] px-5 pt-4 pb-5 flex items-center gap-3">
-        <button onClick={onBack} className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center no-select pressable">
-          <ChevronLeft size={20} color="#fff" strokeWidth={2} />
-        </button>
-        <p className="text-white text-lg font-semibold flex-1 text-center">How many?</p>
-        <div className="w-9" />
-      </div>
-
-      <div className="px-6 pt-6 pb-4 border-b border-[#F0F0F0]">
-        <p className="text-[#0A0A0A] text-xl font-semibold">{item.name}</p>
-        <p className="text-[#737373] text-sm mt-1">{item.subtitle}</p>
-      </div>
-
-      <div className="px-6 pt-6 pb-4">
-        <div className="flex items-baseline gap-2">
-          <span className="text-5xl font-semibold text-[#0A0A0A]">{qty || '—'}</span>
-          <span className="text-lg text-[#737373]">units</span>
+    <div className="flex flex-col min-h-full bg-[#F5F5F5]">
+      {/* Amber hero header */}
+      <div className="px-5 pt-[18px] pb-7" style={{ backgroundColor: accent }}>
+        <div className="flex items-center justify-between mb-[18px]">
+          <button onClick={onBack} className="w-11 h-11 rounded-full bg-white/[0.15] flex items-center justify-center no-select pressable">
+            <ChevronLeft size={22} color="#fff" strokeWidth={2} />
+          </button>
+          <div className="w-11" />
         </div>
-        <p className="text-[#A3A3A3] text-sm mt-1">{item.available} available in stock</p>
+        <h1 className="text-white text-[28px] font-semibold leading-[1.15] tracking-[-0.6px]">How many?</h1>
+        <p className="text-white/90 text-sm font-semibold mt-[14px]">
+          {item.name}  ·  {item.available} available
+        </p>
       </div>
 
-      <div className="px-4 flex flex-col gap-3 mt-auto pb-2">
+      <div className="flex flex-col gap-[14px] p-4">
+        {/* Item card */}
+        <div className="bg-white rounded-[20px] border border-[#EAEAEA] shadow-[0_4px_16px_rgba(10,13,30,0.04)] overflow-hidden">
+          <div className="h-1 w-full" style={{ backgroundColor: accent }} />
+          <div className="px-[22px] py-[18px]">
+            <p className="text-[#0A0A0A] text-[17px] font-bold tracking-[-0.2px] leading-snug">{item.name}</p>
+            <p className="text-[#737373] text-[13px] font-medium mt-1">{item.subtitle}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Display */}
+      <div className="px-6 py-6 flex flex-col items-center gap-3 bg-white">
+        <div className="flex items-baseline gap-3 justify-center">
+          <span
+            className="text-[72px] font-bold tracking-[-2px] leading-none"
+            style={{ color: over ? '#DC2626' : (parsed > 0 ? '#0A0A0A' : '#737373') }}
+          >
+            {qty || '0'}
+          </span>
+          <span className="text-base font-semibold text-[#737373]">of {item.available} available</span>
+        </div>
+        {over && (
+          <div className="px-3 py-1 bg-[#FEE2E2] rounded-full">
+            <span className="text-[12px] font-bold text-[#DC2626]">Over by {parsed - item.available}</span>
+          </div>
+        )}
+      </div>
+
+      <div className="flex-1" />
+
+      {/* Keypad */}
+      <div className="px-[18px] pt-3 pb-3 bg-[#F5F5F5] flex flex-col gap-3">
         {KEYS.map((row, ri) => (
           <div key={ri} className="flex gap-3">
             {row.map((key, ki) => {
-              if (key === '') return <div key={ki} className="flex-1" />
-              if (key === '⌫') return (
-                <button key={ki} onClick={() => onQty(qty.slice(0,-1))} className="flex-1 h-14 rounded-2xl bg-[#F5F5F5] flex items-center justify-center no-select pressable">
-                  {/* Custom backspace SVG — unique keypad element */}
-                  <svg width="22" height="16" viewBox="0 0 24 20" fill="none" stroke="#0A0A0A" strokeWidth="1.8" strokeLinecap="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 002-2V6a2 2 0 00-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>
+              if (key === 'clear') return (
+                <button key={ki} onClick={() => onQty('')} className="flex-1 h-[60px] rounded-2xl bg-white flex items-center justify-center no-select pressable">
+                  <span className="text-[13px] font-bold text-[#DC2626]">Clear</span>
+                </button>
+              )
+              if (key === 'back') return (
+                <button key={ki} onClick={() => onQty(qty.slice(0,-1))} className="flex-1 h-[60px] rounded-2xl bg-white flex items-center justify-center no-select pressable">
+                  <Delete size={22} color="#0A0A0A" strokeWidth={2} />
                 </button>
               )
               return (
-                <button key={ki} onClick={() => qty.length < 4 && onQty(qty + key)} className="flex-1 h-14 rounded-2xl bg-[#F5F5F5] text-xl font-semibold text-[#0A0A0A] no-select pressable">
+                <button
+                  key={ki}
+                  onClick={() => qty.length < 4 && onQty(qty + key)}
+                  className="flex-1 h-[60px] rounded-2xl bg-white text-[26px] font-semibold text-[#0A0A0A] no-select pressable"
+                >
                   {key}
                 </button>
               )
@@ -158,11 +194,11 @@ function QtySheet({ item, qty, onQty, onConfirm, onBack }: {
       </div>
 
       <StickyCTA
-        accentColor="#D97706"
-        disabled={parsed === 0}
+        accentColor={accent}
+        disabled={parsed === 0 || over}
         onClick={onConfirm}
       >
-        Add {parsed > 0 ? `${parsed} ` : ''}to count
+        {over ? `Too many — have ${item.available}` : `Add ${parsed > 0 ? `${parsed} ` : ''}to count`}
       </StickyCTA>
     </div>
   )

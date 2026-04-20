@@ -53,6 +53,11 @@ input, textarea, select, button {
   }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 .sheet-enter {
   animation: sheetSlideUp 320ms var(--ease-drawer) forwards;
 }
