@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight, Camera, Paperclip, StickyNote } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Camera, Paperclip, StickyNote, Plus, Check } from 'lucide-react'
 import { Shipment, ShipmentItem, totalExpected, statusLabel, statusColors } from '../data'
 import StickyCTA from '../components/StickyCTA'
 
@@ -13,6 +13,7 @@ interface Props {
 export default function ShipmentDetail({ shipment, items, onBack, onStart }: Props) {
   const [notes, setNotes] = useState('')
   const [notesOpen, setNotesOpen] = useState(false)
+  const [reserveShortage, setReserveShortage] = useState(true) // Brian: checked by default
   const isReturn = shipment.type === 'PRE-RETURN'
   const accentColor = isReturn ? '#D97706' : '#1E3FFF'
   const label = statusLabel(shipment.status)
@@ -86,6 +87,8 @@ export default function ShipmentDetail({ shipment, items, onBack, onStart }: Pro
               </>
             )}
             <DetailRow label="Salesperson" value={shipment.salesperson ?? '-'} muted={!shipment.salesperson} />
+            {/* Brian: "Need the driver here also" */}
+            <DetailRow label="Driver" value="Mike Rodriguez" />
             {shipment.weight && <DetailRow label="Weight" value={shipment.weight} last />}
           </div>
 
@@ -117,7 +120,8 @@ export default function ShipmentDetail({ shipment, items, onBack, onStart }: Pro
                           {!item.partNumber && !item.weightEach ? item.subtitle : ''}
                         </p>
                       </div>
-                      <span className="text-[#0A0A0A] text-[15px] font-bold flex-shrink-0">×{item.expected}</span>
+                      {/* Brian: "What does the x mean in front of the number?" — just show qty */}
+                      <span className="text-[#0A0A0A] text-[15px] font-bold flex-shrink-0">{item.expected} pcs</span>
                     </div>
                     {idx < Math.min(items.length, 4) - 1 && <div className="h-px bg-[#F5F5F5]" />}
                   </div>
@@ -126,6 +130,26 @@ export default function ShipmentDetail({ shipment, items, onBack, onStart }: Pro
                   <p className="text-[#1E3FFF] text-sm font-semibold mt-2">Show {items.length - 4} more products</p>
                 )}
               </div>
+            )}
+
+            {/* Brian: "We also need a section for consumables" */}
+            {!isEmptyBOM && (
+              <>
+                <div className="h-px bg-[#F0F0F0] mt-[18px] mb-[14px]" />
+                <div className="flex items-center justify-between mb-[10px]">
+                  <p className="text-[#0A0A0A] text-[13px] font-bold uppercase" style={{ letterSpacing: 0.6 }}>
+                    Consumables
+                  </p>
+                  <p className="text-[#737373] text-[12px] font-semibold">3 items</p>
+                </div>
+                <div className="flex flex-col">
+                  <ConsumableRow name="Zip ties" subtitle="ZT-STD · 100 ct" qty="2 pk" />
+                  <div className="h-px bg-[#F5F5F5]" />
+                  <ConsumableRow name="Scaffold tags" subtitle="SCF-TAG-RED · 50 ct" qty="1 pk" />
+                  <div className="h-px bg-[#F5F5F5]" />
+                  <ConsumableRow name="Base plate rubber pads" subtitle="BP-PAD-75" qty="24 ea" />
+                </div>
+              </>
             )}
           </div>
 
@@ -161,11 +185,19 @@ export default function ShipmentDetail({ shipment, items, onBack, onStart }: Pro
 
           <div className="h-px bg-[#F0F0F0]" />
 
-          {/* Attachments */}
-          <div className="px-[22px] py-4">
-            <button className="flex items-center gap-3 text-[#1E3FFF] text-sm font-semibold no-select pressable">
-              <Paperclip size={18} color="#1E3FFF" strokeWidth={2} />
-              <span>Attachments  ·  2 photos</span>
+          {/* Attachments — Brian: "end-user can edit, add attachments, then save" */}
+          <div className="px-[22px] py-[14px] flex items-center justify-between">
+            <button className="flex items-center gap-3 text-[#0A0A0A] text-sm font-semibold no-select pressable">
+              <Paperclip size={18} color="#525252" strokeWidth={2} />
+              <span className="text-[#0A0A0A]">Attachments</span>
+              <span className="text-[#737373] text-[13px] font-medium">2 photos</span>
+            </button>
+            <button
+              className="flex items-center gap-1.5 px-3 py-[7px] rounded-full no-select pressable"
+              style={{ backgroundColor: '#EEF2FF' }}
+            >
+              <Plus size={14} color="#1E3FFF" strokeWidth={2.5} />
+              <span className="text-[#1E3FFF] text-[12px] font-bold">Add</span>
             </button>
           </div>
         </div>
@@ -173,12 +205,34 @@ export default function ShipmentDetail({ shipment, items, onBack, onStart }: Pro
 
       <div className="flex-1" />
 
-      {/* Brian: "Ship Reservation" as primary CTA + "Create Reservation for Shortage" as secondary */}
+      {/* Brian: reservation-for-shortage is now a checkbox above the Ship Reservation action, checked by default */}
+      {!isReturn && (
+        <div className="px-4 pb-2">
+          <button
+            onClick={() => setReserveShortage(v => !v)}
+            className="w-full flex items-center gap-3 bg-white rounded-[14px] border border-[#EAEAEA] px-4 py-[14px] text-left no-select pressable"
+          >
+            <div
+              className="w-[22px] h-[22px] rounded-md flex items-center justify-center flex-shrink-0"
+              style={{
+                backgroundColor: reserveShortage ? '#1E3FFF' : '#FFFFFF',
+                border: `2px solid ${reserveShortage ? '#1E3FFF' : '#D4D4D4'}`,
+              }}
+            >
+              {reserveShortage && <Check size={14} color="#fff" strokeWidth={2.8} />}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[#0A0A0A] text-[14px] font-bold leading-tight">Create reservation for shortage</p>
+              <p className="text-[#737373] text-[12px] font-medium mt-0.5">If items come up short, office auto-creates a follow-up reservation.</p>
+            </div>
+          </button>
+        </div>
+      )}
+
       <StickyCTA
         accentColor={accentColor}
         onClick={onStart}
         icon={<ChevronRight size={20} color="#fff" strokeWidth={2.5} />}
-        secondary={!isReturn ? { label: 'Create reservation for shortage', onClick: () => {} } : undefined}
       >
         {isReturn ? 'Start receiving' : 'Ship Reservation'}
       </StickyCTA>
@@ -204,5 +258,17 @@ function DetailRow({ label, value, muted, last }: { label: string; value: string
       </div>
       {!last && <div className="h-px bg-[#F5F5F5]" />}
     </>
+  )
+}
+
+function ConsumableRow({ name, subtitle, qty }: { name: string; subtitle: string; qty: string }) {
+  return (
+    <div className="flex items-center justify-between py-[12px]">
+      <div className="flex-1 min-w-0 pr-3 flex flex-col gap-0.5">
+        <p className="text-[#0A0A0A] text-[14px] font-bold leading-snug">{name}</p>
+        <p className="text-[#737373] text-xs font-semibold">{subtitle}</p>
+      </div>
+      <span className="text-[#0A0A0A] text-[14px] font-bold flex-shrink-0">{qty}</span>
+    </div>
   )
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight, Camera, Search, Plus, Flag, Check, AlertTriangle } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Camera, Search, Plus, Flag, Check, AlertTriangle, StickyNote } from 'lucide-react'
 import { Shipment, ShipmentItem, shortfall, isShort, isExplained, flagBadge, countedItems, countedUnits, totalExpected } from '../data'
 import StickyCTA from '../components/StickyCTA'
 
@@ -23,6 +23,8 @@ export default function CountingScreen({
 }: Props) {
   const [tabFilter, setTabFilter] = useState<TabFilter>('all')
   const [search, setSearch] = useState('')
+  const [notes, setNotes] = useState('')
+  const [notesOpen, setNotesOpen] = useState(false)
 
   const isReturn = shipment.type === 'PRE-RETURN'
   const isEmptyBOM = shipment.items.length === 0 && items.length === 0
@@ -64,7 +66,7 @@ export default function CountingScreen({
         </button>
         <div className="flex-1 text-center">
           <p className="text-white text-lg font-bold">{shipment.id}</p>
-          <p className="text-white/80 text-xs font-semibold tracking-[0.3px]">{isReturn ? 'Pre-Return · Counting' : `${shipment.truckLabel}  ·  Counting`}</p>
+          <p className="text-white/80 text-xs font-semibold tracking-[0.3px]">{isReturn ? 'Pre-Return · Counting' : 'Counting'}</p>
         </div>
         <button onClick={() => onPhoto(items[0]?.id ?? '')} className="w-11 h-11 rounded-full bg-white/[0.15] flex items-center justify-center no-select pressable flex-shrink-0">
           <Camera size={22} color="#fff" strokeWidth={2} />
@@ -104,6 +106,36 @@ export default function CountingScreen({
               <p className="text-[#737373] text-[13px] font-semibold mt-1">Add items as you count them off the truck</p>
             </div>
           )}
+        </div>
+
+        {/* Notes — Brian: "We could use notes on here somewhere" */}
+        <div className="bg-white rounded-[20px] border border-[#EAEAEA] shadow-[0_4px_16px_rgba(10,13,30,0.04)] overflow-hidden">
+          <div className="px-[22px] py-[14px] flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <StickyNote size={16} color="#525252" strokeWidth={2} />
+                <p className="text-[#0A0A0A] text-[14px] font-bold">Notes</p>
+              </div>
+              <span className="text-[#737373] text-[11px] font-bold uppercase" style={{ letterSpacing: 0.5 }}>Optional</span>
+            </div>
+            {notesOpen || notes ? (
+              <textarea
+                value={notes}
+                onChange={e => setNotes(e.target.value)}
+                onBlur={() => setNotesOpen(false)}
+                autoFocus={notesOpen}
+                placeholder="e.g. driver said back row loaded last"
+                className="w-full min-h-[64px] bg-[#F5F5F5] rounded-[12px] px-3 py-2.5 text-[14px] font-medium text-[#0A0A0A] placeholder:text-[#737373] outline-none resize-none"
+              />
+            ) : (
+              <button
+                onClick={() => setNotesOpen(true)}
+                className="w-full bg-[#F5F5F5] rounded-[12px] px-3 py-2.5 text-left no-select pressable"
+              >
+                <span className="text-[14px] font-medium text-[#737373]">Add a note about this count…</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Search + tabs card */}
