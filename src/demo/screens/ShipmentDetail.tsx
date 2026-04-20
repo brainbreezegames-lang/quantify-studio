@@ -86,7 +86,7 @@ export default function ShipmentDetail({ shipment, items, onBack, onStart }: Pro
               </>
             )}
             <DetailRow label="Salesperson" value={shipment.salesperson ?? '-'} muted={!shipment.salesperson} />
-            {shipment.weight && <DetailRow label="Est. weight" value={shipment.weight} last />}
+            {shipment.weight && <DetailRow label="Weight" value={shipment.weight} last />}
           </div>
 
           <div className="h-px bg-[#F0F0F0]" />

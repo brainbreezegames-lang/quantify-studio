@@ -2,18 +2,20 @@
 
 export type ShipmentType = 'DELIVERY' | 'PRE-RETURN'
 
+// Brian: "all statuses will need someone's count" — counting is a universal action,
+// not a status. We derive "needs count" from the items; the status itself is one of
+// the real Quantify states below.
 export type ShipmentStatus =
-  | 'NEEDS-COUNT'       // yard worker must count now
   | 'RESERVED'          // scheduled, not yet ready
   | 'IN-TRANSIT'        // truck en route
   | 'TO-BE-RECEIVED'    // counted, awaiting office confirmation
   | 'DISCREPANCY'       // office flagged a mismatch
-  | 'PRE-RETURN'        // return scheduled, needs count
+  | 'PRE-RETURN'        // return scheduled
 
 export interface DeliveryFlag {
   good: number        // going to job site (= counted, shown read-only)
   damaged: number     // returnable for repair / inspection
-  scrapped: number    // write-off — beyond repair
+  scrapped: number    // write-off - beyond repair
   lostMissing: number // customer may be charged
 }
 
@@ -34,7 +36,7 @@ export interface ShipmentItem {
   partNumber?: string    // Brian: "Part number is missing"
   name: string
   subtitle: string
-  weightEach?: string    // Brian: "as well as weight each" — kg per piece
+  weightEach?: string    // Brian: "as well as weight each" - kg per piece
   expected: number
   counted: number | null
   flag: ItemFlag | null
@@ -48,7 +50,7 @@ export interface Shipment {
   jobsiteId: string
   location: string
   date: string
-  weight: string | null         // e.g. "4,200 kg" — Brian: "Weight is also very important"
+  weight: string | null         // Brian: "No units in Quantify on purpose — just 'Weight 1,240'"
   salesperson: string | null    // Brian: "How about adding Salesperson here also"
   truckLabel: string
   items: ShipmentItem[]
@@ -94,7 +96,7 @@ export const SHIPMENTS: Shipment[] = [
     jobsiteId: 'JS-0942',
     location: 'Bayonne, NJ',
     date: 'Planned Apr 8',
-    weight: '3,800 kg',
+    weight: '3,800',
     salesperson: 'Sarah Chen',
     truckLabel: 'Truck 1 of 1',
     pcsTotal: 583,
@@ -121,12 +123,12 @@ export const SHIPMENTS: Shipment[] = [
   {
     id: 'DEL-00791',
     type: 'DELIVERY',
-    status: 'NEEDS-COUNT',
+    status: 'RESERVED',
     jobsite: 'Titan Apex Industrial Services',
     jobsiteId: 'JS-1247',
     location: 'Newark, NJ',
     date: 'Planned Apr 11',
-    weight: '5,100 kg',
+    weight: '5,100',
     salesperson: 'David Park',
     truckLabel: 'Truck 1 of 1',
     pcsTotal: 589,
@@ -159,12 +161,12 @@ export const SHIPMENTS: Shipment[] = [
   {
     id: 'DEL-2401',
     type: 'DELIVERY',
-    status: 'NEEDS-COUNT',
+    status: 'RESERVED',
     jobsite: 'Phillips 66 Bayway Refinery',
     jobsiteId: 'JS-1247',
     location: 'Linden, NJ',
     date: 'Planned Apr 14',
-    weight: '4,200 kg',
+    weight: '4,200',
     salesperson: 'Mike Torres',
     truckLabel: 'Truck 1 of 2',
     pcsTotal: 342,
@@ -187,7 +189,7 @@ export const SHIPMENTS: Shipment[] = [
     jobsiteId: 'JS-1860',
     location: 'Manhattan, NY',
     date: 'Planned Apr 17',
-    weight: '3,200 kg',
+    weight: '3,200',
     salesperson: 'Mike Torres',
     truckLabel: 'Truck 1 of 1',
     pcsTotal: 187,
@@ -206,7 +208,7 @@ export const SHIPMENTS: Shipment[] = [
     jobsiteId: 'JS-0744',
     location: 'Brooklyn, NY',
     date: 'Planned Apr 18',
-    weight: '6,800 kg',
+    weight: '6,800',
     salesperson: 'David Park',
     truckLabel: 'Truck 1 of 1',
     pcsTotal: 612,
@@ -225,7 +227,7 @@ export const SHIPMENTS: Shipment[] = [
     jobsiteId: 'JS-2188',
     location: 'Manhattan, NY',
     date: 'Planned Apr 24',
-    weight: '4,500 kg',
+    weight: '4,500',
     salesperson: 'Mike Torres',
     truckLabel: 'Truck 1 of 1',
     pcsTotal: 312,
@@ -325,7 +327,6 @@ export function flagBadge(item: ShipmentItem): { label: string; color: 'amber' |
 
 export function statusLabel(s: ShipmentStatus): string {
   switch (s) {
-    case 'NEEDS-COUNT': return 'NEEDS COUNT'
     case 'RESERVED': return 'RESERVED'
     case 'IN-TRANSIT': return 'IN TRANSIT'
     case 'TO-BE-RECEIVED': return 'TO BE RECEIVED'
@@ -336,11 +337,19 @@ export function statusLabel(s: ShipmentStatus): string {
 
 export function statusColors(s: ShipmentStatus): { bg: string; text: string } {
   switch (s) {
-    case 'NEEDS-COUNT': return { bg: '#FEF3C7', text: '#92400E' }
     case 'PRE-RETURN': return { bg: '#FEF3C7', text: '#D97706' }
     case 'DISCREPANCY': return { bg: '#FEE2E2', text: '#DC2626' }
     case 'IN-TRANSIT': return { bg: '#E0F2FE', text: '#0369A1' }
     case 'TO-BE-RECEIVED': return { bg: '#F0FDF4', text: '#15803D' }
     case 'RESERVED': return { bg: '#E5ECFF', text: '#1E3FFF' }
   }
+}
+
+// Brian: any status can need a count — we check the shipment, not the status.
+// Reserved deliveries and Pre-returns with items awaiting count both return true.
+export function needsCount(s: Shipment): boolean {
+  if (s.status === 'DISCREPANCY' || s.status === 'TO-BE-RECEIVED') return false
+  if (s.status === 'IN-TRANSIT') return false
+  if (s.items.length === 0) return s.type === 'PRE-RETURN'
+  return s.items.some(i => i.counted === null)
 }

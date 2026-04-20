@@ -15,6 +15,7 @@ import AddItemPicker from './screens/AddItemPicker'
 import SideNav from './screens/SideNav'
 import ProfileSheet from './screens/ProfileSheet'
 import CreateNewSheet from './screens/CreateNewSheet'
+import Settings from './screens/Settings'
 import NumericKeypad from './components/NumericKeypad'
 import PresenterMode, { Segment } from './presenter/PresenterMode'
 import './demo.css'
@@ -24,7 +25,7 @@ export type Screen =
   | 'missing' | 'condition'
   | 'review' | 'to-be-received'
   | 'discrepancy' | 'select-location'
-  | 'photo' | 'add-item'
+  | 'photo' | 'add-item' | 'settings'
 
 export type Overlay = 'side-nav' | 'profile' | 'create-new' | null
 
@@ -217,6 +218,7 @@ export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
           onClose={() => setOverlay(null)}
           onProfile={() => setState(s => ({ ...s, overlay: 'profile' }))}
           onSelectLocation={() => setState(s => ({ ...s, overlay: null, screen: 'select-location', direction: 'forward' }))}
+          onOpenSettings={() => setState(s => ({ ...s, overlay: null, screen: 'settings', direction: 'forward' }))}
         />
       )}
       {overlay === 'profile' && <ProfileSheet onClose={() => setOverlay(null)} />}
@@ -244,13 +246,13 @@ export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
     </>
   ) : undefined
 
-  // ── Presentation script — Jobs as a UX designer ───────────────────────────
+  // ── Presentation script - Jobs as a UX designer ───────────────────────────
   const presenterSegments: Segment[] = [
     {
       id: 'open',
       action: () => reset(),
       image: '/present/yard-opening.png',
-      text: "Imagine a yard worker. Six in the morning. It's raining. Gloves on. There's a truck, and a clipboard, and about three hundred pieces of scaffolding to count. Today, they count it on paper. Then they walk back to the office. Then they type it into a computer. We thought — they shouldn't have to.",
+      text: "Imagine a yard worker. Six in the morning. It's raining. Gloves on. There's a truck, and a clipboard, and about three hundred pieces of scaffolding to count. Today, they count it on paper. Then they walk back to the office. Then they type it into a computer. We thought - they shouldn't have to.",
     },
     {
       id: 'list-overview',
@@ -302,7 +304,7 @@ export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
         if (sh) setState(s => ({ ...s, items: sh.items.map(i => ({ ...i })) }))
       },
       target: 'counting-row-d1a',
-      text: "Every row — one item. One count box. We tested these at thirty-two pixels. Gloves missed. We tested at forty-four. Still too small. Fifty-six pixels — that's what worked.",
+      text: "Every row - one item. One count box. We tested these at thirty-two pixels. Gloves missed. We tested at forty-four. Still too small. Fifty-six pixels - that's what worked.",
     },
     {
       id: 'keypad-open',
@@ -311,13 +313,13 @@ export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
         if (first) openKeypad(first.id)
       },
       target: 'keypad',
-      text: "Tap the count box. You get this. A real keypad. Not plus-minus buttons. Try tapping plus ninety-six times, in the cold. We did. It's not a count — it's a punishment.",
+      text: "Tap the count box. You get this. A real keypad. Not plus-minus buttons. Try tapping plus ninety-six times, in the cold. We did. It's not a count - it's a punishment.",
     },
     {
       id: 'tabs',
       action: () => closeKeypad(),
       target: 'counting-tabs',
-      text: "All. Pending. Done. Flagged. That's it. Search is behind an icon — because search is the exception. And when it's the exception, it shouldn't take space.",
+      text: "All. Pending. Done. Flagged. That's it. Search is behind an icon - because search is the exception. And when it's the exception, it shouldn't take space.",
     },
     {
       id: 'flag-open',
@@ -357,7 +359,7 @@ export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
     {
       id: 'rent-info',
       target: 'rent-info',
-      text: "And this one sentence. This is the most important line in the entire app. Before we wrote it, workers thought submit meant done. It didn't. The office still had to confirm. Billing hadn't started. This sentence makes that honest. It's the kind of thing a designer writes in thirty seconds — and quietly prevents a month of support tickets.",
+      text: "And this one sentence. This is the most important line in the entire app. Before we wrote it, workers thought submit meant done. It didn't. The office still had to confirm. Billing hadn't started. This sentence makes that honest. It's the kind of thing a designer writes in thirty seconds - and quietly prevents a month of support tickets.",
     },
     {
       id: 'submit',
@@ -375,12 +377,12 @@ export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
         }))
       },
       target: 'stepper',
-      text: "Submit. And the shipment moves into a state called To Be Received. The yard's done their part. Now it's the office's turn. Two stages of trust — honest about where the work sits at every moment.",
+      text: "Submit. And the shipment moves into a state called To Be Received. The yard's done their part. Now it's the office's turn. Two stages of trust - honest about where the work sits at every moment.",
     },
     {
       id: 'closing',
       action: () => goTo('list', 'back'),
-      text: "What's not in here. No void. No billing. No consumables. No prorate. None of the things the desktop already does. Faster. Because the fastest way to make a mobile app feel bad — is to ask it to do everything.",
+      text: "What's not in here. No void. No billing. No consumables. No prorate. None of the things the desktop already does. Faster. Because the fastest way to make a mobile app feel bad - is to ask it to do everything.",
     },
     {
       id: 'questions',
@@ -491,6 +493,8 @@ export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
             onBack={() => goTo('counting', 'back')}
           />
         )}
+
+        {screen === 'settings' && <Settings onBack={() => goTo('list', 'back')} />}
       </div>
     </PhoneFrame>
     {presentMode && <PresenterMode segments={presenterSegments} autoStart={false} />}
