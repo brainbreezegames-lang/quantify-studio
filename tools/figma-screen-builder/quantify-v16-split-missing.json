@@ -110,22 +110,13 @@
                     { "type": "text", "content": "Returnable for repair",
                       "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#737373" }
                   ]},
-                  { "type": "frame", "layout": "horizontal", "gap": 0, "crossAlign": "CENTER",
-                    "cornerRadius": 999, "fill": "#F5F5F5",
-                    "hugWidth": true, "hugHeight": true, "clip": true,
-                    "children": [
-                      { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
-                        "fixedWidth": 44, "fixedHeight": 44,
-                        "children": [ { "type": "icon", "icon": "remove", "size": 18, "color": "#525252" } ] },
-                      { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
-                        "fixedWidth": 40, "fixedHeight": 44,
-                        "children": [ { "type": "text", "content": "2",
-                          "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#0A0A0A" } ] },
-                      { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
-                        "fill": "#EEF2FF", "fixedWidth": 44, "fixedHeight": 44,
-                        "children": [ { "type": "icon", "icon": "add", "size": 18, "color": "#1E3FFF" } ] }
-                    ]
-                  }
+                  { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+                    "padding": { "top": 0, "bottom": 0, "left": 14, "right": 14 },
+                    "cornerRadius": 16, "fill": "#FFFFFF",
+                    "stroke": "#F59E0B", "strokeWeight": 2,
+                    "fixedWidth": 78, "fixedHeight": 52,
+                    "children": [ { "type": "text", "content": "2",
+                      "fontSize": 22, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#0A0A0A", "letterSpacing": -0.3 } ] }
                 ]
               }
             ]
@@ -151,22 +142,13 @@
                     { "type": "text", "content": "Write-off — beyond repair",
                       "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#737373" }
                   ]},
-                  { "type": "frame", "layout": "horizontal", "gap": 0, "crossAlign": "CENTER",
-                    "cornerRadius": 999, "fill": "#F5F5F5",
-                    "hugWidth": true, "hugHeight": true, "clip": true,
-                    "children": [
-                      { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
-                        "fixedWidth": 44, "fixedHeight": 44,
-                        "children": [ { "type": "icon", "icon": "remove", "size": 18, "color": "#A3A3A3" } ] },
-                      { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
-                        "fixedWidth": 40, "fixedHeight": 44,
-                        "children": [ { "type": "text", "content": "0",
-                          "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#737373" } ] },
-                      { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
-                        "fill": "#EEF2FF", "fixedWidth": 44, "fixedHeight": 44,
-                        "children": [ { "type": "icon", "icon": "add", "size": 18, "color": "#1E3FFF" } ] }
-                    ]
-                  }
+                  { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+                    "padding": { "top": 0, "bottom": 0, "left": 14, "right": 14 },
+                    "cornerRadius": 16, "fill": "#F5F5F5",
+                    "stroke": "#EAEAEA", "strokeWeight": 2,
+                    "fixedWidth": 78, "fixedHeight": 52,
+                    "children": [ { "type": "text", "content": "0",
+                      "fontSize": 22, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#737373", "letterSpacing": -0.3 } ] }
                 ]
               }
             ]
@@ -192,22 +174,13 @@
                     { "type": "text", "content": "Customer may be charged",
                       "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#737373" }
                   ]},
-                  { "type": "frame", "layout": "horizontal", "gap": 0, "crossAlign": "CENTER",
-                    "cornerRadius": 999, "fill": "#F5F5F5",
-                    "hugWidth": true, "hugHeight": true, "clip": true,
-                    "children": [
-                      { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
-                        "fixedWidth": 44, "fixedHeight": 44,
-                        "children": [ { "type": "icon", "icon": "remove", "size": 18, "color": "#A3A3A3" } ] },
-                      { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
-                        "fixedWidth": 40, "fixedHeight": 44,
-                        "children": [ { "type": "text", "content": "0",
-                          "fontSize": 17, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#737373" } ] },
-                      { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
-                        "fill": "#EEF2FF", "fixedWidth": 44, "fixedHeight": 44,
-                        "children": [ { "type": "icon", "icon": "add", "size": 18, "color": "#1E3FFF" } ] }
-                    ]
-                  }
+                  { "type": "frame", "layout": "horizontal", "mainAlign": "CENTER", "crossAlign": "CENTER",
+                    "padding": { "top": 0, "bottom": 0, "left": 14, "right": 14 },
+                    "cornerRadius": 16, "fill": "#F5F5F5",
+                    "stroke": "#EAEAEA", "strokeWeight": 2,
+                    "fixedWidth": 78, "fixedHeight": 52,
+                    "children": [ { "type": "text", "content": "0",
+                      "fontSize": 22, "fontFamily": "Switzer", "fontStyle": "Bold", "color": "#737373", "letterSpacing": -0.3 } ] }
                 ]
               }
             ]
@@ -219,7 +192,7 @@
             "stretch": true, "hugHeight": true,
             "children": [
               { "type": "icon", "icon": "dialpad", "size": 14, "color": "#737373" },
-              { "type": "text", "content": "Tap the number to use the keypad",
+              { "type": "text", "content": "Tap a number to enter amount",
                 "fontSize": 12, "fontFamily": "Switzer", "fontStyle": "Medium", "color": "#737373" }
             ]
           },

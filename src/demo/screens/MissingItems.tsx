@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import { ChevronLeft, Check, Wrench, Trash2, HelpCircle, Camera, Minus, Plus, AlertCircle } from 'lucide-react'
+import { ChevronLeft, Check, Wrench, Trash2, HelpCircle, Camera, AlertCircle, Delete } from 'lucide-react'
 import { ShipmentItem, ItemFlag, shortfall } from '../data'
 import StickyCTA from '../components/StickyCTA'
+
+type BucketKey = 'damaged' | 'scrapped' | 'lostMissing'
 
 interface Props {
   item: ShipmentItem
@@ -19,13 +21,31 @@ export default function MissingItems({ item, onSave, onBack, onPhoto }: Props) {
   const [scrapped, setScrapped] = useState(existing?.scrapped ?? 0)
   const [lostMissing, setLostMissing] = useState(existing?.lostMissing ?? 0)
 
+  const [editing, setEditing] = useState<BucketKey | null>(null)
+  const [editValue, setEditValue] = useState('')
+
   const explained = damaged + scrapped + lostMissing
   const remaining = gap - explained
   const isComplete = explained === gap
 
+  function openKeypad(bucket: BucketKey, current: number) {
+    setEditing(bucket)
+    setEditValue(current > 0 ? String(current) : '')
+  }
+
+  function commitKeypad() {
+    if (!editing) return
+    const n = Math.max(0, Math.min(gap, parseInt(editValue || '0', 10)))
+    if (editing === 'damaged') setDamaged(n)
+    if (editing === 'scrapped') setScrapped(n)
+    if (editing === 'lostMissing') setLostMissing(n)
+    setEditing(null)
+    setEditValue('')
+  }
+
   return (
     <div className="flex flex-col min-h-full bg-[#F5F5F5]">
-      {/* Blue hero header — primary screen style */}
+      {/* Blue hero header */}
       <div className="bg-[#1E3FFF] px-5 pt-[18px] pb-7">
         <div className="flex items-center justify-between mb-[18px]">
           <button onClick={onBack} className="w-11 h-11 rounded-full bg-white/[0.15] flex items-center justify-center no-select pressable">
@@ -62,10 +82,10 @@ export default function MissingItems({ item, onSave, onBack, onPhoto }: Props) {
           title="Loaded"
           subtitle="Goes to the job site"
           value={counted}
+          readOnly
           lockedBadge="FIXED"
         />
 
-        {/* Damaged */}
         <BucketCard
           stripe="#F59E0B"
           iconBg="#FEF3C7"
@@ -74,11 +94,9 @@ export default function MissingItems({ item, onSave, onBack, onPhoto }: Props) {
           title="Damaged"
           subtitle="Returnable for repair / inspection"
           value={damaged}
-          max={gap}
-          onChange={setDamaged}
+          onTapNumber={() => openKeypad('damaged', damaged)}
         />
 
-        {/* Scrapped */}
         <BucketCard
           stripe="#DC2626"
           iconBg="#FEE2E2"
@@ -87,11 +105,9 @@ export default function MissingItems({ item, onSave, onBack, onPhoto }: Props) {
           title="Scrapped"
           subtitle="Write-off — beyond repair"
           value={scrapped}
-          max={gap}
-          onChange={setScrapped}
+          onTapNumber={() => openKeypad('scrapped', scrapped)}
         />
 
-        {/* Lost / missing */}
         <BucketCard
           stripe="#7C3AED"
           iconBg="#F5F3FF"
@@ -100,8 +116,7 @@ export default function MissingItems({ item, onSave, onBack, onPhoto }: Props) {
           title="Lost / missing"
           subtitle="Customer may be charged"
           value={lostMissing}
-          max={gap}
-          onChange={setLostMissing}
+          onTapNumber={() => openKeypad('lostMissing', lostMissing)}
         />
 
         {/* Running total */}
@@ -165,12 +180,26 @@ export default function MissingItems({ item, onSave, onBack, onPhoto }: Props) {
       >
         {isComplete ? 'Save split' : `${Math.abs(remaining)} ${remaining > 0 ? 'unaccounted' : 'over'}`}
       </StickyCTA>
+
+      {/* Keypad sheet */}
+      {editing && (
+        <BucketKeypad
+          bucket={editing}
+          value={editValue}
+          maxValue={gap}
+          onInput={(d) => setEditValue(v => (v.length < 4 ? v + d : v))}
+          onBackspace={() => setEditValue(v => v.slice(0, -1))}
+          onClear={() => setEditValue('')}
+          onCancel={() => { setEditing(null); setEditValue('') }}
+          onConfirm={commitKeypad}
+        />
+      )}
     </div>
   )
 }
 
 function BucketCard({
-  stripe, iconBg, iconColor, icon, title, subtitle, value, max, onChange, lockedBadge,
+  stripe, iconBg, iconColor, icon, title, subtitle, value, onTapNumber, readOnly, lockedBadge,
 }: {
   stripe: string
   iconBg: string
@@ -179,18 +208,17 @@ function BucketCard({
   title: string
   subtitle: string
   value: number
-  max?: number
-  onChange?: (v: number) => void
+  onTapNumber?: () => void
+  readOnly?: boolean
   lockedBadge?: string
 }) {
-  const readOnly = !onChange
   return (
     <div className="bg-white rounded-[20px] border border-[#EAEAEA] shadow-[0_4px_16px_rgba(10,13,30,0.04)] overflow-hidden">
       <div className="h-1 w-full" style={{ backgroundColor: stripe }} />
       <div className="px-[22px] py-[18px] flex items-center gap-3">
         <div
           className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-          style={{ backgroundColor: iconBg, color: iconColor }}
+          style={{ backgroundColor: iconBg }}
         >
           <span style={{ color: iconColor }}>{icon}</span>
         </div>
@@ -212,26 +240,130 @@ function BucketCard({
             )}
           </div>
         ) : (
-          <div className="flex items-center rounded-full bg-[#F5F5F5] flex-shrink-0 overflow-hidden">
-            <button
-              onClick={() => onChange(Math.max(0, value - 1))}
-              disabled={value === 0}
-              className="w-11 h-11 flex items-center justify-center no-select pressable disabled:opacity-30"
+          <button
+            onClick={onTapNumber}
+            className="flex-shrink-0 no-select pressable transition-all"
+            style={{
+              minWidth: 72,
+              height: 52,
+              borderRadius: 16,
+              border: value > 0 ? `2px solid ${stripe}` : '2px solid #EAEAEA',
+              backgroundColor: value > 0 ? '#FFFFFF' : '#F5F5F5',
+              padding: '0 14px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <span
+              className="text-[22px] font-bold tracking-[-0.3px] leading-none"
+              style={{ color: value > 0 ? '#0A0A0A' : '#737373' }}
             >
-              <Minus size={18} color="#525252" strokeWidth={2.2} />
-            </button>
-            <span className="min-w-[40px] text-center text-[#0A0A0A] text-[17px] font-bold">{value}</span>
-            <button
-              onClick={() => onChange(Math.min(max ?? 999, value + 1))}
-              disabled={value >= (max ?? 999)}
-              className="w-11 h-11 flex items-center justify-center no-select pressable disabled:opacity-30"
-              style={{ backgroundColor: '#EEF2FF' }}
-            >
-              <Plus size={18} color="#1E3FFF" strokeWidth={2.4} />
-            </button>
-          </div>
+              {value}
+            </span>
+          </button>
         )}
       </div>
     </div>
+  )
+}
+
+function BucketKeypad({
+  bucket, value, maxValue, onInput, onBackspace, onClear, onCancel, onConfirm,
+}: {
+  bucket: BucketKey
+  value: string
+  maxValue: number
+  onInput: (d: string) => void
+  onBackspace: () => void
+  onClear: () => void
+  onCancel: () => void
+  onConfirm: () => void
+}) {
+  const label = bucket === 'damaged' ? 'Damaged' : bucket === 'scrapped' ? 'Scrapped' : 'Lost / missing'
+  const accent = bucket === 'damaged' ? '#F59E0B' : bucket === 'scrapped' ? '#DC2626' : '#7C3AED'
+  const parsed = parseInt(value || '0', 10)
+  const over = parsed > maxValue
+  const rows = [['1','2','3'],['4','5','6'],['7','8','9'],['clear','0','back']]
+
+  return (
+    <>
+      <div
+        className="absolute inset-0 bg-black/40 z-40"
+        onClick={onCancel}
+        style={{ animation: 'fadeIn 180ms ease-out forwards' }}
+      />
+      <div
+        className="absolute bottom-0 left-0 right-0 bg-white z-50 rounded-t-[24px] overflow-hidden"
+        style={{ animation: 'sheetSlideUp 280ms var(--ease-drawer, cubic-bezier(0.32,0.72,0,1)) forwards' }}
+      >
+        <div className="flex flex-col items-center pt-2.5 pb-1">
+          <div className="w-10 h-1 rounded-full bg-[#D4D4D4]" />
+        </div>
+
+        <div className="px-6 pt-3 pb-4 flex items-center justify-between">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[11px] font-bold uppercase" style={{ color: accent, letterSpacing: 0.6 }}>{label}</span>
+            <span className="text-[#0A0A0A] text-lg font-bold">Enter amount</span>
+          </div>
+          <button onClick={onCancel} className="text-[#525252] text-sm font-bold no-select pressable">Cancel</button>
+        </div>
+
+        <div className="px-6 py-6 flex items-baseline justify-center gap-3 bg-[#FAFAFA]">
+          <span
+            className="text-[72px] font-bold tracking-[-2px] leading-none"
+            style={{ color: over ? '#DC2626' : (parsed > 0 ? '#0A0A0A' : '#737373') }}
+          >
+            {value || '0'}
+          </span>
+          <span className="text-base font-semibold text-[#737373]">of {maxValue} max</span>
+        </div>
+
+        {over && (
+          <div className="px-6 py-2.5 bg-[#FEE2E2]">
+            <p className="text-[#991B1B] text-[13px] font-bold text-center">Over by {parsed - maxValue}</p>
+          </div>
+        )}
+
+        <div className="px-[18px] pt-2 pb-4 bg-[#F5F5F5] flex flex-col gap-3">
+          {rows.map((row, ri) => (
+            <div key={ri} className="flex gap-3">
+              {row.map((key, ki) => {
+                if (key === 'clear') return (
+                  <button key={ki} onClick={onClear} className="flex-1 h-[60px] rounded-2xl bg-white flex items-center justify-center no-select pressable">
+                    <span className="text-[13px] font-bold text-[#DC2626]">Clear</span>
+                  </button>
+                )
+                if (key === 'back') return (
+                  <button key={ki} onClick={onBackspace} className="flex-1 h-[60px] rounded-2xl bg-white flex items-center justify-center no-select pressable">
+                    <Delete size={22} color="#0A0A0A" strokeWidth={2} />
+                  </button>
+                )
+                return (
+                  <button
+                    key={ki}
+                    onClick={() => onInput(key)}
+                    className="flex-1 h-[60px] rounded-2xl bg-white text-[26px] font-semibold text-[#0A0A0A] no-select pressable"
+                  >
+                    {key}
+                  </button>
+                )
+              })}
+            </div>
+          ))}
+          <button
+            onClick={onConfirm}
+            disabled={over}
+            className="w-full h-[56px] rounded-2xl flex items-center justify-center no-select pressable disabled:opacity-50"
+            style={{
+              backgroundColor: accent,
+              boxShadow: over ? 'none' : `0 8px 20px ${accent}40`,
+            }}
+          >
+            <span className="text-white text-[17px] font-bold tracking-[-0.1px]">Save</span>
+          </button>
+        </div>
+      </div>
+    </>
   )
 }
