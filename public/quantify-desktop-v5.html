@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quantify — Products · Main Warehouse</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ══════════════════════════════════════
+     FLUENT DESIGN 2 TOKENS
+  ══════════════════════════════════════ */
+  :root {
+    /* Fluent neutral palette */
+    --n-white:     #FFFFFF;
+    --n-canvas:    #F5F5F5;        /* body background (Mica-like) */
+    --n-subtle:    #FAFAFA;
+    --n-layer:     #FFFFFF;        /* cards */
+    --n-layer-alt: #F9F9F9;
+    --n-hover:     #F5F5F5;
+    --n-pressed:   #EDEDED;
+    --n-selected:  #EBF3FC;
+    --n-selected-h:#DCECFB;
+    --n-stroke-1:  #E5E5E5;
+    --n-stroke-2:  #D1D1D1;
+    --n-stroke-3:  #B3B3B3;
+
+    /* Fluent text */
+    --t-primary:   #242424;
+    --t-secondary: #616161;
+    --t-tertiary:  #8A8A8A;
+    --t-disabled:  #BDBDBD;
+
+    /* Fluent brand — communication blue */
+    --brand-100: #061724;
+    --brand-80:  #0F548C;
+    --brand-70:  #0F6CBD;          /* primary */
+    --brand-60:  #115EA3;          /* hover */
+    --brand-50:  #0E4A87;          /* pressed */
+    --brand-bg:  #EBF3FC;
+    --brand-bg-2:#CFE4FA;
+    --brand-stroke:#B4D6FA;
+
+    /* Copilot gradient — matches MS Copilot product */
+    --cp-pink:   #EA5089;
+    --cp-purple: #8F51D5;
+    --cp-cyan:   #3FABF5;
+    --cp-grad:   linear-gradient(135deg, #EA5089 0%, #8F51D5 50%, #3FABF5 100%);
+    --cp-grad-soft: linear-gradient(135deg, rgba(234,80,137,0.08), rgba(143,81,213,0.08), rgba(63,171,245,0.08));
+
+    /* Semantic */
+    --ok:      #0E7A0D;
+    --ok-bg:   #DFF6DD;
+    --warn:    #8A6100;
+    --warn-bg: #FFF4CE;
+    --err:     #C42B1C;
+    --err-bg:  #FDE7E9;
+
+    /* Shadows — Fluent elevation */
+    --sh-2:  0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+    --sh-4:  0 0 2px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.14);
+    --sh-8:  0 0 2px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.14);
+    --sh-16: 0 0 2px rgba(0,0,0,0.12), 0 8px 16px rgba(0,0,0,0.14);
+    --sh-28: 0 0 8px rgba(0,0,0,0.12), 0 14px 28px rgba(0,0,0,0.20);
+
+    /* Corners */
+    --r-sm: 4px;
+    --r-md: 6px;
+    --r-lg: 8px;
+    --r-xl: 12px;
+  }
+
+  html, body { height: 100%; overflow: hidden; }
+
+  body {
+    font-family: 'Segoe UI Variable Text', 'Segoe UI Variable', 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-feature-settings: "ss01", "cv11";
+    background: var(--n-canvas);
+    color: var(--t-primary);
+    font-size: 13px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    flex-direction: column;
+
+    /* Mica-like atmosphere on body */
+    background-image:
+      radial-gradient(ellipse 800px 600px at 10% -5%, rgba(15,108,189,0.04), transparent 70%),
+      radial-gradient(ellipse 700px 500px at 95% 5%, rgba(143,81,213,0.03), transparent 70%);
+  }
+
+  /* ══════════════════════════════════════
+     TITLE BAR (Windows 11 / Outlook style)
+  ══════════════════════════════════════ */
+  .titlebar {
+    height: 36px;
+    background: var(--n-layer);
+    display: flex;
+    align-items: center;
+    padding: 0 0 0 12px;
+    flex-shrink: 0;
+    user-select: none;
+    border-bottom: 1px solid var(--n-stroke-1);
+    position: relative;
+  }
+
+  /* Quick Access Toolbar (Office-style) */
+  .qat {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-right: 12px;
+  }
+  .qat-btn {
+    width: 24px; height: 24px;
+    display: grid; place-items: center;
+    color: var(--t-secondary);
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    transition: background 100ms ease;
+  }
+  .qat-btn:hover { background: var(--n-hover); color: var(--t-primary); }
+  .qat-btn svg { width: 14px; height: 14px; }
+  .qat-sep { width: 1px; height: 14px; background: var(--n-stroke-2); margin: 0 4px; }
+
+  .tb-center {
+    position: absolute;
+    left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12.5px;
+    color: var(--t-primary);
+    font-weight: 600;
+  }
+  .tb-logo {
+    width: 18px; height: 18px;
+    background: var(--brand-70);
+    border-radius: 4px;
+    display: grid; place-items: center;
+    font-size: 11px; font-weight: 800;
+    color: white;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
+  }
+  .tb-dot { color: var(--t-tertiary); font-weight: 400; }
+
+  /* Window controls */
+  .tb-win {
+    margin-left: auto;
+    display: flex;
+  }
+  .tb-wbtn {
+    width: 46px; height: 36px;
+    display: grid; place-items: center;
+    color: var(--t-secondary);
+    cursor: pointer;
+    transition: background 120ms ease;
+  }
+  .tb-wbtn:hover { background: var(--n-hover); }
+  .tb-wbtn.close:hover { background: #C42B1C; color: white; }
+  .tb-wbtn svg { width: 10px; height: 10px; }
+
+  /* ══════════════════════════════════════
+     MENU BAR
+  ══════════════════════════════════════ */
+  .menubar {
+    height: 28px;
+    background: var(--n-layer);
+    border-bottom: 1px solid var(--n-stroke-1);
+    display: flex;
+    align-items: stretch;
+    padding: 0 6px;
+    flex-shrink: 0;
+    font-size: 12px;
+    user-select: none;
+  }
+  .menu-item {
+    padding: 0 10px;
+    display: flex; align-items: center;
+    color: var(--t-primary);
+    cursor: pointer;
+    border-radius: var(--r-sm);
+    margin: 3px 1px;
+    transition: background 100ms ease;
+  }
+  .menu-item:hover { background: var(--n-hover); }
+
+  /* ══════════════════════════════════════
+     MODULE TAB STRIP (Office ribbon tabs)
+  ══════════════════════════════════════ */
+  .tabs {
+    background: var(--n-layer);
+    display: flex;
+    align-items: flex-end;
+    padding: 0 8px;
+    gap: 0;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--n-stroke-1);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    padding: 7px 14px 8px;
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12.5px;
+    color: var(--t-secondary);
+    cursor: pointer;
+    position: relative;
+    transition: all 120ms ease;
+    white-space: nowrap;
+    font-weight: 500;
+    border-radius: 6px 6px 0 0;
+  }
+  .tab:hover { color: var(--t-primary); background: var(--n-hover); }
+  .tab.on {
+    color: var(--brand-70);
+    font-weight: 600;
+  }
+  .tab.on::after {
+    content: "";
+    position: absolute;
+    left: 10px; right: 10px;
+    bottom: -1px;
+    height: 2px;
+    background: var(--brand-70);
+    border-radius: 2px 2px 0 0;
+  }
+  .tab svg { width: 14px; height: 14px; opacity: 0.75; }
+  .tab.on svg { opacity: 1; }
+  .tab .cnt {
+    font-size: 10.5px;
+    background: var(--n-hover);
+    color: var(--t-secondary);
+    padding: 1px 6px;
+    border-radius: 9px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .tab.on .cnt { background: var(--brand-bg); color: var(--brand-70); }
+
+  /* ══════════════════════════════════════
+     COMMAND RIBBON (Outlook-style)
+  ══════════════════════════════════════ */
+  .ribbon {
+    background: var(--n-layer);
+    padding: 8px 10px 6px;
+    display: flex;
+    align-items: flex-end;
+    gap: 0;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--n-stroke-1);
+  }
+
+  .rg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 8px;
+    position: relative;
+  }
+  .rg + .rg::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 4px;
+    bottom: 20px;
+    width: 1px;
+    background: var(--n-stroke-1);
+  }
+  .rg-btns {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 4px;
+  }
+  .rg-label {
+    font-size: 10px;
+    color: var(--t-tertiary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .rb {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 4px 8px 3px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--r-sm);
+    color: var(--t-primary);
+    font-size: 11px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 100ms ease;
+    font-family: inherit;
+    min-width: 44px;
+  }
+  .rb:hover { background: var(--n-hover); border-color: var(--n-stroke-1); }
+  .rb:active { background: var(--n-pressed); }
+  .rb svg { width: 16px; height: 16px; color: var(--t-secondary); }
+  .rb:hover svg { color: var(--brand-70); }
+  .rb-lbl {
+    white-space: nowrap;
+    font-size: 11px;
+    color: var(--t-primary);
+  }
+  .rb.primary svg { color: var(--brand-70); }
+  .rb.danger svg { color: var(--err); }
+  .rb.copilot svg { color: transparent; background: var(--cp-grad); -webkit-background-clip: text; background-clip: text; }
+  .rb.copilot:hover { background: var(--cp-grad-soft); border-color: rgba(143,81,213,0.25); }
+  .rb.disabled { opacity: 0.4; cursor: default; }
+  .rb.disabled:hover { background: transparent; border-color: transparent; }
+
+  /* Big primary button (New Item) */
+  .rb-big {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 10px 4px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    transition: all 100ms ease;
+    font-family: inherit;
+    min-width: 58px;
+  }
+  .rb-big:hover { background: var(--n-hover); border-color: var(--n-stroke-1); }
+  .rb-big-icon {
+    width: 36px; height: 36px;
+    background: var(--brand-70);
+    color: white;
+    border-radius: var(--r-sm);
+    display: grid; place-items: center;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 1px 2px rgba(0,0,0,0.08);
+  }
+  .rb-big-icon svg { width: 18px; height: 18px; }
+  .rb-big:hover .rb-big-icon { background: var(--brand-60); }
+  .rb-big-lbl {
+    font-size: 11px;
+    color: var(--t-primary);
+    white-space: nowrap;
+    display: flex; align-items: center; gap: 2px;
+  }
+  .rb-big-lbl svg { width: 9px; height: 9px; color: var(--t-secondary); }
+
+  /* Search area on ribbon right */
+  .rb-search {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    align-self: center;
+  }
+  .srch-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .srch-wrap svg {
+    position: absolute;
+    left: 9px;
+    width: 14px;
+    height: 14px;
+    color: var(--t-secondary);
+    pointer-events: none;
+  }
+  .srch {
+    padding: 6px 10px 6px 30px;
+    background: var(--n-subtle);
+    border: 1px solid var(--n-stroke-2);
+    border-bottom: 1px solid var(--n-stroke-3);
+    border-radius: var(--r-sm);
+    font-size: 12.5px;
+    color: var(--t-primary);
+    width: 240px;
+    outline: none;
+    font-family: inherit;
+    transition: all 140ms ease;
+  }
+  .srch:focus {
+    background: white;
+    border-color: var(--brand-70);
+    border-bottom-color: var(--brand-70);
+    border-bottom-width: 2px;
+    padding-bottom: 5px;
+    box-shadow: 0 0 0 0 transparent;
+    width: 280px;
+  }
+  .srch::placeholder { color: var(--t-tertiary); }
+
+  /* ══════════════════════════════════════
+     WORKSPACE
+  ══════════════════════════════════════ */
+  .workspace {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    min-height: 0;
+    padding: 6px;
+    gap: 6px;
+  }
+
+  /* Layered pane look — Fluent "Card" material */
+  .pane {
+    background: var(--n-layer);
+    border: 1px solid var(--n-stroke-1);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--sh-2);
+  }
+
+  /* ─── TREE PANE ─── */
+  .tree-pane {
+    width: 232px;
+    flex-shrink: 0;
+  }
+  .tree-head {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--n-stroke-1);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tree-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--t-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .tree-filter {
+    flex: 1;
+    margin-left: auto;
+    background: var(--n-subtle);
+    border: 1px solid var(--n-stroke-2);
+    border-radius: var(--r-sm);
+    padding: 3px 8px;
+    font-size: 11.5px;
+    color: var(--t-primary);
+    outline: none;
+    font-family: inherit;
+    min-width: 0;
+  }
+  .tree-filter:focus { border-color: var(--brand-70); background: white; }
+
+  .tree-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 0;
+  }
+
+  .tnode {
+    display: flex; align-items: center; gap: 5px;
+    padding: 5px 10px 5px 0;
+    font-size: 12.5px;
+    color: var(--t-primary);
+    cursor: pointer;
+    transition: background 100ms ease;
+    position: relative;
+  }
+  .tnode:hover { background: var(--n-hover); }
+  .tnode.on {
+    background: var(--n-selected);
+    font-weight: 600;
+    color: var(--brand-60);
+  }
+  .tnode.on::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 4px; bottom: 4px;
+    width: 2px;
+    border-radius: 0 2px 2px 0;
+    background: var(--brand-70);
+  }
+
+  .t-caret {
+    width: 16px; height: 16px;
+    display: grid; place-items: center;
+    color: var(--t-tertiary);
+    transition: transform 150ms ease;
+    flex-shrink: 0;
+  }
+  .t-caret svg { width: 10px; height: 10px; }
+  .tnode.open > .t-caret { transform: rotate(90deg); }
+  .t-caret.none { visibility: hidden; }
+
+  .t-ico {
+    width: 16px; height: 16px;
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .t-ico svg { width: 14px; height: 14px; }
+  .t-ico.company svg { color: var(--brand-70); }
+  .t-ico.warehouse svg { color: var(--brand-70); }
+  .t-ico.aisle svg { color: #0E7A0D; }
+  .t-ico.folder svg { color: #CA5010; }
+
+  .t-lbl {
+    flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .t-cnt {
+    font-size: 11px;
+    color: var(--t-tertiary);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    padding-left: 6px;
+  }
+
+  .tnode[data-depth="0"] { padding-left: 4px; }
+  .tnode[data-depth="1"] { padding-left: 20px; }
+  .tnode[data-depth="2"] { padding-left: 36px; }
+
+  /* ─── DATA PANE ─── */
+  .data-pane {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Subheader */
+  .subhead {
+    padding: 7px 14px;
+    background: var(--n-subtle);
+    border-bottom: 1px solid var(--n-stroke-1);
+    display: flex; align-items: center; gap: 10px;
+    flex-shrink: 0;
+  }
+  .crumb {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 12px; color: var(--t-secondary);
+  }
+  .crumb .sep { color: var(--t-tertiary); }
+  .crumb strong { color: var(--t-primary); font-weight: 600; }
+
+  .subhead-meta {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 14px;
+    font-size: 11.5px; color: var(--t-tertiary);
+  }
+  .cm-item { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+  .cm-item b { color: var(--t-primary); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* Filter strip */
+  .filter-strip {
+    padding: 7px 14px;
+    border-bottom: 1px solid var(--n-stroke-1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    background: var(--n-layer);
+    flex-shrink: 0;
+  }
+  .f-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--t-secondary);
+    margin-right: 2px;
+  }
+  .f-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px 3px 8px;
+    background: transparent;
+    border: 1px solid var(--n-stroke-2);
+    border-radius: 14px;
+    font-size: 11.5px;
+    color: var(--t-primary);
+    cursor: pointer;
+    transition: all 130ms ease;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .f-chip:hover { background: var(--n-hover); border-color: var(--n-stroke-3); }
+  .f-chip.on {
+    background: var(--brand-bg);
+    border-color: var(--brand-stroke);
+    color: var(--brand-60);
+    font-weight: 600;
+  }
+  .f-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .f-count {
+    font-size: 10.5px;
+    color: inherit;
+    opacity: 0.7;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Selection bar */
+  .sel-bar {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    background: var(--brand-bg);
+    border-bottom: 1px solid var(--brand-stroke);
+    flex-shrink: 0;
+  }
+  .sel-bar.on { display: flex; animation: slide 150ms ease-out; }
+  @keyframes slide { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .sel-n { font-size: 12.5px; font-weight: 700; color: var(--brand-60); }
+  .sb-acts { display: flex; gap: 3px; }
+  .sb-btn {
+    padding: 4px 10px;
+    background: white;
+    border: 1px solid var(--n-stroke-2);
+    border-radius: var(--r-sm);
+    font-size: 11.5px;
+    color: var(--t-primary);
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+    transition: all 100ms ease;
+    font-family: inherit;
+    font-weight: 500;
+  }
+  .sb-btn:hover { background: var(--n-hover); }
+  .sb-btn.danger { color: var(--err); }
+  .sb-btn.danger:hover { background: var(--err-bg); border-color: var(--err); }
+  .sb-btn svg { width: 12px; height: 12px; }
+
+  .sel-x {
+    margin-left: auto;
+    font-size: 11.5px;
+    color: var(--brand-70);
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .sel-x:hover { text-decoration: underline; }
+
+  /* Table */
+  .tbl-wrap {
+    flex: 1;
+    overflow: auto;
+    min-height: 0;
+    background: var(--n-layer);
+  }
+  .tbl-wrap::-webkit-scrollbar { width: 12px; height: 12px; }
+  .tbl-wrap::-webkit-scrollbar-thumb {
+    background: var(--n-stroke-2);
+    border-radius: 6px;
+    border: 3px solid var(--n-layer);
+  }
+  .tbl-wrap::-webkit-scrollbar-thumb:hover { background: var(--n-stroke-3); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+
+  thead {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--n-layer-alt);
+  }
+  th {
+    padding: 8px 12px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--t-secondary);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid var(--n-stroke-2);
+    background: var(--n-layer-alt);
+    position: relative;
+  }
+  th:hover { color: var(--t-primary); }
+  th.sorted { color: var(--brand-70); }
+  th.r { text-align: right; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--n-stroke-1);
+    transition: background 80ms ease;
+  }
+  tbody tr:hover { background: var(--n-subtle); }
+  tbody tr.on { background: var(--n-selected); }
+  tbody tr.on:hover { background: var(--n-selected-h); }
+
+  td {
+    padding: 8px 12px;
+    vertical-align: middle;
+    color: var(--t-primary);
+  }
+  td.r { text-align: right; font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+  td.dim { color: var(--t-secondary); }
+  td.mono { font-family: 'Cascadia Mono', 'Consolas', 'SF Mono', monospace; font-size: 12px; }
+
+  /* Status column */
+  .st-cell {
+    display: flex; align-items: center; gap: 5px;
+  }
+  .st-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .st-g { background: var(--ok); }
+  .st-a { background: #CA5010; }
+  .st-r { background: var(--err); }
+
+  .sku-cell {
+    font-family: 'Cascadia Mono', 'Consolas', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--t-primary);
+  }
+
+  .cat-cell {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 2px 8px 2px 6px;
+    background: var(--n-hover);
+    border-radius: 3px;
+    font-size: 11.5px;
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--t-primary);
+  }
+
+  .avail-cell {
+    display: inline-flex; flex-direction: column; align-items: flex-end; gap: 3px;
+  }
+  .avail-n {
+    font-weight: 600; font-size: 12.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .avail-bar {
+    width: 56px; height: 3px;
+    background: var(--n-stroke-1);
+    border-radius: 1.5px;
+    overflow: hidden;
+  }
+  .avail-fill {
+    height: 100%; border-radius: 1.5px;
+    transition: width 300ms ease;
+  }
+
+  /* Checkbox */
+  input[type=checkbox] {
+    appearance: none;
+    width: 14px; height: 14px;
+    border: 1.5px solid var(--n-stroke-3);
+    border-radius: 3px;
+    background: white;
+    cursor: pointer;
+    position: relative;
+    transition: all 120ms ease;
+  }
+  input[type=checkbox]:hover { border-color: var(--brand-70); }
+  input[type=checkbox]:checked { background: var(--brand-70); border-color: var(--brand-70); }
+  input[type=checkbox]:checked::after {
+    content: '';
+    position: absolute;
+    left: 3px; top: 0px;
+    width: 4px; height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .row-acts {
+    display: flex; gap: 3px;
+    opacity: 0;
+    transition: opacity 100ms ease;
+  }
+  tr:hover .row-acts { opacity: 1; }
+  .r-act {
+    padding: 2px 8px;
+    background: white;
+    border: 1px solid var(--n-stroke-2);
+    border-radius: var(--r-sm);
+    color: var(--t-secondary);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 100ms ease;
+    font-family: inherit;
+  }
+  .r-act:hover { color: var(--brand-70); border-color: var(--brand-70); background: var(--brand-bg); }
+
+  /* ══════════════════════════════════════
+     COPILOT PANEL (Microsoft Copilot vibe)
+  ══════════════════════════════════════ */
+  .copilot {
+    width: 340px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    background:
+      linear-gradient(180deg, rgba(143,81,213,0.04), rgba(234,80,137,0.02) 30%, var(--n-layer) 100%);
+  }
+  .cp-head {
+    padding: 12px 14px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--n-stroke-1);
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.5);
+    backdrop-filter: blur(6px);
+  }
+  .cp-logo {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--cp-grad);
+    display: grid; place-items: center;
+    box-shadow: 0 2px 8px rgba(143,81,213,0.25);
+    flex-shrink: 0;
+    position: relative;
+  }
+  .cp-logo svg { width: 18px; height: 18px; color: white; }
+  .cp-titles { flex: 1; min-width: 0; }
+  .cp-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--t-primary);
+    background: var(--cp-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.2;
+  }
+  .cp-sub {
+    font-size: 11px;
+    color: var(--t-tertiary);
+    margin-top: 1px;
+  }
+  .cp-actions {
+    display: flex; gap: 4px;
+  }
+  .cp-abtn {
+    width: 26px; height: 26px;
+    background: transparent;
+    border: none;
+    border-radius: var(--r-sm);
+    color: var(--t-secondary);
+    cursor: pointer;
+    display: grid; place-items: center;
+    transition: background 100ms ease;
+  }
+  .cp-abtn:hover { background: var(--n-hover); }
+  .cp-abtn svg { width: 14px; height: 14px; }
+
+  .cp-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+  }
+  .cp-body::-webkit-scrollbar { width: 8px; }
+  .cp-body::-webkit-scrollbar-thumb { background: var(--n-stroke-2); border-radius: 4px; }
+
+  .cp-section-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--t-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin: 4px 4px 6px;
+  }
+
+  /* Insight cards */
+  .insight {
+    background: var(--n-layer);
+    border: 1px solid var(--n-stroke-1);
+    border-radius: var(--r-lg);
+    padding: 12px 12px 10px;
+    margin-bottom: 8px;
+    position: relative;
+    transition: all 150ms ease;
+    cursor: pointer;
+  }
+  .insight:hover {
+    border-color: var(--brand-stroke);
+    box-shadow: var(--sh-4);
+  }
+  .insight-head {
+    display: flex; align-items: flex-start; gap: 8px;
+    margin-bottom: 4px;
+  }
+  .insight-ico {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    display: grid; place-items: center;
+    flex-shrink: 0;
+    font-size: 12px;
+  }
+  .insight-ico svg { width: 12px; height: 12px; }
+  .insight-ico.warn { background: var(--warn-bg); color: var(--warn); }
+  .insight-ico.err  { background: var(--err-bg);  color: var(--err); }
+  .insight-ico.ok   { background: var(--ok-bg);   color: var(--ok); }
+  .insight-ico.ai   { background: var(--cp-grad); color: white; }
+
+  .insight-title {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--t-primary);
+    line-height: 1.3;
+    flex: 1;
+  }
+  .insight-body {
+    font-size: 12px;
+    color: var(--t-secondary);
+    line-height: 1.45;
+    margin-bottom: 8px;
+  }
+  .insight-body b { color: var(--t-primary); font-weight: 600; }
+  .insight-actions {
+    display: flex; gap: 6px;
+  }
+  .insight-btn {
+    padding: 4px 10px;
+    border-radius: var(--r-sm);
+    font-size: 11.5px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid;
+    transition: all 120ms ease;
+    font-family: inherit;
+  }
+  .insight-btn.primary {
+    background: var(--brand-70);
+    color: white;
+    border-color: var(--brand-70);
+  }
+  .insight-btn.primary:hover { background: var(--brand-60); }
+  .insight-btn.ghost {
+    background: white;
+    color: var(--t-secondary);
+    border-color: var(--n-stroke-2);
+  }
+  .insight-btn.ghost:hover { color: var(--t-primary); border-color: var(--n-stroke-3); }
+
+  /* Quick chips */
+  .cp-chips {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin: 8px 4px 14px;
+  }
+  .cp-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 5px 10px;
+    background: white;
+    border: 1px solid var(--n-stroke-2);
+    border-radius: 14px;
+    font-size: 11.5px;
+    color: var(--t-primary);
+    cursor: pointer;
+    transition: all 120ms ease;
+    font-family: inherit;
+  }
+  .cp-chip:hover {
+    background: var(--cp-grad-soft);
+    border-color: rgba(143,81,213,0.25);
+  }
+  .cp-chip svg { width: 12px; height: 12px; color: var(--cp-purple); }
+
+  /* Chat input */
+  .cp-input-wrap {
+    padding: 10px 12px 12px;
+    border-top: 1px solid var(--n-stroke-1);
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(6px);
+    flex-shrink: 0;
+  }
+  .cp-input {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 6px 8px 12px;
+    background: white;
+    border: 1px solid var(--n-stroke-2);
+    border-radius: 20px;
+    transition: all 150ms ease;
+  }
+  .cp-input:focus-within {
+    border-color: var(--cp-purple);
+    box-shadow: 0 0 0 3px rgba(143,81,213,0.12);
+  }
+  .cp-input input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--t-primary);
+    font-size: 12.5px;
+    font-family: inherit;
+  }
+  .cp-input input::placeholder { color: var(--t-tertiary); }
+  .cp-mic, .cp-send {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    cursor: pointer;
+    transition: all 120ms ease;
+    background: transparent;
+    color: var(--t-secondary);
+  }
+  .cp-mic:hover { background: var(--n-hover); color: var(--t-primary); }
+  .cp-send { background: var(--cp-grad); color: white; }
+  .cp-send:hover { box-shadow: 0 2px 8px rgba(143,81,213,0.4); }
+  .cp-mic svg, .cp-send svg { width: 14px; height: 14px; }
+  .cp-footer {
+    text-align: center;
+    font-size: 10.5px;
+    color: var(--t-tertiary);
+    margin-top: 6px;
+  }
+
+  /* ══════════════════════════════════════
+     STATUS BAR
+  ══════════════════════════════════════ */
+  .statusbar {
+    height: 26px;
+    background: var(--brand-70);
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 16px;
+    flex-shrink: 0;
+    font-size: 11.5px;
+  }
+  .sb-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .sb-label {
+    color: rgba(255,255,255,0.7);
+    font-size: 10.5px;
+    font-weight: 500;
+  }
+  .sb-val {
+    color: white;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .sb-sep {
+    width: 1px; height: 14px;
+    background: rgba(255,255,255,0.2);
+  }
+  .sb-health {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sb-mini {
+    display: flex;
+    width: 70px;
+    height: 4px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+    overflow: hidden;
+    gap: 1px;
+  }
+  .sb-mini > div { height: 100%; }
+  .sb-h-stat {
+    display: flex; align-items: center; gap: 4px;
+  }
+  .sb-h-stat b { font-weight: 600; }
+  .sb-h-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .sb-right {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sb-live {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: #84FF84;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #84FF84;
+  }
+  .sb-user {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .sb-avatar {
+    width: 16px; height: 16px;
+    background: linear-gradient(135deg, #F59E0B, #EC4899);
+    border-radius: 50%;
+    display: grid; place-items: center;
+    color: white; font-size: 8.5px; font-weight: 700;
+  }
+
+  /* ══════════════════════════════════════
+     CONTEXT MENU
+  ══════════════════════════════════════ */
+  .ctx {
+    position: fixed;
+    background: white;
+    border: 1px solid var(--n-stroke-2);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-28);
+    padding: 4px;
+    min-width: 200px;
+    z-index: 1000;
+    display: none;
+    font-size: 12.5px;
+  }
+  .ctx.on { display: block; }
+  .ctx-item {
+    padding: 6px 10px;
+    display: flex; align-items: center; gap: 8px;
+    color: var(--t-primary);
+    cursor: pointer;
+    border-radius: var(--r-sm);
+    transition: background 100ms ease;
+  }
+  .ctx-item:hover { background: var(--n-hover); }
+  .ctx-item svg { width: 14px; height: 14px; color: var(--t-secondary); }
+  .ctx-item .k { margin-left: auto; font-size: 11px; color: var(--t-tertiary); font-family: 'Cascadia Mono', monospace; }
+  .ctx-sep { height: 1px; background: var(--n-stroke-1); margin: 4px 0; }
+  .ctx-item.danger { color: var(--err); }
+  .ctx-item.danger svg { color: var(--err); }
+  .ctx-item.ai { background: linear-gradient(90deg, rgba(234,80,137,0.05), rgba(143,81,213,0.05)); }
+  .ctx-item.ai:hover { background: linear-gradient(90deg, rgba(234,80,137,0.12), rgba(143,81,213,0.12)); }
+  .ctx-item.ai svg { color: var(--cp-purple); }
+
+  /* ═══════ Fluent Toast / Flyout (reusable) ═══════ */
+  .flyout {
+    position: absolute;
+    background: white;
+    border: 1px solid var(--n-stroke-2);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-16);
+    padding: 10px;
+    z-index: 500;
+    display: none;
+  }
+  .flyout.on { display: block; }
+
+  /* ═══════ Utilities ═══════ */
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+</style>
+</head>
+<body>
+
+<!-- ══════════ Title bar (Windows 11 / Office) ══════════ -->
+<div class="titlebar">
+  <div class="qat">
+    <div class="qat-btn" title="Save (Ctrl+S)">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 3a2 2 0 012-2h7.586a2 2 0 011.414.586l2.414 2.414a2 2 0 01.586 1.414V17a2 2 0 01-2 2H5a2 2 0 01-2-2V3zm4 0v4h6V3H7zm-1 9a1 1 0 011-1h6a1 1 0 011 1v5H6v-5z" fill-rule="evenodd" clip-rule="evenodd"/></svg>
+    </div>
+    <div class="qat-btn" title="Undo (Ctrl+Z)">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 117 7 1 1 0 11-2 0A5 5 0 0011 4H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" fill-rule="evenodd" clip-rule="evenodd"/></svg>
+    </div>
+    <div class="qat-btn" title="Redo (Ctrl+Y)">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M12.293 3.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 9H9a5 5 0 00-5 5 1 1 0 11-2 0 7 7 0 017-7h5.586l-2.293-2.293a1 1 0 010-1.414z" fill-rule="evenodd" clip-rule="evenodd"/></svg>
+    </div>
+    <div class="qat-sep"></div>
+    <div class="qat-btn" title="Print (Ctrl+P)">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a1 1 0 001 1h8a1 1 0 001-1v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a1 1 0 00-1-1H6a1 1 0 00-1 1zm2 0h6v3H7V4zm-1 9a1 1 0 011-1h6a1 1 0 011 1v3H6v-3zm8-4a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd"/></svg>
+    </div>
+    <div class="qat-btn" title="Quick access">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" fill-rule="evenodd" clip-rule="evenodd" transform="rotate(180 10 10)"/></svg>
+    </div>
+  </div>
+
+  <div class="tb-center">
+    <div class="tb-logo">Q</div>
+    Quantify
+    <span class="tb-dot">·</span>
+    <span style="color:var(--t-secondary);font-weight:500">Products — Main Warehouse</span>
+  </div>
+
+  <div class="tb-win">
+    <div class="tb-wbtn" title="Minimize"><svg viewBox="0 0 10 10"><path stroke="currentColor" stroke-width="1" d="M0,5 L10,5"/></svg></div>
+    <div class="tb-wbtn" title="Maximize"><svg viewBox="0 0 10 10"><rect x="0.5" y="0.5" width="9" height="9" stroke="currentColor" stroke-width="1" fill="none"/></svg></div>
+    <div class="tb-wbtn close" title="Close"><svg viewBox="0 0 10 10"><path stroke="currentColor" stroke-width="1" d="M0,0 L10,10 M10,0 L0,10"/></svg></div>
+  </div>
+</div>
+
+<!-- Menu bar -->
+<div class="menubar">
+  <div class="menu-item">File</div>
+  <div class="menu-item">Edit</div>
+  <div class="menu-item">View</div>
+  <div class="menu-item">Organization</div>
+  <div class="menu-item">Customers</div>
+  <div class="menu-item">Vendors</div>
+  <div class="menu-item">Inventory</div>
+  <div class="menu-item">Reports</div>
+  <div class="menu-item">Tools</div>
+  <div class="menu-item">Window</div>
+  <div class="menu-item">Help</div>
+</div>
+
+<!-- Module tabs -->
+<div class="tabs">
+  <div class="tab"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"/></svg>Organization</div>
+  <div class="tab"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM14 15a4 4 0 00-8 0v3h8v-3z"/></svg>Customers</div>
+  <div class="tab"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5z" clip-rule="evenodd"/></svg>Vendors</div>
+  <div class="tab"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0z"/></svg>Users</div>
+  <div class="tab on"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"/><path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>Products <span class="cnt">342</span></div>
+  <div class="tab"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6z" clip-rule="evenodd"/></svg>Requests <span class="cnt">7</span></div>
+  <div class="tab"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>Estimates</div>
+  <div class="tab"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg>Orders</div>
+  <div class="tab"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/><path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z"/></svg>Purchase Orders <span class="cnt">14</span></div>
+  <div class="tab"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>Receiving</div>
+  <div class="tab"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>Reports</div>
+</div>
+
+<!-- ══════════ Command ribbon (Outlook-style) ══════════ -->
+<div class="ribbon">
+  <!-- Create -->
+  <div class="rg">
+    <div class="rg-btns">
+      <button class="rb-big" title="New item (Ctrl+N)">
+        <div class="rb-big-icon">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+        </div>
+        <div class="rb-big-lbl">New<svg viewBox="0 0 10 10" fill="currentColor"><path d="M3 3 L5 5 L7 3 Z"/></svg></div>
+      </button>
+    </div>
+    <div class="rg-label">Create</div>
+  </div>
+
+  <!-- Manage -->
+  <div class="rg">
+    <div class="rg-btns">
+      <button class="rb"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg><span class="rb-lbl">Edit</span></button>
+      <button class="rb"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z"/><path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z"/></svg><span class="rb-lbl">Duplicate</span></button>
+      <button class="rb danger"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9z" clip-rule="evenodd"/></svg><span class="rb-lbl">Delete</span></button>
+    </div>
+    <div class="rg-label">Manage</div>
+  </div>
+
+  <!-- Data -->
+  <div class="rg">
+    <div class="rg-btns">
+      <button class="rb"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg><span class="rb-lbl">Export</span></button>
+      <button class="rb"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg><span class="rb-lbl">Import</span></button>
+      <button class="rb"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a1 1 0 001 1h8a1 1 0 001-1v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a1 1 0 00-1-1H6a1 1 0 00-1 1zm2 0h6v3H7V4z" clip-rule="evenodd"/></svg><span class="rb-lbl">Print</span></button>
+    </div>
+    <div class="rg-label">Data</div>
+  </div>
+
+  <!-- View -->
+  <div class="rg">
+    <div class="rg-btns">
+      <button class="rb"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd"/></svg><span class="rb-lbl">Filter</span></button>
+      <button class="rb"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1z" clip-rule="evenodd"/></svg><span class="rb-lbl">Refresh</span></button>
+      <button class="rb"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M4 5a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm2 1a1 1 0 011 1v8h8V7a1 1 0 011-1 1 1 0 010 2H9v6h4V7a1 1 0 012 0v8a1 1 0 01-1 1H7a1 1 0 01-1-1V6z"/></svg><span class="rb-lbl">Columns</span></button>
+    </div>
+    <div class="rg-label">View</div>
+  </div>
+
+  <!-- Reports -->
+  <div class="rg">
+    <div class="rg-btns">
+      <button class="rb"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg><span class="rb-lbl">Reports</span></button>
+      <button class="rb"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg><span class="rb-lbl">Forecast</span></button>
+    </div>
+    <div class="rg-label">Analyze</div>
+  </div>
+
+  <!-- Copilot -->
+  <div class="rg">
+    <div class="rg-btns">
+      <button class="rb copilot" onclick="document.getElementById('copilot').style.display=''" title="Ask Copilot">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2l1.5 4.5L16 8l-4.5 1.5L10 14l-1.5-4.5L4 8l4.5-1.5L10 2zm-5 9l.75 2.25L8 14l-2.25.75L5 17l-.75-2.25L2 14l2.25-.75L5 11zm10 0l.75 2.25L18 14l-2.25.75L15 17l-.75-2.25L12 14l2.25-.75L15 11z"/></svg>
+        <span class="rb-lbl">Copilot</span>
+      </button>
+    </div>
+    <div class="rg-label">AI</div>
+  </div>
+
+  <!-- Search -->
+  <div class="rb-search">
+    <div class="srch-wrap">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/></svg>
+      <input id="srch" class="srch" placeholder="Search by SKU, description, location..." />
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ Workspace ══════════ -->
+<div class="workspace">
+
+  <!-- Tree -->
+  <aside class="pane tree-pane">
+    <div class="tree-head">
+      <span class="tree-title">Location</span>
+      <input class="tree-filter" placeholder="Filter..." />
+    </div>
+    <div class="tree-body">
+      <div class="tnode open" data-depth="0">
+        <span class="t-caret"><svg viewBox="0 0 10 10"><path d="M3 2 L7 5 L3 8" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg></span>
+        <span class="t-ico company"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"/></svg></span>
+        <span class="t-lbl">Acme Industrial Supply</span>
+      </div>
+      <div class="tnode open on" data-depth="1">
+        <span class="t-caret"><svg viewBox="0 0 10 10"><path d="M3 2 L7 5 L3 8" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg></span>
+        <span class="t-ico warehouse"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg></span>
+        <span class="t-lbl">Main Warehouse</span>
+        <span class="t-cnt">342</span>
+      </div>
+      <div class="tnode" data-depth="2"><span class="t-caret none"></span><span class="t-ico aisle"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg></span><span class="t-lbl">Aisle A — Fasteners</span><span class="t-cnt">7</span></div>
+      <div class="tnode" data-depth="2"><span class="t-caret none"></span><span class="t-ico aisle"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg></span><span class="t-lbl">Aisle B — Fittings</span><span class="t-cnt">5</span></div>
+      <div class="tnode" data-depth="2"><span class="t-caret none"></span><span class="t-ico aisle"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg></span><span class="t-lbl">Aisle C — Electrical</span><span class="t-cnt">4</span></div>
+      <div class="tnode" data-depth="2"><span class="t-caret none"></span><span class="t-ico aisle"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg></span><span class="t-lbl">Aisle D — Safety</span><span class="t-cnt">4</span></div>
+      <div class="tnode" data-depth="2"><span class="t-caret none"></span><span class="t-ico aisle"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg></span><span class="t-lbl">Aisle E — Tools</span><span class="t-cnt">4</span></div>
+      <div class="tnode" data-depth="1"><span class="t-caret"><svg viewBox="0 0 10 10"><path d="M3 2 L7 5 L3 8" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg></span><span class="t-ico warehouse"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg></span><span class="t-lbl">Secondary Warehouse</span><span class="t-cnt">84</span></div>
+      <div class="tnode open" data-depth="1"><span class="t-caret"><svg viewBox="0 0 10 10"><path d="M3 2 L7 5 L3 8" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg></span><span class="t-ico folder"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg></span><span class="t-lbl">Product Categories</span></div>
+      <div class="tnode" data-depth="2"><span class="t-caret none"></span><span class="t-ico folder"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg></span><span class="t-lbl">Fasteners &amp; Hardware</span><span class="t-cnt">89</span></div>
+      <div class="tnode" data-depth="2"><span class="t-caret none"></span><span class="t-ico folder"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg></span><span class="t-lbl">Pipe &amp; Fittings</span><span class="t-cnt">54</span></div>
+      <div class="tnode" data-depth="2"><span class="t-caret none"></span><span class="t-ico folder"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg></span><span class="t-lbl">Electrical Components</span><span class="t-cnt">67</span></div>
+      <div class="tnode" data-depth="2"><span class="t-caret none"></span><span class="t-ico folder"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg></span><span class="t-lbl">Safety Equipment</span><span class="t-cnt">38</span></div>
+      <div class="tnode" data-depth="2"><span class="t-caret none"></span><span class="t-ico folder"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg></span><span class="t-lbl">Hand Tools</span><span class="t-cnt">52</span></div>
+      <div class="tnode" data-depth="2"><span class="t-caret none"></span><span class="t-ico folder"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg></span><span class="t-lbl">Abrasives</span><span class="t-cnt">22</span></div>
+    </div>
+  </aside>
+
+  <!-- Data -->
+  <div class="pane data-pane">
+    <div class="subhead">
+      <div class="crumb">
+        <span>Main Warehouse</span>
+        <span class="sep">›</span>
+        <strong>All Products</strong>
+      </div>
+      <div class="subhead-meta">
+        <div class="cm-item"><b>342</b> items</div>
+        <div class="cm-item"><b>174,191</b> pieces</div>
+        <div class="cm-item"><b>$2.85M</b> value</div>
+      </div>
+    </div>
+
+    <div class="filter-strip">
+      <span class="f-label">Filter by:</span>
+      <div class="f-chip on" data-cat="all">All <span class="f-count">342</span></div>
+      <div class="f-chip" data-cat="Fasteners"><div class="f-dot" style="background:#3B82F6"></div>Fasteners <span class="f-count">7</span></div>
+      <div class="f-chip" data-cat="Pipe &amp; Fittings"><div class="f-dot" style="background:#8B5CF6"></div>Pipe &amp; Fittings <span class="f-count">5</span></div>
+      <div class="f-chip" data-cat="Electrical"><div class="f-dot" style="background:#CA5010"></div>Electrical <span class="f-count">4</span></div>
+      <div class="f-chip" data-cat="Safety"><div class="f-dot" style="background:#0E7A0D"></div>Safety <span class="f-count">4</span></div>
+      <div class="f-chip" data-cat="Tools"><div class="f-dot" style="background:#6264A7"></div>Tools <span class="f-count">4</span></div>
+      <div class="f-chip" data-cat="Abrasives"><div class="f-dot" style="background:#E3008C"></div>Abrasives <span class="f-count">2</span></div>
+    </div>
+
+    <div class="sel-bar" id="selBar">
+      <span class="sel-n" id="selN">0 selected</span>
+      <div class="sb-acts">
+        <button class="sb-btn"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>Edit</button>
+        <button class="sb-btn"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z"/><path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z"/></svg>Duplicate</button>
+        <button class="sb-btn">Move…</button>
+        <button class="sb-btn">Export</button>
+        <button class="sb-btn danger"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9z" clip-rule="evenodd"/></svg>Delete</button>
+      </div>
+      <span class="sel-x" id="selX">Clear selection</span>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:34px;padding-left:12px"><input type="checkbox" id="selAll"></th>
+            <th style="width:28px"></th>
+            <th class="sorted">SKU ↑</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th style="width:60px">Unit</th>
+            <th class="r" style="width:120px">Available</th>
+            <th class="r" style="width:100px">On Order</th>
+            <th class="r" style="width:100px">Reorder Pt</th>
+            <th style="width:90px">Location</th>
+            <th style="width:80px"></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Copilot panel -->
+  <aside class="pane copilot" id="copilot">
+    <div class="cp-head">
+      <div class="cp-logo">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2l1.5 4.5L16 8l-4.5 1.5L10 14l-1.5-4.5L4 8l4.5-1.5L10 2zm-5 9l.75 2.25L8 14l-2.25.75L5 17l-.75-2.25L2 14l2.25-.75L5 11zm10 0l.75 2.25L18 14l-2.25.75L15 17l-.75-2.25L12 14l2.25-.75L15 11z"/></svg>
+      </div>
+      <div class="cp-titles">
+        <div class="cp-title">Copilot</div>
+        <div class="cp-sub">Your inventory assistant</div>
+      </div>
+      <div class="cp-actions">
+        <button class="cp-abtn" title="New chat">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+        </button>
+        <button class="cp-abtn" title="History">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+        </button>
+        <button class="cp-abtn" onclick="document.getElementById('copilot').style.display='none'" title="Close">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="cp-body">
+      <div class="cp-section-label">💡 Insights for Main Warehouse</div>
+
+      <!-- Insight 1: Critical -->
+      <div class="insight">
+        <div class="insight-head">
+          <div class="insight-ico err">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92z" clip-rule="evenodd"/></svg>
+          </div>
+          <div class="insight-title">1 item out of stock with open request</div>
+        </div>
+        <div class="insight-body">
+          <b>PIP-2035</b> (PVC Cement 8oz) has <b>0 available</b> and an open request for <b>60 units</b>. Last vendor (Grainger) can fulfill in 3 days.
+        </div>
+        <div class="insight-actions">
+          <button class="insight-btn primary">Create PO</button>
+          <button class="insight-btn ghost">View item</button>
+        </div>
+      </div>
+
+      <!-- Insight 2: Warning -->
+      <div class="insight">
+        <div class="insight-head">
+          <div class="insight-ico warn">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+          </div>
+          <div class="insight-title">35 items below reorder point</div>
+        </div>
+        <div class="insight-body">
+          3 are trending down faster than usual. <b>SAF-4030</b>, <b>FST-1050</b>, and <b>PIP-2022</b> will stock out within 10 days at current consumption.
+        </div>
+        <div class="insight-actions">
+          <button class="insight-btn primary">Bulk reorder</button>
+          <button class="insight-btn ghost">Show all</button>
+        </div>
+      </div>
+
+      <!-- Insight 3: AI forecast -->
+      <div class="insight">
+        <div class="insight-head">
+          <div class="insight-ico ai">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2l1.5 4.5L16 8l-4.5 1.5L10 14l-1.5-4.5L4 8l4.5-1.5L10 2z"/></svg>
+          </div>
+          <div class="insight-title">Consumption up 15% vs last quarter</div>
+        </div>
+        <div class="insight-body">
+          <b>Fasteners</b> and <b>Electrical</b> categories are trending up. Consider raising reorder points for FST-1023, ELC-3008, and 4 others.
+        </div>
+        <div class="insight-actions">
+          <button class="insight-btn primary">Review suggestions</button>
+          <button class="insight-btn ghost">Dismiss</button>
+        </div>
+      </div>
+
+      <!-- Insight 4: Positive -->
+      <div class="insight">
+        <div class="insight-head">
+          <div class="insight-ico ok">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          </div>
+          <div class="insight-title">$12,400 savings opportunity</div>
+        </div>
+        <div class="insight-body">
+          Switching <b>3 fastener SKUs</b> from Grainger to Fastenal matches unit cost and cuts 2 days off lead time.
+        </div>
+        <div class="insight-actions">
+          <button class="insight-btn ghost">See analysis</button>
+        </div>
+      </div>
+
+      <div class="cp-section-label" style="margin-top:16px">Try asking</div>
+      <div class="cp-chips">
+        <div class="cp-chip"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2l1.5 4.5L16 8l-4.5 1.5L10 14l-1.5-4.5L4 8l4.5-1.5L10 2z"/></svg>What's running low?</div>
+        <div class="cp-chip"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2l1.5 4.5L16 8l-4.5 1.5L10 14l-1.5-4.5L4 8l4.5-1.5L10 2z"/></svg>Forecast next 30 days</div>
+        <div class="cp-chip"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2l1.5 4.5L16 8l-4.5 1.5L10 14l-1.5-4.5L4 8l4.5-1.5L10 2z"/></svg>Dead stock report</div>
+        <div class="cp-chip"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2l1.5 4.5L16 8l-4.5 1.5L10 14l-1.5-4.5L4 8l4.5-1.5L10 2z"/></svg>Best sellers this week</div>
+      </div>
+    </div>
+
+    <div class="cp-input-wrap">
+      <div class="cp-input">
+        <input placeholder="Ask Copilot about inventory..." />
+        <button class="cp-mic" title="Voice">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7 4a3 3 0 116 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"/></svg>
+        </button>
+        <button class="cp-send" title="Send">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.789 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg>
+        </button>
+      </div>
+      <div class="cp-footer">Copilot uses live Quantify data · Responses can be reviewed before actions</div>
+    </div>
+  </aside>
+</div>
+
+<!-- ══════════ Status bar (Quantify blue) ══════════ -->
+<div class="statusbar">
+  <div class="sb-group"><span class="sb-label">Items</span><span class="sb-val" id="sbItems">342</span></div>
+  <div class="sb-sep"></div>
+  <div class="sb-group"><span class="sb-label">Pieces</span><span class="sb-val">174,191</span></div>
+  <div class="sb-sep"></div>
+  <div class="sb-group"><span class="sb-label">Weight</span><span class="sb-val">1,781,576 lbs</span></div>
+  <div class="sb-sep"></div>
+  <div class="sb-group"><span class="sb-label">Value</span><span class="sb-val">$2,847,392.50</span></div>
+  <div class="sb-sep"></div>
+  <div class="sb-health" title="Inventory health: 287 healthy · 35 low · 20 out of stock">
+    <span class="sb-label">Health</span>
+    <div class="sb-mini">
+      <div style="width:84%;background:#84FF84"></div>
+      <div style="width:10%;background:#FFD54F"></div>
+      <div style="width:6%;background:#FF8A80"></div>
+    </div>
+    <div class="sb-h-stat"><div class="sb-h-dot" style="background:#84FF84"></div><b>287</b></div>
+    <div class="sb-h-stat"><div class="sb-h-dot" style="background:#FFD54F"></div><b>35</b></div>
+    <div class="sb-h-stat"><div class="sb-h-dot" style="background:#FF8A80"></div><b>20</b></div>
+  </div>
+  <div class="sb-right">
+    <span class="sb-live"></span>
+    <span>Synced · Apr 9, 2026 · 2:34 PM</span>
+    <div class="sb-sep"></div>
+    <div class="sb-user">
+      <div class="sb-avatar">JD</div>
+      Jordan Davies
+    </div>
+  </div>
+</div>
+
+<!-- Context menu -->
+<div class="ctx" id="ctx">
+  <div class="ctx-item ai"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2l1.5 4.5L16 8l-4.5 1.5L10 14l-1.5-4.5L4 8l4.5-1.5L10 2z"/></svg>Ask Copilot about this</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>Edit<span class="k">Enter</span></div>
+  <div class="ctx-item"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z"/><path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z"/></svg>Duplicate<span class="k">Ctrl+D</span></div>
+  <div class="ctx-item"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1z" clip-rule="evenodd"/></svg>Move…</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>Export selected</div>
+  <div class="ctx-item"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a1 1 0 001 1h8a1 1 0 001-1v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a1 1 0 00-1-1H6a1 1 0 00-1 1zm2 0h6v3H7V4z" clip-rule="evenodd"/></svg>Print label</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item danger"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9z" clip-rule="evenodd"/></svg>Delete<span class="k">Del</span></div>
+</div>
+
+<script>
+const DATA = [
+  { sku:'FST-1001', desc:'Hex Bolt 1/4-20 x 1" Grade 5 Zinc',         cat:'Fasteners',        c:'#3B82F6', unit:'EA', total:15000, avail:14200, onOrder:5000,  reorder:3000, loc:'A-01-03' },
+  { sku:'FST-1002', desc:'Hex Nut 1/4-20 Grade 5 Zinc',                cat:'Fasteners',        c:'#3B82F6', unit:'EA', total:22000, avail:21500, onOrder:0,     reorder:5000, loc:'A-01-04' },
+  { sku:'FST-1015', desc:'Socket Head Cap Screw 3/8-16 x 2" Alloy',    cat:'Fasteners',        c:'#3B82F6', unit:'EA', total:4500,  avail:4500,  onOrder:0,     reorder:1000, loc:'A-02-01' },
+  { sku:'FST-1023', desc:'Lock Washer 3/8" Split Ring Zinc',           cat:'Fasteners',        c:'#3B82F6', unit:'EA', total:35000, avail:33200, onOrder:10000, reorder:8000, loc:'A-01-07' },
+  { sku:'FST-1045', desc:'Carriage Bolt 5/16-18 x 3" Grade 2 Zinc',    cat:'Fasteners',        c:'#3B82F6', unit:'EA', total:6800,  avail:6100,  onOrder:0,     reorder:2000, loc:'A-03-02' },
+  { sku:'PIP-2001', desc:"Black Steel Pipe 1\" Sch 40 x 21'",          cat:'Pipe & Fittings',  c:'#8B5CF6', unit:'LF', total:800,   avail:720,   onOrder:200,   reorder:200,  loc:'B-01-01' },
+  { sku:'PIP-2015', desc:'90° Elbow 1" Black Malleable Iron 150#',     cat:'Pipe & Fittings',  c:'#8B5CF6', unit:'EA', total:2400,  avail:2100,  onOrder:500,   reorder:500,  loc:'B-02-03' },
+  { sku:'PIP-2022', desc:'Gate Valve 1" Bronze 200 WOG Threaded',      cat:'Pipe & Fittings',  c:'#8B5CF6', unit:'EA', total:180,   avail:145,   onOrder:50,    reorder:40,   loc:'B-03-01' },
+  { sku:'ELC-3001', desc:"THHN Wire 12 AWG Solid Black 500' Spool",    cat:'Electrical',       c:'#CA5010', unit:'RL', total:85,    avail:72,    onOrder:30,    reorder:20,   loc:'C-01-01' },
+  { sku:'ELC-3008', desc:'EMT Conduit 3/4" x 10\' Galvanized',         cat:'Electrical',       c:'#CA5010', unit:'EA', total:500,   avail:435,   onOrder:200,   reorder:100,  loc:'C-02-01' },
+  { sku:'ELC-3015', desc:'Toggle Switch 15A 120V Single Pole Ivory',   cat:'Electrical',       c:'#CA5010', unit:'EA', total:1200,  avail:1050,  onOrder:0,     reorder:300,  loc:'C-03-02' },
+  { sku:'SAF-4001', desc:'Safety Glasses Clear Lens Anti-Fog Z87+',    cat:'Safety',           c:'#0E7A0D', unit:'PR', total:600,   avail:520,   onOrder:200,   reorder:150,  loc:'D-01-01' },
+  { sku:'SAF-4010', desc:'Nitrile Gloves Large Blue 4mil Box/100',     cat:'Safety',           c:'#0E7A0D', unit:'BX', total:340,   avail:285,   onOrder:100,   reorder:80,   loc:'D-01-03' },
+  { sku:'SAF-4022', desc:'Hard Hat Type I Class E White Ratchet',      cat:'Safety',           c:'#0E7A0D', unit:'EA', total:95,    avail:82,    onOrder:0,     reorder:25,   loc:'D-02-01' },
+  { sku:'TLS-5001', desc:'Combination Wrench Set 12pc SAE Chrome',     cat:'Tools',            c:'#6264A7', unit:'ST', total:45,    avail:38,    onOrder:20,    reorder:10,   loc:'E-01-01' },
+  { sku:'TLS-5008', desc:"Tape Measure 25' x 1\" Blade Lock",          cat:'Tools',            c:'#6264A7', unit:'EA', total:200,   avail:175,   onOrder:0,     reorder:50,   loc:'E-01-04' },
+  { sku:'TLS-5015', desc:'Drill Bit Set 29pc HSS 1/16-1/2" x 64ths',  cat:'Tools',            c:'#6264A7', unit:'ST', total:30,    avail:24,    onOrder:10,    reorder:8,    loc:'E-02-01' },
+  { sku:'ABR-6001', desc:'Cut-Off Wheel 4-1/2" x .045" x 7/8" T1',    cat:'Abrasives',        c:'#E3008C', unit:'EA', total:3000,  avail:2650,  onOrder:1000,  reorder:500,  loc:'A-05-01' },
+  { sku:'ABR-6005', desc:'Flap Disc 4-1/2" 60 Grit Type 29 Zirconia', cat:'Abrasives',        c:'#E3008C', unit:'EA', total:800,   avail:720,   onOrder:0,     reorder:200,  loc:'A-05-03' },
+  { sku:'FST-1050', desc:'All-Thread Rod 3/8-16 x 36" Zinc Grade 2',  cat:'Fasteners',        c:'#3B82F6', unit:'EA', total:450,   avail:85,    onOrder:100,   reorder:100,  loc:'A-04-01' },
+  { sku:'PIP-2030', desc:'Teflon Tape 1/2" x 520" PTFE White',        cat:'Pipe & Fittings',  c:'#8B5CF6', unit:'RL', total:5000,  avail:4800,  onOrder:0,     reorder:1000, loc:'B-04-01' },
+  { sku:'PIP-2035', desc:'PVC Cement 8oz Regular Body Clear',         cat:'Pipe & Fittings',  c:'#8B5CF6', unit:'EA', total:250,   avail:0,     onOrder:50,    reorder:60,   loc:'B-04-03' },
+  { sku:'ELC-3025', desc:'Wire Nut Yellow 18-12 AWG Bag/100',         cat:'Electrical',       c:'#CA5010', unit:'BG', total:400,   avail:360,   onOrder:0,     reorder:100,  loc:'C-04-01' },
+  { sku:'FST-1060', desc:'Lag Screw 3/8 x 3" Zinc Plated',            cat:'Fasteners',        c:'#3B82F6', unit:'EA', total:8000,  avail:7200,  onOrder:3000,  reorder:2000, loc:'A-04-03' },
+  { sku:'SAF-4030', desc:'Ear Plugs Foam NRR 33 Box/200 Pairs',       cat:'Safety',           c:'#0E7A0D', unit:'BX', total:60,    avail:18,    onOrder:20,    reorder:25,   loc:'D-03-01' },
+  { sku:'TLS-5025', desc:'Utility Knife Retractable Heavy Duty',      cat:'Tools',            c:'#6264A7', unit:'EA', total:150,   avail:125,   onOrder:0,     reorder:30,   loc:'E-02-04' },
+];
+
+let sel = new Set();
+let fcat = 'all';
+let q = '';
+
+const fmt = n => n.toLocaleString();
+
+function stat(d) {
+  if (d.avail === 0) return { dot:'st-r', col:'var(--err)', barC:'var(--err)' };
+  if (d.avail < d.reorder) return { dot:'st-a', col:'#CA5010', barC:'#CA5010' };
+  if (d.avail < d.reorder * 1.3) return { dot:'st-a', col:'#CA5010', barC:'#CA5010' };
+  return { dot:'st-g', col:'var(--ok)', barC:'var(--ok)' };
+}
+
+function barPct(d) {
+  if (!d.total) return 0;
+  return Math.min(100, (d.avail / d.total) * 100);
+}
+
+function render() {
+  const rows = DATA.filter(d => {
+    const qq = q.toLowerCase();
+    const matchQ = !qq || d.sku.toLowerCase().includes(qq) || d.desc.toLowerCase().includes(qq) || d.cat.toLowerCase().includes(qq);
+    const matchC = fcat === 'all' || d.cat === fcat;
+    return matchQ && matchC;
+  });
+
+  document.getElementById('sbItems').textContent = rows.length;
+
+  const tb = document.getElementById('tbody');
+  if (!rows.length) {
+    tb.innerHTML = `<tr><td colspan="11" style="padding:40px;text-align:center;color:var(--t-tertiary)">
+      <div style="color:var(--t-secondary);font-weight:500;margin-bottom:4px">No products match</div>
+      <div style="font-size:11.5px;color:var(--t-tertiary)">Try clearing the filter or adjusting your search</div>
+    </td></tr>`;
+    return;
+  }
+
+  tb.innerHTML = rows.map(d => {
+    const s = stat(d);
+    const p = barPct(d);
+    const isS = sel.has(d.sku);
+    return `
+      <tr class="${isS?'on':''}" oncontextmenu="showCtx(event)">
+        <td style="padding-left:12px"><input type="checkbox" ${isS?'checked':''} onclick="event.stopPropagation();tog('${d.sku}')"></td>
+        <td><div class="st-cell"><div class="st-dot ${s.dot}" title="${s.dot==='st-r'?'Out of stock':s.dot==='st-a'?'Low stock':'Healthy'}"></div></div></td>
+        <td><span class="sku-cell">${d.sku}</span></td>
+        <td>${d.desc}</td>
+        <td><span class="cat-cell"><span class="f-dot" style="background:${d.c}"></span>${d.cat}</span></td>
+        <td class="dim">${d.unit}</td>
+        <td class="r">
+          <div class="avail-cell">
+            <span class="avail-n" style="color:${s.col}">${fmt(d.avail)}</span>
+            <div class="avail-bar"><div class="avail-fill" style="width:${p}%;background:${s.barC}"></div></div>
+          </div>
+        </td>
+        <td class="r dim">${d.onOrder ? fmt(d.onOrder) : '—'}</td>
+        <td class="r dim">${fmt(d.reorder)}</td>
+        <td class="mono dim">${d.loc}</td>
+        <td>
+          <div class="row-acts">
+            <button class="r-act" onclick="event.stopPropagation()">Edit</button>
+            <button class="r-act" onclick="event.stopPropagation()">···</button>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function tog(sku) {
+  if (sel.has(sku)) sel.delete(sku); else sel.add(sku);
+  const bar = document.getElementById('selBar');
+  bar.classList.toggle('on', sel.size > 0);
+  document.getElementById('selN').textContent = `${sel.size} selected`;
+  render();
+}
+
+document.getElementById('selX').onclick = () => {
+  sel.clear();
+  document.getElementById('selBar').classList.remove('on');
+  render();
+};
+
+document.getElementById('selAll').onchange = function() {
+  if (this.checked) DATA.forEach(d => sel.add(d.sku));
+  else sel.clear();
+  const bar = document.getElementById('selBar');
+  bar.classList.toggle('on', sel.size > 0);
+  document.getElementById('selN').textContent = `${sel.size} selected`;
+  render();
+};
+
+document.getElementById('srch').addEventListener('input', function() { q = this.value; render(); });
+
+document.querySelectorAll('.f-chip').forEach(c => {
+  c.onclick = function() {
+    document.querySelectorAll('.f-chip').forEach(x => x.classList.remove('on'));
+    this.classList.add('on');
+    fcat = this.dataset.cat;
+    render();
+  };
+});
+
+document.querySelectorAll('.t-caret:not(.none)').forEach(c => {
+  c.parentElement.addEventListener('click', function(e) {
+    if (e.target.closest('.t-caret')) this.classList.toggle('open');
+  });
+});
+
+function showCtx(e) {
+  e.preventDefault();
+  const ctx = document.getElementById('ctx');
+  ctx.classList.add('on');
+  ctx.style.left = e.pageX + 'px';
+  ctx.style.top = e.pageY + 'px';
+}
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.ctx')) document.getElementById('ctx').classList.remove('on');
+});
+
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'f') { e.preventDefault(); document.getElementById('srch').focus(); }
+  if ((e.ctrlKey || e.metaKey) && e.key === '/') { e.preventDefault(); document.querySelector('.cp-input input').focus(); }
+});
+
+render();
+</script>
+</body>
+</html>
