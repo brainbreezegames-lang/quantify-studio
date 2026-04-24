@@ -14,12 +14,12 @@ export default function PhotoCapture({ itemName, shipmentId, onClose }: Props) {
     <div className="absolute inset-0 flex flex-col bg-black">
       {/* Top bar */}
       <div className="flex items-center justify-between px-5 pt-5 pb-3 bg-gradient-to-b from-black/70 to-transparent absolute top-0 left-0 right-0 z-10">
-        <button onClick={onClose} className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center no-select pressable">
+        <button onClick={onClose} className="w-9 h-9 rounded-full bg-white/[0.2] flex items-center justify-center no-select pressable">
           <X size={18} color="#fff" strokeWidth={2} />
         </button>
-        <div className="text-center">
-          <p className="text-white text-sm font-semibold">Photo for</p>
-          <p className="text-white/70 text-xs">{itemName} · {shipmentId}</p>
+        <div className="text-center flex flex-col gap-0.5">
+          <p className="text-white/70 text-[10px] font-bold uppercase tracking-[1.4px]">PHOTO FOR</p>
+          <p className="text-white text-sm font-bold">{itemName ? `${itemName}  ·  ${shipmentId}` : shipmentId}</p>
         </div>
         <div className="w-9" />
       </div>
@@ -52,11 +52,11 @@ export default function PhotoCapture({ itemName, shipmentId, onClose }: Props) {
           </div>
         ) : (
           <div className="w-full h-full bg-[#3D3D3D] flex items-center justify-center">
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-3">
-                <Check size={32} color="#fff" strokeWidth={2} />
+            <div className="text-center flex flex-col items-center gap-3">
+              <div className="w-16 h-16 rounded-full bg-[#16A34A] flex items-center justify-center">
+                <Check size={32} color="#fff" strokeWidth={3} />
               </div>
-              <p className="text-white text-base font-semibold">Photo captured</p>
+              <p className="text-white text-base font-bold">Photo captured</p>
             </div>
           </div>
         )}
@@ -66,8 +66,12 @@ export default function PhotoCapture({ itemName, shipmentId, onClose }: Props) {
       <div className="bg-gradient-to-t from-black to-transparent pt-8 pb-10 px-6">
         {/* Tags */}
         <div className="flex items-center gap-2 mb-6 flex-wrap">
-          {[shipmentId, itemName.split(' ').slice(0, 2).join(' '), 'Damaged'].map(tag => (
-            <span key={tag} className="px-3 py-1 rounded-full bg-white/20 text-white text-xs font-semibold">{tag}</span>
+          {[
+            shipmentId,
+            itemName ? itemName.split(' ').slice(0, 2).join(' ') : null,
+            'Damaged',
+          ].filter((t): t is string => !!t).map(tag => (
+            <span key={tag} className="px-3 py-1.5 rounded-full bg-white/[0.2] text-white text-xs font-bold">{tag}</span>
           ))}
         </div>
 
@@ -89,13 +93,13 @@ export default function PhotoCapture({ itemName, shipmentId, onClose }: Props) {
           <div className="flex gap-3">
             <button
               onClick={() => setCaptured(false)}
-              className="flex-1 h-12 rounded-2xl bg-white/20 text-white text-sm font-semibold no-select pressable"
+              className="flex-1 h-12 rounded-2xl bg-white/[0.2] text-white text-sm font-bold no-select pressable"
             >
               Retake
             </button>
             <button
               onClick={onClose}
-              className="flex-1 h-12 rounded-2xl bg-white text-[#0A0A0A] text-sm font-semibold no-select pressable"
+              className="flex-1 h-12 rounded-2xl bg-white text-[#0A0A0A] text-sm font-bold no-select pressable"
             >
               Use photo
             </button>
@@ -103,7 +107,7 @@ export default function PhotoCapture({ itemName, shipmentId, onClose }: Props) {
         )}
 
         {!captured && (
-          <p className="text-white/50 text-xs text-center mt-3">Tags auto-attached. Just tap.</p>
+          <p className="text-white/60 text-xs font-medium text-center mt-3">Tags auto-attached. Just tap.</p>
         )}
       </div>
     </div>

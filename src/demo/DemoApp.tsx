@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { SHIPMENTS, CATALOG, Shipment, ShipmentItem, ItemFlag, CatalogItem } from './data'
 import PhoneFrame from './PhoneFrame'
 import ShipmentList from './screens/ShipmentList'
@@ -39,8 +39,13 @@ interface DemoState {
   keypadValue: string
   flaggingItemId: string | null
   photoItemId: string | null
+  // Where to return after PhotoCapture closes — so taking a photo mid-flag
+  // doesn't discard the in-progress MissingItems/ConditionCheck state.
+  photoOriginScreen: Screen
   selectedLocation: string
   submittedSummary: { units: number; variances: number; flagged: number } | null
+  // Toast shown when a Create-New option isn't hooked up in the demo flow.
+  toast: string | null
 }
 
 const INITIAL: DemoState = {
@@ -53,8 +58,10 @@ const INITIAL: DemoState = {
   keypadValue: '',
   flaggingItemId: null,
   photoItemId: null,
-  selectedLocation: 'New York Branch Office',
+  photoOriginScreen: 'counting',
+  selectedLocation: 'New York',
   submittedSummary: null,
+  toast: null,
 }
 
 interface DemoAppProps {
@@ -63,6 +70,13 @@ interface DemoAppProps {
 
 export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
   const [state, setState] = useState<DemoState>(INITIAL)
+
+  // Auto-dismiss toast after 3s.
+  useEffect(() => {
+    if (!state.toast) return
+    const t = setTimeout(() => setState(s => ({ ...s, toast: null })), 3000)
+    return () => clearTimeout(t)
+  }, [state.toast])
 
   function goTo(screen: Screen, dir: 'forward' | 'back' = 'forward') {
     setState(s => ({ ...s, screen, direction: dir, overlay: null }))
@@ -145,11 +159,20 @@ export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
   }
 
   function openPhoto(itemId: string) {
-    setState(s => ({ ...s, photoItemId: itemId, screen: 'photo', direction: 'forward', overlay: null }))
+    setState(s => ({
+      ...s,
+      photoItemId: itemId,
+      photoOriginScreen: s.screen === 'photo' ? s.photoOriginScreen : s.screen,
+      screen: 'photo',
+      direction: 'forward',
+      overlay: null,
+    }))
   }
 
   function closePhoto() {
-    setState(s => ({ ...s, photoItemId: null, screen: 'counting', direction: 'back' }))
+    // Return to wherever photo capture was invoked from so in-progress flag
+    // state (MissingItems, ConditionCheck) is preserved.
+    setState(s => ({ ...s, photoItemId: null, screen: s.photoOriginScreen, direction: 'back' }))
   }
 
   function addItemFromCatalog(catalogItem: CatalogItem, qty: number) {
@@ -228,7 +251,19 @@ export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
           onSelect={(type) => {
             if (type === 'delivery') selectShipment('DEL-2401')
             else if (type === 'pre-return') selectShipment('RET-1892')
-            else setOverlay(null)
+            else if (type === 'reservation') {
+              // Reserve-future flow isn't built yet for the demo — drop user into
+              // the closest approximation (a RESERVED delivery) so the demo has
+              // no dead-ends and announce the shortcut.
+              setState(s => ({ ...s, overlay: null, toast: 'Reservation flow opens a RESERVED delivery in the demo' }))
+              setTimeout(() => selectShipment('DEL-00791'), 180)
+            } else if (type === 'return') {
+              // Same story for an "arriving now" return — route to the open PRE-RETURN.
+              setState(s => ({ ...s, overlay: null, toast: 'Return flow opens a PRE-RETURN in the demo' }))
+              setTimeout(() => selectShipment('RET-1892'), 180)
+            } else {
+              setOverlay(null)
+            }
           }}
         />
       )}
@@ -390,9 +425,23 @@ export default function DemoApp({ presentMode = false }: DemoAppProps = {}) {
     },
   ]
 
+  const toastEl = state.toast ? (
+    <div
+      className="absolute left-4 right-4 z-[60] pointer-events-none flex justify-center"
+      style={{ top: 52, animation: 'fadeIn 180ms ease-out forwards' }}
+    >
+      <div
+        className="bg-[#0A0A0A] text-white text-[13px] font-semibold px-4 py-2.5 rounded-full shadow-lg max-w-full text-center"
+        style={{ boxShadow: '0 8px 24px rgba(10,13,30,0.25)' }}
+      >
+        {state.toast}
+      </div>
+    </div>
+  ) : null
+
   return (
     <>
-    <PhoneFrame overlay={overlays}>
+    <PhoneFrame overlay={overlays} floating={toastEl}>
       <div key={screen} className={direction === 'forward' ? 'screen-enter' : 'screen-enter-back'} style={{ minHeight: '100%' }}>
         {screen === 'list' && (
           <ShipmentList

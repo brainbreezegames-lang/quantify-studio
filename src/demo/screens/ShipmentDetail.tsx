@@ -79,12 +79,12 @@ export default function ShipmentDetail({ shipment, items, onBack, onStart }: Pro
               <>
                 {/* Brian: jobsite display follows user options name / number-name / name-number */}
                 <DetailRow label="From" value={formatJobsite(shipment.jobsiteId, shipment.jobsite)} />
-                <DetailRow label="To" value="New York Branch Office" />
+                <DetailRow label="To" value="New York" />
               </>
             ) : (
               <>
                 <DetailRow label="Type" value="Delivery" />
-                <DetailRow label="From" value="New York Branch Office" />
+                <DetailRow label="From" value="New York" />
                 <DetailRow label="To" value={formatJobsite(shipment.jobsiteId, shipment.jobsite)} />
               </>
             )}

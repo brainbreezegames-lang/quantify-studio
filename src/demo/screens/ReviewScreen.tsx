@@ -161,8 +161,11 @@ export default function ReviewScreen({ shipment, items, onBack, onConfirm }: Pro
         </div>
       </div>
 
-      {/* Sticky action bar — primary + secondary */}
-      <div className="fixed bottom-0 left-0 right-0 md:absolute md:bottom-0 bg-white border-t border-[#EAEAEA] px-4 pt-[14px] pb-5 flex flex-col gap-2.5">
+      {/* Sticky action bar — sticky to bottom of the phone scroll container */}
+      <div
+        className="sticky bottom-0 left-0 right-0 mt-auto bg-white border-t border-[#EAEAEA] px-4 pt-[14px] flex flex-col gap-2.5 z-10"
+        style={{ paddingBottom: 'calc(20px + env(safe-area-inset-bottom, 0px))' }}
+      >
         <button
           onClick={handleConfirm}
           disabled={submitting}

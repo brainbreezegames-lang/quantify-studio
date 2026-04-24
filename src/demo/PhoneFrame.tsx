@@ -3,9 +3,20 @@ import { ReactNode, useEffect, useState } from 'react'
 interface Props {
   children: ReactNode
   overlay?: ReactNode
+  // Floating, non-blocking UI (e.g. toast). Rendered above everything but
+  // with pointer-events: none so it never blocks taps on the screen below.
+  floating?: ReactNode
 }
 
-export default function PhoneFrame({ children, overlay }: Props) {
+// Actual iPhone 14 CSS pixel dimensions — the phone shows at real mobile size
+// even on a large desktop monitor. Never scale below 1 for usability testing;
+// only scale DOWN on small viewports so the frame never gets cut off.
+const PHONE_W = 390
+const PHONE_H = 844
+const FRAME_W = PHONE_W + 20 // 10px bezel each side
+const FRAME_H = PHONE_H + 22
+
+export default function PhoneFrame({ children, overlay, floating }: Props) {
   const [scale, setScale] = useState(1)
 
   // Lock body scroll
@@ -27,13 +38,13 @@ export default function PhoneFrame({ children, overlay }: Props) {
     }
   }, [])
 
-  // Auto-scale the phone to fit available viewport height on desktop
+  // Default: show the phone at 100% actual size. Only scale DOWN if the
+  // viewport is too small to fit it (short laptop screens), never scale up.
   useEffect(() => {
     function update() {
-      const h = window.innerHeight
-      // Leave just enough for the caption (~90px) and top pill (~40px)
-      const usable = h - 130
-      const s = Math.min(1.05, usable / 870)
+      const verticalPad = 60 // room for a bit of breathing space
+      const usable = window.innerHeight - verticalPad
+      const s = usable < FRAME_H ? usable / FRAME_H : 1
       setScale(s)
     }
     update()
@@ -59,14 +70,32 @@ export default function PhoneFrame({ children, overlay }: Props) {
 
   return (
     <>
-      {/* Desktop */}
-      <div className="hidden md:flex fixed inset-0 bg-[#E5E7EB] items-center justify-center" style={{ fontFamily: 'Switzer, sans-serif' }}>
+      {/* Desktop — actual-size mobile phone for screen-share testing */}
+      <div
+        className="hidden md:flex fixed inset-0 items-center justify-center"
+        style={{
+          fontFamily: 'Switzer, sans-serif',
+          background:
+            'radial-gradient(circle at 50% 0%, #EEF2FF 0%, #E5E7EB 55%, #D1D5DB 100%)',
+        }}
+      >
         <div
-          className="relative bg-[#1A1A1A] rounded-[52px] p-[10px] shadow-2xl"
-          style={{ width: 410, height: 870, transform: `scale(${scale})`, transformOrigin: 'center center' }}
+          className="relative bg-[#111111] rounded-[52px] p-[10px]"
+          style={{
+            width: FRAME_W,
+            height: FRAME_H,
+            transform: `scale(${scale})`,
+            transformOrigin: 'center center',
+            boxShadow:
+              '0 40px 80px -30px rgba(10,13,30,0.45), 0 10px 25px -10px rgba(10,13,30,0.25), inset 0 0 0 1.5px #2a2a2a',
+          }}
         >
-          <div className="absolute top-[22px] left-1/2 -translate-x-1/2 w-[100px] h-[30px] bg-[#1A1A1A] rounded-full z-30" />
-          <div className="relative bg-white rounded-[44px] overflow-hidden" style={{ width: 390, height: 848 }}>
+          {/* Dynamic Island */}
+          <div className="absolute top-[18px] left-1/2 -translate-x-1/2 w-[110px] h-[32px] bg-[#000000] rounded-full z-30" />
+          <div
+            className="relative bg-white rounded-[44px] overflow-hidden"
+            style={{ width: PHONE_W, height: PHONE_H }}
+          >
             {statusBar}
             <div className="absolute inset-0 overflow-y-auto overflow-x-hidden pt-[44px] z-0">
               {children}
@@ -76,7 +105,12 @@ export default function PhoneFrame({ children, overlay }: Props) {
                 {overlay}
               </div>
             )}
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[120px] h-[4px] bg-[#0A0A0A] rounded-full opacity-25 z-30 pointer-events-none" />
+            {floating && (
+              <div className="absolute inset-0 z-[50] pointer-events-none">
+                {floating}
+              </div>
+            )}
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[134px] h-[5px] bg-[#0A0A0A] rounded-full opacity-40 z-30 pointer-events-none" />
           </div>
         </div>
       </div>
@@ -92,6 +126,11 @@ export default function PhoneFrame({ children, overlay }: Props) {
         {overlay && (
           <div className="absolute inset-0 z-20">
             {overlay}
+          </div>
+        )}
+        {floating && (
+          <div className="absolute inset-0 z-[50] pointer-events-none">
+            {floating}
           </div>
         )}
       </div>
