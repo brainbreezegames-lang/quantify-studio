@@ -46,6 +46,7 @@ export interface Shipment {
   id: string
   type: ShipmentType
   status: ShipmentStatus
+  branchId: string
   jobsite: string
   jobsiteId: string
   location: string
@@ -92,6 +93,7 @@ export const SHIPMENTS: Shipment[] = [
     id: 'RET-00829',
     type: 'PRE-RETURN',
     status: 'DISCREPANCY',
+    branchId: 'ny-branch',
     jobsite: 'Vanguard Plant Systems',
     jobsiteId: 'JS-0942',
     location: 'Bayonne, NJ',
@@ -124,6 +126,7 @@ export const SHIPMENTS: Shipment[] = [
     id: 'DEL-00791',
     type: 'DELIVERY',
     status: 'RESERVED',
+    branchId: 'ny-branch',
     jobsite: 'Titan Apex Industrial Services',
     jobsiteId: 'JS-1247',
     location: 'Newark, NJ',
@@ -131,23 +134,19 @@ export const SHIPMENTS: Shipment[] = [
     weight: '5,100',
     salesperson: 'David Park',
     truckLabel: 'Truck 1 of 1',
-    pcsTotal: 589,
+    pcsTotal: 264,
     items: [
       { id: 'd1a', partNumber: 'RLK-STD-30', name: 'Ringlock Standard 3.0m', subtitle: 'Vertical · hot-dip galv', weightEach: '10.2', expected: 80, counted: null, flag: null },
       { id: 'd1b', partNumber: 'RLK-LED-24', name: 'Ringlock Ledger 2.4m', subtitle: 'Horizontal · galvanized', weightEach: '5.8', expected: 120, counted: null, flag: null },
       { id: 'd1c', partNumber: 'STL-PLK-24', name: 'Steel Plank 2.4m', subtitle: 'Perforated deck plate', weightEach: '12.4', expected: 60, counted: null, flag: null },
       { id: 'd1d', partNumber: 'STR-UNT-24', name: 'Stairway Unit 2.4m', subtitle: 'Access stair module', weightEach: '45.0', expected: 4, counted: null, flag: null },
-      { id: 'd1e', partNumber: 'GRD-PST-10', name: 'Guardrail Post 1.0m', subtitle: 'Safety rail · vertical', weightEach: '2.2', expected: 40, counted: null, flag: null },
-      { id: 'd1f', partNumber: 'DIA-BRC-20', name: 'Diagonal Brace 2.0m', subtitle: 'Face brace · galvanized', weightEach: '3.6', expected: 48, counted: null, flag: null },
-      { id: 'd1g', partNumber: 'BAS-JCK-06', name: 'Base Jack 0.6m', subtitle: 'Adjustable screw base', weightEach: '2.8', expected: 24, counted: null, flag: null },
-      { id: 'd1h', partNumber: 'SWV-CUP-48', name: 'Swivel Coupler', subtitle: 'Forged steel · 48mm', weightEach: '0.9', expected: 96, counted: null, flag: null },
-      { id: 'd1i', partNumber: 'SPG-PIN-17', name: 'Spigot Pin', subtitle: '17mm galvanized', weightEach: '0.2', expected: 117, counted: null, flag: null },
     ],
   },
   {
     id: 'RET-1892',
     type: 'PRE-RETURN',
     status: 'PRE-RETURN',
+    branchId: 'ny-branch',
     jobsite: 'Downtown Tower Demo',
     jobsiteId: 'JS-2014',
     location: 'Manhattan, NY',
@@ -162,6 +161,7 @@ export const SHIPMENTS: Shipment[] = [
     id: 'DEL-2401',
     type: 'DELIVERY',
     status: 'RESERVED',
+    branchId: 'nj-branch',
     jobsite: 'Phillips 66 Bayway Refinery',
     jobsiteId: 'JS-1247',
     location: 'Linden, NJ',
@@ -169,22 +169,19 @@ export const SHIPMENTS: Shipment[] = [
     weight: '4,200',
     salesperson: 'Mike Torres',
     truckLabel: 'Truck 1 of 2',
-    pcsTotal: 342,
+    pcsTotal: 204,
     items: [
       { id: 'i1', partNumber: 'CUP-STD-20', name: 'Cuplok Standard 2.0m', subtitle: 'Vertical · 4 cup welded', weightEach: '7.2', expected: 48, counted: null, flag: null },
       { id: 'i2', partNumber: 'CUP-LED-25', name: 'Cuplok Ledger 2.5m', subtitle: 'Horizontal · galvanized', weightEach: '4.8', expected: 96, counted: null, flag: null },
       { id: 'i3', partNumber: 'CUP-TRN-13', name: 'Cuplok Transom 1.3m', subtitle: 'Cross member · painted', weightEach: '2.4', expected: 48, counted: null, flag: null },
       { id: 'i4', partNumber: 'LVL-PLK-25', name: 'LVL Plank 2.5m', subtitle: 'Laminated veneer lumber', weightEach: '8.6', expected: 60, counted: null, flag: null },
-      { id: 'i5', partNumber: 'STB-TOE-25', name: 'Steel Toe Board 2.5m', subtitle: 'Edge protection · steel', weightEach: '3.2', expected: 12, counted: null, flag: null },
-      { id: 'i6', partNumber: 'BAS-JCK-06', name: 'Base Jack 0.6m', subtitle: 'Adjustable screw base', weightEach: '2.8', expected: 36, counted: null, flag: null },
-      { id: 'i7', partNumber: 'DIA-BRC-20', name: 'Diagonal Brace 2.0m', subtitle: 'Face brace · galvanized', weightEach: '3.6', expected: 42, counted: null, flag: null },
-      { id: 'i8', partNumber: 'SWV-CUP-48', name: 'Swivel Coupler', subtitle: 'Forged steel · 48mm', weightEach: '0.9', expected: 24, counted: null, flag: null },
     ],
   },
   {
     id: 'DEL-2402',
     type: 'DELIVERY',
     status: 'RESERVED',
+    branchId: 'ny-branch',
     jobsite: 'Hudson Yards Construction',
     jobsiteId: 'JS-1860',
     location: 'Manhattan, NY',
@@ -204,6 +201,7 @@ export const SHIPMENTS: Shipment[] = [
     id: 'DEL-00802',
     type: 'DELIVERY',
     status: 'IN-TRANSIT',
+    branchId: 'ny-branch',
     jobsite: 'BlueRidge Fabrication',
     jobsiteId: 'JS-0744',
     location: 'Brooklyn, NY',
@@ -223,6 +221,7 @@ export const SHIPMENTS: Shipment[] = [
     id: 'DEL-3341',
     type: 'DELIVERY',
     status: 'RESERVED',
+    branchId: 'ct-branch',
     jobsite: 'Battery Park Tower',
     jobsiteId: 'JS-2188',
     location: 'Manhattan, NY',

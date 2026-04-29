@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import {
-  Menu, MapPin, ChevronRight, ChevronDown, Plus, Inbox, CircleDot,
+  Menu, MapPin, ChevronRight, ChevronDown, Inbox, CircleDot,
   Calendar, Package, PackageOpen, AlertTriangle, Truck, ArrowRight, ArrowDown, ArrowUp,
   Weight, Inbox as MoveToInbox,
 } from 'lucide-react'
-import { Shipment, ShipmentStatus, statusColors, needsCount } from '../data'
+import { Shipment, ShipmentStatus, statusColors, needsCount, LOCATIONS } from '../data'
 import { formatJobsite } from './Settings'
 
 type FilterKey = 'all' | 'reserved' | 'to-be-received' | 'in-transit' | 'discrepancy' | 'pre-return'
@@ -16,7 +16,6 @@ interface Props {
   onOpenMenu: () => void
   onOpenProfile: () => void
   onOpenLocation: () => void
-  onOpenCreateNew: () => void
 }
 
 // Brian: "all statuses will need someone's count" — Needs Count is not a status,
@@ -39,22 +38,30 @@ const FILTER_ACTIVE_COLOR: Record<FilterKey, { bg: string; text: string }> = {
   'pre-return':     { bg: '#D97706', text: '#FFFFFF' },
 }
 
-export default function ShipmentList({ shipments, selectedLocation, onSelect, onOpenMenu, onOpenProfile, onOpenLocation, onOpenCreateNew }: Props) {
+export default function ShipmentList({ shipments, selectedLocation, onSelect, onOpenMenu, onOpenProfile, onOpenLocation }: Props) {
   const [filter, setFilter] = useState<FilterKey>('all')
 
+  const selectedLoc = LOCATIONS.find(l => l.name === selectedLocation)
+  const branchId = selectedLoc
+    ? (selectedLoc.type === 'branch' ? selectedLoc.id : selectedLoc.parentId)
+    : null
+  const branchShipments = branchId
+    ? shipments.filter(s => s.branchId === branchId)
+    : shipments
+
   const counts: Record<FilterKey, number> = {
-    'all':            shipments.length,
-    'reserved':       shipments.filter(s => s.status === 'RESERVED').length,
-    'to-be-received': shipments.filter(s => s.status === 'TO-BE-RECEIVED').length,
-    'in-transit':     shipments.filter(s => s.status === 'IN-TRANSIT').length,
-    'discrepancy':    shipments.filter(s => s.status === 'DISCREPANCY').length,
-    'pre-return':     shipments.filter(s => s.status === 'PRE-RETURN').length,
+    'all':            branchShipments.length,
+    'reserved':       branchShipments.filter(s => s.status === 'RESERVED').length,
+    'to-be-received': branchShipments.filter(s => s.status === 'TO-BE-RECEIVED').length,
+    'in-transit':     branchShipments.filter(s => s.status === 'IN-TRANSIT').length,
+    'discrepancy':    branchShipments.filter(s => s.status === 'DISCREPANCY').length,
+    'pre-return':     branchShipments.filter(s => s.status === 'PRE-RETURN').length,
   }
 
   const filtered =
     filter === 'all'
-      ? shipments
-      : shipments.filter(s => FILTER_DEFS.find(f => f.key === filter)!.statuses.includes(s.status))
+      ? branchShipments
+      : branchShipments.filter(s => FILTER_DEFS.find(f => f.key === filter)!.statuses.includes(s.status))
 
   return (
     <div className="flex flex-col min-h-full bg-[#F5F5F5]">
@@ -69,7 +76,7 @@ export default function ShipmentList({ shipments, selectedLocation, onSelect, on
           </button>
         </div>
         <h1 className="text-white text-[34px] font-semibold leading-[1.1] tracking-[-0.8px]">Shipments</h1>
-        <p className="text-white/90 text-sm font-semibold mt-[18px]">{shipments.length} shipments  ·  Apr 7 – Apr 28</p>
+        <p className="text-white/90 text-sm font-semibold mt-[18px]">{branchShipments.length} shipments  ·  Apr 7 – Apr 28</p>
       </div>
 
       {/* Location Bar */}
@@ -133,15 +140,6 @@ export default function ShipmentList({ shipments, selectedLocation, onSelect, on
         )}
       </div>
 
-      {/* FAB */}
-      <button
-        data-spot="fab"
-        onClick={onOpenCreateNew}
-        className="fixed bottom-7 right-6 md:absolute w-[60px] h-[60px] rounded-full bg-[#1E3FFF] flex items-center justify-center no-select pressable z-10"
-        style={{ boxShadow: '0 8px 20px rgba(30,63,255,0.35), 0 2px 6px rgba(0,0,0,0.10)' }}
-      >
-        <Plus size={26} color="#fff" strokeWidth={2.5} />
-      </button>
     </div>
   )
 }
