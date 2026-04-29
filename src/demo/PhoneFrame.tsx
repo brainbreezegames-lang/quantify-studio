@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 interface Props {
   children: ReactNode
@@ -6,6 +6,13 @@ interface Props {
   // Floating, non-blocking UI (e.g. toast). Rendered above everything but
   // with pointer-events: none so it never blocks taps on the screen below.
   floating?: ReactNode
+  // Changes whenever the user navigates to a new screen. When it changes we
+  // reset the scroll container to the top so users never land mid-page.
+  scrollKey?: string
+  // Optional CSS selector. When scrollKey changes, if this is set, the scroll
+  // container jumps to that element instead of the top — so users returning
+  // from PhotoCapture land on the Attachments section with no animation.
+  scrollToSelector?: string
 }
 
 // Actual iPhone 14 CSS pixel dimensions — the phone shows at real mobile size
@@ -16,8 +23,41 @@ const PHONE_H = 844
 const FRAME_W = PHONE_W + 20 // 10px bezel each side
 const FRAME_H = PHONE_H + 22
 
-export default function PhoneFrame({ children, overlay, floating }: Props) {
-  const [scale, setScale] = useState(1)
+// DOM id that screen-level sheets portal into so they escape the scroll
+// container and anchor to the phone viewport instead.
+export const PHONE_SHEET_SLOT_ID = 'quantify-phone-sheet-slot'
+
+const ZOOM_STORAGE_KEY = 'quantify-demo-zoom'
+const ZOOM_MIN = 0.6
+const ZOOM_MAX = 2
+const ZOOM_STEP = 0.1
+
+export default function PhoneFrame({ children, overlay, floating, scrollKey, scrollToSelector }: Props) {
+  const [autoScale, setAutoScale] = useState(1)
+  const [userZoom, setUserZoom] = useState(() => {
+    if (typeof window === 'undefined') return 1
+    const stored = parseFloat(window.localStorage.getItem(ZOOM_STORAGE_KEY) ?? '')
+    return Number.isFinite(stored) && stored >= ZOOM_MIN && stored <= ZOOM_MAX ? stored : 1
+  })
+  const desktopScrollRef = useRef<HTMLDivElement | null>(null)
+  const mobileScrollRef = useRef<HTMLDivElement | null>(null)
+
+  // On every screen change, jump to the requested anchor element (synchronously,
+  // so users never see a scroll animation), or otherwise reset to the top.
+  useLayoutEffect(() => {
+    for (const container of [desktopScrollRef.current, mobileScrollRef.current]) {
+      if (!container) continue
+      if (scrollToSelector) {
+        const el = container.querySelector(scrollToSelector) as HTMLElement | null
+        if (el) {
+          // Align the anchor near the top of the viewport with a little breathing room.
+          container.scrollTop = Math.max(0, el.offsetTop - 40)
+          continue
+        }
+      }
+      container.scrollTop = 0
+    }
+  }, [scrollKey, scrollToSelector])
 
   // Lock body scroll
   useEffect(() => {
@@ -45,12 +85,28 @@ export default function PhoneFrame({ children, overlay, floating }: Props) {
       const verticalPad = 60 // room for a bit of breathing space
       const usable = window.innerHeight - verticalPad
       const s = usable < FRAME_H ? usable / FRAME_H : 1
-      setScale(s)
+      setAutoScale(s)
     }
     update()
     window.addEventListener('resize', update)
     return () => window.removeEventListener('resize', update)
   }, [])
+
+  useEffect(() => {
+    window.localStorage.setItem(ZOOM_STORAGE_KEY, String(userZoom))
+  }, [userZoom])
+
+  const scale = autoScale * userZoom
+
+  function zoomIn() {
+    setUserZoom(z => Math.min(ZOOM_MAX, +(z + ZOOM_STEP).toFixed(2)))
+  }
+  function zoomOut() {
+    setUserZoom(z => Math.max(ZOOM_MIN, +(z - ZOOM_STEP).toFixed(2)))
+  }
+  function zoomReset() {
+    setUserZoom(1)
+  }
 
   const statusBar = (
     <div className="flex items-center justify-between px-8 pt-4 pb-1 absolute top-0 left-0 right-0 z-10 pointer-events-none">
@@ -76,9 +132,16 @@ export default function PhoneFrame({ children, overlay, floating }: Props) {
         style={{
           fontFamily: 'Switzer, sans-serif',
           background:
-            'radial-gradient(circle at 50% 0%, #EEF2FF 0%, #E5E7EB 55%, #D1D5DB 100%)',
+            'radial-gradient(ellipse 120% 90% at 50% 38%, #EEF2FF 0%, #E8EAF4 45%, #D1D5DB 100%)',
         }}
       >
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              'repeating-linear-gradient(135deg, transparent, transparent 20px, rgba(10,13,30,0.016) 20px, rgba(10,13,30,0.016) 21px)',
+          }}
+        />
         <div
           className="relative bg-[#111111] rounded-[52px] p-[10px]"
           style={{
@@ -97,7 +160,7 @@ export default function PhoneFrame({ children, overlay, floating }: Props) {
             style={{ width: PHONE_W, height: PHONE_H }}
           >
             {statusBar}
-            <div className="absolute inset-0 overflow-y-auto overflow-x-hidden pt-[44px] z-0">
+            <div ref={desktopScrollRef} className="absolute inset-0 overflow-y-auto overflow-x-hidden pt-[44px] z-0">
               {children}
             </div>
             {overlay && (
@@ -105,14 +168,25 @@ export default function PhoneFrame({ children, overlay, floating }: Props) {
                 {overlay}
               </div>
             )}
+            {/* Sheet slot — screens portal bottom-sheet keypads here so they
+                anchor to the viewport, not the scroll content. */}
+            <div id={PHONE_SHEET_SLOT_ID + '-desktop'} className="absolute inset-0 z-[30] pointer-events-none" />
             {floating && (
               <div className="absolute inset-0 z-[50] pointer-events-none">
                 {floating}
               </div>
             )}
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[134px] h-[5px] bg-[#0A0A0A] rounded-full opacity-40 z-30 pointer-events-none" />
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[134px] h-[5px] bg-[#0A0A0A] rounded-full opacity-40 z-[60] pointer-events-none" />
           </div>
         </div>
+
+        {/* Zoom controls — subtle pill off to the bottom-right. */}
+        <ZoomControls
+          zoom={userZoom}
+          onIn={zoomIn}
+          onOut={zoomOut}
+          onReset={zoomReset}
+        />
       </div>
 
       {/* Mobile */}
@@ -120,7 +194,7 @@ export default function PhoneFrame({ children, overlay, floating }: Props) {
         className="md:hidden fixed inset-0 bg-white overflow-hidden"
         style={{ fontFamily: 'Switzer, sans-serif' }}
       >
-        <div className="absolute inset-0 overflow-y-auto overflow-x-hidden z-0">
+        <div ref={mobileScrollRef} className="absolute inset-0 overflow-y-auto overflow-x-hidden z-0">
           {children}
         </div>
         {overlay && (
@@ -128,6 +202,7 @@ export default function PhoneFrame({ children, overlay, floating }: Props) {
             {overlay}
           </div>
         )}
+        <div id={PHONE_SHEET_SLOT_ID + '-mobile'} className="absolute inset-0 z-[30] pointer-events-none" />
         {floating && (
           <div className="absolute inset-0 z-[50] pointer-events-none">
             {floating}
@@ -135,5 +210,44 @@ export default function PhoneFrame({ children, overlay, floating }: Props) {
         )}
       </div>
     </>
+  )
+}
+
+function ZoomControls({ zoom, onIn, onOut, onReset }: {
+  zoom: number
+  onIn: () => void
+  onOut: () => void
+  onReset: () => void
+}) {
+  return (
+    <div
+      className="fixed bottom-5 right-5 flex items-center gap-1 px-1 py-1 rounded-full backdrop-blur-sm"
+      style={{
+        backgroundColor: 'rgba(255,255,255,0.55)',
+        border: '1px solid rgba(10,13,30,0.08)',
+        boxShadow: '0 4px 16px rgba(10,13,30,0.08)',
+      }}
+    >
+      <button
+        onClick={onOut}
+        aria-label="Zoom out"
+        className="w-7 h-7 rounded-full flex items-center justify-center text-[#525252] hover:bg-black/5 active:bg-black/10 transition-colors"
+      >
+        <svg width="12" height="2" viewBox="0 0 12 2"><rect width="12" height="2" rx="1" fill="currentColor"/></svg>
+      </button>
+      <button
+        onClick={onReset}
+        className="px-2 text-[11px] font-semibold text-[#525252] hover:text-[#0A0A0A] transition-colors min-w-[34px] text-center tabular-nums"
+      >
+        {Math.round(zoom * 100)}%
+      </button>
+      <button
+        onClick={onIn}
+        aria-label="Zoom in"
+        className="w-7 h-7 rounded-full flex items-center justify-center text-[#525252] hover:bg-black/5 active:bg-black/10 transition-colors"
+      >
+        <svg width="12" height="12" viewBox="0 0 12 12"><rect x="5" width="2" height="12" rx="1" fill="currentColor"/><rect y="5" width="12" height="2" rx="1" fill="currentColor"/></svg>
+      </button>
+    </div>
   )
 }
